@@ -1,0 +1,325 @@
+<title>Piano di sviluppo — voce 3 "Piano di promozione"</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important; transition:none !important; animation:none !important;} }
+
+  .wrap{max-width:920px; margin:0 auto; padding:44px 24px 80px;}
+
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 10px;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(21px,3.2vw,28px); letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;}
+  .lede{font-size:16px; color:var(--ink-muted); max-width:70ch; margin:0 0 6px;}
+  .meta-row{display:flex; gap:16px; flex-wrap:wrap; margin-top:18px; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);}
+
+  h2{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink); margin:0 0 14px;}
+  h3{font-family:var(--sans); font-weight:700; font-size:17px; margin:0 0 8px;}
+  h4{font-family:var(--sans); font-weight:700; font-size:14.5px; margin:16px 0 6px; color:var(--accent-strong);}
+  p{margin:0 0 13px; max-width:72ch;}
+  ul,ol{margin:0 0 14px; padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{font-weight:700;}
+  code{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.15em .4em; border-radius:4px; border:1px solid var(--line);}
+  pre{font-family:var(--mono); font-size:12.5px; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 14px;}
+  pre code{background:none; border:none; padding:0;}
+
+  section{margin:0 0 46px;}
+  .divider{border:none; border-top:1px solid var(--line); margin:0 0 46px;}
+
+  .callout{display:flex; gap:11px; padding:13px 15px; border-radius:8px; margin:16px 0; font-size:14px;}
+  .callout .ic{flex:none; font-family:var(--mono); font-weight:700; font-size:11px; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .callout p{margin:0; max-width:none;}
+  .callout--decision{background:var(--amber-tint); color:var(--ink);}
+  .callout--decision .ic{background:var(--amber); color:var(--surface);}
+  .callout--risk{background:var(--brick-tint); color:var(--ink);}
+  .callout--risk .ic{background:var(--brick); color:var(--surface);}
+  .callout--note{background:var(--accent-tint); color:var(--ink);}
+  .callout--note .ic{background:var(--accent); color:var(--surface);}
+  .callout--ok{background:var(--green-tint); color:var(--ink);}
+  .callout--ok .ic{background:var(--green); color:var(--surface);}
+
+  .phase{background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:24px 26px; margin-bottom:20px; position:relative;}
+  .phase-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:6px; flex-wrap:wrap;}
+  .phase-tag{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:3px 9px; white-space:nowrap;}
+  .phase-title{font-family:var(--sans); font-weight:700; font-size:19px; margin:2px 0 0;}
+  .phase-goal{color:var(--ink-muted); font-size:14.5px; margin:6px 0 16px; max-width:66ch;}
+  .phase-badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+  .badge{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:20px; padding:2px 9px;}
+
+  .actionlist{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px;}
+  .actionlist li{display:flex; gap:10px; align-items:flex-start; font-size:14px; margin:0; background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:9px 11px;}
+  .actionlist li::before{content:"□"; font-family:var(--mono); color:var(--accent); flex:none; font-size:13px; line-height:1.5;}
+
+  .decision-box{margin-top:16px; border:1px dashed var(--amber); background:var(--amber-tint); border-radius:8px; padding:13px 15px;}
+  .decision-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+  .decision-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .decision-box p:last-child{margin-bottom:0;}
+
+  .keep-box{margin-top:16px; border:1px solid var(--green); background:var(--green-tint); border-radius:8px; padding:13px 15px;}
+  .keep-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--green); font-weight:700; margin-bottom:6px;}
+  .keep-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .keep-box p:last-child{margin-bottom:0;}
+
+  .change-box{margin-top:16px; border:1px solid var(--brick); background:var(--brick-tint); border-radius:8px; padding:13px 15px;}
+  .change-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--brick); font-weight:700; margin-bottom:6px;}
+  .change-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .change-box p:last-child{margin-bottom:0;}
+
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:8px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .stato-badge{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:5px; padding:2px 8px; white-space:nowrap; display:inline-block;}
+  .stato-badge.ia{background:var(--accent-tint); color:var(--accent-strong);}
+  .stato-badge.js{background:var(--green-tint); color:var(--green);}
+
+  .flow{display:flex; flex-direction:column; gap:10px; margin:16px 0;}
+  .flow-step{display:flex; gap:12px; align-items:flex-start; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:10px 14px;}
+  .flow-step .n{font-family:var(--mono); font-weight:700; font-size:12px; color:var(--accent); flex:none; width:20px;}
+  .flow-step .t{font-size:13.5px;}
+  .flow-step .t strong{display:block; font-size:14px; margin-bottom:2px;}
+
+  footer{max-width:920px; margin:0 auto; padding:0 24px 60px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Bozza di lavoro — da validare prima di scrivere codice</p>
+  <h1>Piano di sviluppo — voce 3 "Piano di promozione"</h1>
+  <p class="lede">Terza voce del menu Atlante, base di riferimento <strong>MATRIX Intelligence Plus</strong> (repo <code>matrix-intelligence-plus</code>), con un secondo riferimento minore: <strong>agente_editoriale</strong> (per il percorso di ingresso B, file Excel di MyUniversity). Questo documento riporta cosa ho letto nel codice sorgente di entrambi, cosa intendo portare avanti così com'è, cosa intendo cambiare deliberatamente e le decisioni ancora aperte — prima di scrivere una sola riga della nuova pagina <code>piano-promozione.html</code>.</p>
+  <div class="meta-row">
+    <span>Rif. Piano_Integrazione_Ecosistema.html rev. 4</span>
+    <span>·</span>
+    <span>Fase 3, voce 3 di 4 — in buono stato, non ancora chiusa</span>
+    <span>·</span>
+    <span>22-23 luglio 2026</span>
+  </div>
+
+  <div class="callout callout--ok" style="margin-top:24px;">
+    <span class="ic">✓</span>
+    <p><strong>Aggiornamento 23 luglio 2026</strong> — implementata e testata in <code>atlante/app/piano-promozione.html</code>, con alcune divergenze deliberate rispetto a questo documento (che resta valido come analisi di MATRIX Intelligence Plus, ma alcune "decisioni da prendere" qui sotto sono ormai superate dai fatti). Il riepilogo aggiornato e autorevole è in <code>Riepilogo_Progetto_Ecosistema.md</code> (sezione "Fase 6"); in sintesi le divergenze principali:</p>
+    <p><strong>Monitoraggio disciplinare non è una funzione separata</strong>: è diventata una delle due <em>modalità</em> di creazione di una campagna (<code>volume_singolo</code> | <code>catalogo_materia</code>, quest'ultima con selezione di fino a 5 manuali propri) — un solo concetto di campagna, non due sistemi paralleli come ipotizzato al §3 sotto.</p>
+    <p><strong>La motivazione non replica SITUAZIONE/LEVE/COLLOQUIO dell'originale</strong> (vedi tabella al §2): è stata ridisegnata in 3 parti (valutazione programma/framework, valutazione dell'insieme dei manuali assegnati — non solo il principale isolato, opzioni di catalogo), con le prime due parti calcolate una volta e riusate tra campagne diverse sullo stesso docente (cache su <code>programmi.valutazione_programma</code>/<code>valutazione_manuale_adottato</code>), invece di essere rigenerate ogni volta.</p>
+    <p>Tre bug reali trovati testando (non solo scelte di design): policy RLS di <code>delete</code> mancanti sulle tre tabelle nuove (silenziose, nessun errore); matching autore-nel-catalogo che considerava solo la prima parola della stringa autore; un fallback JS che saltava la chiamata IA sulle opzioni di catalogo basandosi solo sui gap strutturati, producendo analisi internamente contraddittorie. Dettagli in <code>Riepilogo_Progetto_Ecosistema.md</code>.</p>
+    <p>Ingresso B (Excel MyUniversity) resta rimandato come già deciso al §7.4 sotto — nessun cambiamento su questo punto.</p>
+  </div>
+
+  <hr class="divider" style="margin-top:32px" />
+
+  <section>
+    <h2>1. La differenza architetturale che conta più di tutto il resto</h2>
+    <p>Le voci 1, 2 e 4 già costruite in Atlante (<code>confronto.html</code>, <code>analisi-programma.html</code>, <code>catalogo.html</code>) sono <strong>tutte stateless rispetto ai dati di lavoro</strong>: leggono il catalogo condiviso (<code>manuali</code>, <code>framework</code>) da Supabase, fanno tutto il resto — upload, chiamate IA, calcoli — in memoria di sessione nel browser, ed esportano il risultato in Markdown/HTML/PDF alla fine. Non scrivono mai un programma caricato, un'analisi fatta o un risultato su Supabase (verificato: le uniche chiamate <code>supabaseClient.from(...)</code> in <code>analisi-programma.html</code> sono due <code>select</code> di lettura del catalogo).</p>
+    <p>Il "Piano di promozione", per come funziona in MATRIX Intelligence Plus, <strong>non può essere stateless</strong>: serve accumulare programmi caricati nel tempo (più sessioni, più upload), costruire campagne su quell'archivio quando serve, e il monitoraggio disciplinare needs a comparasion across many docenti già salvati. Questo significa introdurre per la prima volta in Atlante delle <strong>tabelle dati privati per cliente</strong> (non condivise come <code>manuali</code>/<code>framework</code>), con RLS su <code>cliente_id</code> — stesso pattern già usato per <code>profili</code> nello schema base, mai ancora per dati "di lavoro".</p>
+    <p>Il Monitoraggio disciplinare rende ancora più evidente il bisogno di persistenza: richiede un confronto tra molti docenti della stessa materia già salvati nel tempo, non ricostruibile in una singola sessione di upload.</p>
+    <div class="callout callout--decision">
+      <span class="ic">!</span>
+      <p><strong>Prima decisione da validare</strong>: introdurre due nuove tabelle <code>programmi</code> e <code>campagne</code>, entrambe con <code>cliente_id</code> e RLS "solo il proprio cliente" (promotore vede/scrive i propri, gestore vede tutto il cliente — da confermare quale granularità di ruolo serve qui). Bozza di schema al punto 6.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Cosa fa oggi MATRIX Intelligence Plus — sintesi IA vs JS</h2>
+    <p>Letto per intero: <code>campagna.js</code> (2510 righe), <code>monitoraggio.js</code> (1450), <code>database.js</code> (1167), <code>staging.js</code> (681), <code>llm.js</code> (577), <code>upload.js</code> (455), <code>src/index.tsx</code> (conferma: solo shell HTML, nessuna logica server-side reale). La distinzione IA/JS — che nel progetto Atlante è già un principio di metodo consolidato (vedi <code>[[feedback_iterazione_atlante_confronto]]</code>) — è tracciata così nell'originale:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Logica</th><th>Fonte</th></tr></thead>
+        <tbody>
+          <tr><td>Estrazione 10-15 temi da un indice di volume</td><td><span class="stato-badge ia">IA</span> prompt fisso, risposta <code>{"temi":[...]}</code></td></tr>
+          <tr><td>Fase campagna: pre-valutazione vs completa</td><td><span class="stato-badge js">JS</span> regola su presenza indice/temi (&gt;20 caratteri), non sull'IA</td></tr>
+          <tr><td>Scenario A/B/C (risorse disponibili per la materia)</td><td><span class="stato-badge js">JS</span> presenza framework + manuali a catalogo</td></tr>
+          <tr><td>Overlap % tema↔programma, Framework score %</td><td><span class="stato-badge js">JS</span> substring/Levenshtein &gt; soglia</td></tr>
+          <tr><td>Rilevanza target alta/media/bassa</td><td><span class="stato-badge js">JS</span> scenario + soglie overlap/framework score</td></tr>
+          <tr><td>Motivazione per singolo target (SITUAZIONE/LEVE/COLLOQUIO)</td><td><span class="stato-badge ia">IA</span> testo libero a sezioni fisse, non JSON</td></tr>
+          <tr><td>Analisi multi-volume per docente (Monitoraggio)</td><td><span class="stato-badge ia">IA</span> JSON strutturato (<code>analisi_cattedra</code>, <code>valutazioni[]</code>)</td></tr>
+          <tr><td>Prioritizzazione disciplina (DIFESA/UPGRADE/CONQUISTA)</td><td><span class="stato-badge ia">IA</span> criteri nel prompt, con <span class="stato-badge js">JS</span> fallback se l'IA fallisce/salta un docente</td></tr>
+          <tr><td>3 email (Conquista/Aggiornamento/Upgrade)</td><td><span class="stato-badge ia">IA</span> <em>un'unica chiamata</em>, system prompt condizionato dallo scenario (il JS sceglie il blocco istruzioni, non genera 3 mail separate)</td></tr>
+          <tr><td>Scenario Zanichelli proposto in pre-classificazione upload</td><td><span class="stato-badge ia">IA</span> proposto, poi <span class="stato-badge js">JS</span> validato/corretto (match editore + blacklist ~25 editori + fuzzy) — l'IA può essere sovrascritta</td></tr>
+          <tr><td>Match programma↔manuale di catalogo</td><td><span class="stato-badge js">JS</span> cascata euristica titolo+autore→Levenshtein, mai IA, mai automatico senza conferma utente</td></tr>
+          <tr><td>Badge UI (azione/urgenza/rilevanza/scenario)</td><td><span class="stato-badge js">JS</span> puro mapping colore/etichetta dal dato già calcolato</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Il principio che l'IA non decide mai un confronto tra due cose già note (solo interpreta/racconta), e che il calcolo oggettivo resta sempre in JS, è <strong>lo stesso identico principio</strong> già applicato in <code>confronto.html</code> e <code>analisi-programma.html</code>. Questo è un forte segnale che MATRIX Intelligence Plus è una buona base — l'architettura concettuale è già coerente con quella di Atlante, va solo ripulita e resa multi-tenant.</p>
+  </section>
+
+  <section>
+    <h2>3. Due concetti distinti nella stessa tabella: Campagna e Monitoraggio disciplinare</h2>
+    <p>Una <strong>Campagna</strong> promuove un solo volume (esistente o ipotetico) su una materia, generando target ordinati per rilevanza con motivazione ed email. Il <strong>Monitoraggio disciplinare</strong> confronta fino a 5 volumi Zanichelli reali contro tutti i docenti di una materia, per capire per ciascuno quale volume è la leva migliore. Nell'originale vivono nella <strong>stessa tabella</strong> <code>campagne</code>, distinti solo da <code>tipo</code> (<code>novita</code>|<code>monitoraggio</code>) — decisione presa a valle, via migration separata (<code>sql/001_monitoraggio_disciplinare.sql</code>), non nello schema iniziale.</p>
+    <div class="keep-box">
+      <div class="dtitle">Da portare avanti così com'è</div>
+      <p>La scelta di unificare Campagna e Monitoraggio nella stessa tabella logica (stesso concetto — "chi promuovere e come" — solo con N volumi invece di 1) è corretta e coerente col Piano_Integrazione_Ecosistema, che assorbe esplicitamente il monitoraggio disciplinare dentro questa voce di menu.</p>
+      <p>Il concurrency limiter custom a 3 (stile p-limit inline, <code>createConcurrencyLimiter</code>) per processare più docenti in parallelo nel Monitoraggio è un buon pattern, riusabile.</p>
+      <p>Il campo <code>relazione_docente_manuale</code> (nessuna/autore/coautore/curatore/traduttore/collega) impostato manualmente in staging e usato per bloccare proposte di sostituzione dirette quando il docente è legato al manuale adottato — è una buona guardia anti-imbarazzo, da mantenere.</p>
+    </div>
+    <div class="change-box">
+      <div class="dtitle">Da cambiare</div>
+      <p><strong>Colonne dedicate invece di JSONB per i dati di Monitoraggio.</strong> Lo stesso commento SQL dell'originale ammette che <code>volume_consigliato</code>, <code>tipo_azione</code>, <code>urgenza</code>, <code>allineamento</code>, <code>motivazione_scelta</code> restano dentro il JSONB <code>target_generati</code> "senza tabella dedicata" — un compromesso preso probabilmente per evitare una migration in un progetto già in produzione. Qui si riparte da zero: se lo schema serve comunque, ha senso farlo bene fin da subito con colonne reali (o una tabella <code>campagna_target</code> a parte, una riga per docente), non ripetere la scorciatoia.</p>
+      <p><strong>Bug noto da non replicare</strong>: in <code>generaMatchingMultiVolume</code> (llm.js) il prompt legge <code>programma.testo_raw</code> ma il campo salvato da upload.js è <code>testo_programma</code> — il blocco "TESTO INTEGRALE DEL PROGRAMMA" non arriva mai al prompt del Monitoraggio (sempre vuoto), mentre il flusso Campagna usa correttamente <code>testo_programma</code>. Nella riscrittura useremo un solo nome di campo ovunque.</p>
+      <p><strong>Incoerenza corretta</strong> (decisione presa, §7.5): il "refresh singolo docente" nel Monitoraggio non re-invoca la prioritizzazione globale IA, quindi dopo un refresh puntuale l'urgenza/azione di quel docente può provenire dall'euristica di fallback JS anche se il resto della disciplina viene dall'IA — un'incongruenza silenziosa nell'originale. In Atlante ogni refresh singolo forza una ri-prioritizzazione completa della disciplina (costo accettato: una chiamata IA in più), mai il fallback silenzioso.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Secondo riferimento: agente_editoriale (percorso di ingresso B)</h2>
+    <p>Il Piano_Integrazione_Ecosistema prevede due percorsi di ingresso per questa voce: <strong>A)</strong> upload diretto dei PDF (come fa oggi MATRIX Intelligence Plus), <strong>B)</strong> upload dell'Excel prodotto da MyUniversity, con classificazione automatica <code>ok</code>/<code>sospetto</code>/<code>vuoto</code> di ogni programma scaricato e revisione manuale dei casi problematici. Ho letto <code>agente_editoriale/files/agenti_core.py</code>: il meccanismo esiste già e la soglia è precisa, non solo un'idea:</p>
+    <pre><code>def _valuta_qualita_testo(testo: str) -> str:
+    if not testo: return "vuoto"
+    if contiene una delle frasi-indizio ("javascript deve essere attivato",
+       "pagina non trovata", "errore 404", ...): return "sospetto"
+    if len(testo) &lt; 500: return "sospetto"
+    if nessuna parola tipica presente ("programma","contenut","argoment",
+       "obiettiv","conoscenz","competenz","syllabus", ...): return "sospetto"
+    return "ok"</code></pre>
+    <p>I programmi "sospetti" vengono esclusi dall'analisi aggregata a valle, non semplicemente segnalati — coerente con l'idea di "schermata di revisione per completare a mano i casi problematici prima di procedere" del Piano_Integrazione. Lo scraping usa BeautifulSoup con user-agent dichiarato e una pausa di cortesia di 0.5s tra una pagina e l'altra (rilevante per <code>[[feedback_stime_e_concorrenza]]</code>: qui il rate limiting verso server esterni — atenei terzi — è già presente nell'originale, va mantenuto identico o più prudente, mai rimosso per velocizzare).</p>
+    <p>Lo stesso file contiene anche una pipeline "agente3_piano_promozione" — molto più semplice del Monitoraggio di MATRIX Plus: un solo volume contro N programmi aggregati (non per singolo docente), output un piano per insegnamento con punti di forza/gestione lacune/azioni concrete/messaggio chiave. È concettualmente il nonno di questa voce di menu (stesso nome), ma con granularità più grezza (aggregato, non per-docente) — utile come riferimento minore, non come base primaria: MATRIX Intelligence Plus resta la base perché già pensata per-docente, con staging e catalogo condiviso, che è il livello di dettaglio richiesto da Atlante.</p>
+    <div class="callout callout--note">
+      <span class="ic">i</span>
+      <p>Il pattern "rilevamento qualità + completamento manuale" qui sopra è già segnalato nel Piano_Integrazione come abbastanza generico da meritare un posto nella libreria condivisa di Fase 4 (consolidamento tecnico), non solo per questa voce.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Cosa cambiare rispetto all'originale, in linea con le scelte già fatte nelle voci 1/2/4</h2>
+    <div class="change-box">
+      <div class="dtitle">Coerenza con le convenzioni Atlante già stabilite</div>
+      <p><strong>Editore proprio a runtime</strong>, non "Zanichelli" statico: come già fatto in <code>confronto.html</code>/<code>analisi-programma.html</code> (<code>editoreProprio</code> letto da <code>profili → clienti.editore_proprio</code> al login), non un editore fisso in codice. Tutta la logica <code>isZanichelliAuthor</code>/blacklist competitor va riscritta come confronto <code>publisher === editoreProprio</code> sul catalogo condiviso <code>manuali</code> (stesso meccanismo di <code>manuale_tipo()</code>).</p>
+      <p><strong>Percentuali → giudizi qualitativi</strong> (decisione presa, §7.1): l'originale mostra <code>overlapPct</code> e <code>frameworkScore</code> come percentuali numeriche in UI. In Atlante saranno bande qualitative (alto/medio/basso), coerenti con le voci 1/2 — il numero resta solo calcolo interno per l'ordinamento dei target.</p>
+      <p><strong>Peso del modulo per il programma specifico</strong> (decisione presa, §7.6): <code>analisi-programma.html</code> ha introdotto il concetto di "peso" (alto/medio/basso) di ogni modulo per quel programma specifico, usato per non trattare un'assenza come lacuna se il docente non le dà importanza — assente in MATRIX Plus (che usa solo soglie di overlap %). Viene esteso qui fin dalla prima versione, non aggiunto dopo: rende le motivazioni commerciali meno "a tappeto" e più calibrate sul programma reale, coerente con la lezione già imparata nella voce 2.</p>
+      <p><strong>Chiave OpenAI</strong>: pattern già stabilito in Atlante (campo password, mai salvata, usata solo dal browser nella sessione) — non il <code>localStorage</code> permanente di MATRIX Plus.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Bozza di schema dati (da validare, non definitiva)</h2>
+    <p>Estende <code>supabase/migrations/</code> con una nuova migration dedicata a questa voce. Bozza di partenza, colonne indicative:</p>
+    <pre><code>-- dati di lavoro PRIVATI per cliente (non condivisi come manuali/framework)
+create table programmi (
+  id uuid primary key default gen_random_uuid(),
+  cliente_id uuid not null references clienti(id),
+  creato_da uuid references profili(id),
+  provenienza text not null,        -- 'pdf' | 'excel_myuniversity'
+  docente_nome text, docente_email text,
+  ateneo text, corso_laurea text, classe_laurea text,
+  materia_inferita text,
+  manuali_citati jsonb not null default '[]',   -- [{titolo,autore,editore,ruolo}]
+  manual_catalog_id uuid references manuali(id),  -- match confermato, o valori
+  manual_catalog_stato text,                      -- speciali NOT_IN_CATALOG/NO_MANUAL/NOT_SPECIFIED
+  relazione_docente_manuale text default 'nessuna',
+  scenario_editore_proprio text,     -- 'principale'|'alternativo'|'assente', calcolato non dichiarato
+  testo_programma text,
+  qualita_estrazione text,           -- 'ok'|'sospetto'|'vuoto' — colonna prevista ma non usata finché
+                                     -- l'ingresso Excel resta rimandato (§7.4): solo provenienza='pdf' in questa fase
+  stato text not null default 'staging',  -- 'staging' | 'confermato'
+  dati_verificati boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create table campagne (
+  id uuid primary key default gen_random_uuid(),
+  cliente_id uuid not null references clienti(id),
+  creato_da uuid references profili(id),
+  tipo text not null default 'novita',  -- 'novita' | 'monitoraggio'
+  materia text not null,
+  -- campo 'novita'
+  libro_titolo text, libro_autore text, libro_editore text, libro_indice text, libro_temi jsonb,
+  -- campo 'monitoraggio'
+  volumi_monitoraggio jsonb,           -- [{manuale_id, titolo, autore, temi}]
+  fase text,                           -- 'pre_valutazione' | 'completa' (solo novita)
+  stato text not null default 'bozza',
+  sintesi_disciplina jsonb,            -- solo monitoraggio: contatori + nota strategica IA
+  created_at timestamptz not null default now()
+);
+
+create table campagna_target (      -- una riga per docente/programma, non JSONB annidato
+  id uuid primary key default gen_random_uuid(),
+  campagna_id uuid not null references campagne(id) on delete cascade,
+  programma_id uuid not null references programmi(id),
+  rilevanza text,                     -- alta|media|bassa (novita)
+  overlap_giudizio text,              -- banda qualitativa (alto/medio/basso), non percentuale — decisione presa, §7.1
+  peso_riferimento jsonb,              -- peso alto/medio/basso per modulo, esteso da subito dalla voce 2 — decisione presa, §7.6
+  volume_consigliato text, tipo_azione text, urgenza text, allineamento text,  -- monitoraggio
+  motivazione jsonb,                  -- sezioni strutturate, non testo con regex da parsare
+  analisi_cattedra jsonb,
+  email_oggetto text, email_corpo text,
+  created_at timestamptz not null default now()
+);
+
+alter table programmi enable row level security;
+alter table campagne enable row level security;
+alter table campagna_target enable row level security;
+-- policy: cliente_id = cliente_corrente(), stesso pattern di profili/clienti</code></pre>
+    <div class="callout callout--ok">
+      <span class="ic">✓</span>
+      <p><strong>Confermato (22 luglio 2026)</strong>: <code>campagna_target</code> come tabella dedicata, non JSONB — vedi §7.2. Lo schema sopra va aggiornato quando scriveremo la migration reale per riflettere anche le altre decisioni prese al §7 (colonne <code>overlap_giudizio</code> a banda qualitativa, <code>peso_riferimento</code> esteso da subito, <code>qualita_estrazione</code> non popolata finché l'ingresso Excel resta rimandato).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. Decisioni prese (22 luglio 2026)</h2>
+    <p>Le sei domande aperte del piano sono state chiuse in sessione, una per una. Riportate qui come riferimento stabile per l'implementazione — non sono più da ridiscutere salvo che emerga un problema concreto in corso d'opera.</p>
+    <div class="flow">
+      <div class="flow-step"><span class="n">1</span><div class="t"><strong>Percentuali o bande qualitative? → Bande qualitative.</strong> Overlap tematico e framework score mostrati come alto/medio/basso, coerente con le voci 1/2. Il calcolo numerico resta interno, solo per ordinare i target.</div></div>
+      <div class="flow-step"><span class="n">2</span><div class="t"><strong>JSONB o tabella dedicata? → Tabella dedicata.</strong> <code>campagna_target</code>, una riga per docente/programma, non JSONB annidato in <code>campagne</code>.</div></div>
+      <div class="flow-step"><span class="n">3</span><div class="t"><strong>Ordine di costruzione → Campagna prima, Monitoraggio dopo.</strong> Sequenza incrementale: prima il singolo-volume end-to-end, poi il multi-volume sopra la stessa base.</div></div>
+      <div class="flow-step"><span class="n">4</span><div class="t"><strong>Scraping ingresso B → Rimandato.</strong> In questa fase si costruisce solo l'ingresso A (upload PDF diretto). Lo scraping delle pagine-programma da Excel MyUniversity (e la scelta client vs proxy server) diventa uno sviluppo separato, successivo.</div></div>
+      <div class="flow-step"><span class="n">5</span><div class="t"><strong>Refresh singolo docente → Ri-prioritizzazione completa forzata.</strong> Ogni refresh puntuale rilancia la prioritizzazione IA su tutta la disciplina (costo: una chiamata IA in più), per non avere mai due docenti con criteri di urgenza diversi senza segnalarlo.</div></div>
+      <div class="flow-step"><span class="n">6</span><div class="t"><strong>Peso del modulo per programma → Esteso da subito.</strong> Il concetto già introdotto in <code>analisi-programma.html</code> (peso alto/medio/basso di ciascun modulo per quel programma specifico) viene portato qui fin dalla prima versione, non aggiunto in un secondo momento.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>8. Passi di sviluppo (incrementali, ciascuno testabile da solo)</h2>
+    <p>Aggiornati secondo le decisioni del §7 — l'ingresso B non è più tra i passi di questa fase, sarà uno sviluppo a parte quando lo riprenderemo.</p>
+    <ol>
+      <li>Migration <code>programmi</code> + <code>campagne</code> + <code>campagna_target</code> (schema aggiornato con le decisioni del §7: bande qualitative, <code>peso_riferimento</code>, colonna <code>qualita_estrazione</code> presente ma inutilizzata), RLS per cliente.</li>
+      <li>Ingresso A: upload PDF → estrazione testo (PDF.js, come le altre voci) → pre-classificazione IA (stesso prompt di <code>preClassifyProgram</code>, riadattato) → validazione JS dello scenario editore-proprio (porta di <code>validateZanichelliScenario</code>, con <code>editoreProprio</code> a runtime) → salvataggio in <code>programmi</code>, stato <code>staging</code>, <code>provenienza='pdf'</code>.</li>
+      <li>Schermata di staging: 3 semafori (dati verificati / framework presente / catalogo presente per la materia) + form di correzione manuale + impostazione <code>relazione_docente_manuale</code> — stessa logica di <code>staging.js</code>, adattata alle nuove tabelle.</li>
+      <li>Campagna "novità": creazione, calcolo fase (regola su indice/temi), targeting (<code>checkSubjectMatch</code> + overlap/framework score in banda qualitativa + peso del modulo per programma), motivazione IA per target, generazione mail a scenario condizionato — prima versione completa e testabile end-to-end su un solo volume.</li>
+      <li>Monitoraggio disciplinare sopra la stessa base: selezione fino a 5 volumi propri, analisi multi-volume per docente con concurrency limiter, prioritizzazione disciplina, refresh singolo docente con ri-prioritizzazione completa forzata (mai il fallback silenzioso dell'originale).</li>
+      <li>Export (Markdown/HTML/PDF) coerente con le voci 1/2 già fatte.</li>
+    </ol>
+    <div class="callout callout--note">
+      <span class="ic">i</span>
+      <p>Ingresso B (Excel MyUniversity + scraping + classificazione ok/sospetto/vuoto) resta descritto al §4 come riferimento, ma è fuori da questi passi: verrà ripreso come sviluppo a parte, con la propria decisione su client vs proxy server prima di iniziare.</p>
+    </div>
+  </section>
+
+</div>
+<footer>Bozza di lavoro — analisi del codice sorgente di matrix-intelligence-plus e agente_editoriale, da rivedere insieme prima di iniziare l'implementazione</footer>

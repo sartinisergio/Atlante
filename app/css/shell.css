@@ -1,0 +1,955 @@
+/* ============================================================
+   Atlante · Direzione A — Shell e componenti condivisi
+   ------------------------------------------------------------
+   Da includere DOPO tokens.css.
+   Ogni pagina definisce nel proprio :root la terna --v / --v-soft
+   / --v-ink con il colore della sezione, più --voce-corrente-soft
+   e --voce-corrente-ink per la voce attiva in sidebar.
+
+   Regola: un componente sta qui solo se è usato in 2+ pagine.
+   Se te ne serve uno nuovo, definiscilo nel <style> della pagina;
+   quando lo riusi altrove, spostalo qui. Vedi HANDOFF.md §6.1.
+   ============================================================ */
+
+/* ============================================================
+   1. LAYOUT
+   ============================================================ */
+
+body.a-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+main.a-main {
+  padding: 28px 40px 60px;
+  max-width: 1520px;
+  min-width: 0;              /* permette alle tabelle interne di scrollare invece di sfondare */
+}
+
+/* ============================================================
+   2. SIDEBAR
+   ============================================================ */
+
+aside.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  padding: 22px 16px;
+  display: flex; flex-direction: column; gap: 2px;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+
+.brand { display: flex; align-items: baseline; gap: 8px; margin: 4px 8px; }
+.brand a { text-decoration: none; color: inherit; display: inline-flex; align-items: baseline; gap: 8px; }
+.brand .logo {
+  font-family: var(--font-serif); font-weight: 500; font-size: 26px;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.brand .logo em { font-style: italic; color: var(--v); font-weight: 400; }
+.brand .badge-prod {
+  font-size: 10px; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border: 1px solid var(--line); padding: 2px 6px; border-radius: var(--r-sm);
+}
+
+/* Selettore tenant. Oggi mostra il cliente collegato al profilo e basta:
+   profili ha un solo cliente_id e la RLS filtra su cliente_corrente(), quindi
+   non c'è nulla da "cambiare". Niente caret, niente cursor:pointer: un
+   controllo che non fa niente è peggio che non averlo. Vedi HANDOFF.md §9.2. */
+.tenant {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; margin: 10px 4px 18px;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--paper-warm); font-size: 12.5px;
+}
+.tenant .avatar {
+  width: 22px; height: 22px; border-radius: 5px; flex: none;
+  background: linear-gradient(135deg, var(--voce-utilita), var(--voce-utilita-ink));
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-weight: 600; font-size: 12px;
+}
+.tenant .meta { flex: 1; line-height: 1.2; min-width: 0; }
+.tenant .meta strong {
+  display: block; color: var(--ink); font-size: 12.5px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tenant .meta span { font-size: 10.5px; color: var(--ink-muted); }
+
+.side-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--ink-muted); margin: 12px 12px 6px; font-weight: 600;
+}
+
+.nav-voce {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 10px; margin: 1px 0;
+  border-radius: var(--r-md);
+  text-decoration: none; color: var(--ink);
+  font-size: 13px; transition: background .12s;
+}
+.nav-voce:hover { background: var(--paper-warm); }
+.nav-voce.attivo { background: var(--voce-corrente-soft, var(--v-soft)); color: var(--voce-corrente-ink, var(--v-ink)); }
+.nav-voce.attivo strong { color: var(--voce-corrente-ink, var(--v-ink)); }
+.nav-voce.attivo span { color: var(--voce-corrente-ink, var(--v-ink)); opacity: 0.75; }
+/* il pallino tiene SEMPRE il colore della propria voce, anche quando un'altra
+   sezione è attiva: la sidebar resta un promemoria delle altre aree */
+.nav-voce .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; background: var(--dot); flex: none; }
+.nav-voce strong { display: block; font-weight: 600; font-size: 13px; margin-bottom: 1px; }
+.nav-voce span { font-size: 11.5px; color: var(--ink-muted); line-height: 1.35; display: block; }
+
+.user-chip {
+  margin-top: auto;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: var(--r-md);
+  background: var(--paper-warm);
+  font-size: 12px; color: var(--ink-muted);
+}
+.user-chip .av {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  background: var(--v); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+}
+.user-chip .info { flex: 1; line-height: 1.25; min-width: 0; }
+.user-chip .info strong {
+  display: block; color: var(--ink); font-size: 12px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.user-chip .esci {
+  background: none; border: none; cursor: pointer; padding: 2px 4px;
+  color: var(--ink-muted); font-size: 14px; line-height: 1; border-radius: var(--r-sm);
+}
+.user-chip .esci:hover { color: var(--err); background: var(--err-soft); }
+
+/* Hamburger: compare solo sotto i 1200px (vedi §11) */
+.menu-toggle {
+  display: none;
+  position: fixed; top: 14px; left: 14px; z-index: 95;
+  width: 38px; height: 38px; border-radius: var(--r-md);
+  background: var(--surface); border: 1px solid var(--line);
+  box-shadow: var(--sh-2); cursor: pointer;
+  font-size: 16px; color: var(--ink); line-height: 1;
+}
+.sidebar-scrim {
+  display: none;
+  position: fixed; inset: 0; z-index: 85;
+  background: rgba(28, 26, 23, 0.35);
+}
+
+/* ============================================================
+   3. TESTATA DI PAGINA
+   ============================================================ */
+
+.crumb { font-size: 12px; color: var(--ink-muted); margin-bottom: 10px; }
+.crumb a { color: var(--ink-muted); text-decoration: none; }
+.crumb a:hover { color: var(--ink); }
+.crumb .sep { margin: 0 6px; color: var(--ink-faint); }
+
+h1.page {
+  font-family: var(--font-serif);
+  font-weight: 400; font-size: 34px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px; color: var(--ink);
+}
+h1.page em { color: var(--v); font-style: italic; }
+
+.subtitle { font-size: 14px; color: var(--ink-muted); margin: 0 0 24px; max-width: 780px; }
+
+h2.section {
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: 22px; letter-spacing: -0.01em;
+  margin: 40px 0 4px;
+  display: flex; align-items: baseline; gap: 12px;
+}
+h2.section em { font-style: italic; color: var(--v); }
+h2.section .side {
+  font-family: var(--font-sans); font-size: 12.5px;
+  color: var(--ink-muted); font-weight: 400; margin-left: auto;
+}
+h2.section .side a { color: var(--v); text-decoration: none; font-weight: 500; }
+p.section-dek { font-size: 13.5px; color: var(--ink-muted); margin: 0 0 20px; }
+
+/* ============================================================
+   4. CONTROLLI
+   ============================================================ */
+
+.btn {
+  padding: 8px 16px; border-radius: 7px;
+  font-size: 13px; font-weight: 500;
+  border: 1px solid transparent; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: background .12s, border-color .12s;
+  font-family: inherit;
+}
+.btn-primary { background: var(--v); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--v-ink); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover:not(:disabled) { background: var(--paper-warm); }
+.btn-quiet { background: transparent; color: var(--ink-muted); }
+.btn-quiet:hover:not(:disabled) { color: var(--ink); background: var(--paper-warm); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* bottone piccolo, per le azioni dentro tabelle e drawer */
+.m-btn {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 5px; padding: 4px 9px;
+  font-size: 11.5px; color: var(--ink-2); cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+}
+.m-btn:hover:not(:disabled) { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+.m-btn.primary { background: var(--v); color: #fff; border-color: var(--v); }
+.m-btn.primary:hover:not(:disabled) { background: var(--v-ink); border-color: var(--v-ink); }
+.m-btn.pericolo { color: var(--err); border-color: var(--err-soft); }
+.m-btn.pericolo:hover:not(:disabled) { background: var(--err-soft); border-color: var(--err); color: var(--err); }
+.m-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.field {
+  width: 100%; padding: 8px 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-size: 13px; color: var(--ink);
+  transition: border-color .12s, background .12s;
+  font-family: inherit;
+}
+.field:focus { outline: none; border-color: var(--v); background: var(--surface); }
+.field:disabled { opacity: 0.55; cursor: not-allowed; }
+textarea.field { min-height: 100px; font-family: var(--font-sans); resize: vertical; }
+
+.campo { margin-bottom: 14px; }
+.campo:last-child { margin-bottom: 0; }
+.campo > label,
+label.campo-label {
+  display: block; font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-muted); margin-bottom: 5px;
+}
+.campo .aiuto { font-size: 11.5px; color: var(--ink-muted); margin: 5px 0 0; line-height: 1.45; }
+.campo .aiuto a { color: var(--v); font-weight: 500; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+/* Radio "a bottone": i radio veri restano nel DOM, nascosti, per accessibilità */
+.radio-row { display: flex; gap: 8px; }
+.radio-btn {
+  flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 7px;
+  background: var(--paper); cursor: pointer; font-size: 12.5px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.radio-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+.radio-btn:has(input:checked) { border-color: var(--v); background: var(--v-soft); }
+.radio-btn:has(input:focus-visible) { outline: 2px solid var(--v); outline-offset: 1px; }
+.radio-btn strong { color: var(--ink); font-weight: 600; }
+.radio-btn:has(input:checked) strong { color: var(--v-ink); }
+.radio-btn span { font-size: 10.5px; color: var(--ink-muted); }
+
+.upload-drop {
+  border: 1.5px dashed var(--line); border-radius: 7px;
+  padding: 18px 12px; text-align: center;
+  background: var(--paper); font-size: 12px; color: var(--ink-muted);
+  transition: border-color .12s, background .12s;
+}
+.upload-drop b { color: var(--v); cursor: pointer; text-decoration: underline; }
+.upload-drop.sopra { border-color: var(--v); background: var(--v-soft); }
+.upload-drop .ic { display: block; font-size: 20px; color: var(--v); margin-bottom: 4px; }
+.upload-drop .or { display: block; margin-top: 8px; font-size: 11px; color: var(--ink-muted); font-style: italic; }
+.upload-drop input[type=file] { display: none; }
+
+/* Ricerca */
+.search-box {
+  flex: 1; max-width: 480px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.search-box::before { content: '⌕'; color: var(--ink-faint); font-size: 16px; }
+.search-box input {
+  border: none; background: transparent;
+  flex: 1; font-size: 13px; color: var(--ink);
+  outline: none; font-family: inherit; min-width: 0;
+}
+.search-box:focus-within { border-color: var(--v); }
+
+/* Toolbar di filtri sopra una lista */
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.toolbar .actions { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+.pill-filter {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); font-size: 13px; color: var(--ink);
+}
+.pill-filter .lab { color: var(--ink-muted); font-size: 12px; }
+.pill-filter select {
+  border: none; background: transparent; font-size: 13px; color: var(--ink);
+  font-family: inherit; outline: none; cursor: pointer; padding: 0; max-width: 220px;
+}
+.pill-filter:focus-within { border-color: var(--v); }
+
+/* Segmented control (tab Insegnamenti/Lauree/Ateneo, toggle Manuali/Framework) */
+.tabs {
+  display: inline-flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px; margin-bottom: 20px;
+}
+.tabs button {
+  border: none; background: transparent; padding: 8px 16px;
+  font-size: 13px; font-weight: 500; color: var(--ink-muted); cursor: pointer;
+  border-radius: 7px; display: inline-flex; align-items: center; gap: 7px;
+  font-family: inherit;
+}
+.tabs button:hover { color: var(--ink); }
+.tabs button.on { background: var(--v); color: #fff; }
+.tabs button .n { font-size: 11px; opacity: 0.7; }
+.tabs button.on .n { opacity: 0.9; }
+
+/* ============================================================
+   5. CONTENITORI
+   ============================================================ */
+
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  padding: 20px 22px; margin-bottom: 16px;
+  position: relative;
+}
+.card.marked::before {
+  content: ''; position: absolute; left: 0; top: 20px; bottom: 20px;
+  width: 3px; background: var(--v);
+  border-radius: 0 3px 3px 0;
+}
+.card h3 {
+  font-family: var(--font-serif); font-weight: 500;
+  font-size: 16px; margin: 0 0 4px; letter-spacing: -0.01em;
+}
+.card h3 .num { color: var(--v); font-style: italic; margin-right: 6px; }
+.card h4 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-muted); font-weight: 700; margin: 18px 0 6px;
+}
+.card p { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
+.card p.dek { font-size: 12px; color: var(--ink-muted); margin: 0 0 14px; }
+.card ul, .card ol { font-size: 13px; line-height: 1.55; margin: 6px 0; padding-left: 20px; }
+.card > :last-child { margin-bottom: 0; }
+
+/* Callout "come funziona" / avvisi contestuali.
+   Sostituisce il vecchio <details class="come-funziona">: sempre aperto,
+   perché il testo è breve e serve a chi arriva la prima volta. */
+.helper {
+  display: flex; gap: 12px;
+  padding: 12px 14px; margin-bottom: 20px;
+  background: var(--v-soft); border-radius: var(--r-md);
+  font-size: 12.5px; color: var(--v-ink); line-height: 1.5;
+}
+.helper .ic { font-family: var(--font-serif); font-size: 20px; line-height: 1; font-style: italic; flex: none; }
+.helper a { color: var(--v-ink); font-weight: 600; }
+.helper.errore { --v-soft: var(--err-soft); --v-ink: var(--err); }
+.helper.attesa { --v-soft: var(--warn-soft); --v-ink: var(--warn); }
+.helper.ok     { --v-soft: var(--ok-soft);   --v-ink: var(--ok); }
+
+/* Callout con barra colorata a sinistra e gradiente (Matrix builder, avvisi forti) */
+.callout {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 18px; margin-bottom: 22px;
+  background: linear-gradient(180deg, var(--v-soft), transparent 90%);
+  border: 1px solid var(--v-soft);
+  border-radius: var(--r-lg);
+  position: relative;
+}
+.callout::before {
+  content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+  width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+}
+.callout .ic {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 22px; color: var(--v); flex: none; line-height: 1; margin-top: 2px;
+}
+.callout .body h4 {
+  font-family: var(--font-serif); font-weight: 500;
+  font-size: 14.5px; margin: 0 0 4px; color: var(--v-ink);
+  text-transform: none; letter-spacing: normal;
+}
+.callout .body p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+.callout .body a { color: var(--v-ink); font-weight: 600; }
+
+/* Riquadro "opportunità commerciale" / "argomenti per l'adozione" */
+.insight {
+  background: linear-gradient(180deg, var(--v-soft), transparent);
+  border: 1px solid var(--v-soft); border-radius: var(--r-lg);
+  padding: 20px 22px; margin-bottom: 16px;
+  position: relative;
+}
+.insight::before {
+  content: ''; position: absolute; left: 0; top: 20px; bottom: 20px;
+  width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+}
+.insight h3 {
+  font-family: var(--font-serif); font-weight: 500; font-size: 16px;
+  margin: 0 0 4px; letter-spacing: -0.01em;
+}
+.insight h3::before { content: '★'; color: var(--v); margin-right: 8px; font-size: 14px; }
+.insight p.dek { font-size: 12px; color: var(--ink-muted); margin: 0 0 12px; }
+.insight .colonne { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+.insight h4 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--v-ink); margin: 0 0 6px; font-weight: 700;
+}
+.insight ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; }
+.insight .opp-box {
+  background: var(--surface); border-radius: var(--r-md);
+  padding: 14px 16px; margin-top: 14px; font-size: 13px; line-height: 1.55;
+}
+.insight .opp-box strong {
+  color: var(--v-ink); font-family: var(--font-serif); font-weight: 500; font-size: 14px;
+}
+
+/* Empty state */
+.empty {
+  background: var(--surface); border: 1px dashed var(--line);
+  border-radius: var(--r-lg); padding: 40px 20px;
+  text-align: center; color: var(--ink-muted); font-size: 13px;
+}
+.empty h4 {
+  font-family: var(--font-serif); font-size: 18px; color: var(--ink);
+  font-weight: 500; margin: 0 0 6px;
+  text-transform: none; letter-spacing: normal;
+}
+.empty p { margin: 0 auto; max-width: 460px; line-height: 1.55; }
+
+/* Accordion per materia (catalogo, e ovunque serva raggruppare una tabella) */
+.materia-block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.materia-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; width: 100%; text-align: left;
+  cursor: pointer;
+  background: var(--paper-warm);
+  border: none; border-bottom: 1px solid var(--line);
+  font-family: inherit;
+}
+.materia-block.closed .materia-head { border-bottom: none; }
+.materia-head .arrow { color: var(--ink-muted); font-size: 12px; transition: transform .12s; flex: none; }
+.materia-block.closed .materia-head .arrow { transform: rotate(-90deg); }
+.materia-head h3 {
+  font-family: var(--font-serif); font-weight: 500;
+  font-size: 17px; margin: 0; letter-spacing: -0.01em;
+  color: var(--ink); flex: 1;
+}
+.materia-head .n { font-size: 12px; color: var(--ink-muted); font-family: var(--font-mono); }
+.materia-head .n b { color: var(--ink); }
+.materia-block.closed .materia-corpo { display: none; }
+.materia-block .foot-add {
+  padding: 10px 20px 14px; background: var(--paper-warm);
+  border-top: 1px solid var(--line-soft);
+  text-align: right; font-size: 12px; color: var(--ink-muted);
+}
+.materia-block .foot-add button { margin-left: 8px; }
+
+/* ============================================================
+   6. ETICHETTE E BADGE
+   ============================================================ */
+
+.badge {
+  display: inline-block; padding: 2px 7px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.b-tri { background: var(--voce-analisi-soft); color: var(--voce-analisi-ink); }
+.b-mag { background: var(--voce-offerta-soft); color: var(--voce-offerta-ink); }
+.b-cu  { background: var(--voce-confronto-soft); color: var(--voce-confronto-ink); }
+.b-ok  { background: var(--ok-soft); color: var(--ok); }
+.b-warn { background: var(--warn-soft); color: var(--warn); }
+.b-err { background: var(--err-soft); color: var(--err); }
+/* proprio / competitor: il colore-voce marca l'editore proprio in ogni sezione */
+.b-proprio { background: var(--v-soft); color: var(--v-ink); }
+.b-competitor { background: var(--paper-warm); color: var(--ink-muted); }
+/* indice del manuale caricato o no */
+.b-idxok { background: var(--ok-soft); color: var(--ok); }
+.b-idxno { background: var(--surface-2); color: var(--ink-muted); }
+
+/* Copertura di un modulo. Le classi si ottengono da classeStato() in
+   atlante-shared.js — mai costruite concatenando il valore del dato. */
+.status {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+.s-pres { background: var(--ok-soft); color: var(--ok); }
+.s-pres::before { background: var(--ok); }
+.s-parz { background: var(--warn-soft); color: var(--warn); }
+.s-parz::before { background: var(--warn); }
+.s-ass { background: var(--err-soft); color: var(--err); }
+.s-ass::before { background: var(--err); }
+.s-idle { background: var(--surface-2); color: var(--ink-muted); }
+.s-idle::before { background: var(--ink-faint); }
+
+/* Peso che il programma assegna a un modulo */
+.peso {
+  font-size: 10px; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-top: 3px;
+}
+
+/* Giudizio qualitativo a 6 gradi + n/d. Classi da classeGiudizio(). */
+.giud {
+  background: var(--paper); border: 1px solid var(--line-soft);
+  border-radius: var(--r-md); padding: 12px 14px;
+}
+.giud .lab {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--ink-muted); font-weight: 600;
+}
+.giud .val {
+  font-family: var(--font-serif); font-size: 16px; margin-top: 4px;
+  font-style: italic; font-weight: 500; color: var(--v-ink);
+}
+.giud p { font-size: 11.5px; color: var(--ink-muted); margin: 6px 0 0; line-height: 1.4; }
+.giud-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
+
+.val.g-insuf       { color: var(--giud-insuf); }
+.val.g-suff        { color: var(--giud-suff); }
+.val.g-discreto    { color: var(--giud-discreto); }
+.val.g-buono       { color: var(--giud-buono); }
+.val.g-molto-buono { color: var(--giud-molto-buono); }
+.val.g-eccellente  { color: var(--giud-eccellente); }
+.val.g-nd          { color: var(--ink-muted); }
+
+/* stessa scala, in versione pill inline (dentro liste e tabelle) */
+.giud-pill {
+  display: inline-block; padding: 2px 8px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em; white-space: nowrap;
+  background: var(--surface-2); color: var(--ink-muted);
+}
+.giud-pill.g-insuf       { background: var(--err-soft);  color: var(--giud-insuf); }
+.giud-pill.g-suff        { background: var(--warn-soft); color: var(--giud-suff); }
+.giud-pill.g-discreto    { background: var(--warn-soft); color: var(--giud-discreto); }
+.giud-pill.g-buono       { background: var(--ok-soft);   color: var(--giud-buono); }
+.giud-pill.g-molto-buono { background: var(--ok-soft);   color: var(--giud-molto-buono); }
+.giud-pill.g-eccellente  { background: var(--info-soft); color: var(--giud-eccellente); }
+
+/* Chip di filtro attivo */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--v-soft); color: var(--v-ink);
+  padding: 2px 6px 2px 8px; border-radius: var(--r-sm);
+  font-size: 11.5px; font-weight: 500;
+}
+.chip button { border: none; background: transparent; color: var(--v-ink); cursor: pointer; font-size: 12px; padding: 0 2px; opacity: 0.6; }
+.chip button:hover { opacity: 1; }
+
+/* Tag (profilo pedagogico, temi) */
+.taglist { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { font-size: 11.5px; padding: 3px 9px; border-radius: 12px; background: var(--v-soft); color: var(--v-ink); font-weight: 500; }
+.tag.neutro { background: var(--paper-warm); color: var(--ink-2); }
+
+/* ============================================================
+   7. TABELLE
+   ============================================================ */
+
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--sh-1);
+}
+.table-scroll { overflow-x: auto; }
+
+table.data {
+  width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px;
+}
+table.data thead th {
+  text-align: left; padding: 12px 14px;
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.data tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top; color: var(--ink);
+}
+table.data tbody tr:last-child td { border-bottom: none; }
+table.data tbody tr { transition: background .1s; }
+table.data tbody tr:hover { background: color-mix(in srgb, var(--v-soft) 40%, transparent); }
+table.data tbody tr:hover .row-actions,
+table.data tbody tr:focus-within .row-actions { opacity: 1; }
+table.data td .doc { color: var(--ink); font-weight: 500; }
+table.data td .sub { color: var(--ink-muted); font-size: 11.5px; margin-top: 1px; }
+table.data td.right, table.data th.right { text-align: right; }
+table.data td .mono { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--ink-2); }
+
+/* azioni per riga, rivelate in hover — e in focus, per chi naviga da tastiera */
+.row-actions {
+  opacity: 0; transition: opacity .1s;
+  display: flex; gap: 4px; justify-content: flex-end;
+}
+
+.tfoot {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 10px 14px; background: var(--paper-warm);
+  border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--ink-muted); flex-wrap: wrap;
+}
+
+/* Matrice moduli × manuali (confronto, e tabella B classi di laurea) */
+.matrix-wrap {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  margin-bottom: 20px; overflow: hidden;
+}
+.matrix-head { padding: 16px 20px 12px; border-bottom: 1px solid var(--line-soft); }
+.matrix-head h3 {
+  font-family: var(--font-serif); font-weight: 500; font-size: 17px;
+  margin: 0 0 3px; letter-spacing: -0.01em;
+}
+.matrix-head .dek { font-size: 12px; color: var(--ink-muted); }
+table.matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; }
+table.matrix thead th {
+  text-align: left; padding: 10px 14px;
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--ink-muted);
+  border-bottom: 1px solid var(--line); vertical-align: bottom;
+}
+table.matrix thead th.proprio { color: var(--v-ink); background: var(--v-soft); }
+table.matrix tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+table.matrix tbody tr:last-child td { border-bottom: none; }
+table.matrix td.proprio { background: color-mix(in srgb, var(--v-soft) 35%, transparent); }
+table.matrix td.mod-name { font-weight: 500; color: var(--ink); }
+table.matrix .glossa { color: var(--ink-muted); font-size: 11.5px; margin-top: 2px; line-height: 1.4; font-weight: 400; }
+table.matrix .note { color: var(--ink-muted); font-size: 11.5px; margin-top: 3px; line-height: 1.4; }
+
+/* ============================================================
+   8. FLUSSI: STEPPER, SPLIT VIEW, LAVORAZIONE
+   ============================================================ */
+
+.stepper {
+  display: flex; align-items: center; gap: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 10px 14px; margin-bottom: 24px;
+  box-shadow: var(--sh-1);
+}
+.step { display: flex; align-items: center; gap: 10px; padding: 6px 14px; flex: 1; min-width: 0; }
+.step .n {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper-warm); color: var(--ink-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex: none;
+  font-family: var(--font-serif);
+}
+.step .l { line-height: 1.2; min-width: 0; }
+.step .l strong { display: block; font-size: 12.5px; color: var(--ink); font-weight: 600; }
+.step .l span { font-size: 11px; color: var(--ink-muted); }
+.step.idle .n { background: var(--paper-warm); color: var(--ink-muted); }
+.step.idle .l strong { color: var(--ink-muted); }
+.step.done .n { background: var(--v); color: #fff; }
+.step.done .l strong { color: var(--v-ink); }
+.step.on .n { background: var(--v-ink); color: #fff; box-shadow: 0 0 0 4px var(--v-soft); }
+.step.on .l strong { color: var(--v-ink); }
+.step-sep { width: 32px; height: 1px; background: var(--line); flex: none; }
+
+/* Split: form sticky a sinistra, risultato a destra */
+.split { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 32px; align-items: flex-start; }
+.form-col { position: sticky; top: 20px; }
+
+.form-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  overflow: hidden;
+}
+.fc-head { background: var(--paper-warm); border-bottom: 1px solid var(--line); padding: 14px 18px; }
+.fc-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0; letter-spacing: -0.01em; }
+.fc-head p { font-size: 12px; color: var(--ink-muted); margin: 3px 0 0; }
+.fc-body { padding: 16px 18px; max-height: calc(100vh - 240px); overflow-y: auto; }
+.fc-foot {
+  padding: 14px 18px;
+  background: var(--paper-warm); border-top: 1px solid var(--line);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.cost-hint { font-size: 11px; color: var(--ink-muted); margin-left: auto; }
+.cost-hint b { color: var(--ink); font-family: var(--font-mono); }
+
+/* sezioni numerate dentro il form (stato "input vuoto") */
+.fc-section { border-top: 1px solid var(--line-soft); padding-top: 14px; margin-top: 14px; }
+.fc-section:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.fc-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.fc-section-head .n {
+  width: 18px; height: 18px; border-radius: 50%; flex: none;
+  background: var(--paper-warm); color: var(--ink-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; font-family: var(--font-serif);
+}
+.fc-section.on .n { background: var(--v); color: #fff; }
+.fc-section-head h4 {
+  font-family: var(--font-serif); font-weight: 500; font-size: 14px;
+  margin: 0; flex: 1; text-transform: none; letter-spacing: -0.005em; color: var(--ink);
+}
+.fc-section-head .status-hint { font-size: 10.5px; color: var(--ink-muted); font-style: italic; }
+.fc-section.idle { opacity: 0.6; }
+
+/* Elenco di manuali selezionabili (analisi: alternativi — confronto: manuali) */
+.lista-manuali {
+  border: 1px solid var(--line); border-radius: 7px;
+  padding: 2px 10px; background: var(--paper);
+  max-height: 260px; overflow-y: auto;
+}
+.m-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px;
+}
+.m-item:last-child { border-bottom: none; }
+.m-item input { margin: 0; flex: none; }
+.m-item .principale { flex: 1; min-width: 0; }
+.m-item .principale strong { font-weight: 600; color: var(--ink); }
+.m-item .principale small { display: block; color: var(--ink-muted); font-size: 11px; }
+.m-item .badge-ok { font-size: 10px; padding: 2px 6px; border-radius: var(--r-sm); background: var(--ok-soft); color: var(--ok); font-weight: 600; white-space: nowrap; }
+.m-item .badge-nd { font-size: 10px; padding: 2px 6px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--ink-muted); font-weight: 600; white-space: nowrap; }
+.m-item .vuoto { color: var(--ink-muted); font-size: 12.5px; padding: 8px 0; }
+
+/* Testata della colonna risultati */
+.res-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+.res-head h2 { font-family: var(--font-serif); font-weight: 500; font-size: 20px; margin: 0 0 2px; letter-spacing: -0.01em; }
+.res-head .meta { font-size: 12px; color: var(--ink-muted); }
+.res-head .exports { display: flex; gap: 4px; }
+
+/* Stato "lavorazione": progresso narrativo, non uno spinner muto */
+.lavorazione {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  padding: 24px 26px;
+}
+.lav-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.lav-kicker { font-family: var(--font-serif); font-style: italic; font-size: 12.5px; color: var(--v); }
+.lav-timer { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 6px; }
+.lav-timer .live { width: 7px; height: 7px; border-radius: 50%; background: var(--v); animation: lav-pulse 1.2s ease-in-out infinite; }
+@keyframes lav-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+.lav-title {
+  font-family: var(--font-serif); font-weight: 400; font-size: 22px;
+  letter-spacing: -0.015em; margin: 0 0 18px; line-height: 1.25;
+}
+.lav-title em { font-style: italic; color: var(--v); }
+
+.progressbar { height: 5px; background: var(--paper-warm); border-radius: 3px; overflow: hidden; margin-bottom: 22px; }
+.progressbar .fill { height: 100%; background: var(--v); border-radius: 3px; transition: width .4s ease; width: 0; }
+
+.fasi { display: flex; flex-direction: column; gap: 2px; }
+.fase { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; border-radius: var(--r-md); }
+.fase .indicator {
+  width: 24px; height: 24px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-size: 11px; font-weight: 600;
+  background: var(--paper-warm); color: var(--ink-muted);
+}
+.fase .body { flex: 1; min-width: 0; }
+.fase .body h4 {
+  font-size: 13px; font-weight: 600; margin: 0 0 2px; color: var(--ink);
+  text-transform: none; letter-spacing: normal;
+}
+.fase .body p { font-size: 11.5px; color: var(--ink-muted); margin: 0; line-height: 1.45; }
+.fase .durata { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); flex: none; }
+.fase.done .indicator { background: var(--ok-soft); color: var(--ok); }
+.fase.now { background: var(--v-soft); }
+.fase.now .indicator { background: var(--v); color: #fff; animation: lav-pulse 1.4s ease-in-out infinite; }
+.fase.now .body h4 { color: var(--v-ink); }
+.fase.next { opacity: 0.5; }
+.fase.errore .indicator { background: var(--err-soft); color: var(--err); }
+.fase.errore .body h4 { color: var(--err); }
+
+.anteprima {
+  margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line-soft);
+}
+.anteprima h4 {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--ink-muted); font-weight: 700; margin: 0 0 8px;
+}
+.anteprima blockquote {
+  margin: 0; padding: 0 0 0 14px; border-left: 2px solid var(--v-soft);
+  font-family: var(--font-serif); font-size: 14px; line-height: 1.6; color: var(--ink-2);
+}
+
+/* Riepilogo readonly dei parametri, durante la lavorazione */
+dl.riepilogo { margin: 0; }
+.rp-riga { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+.rp-riga:last-child { border-bottom: none; }
+.rp-riga dt { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); font-weight: 600; padding-top: 2px; }
+.rp-riga dd { margin: 0; font-size: 12.5px; color: var(--ink); line-height: 1.35; }
+.rp-riga dd small { display: block; color: var(--ink-muted); font-size: 11px; }
+
+/* ============================================================
+   9. MODALI
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(28, 26, 23, 0.45);
+  display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.modal-overlay.aperto { display: flex; }
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  max-width: 720px; width: 100%; max-height: 90vh;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.modal-box.larga { max-width: 1000px; }
+/* header con una linea, mai un colore pieno a tutta larghezza */
+.modal-box > header {
+  padding: 16px 22px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+}
+.modal-box > header h3 {
+  font-family: var(--font-serif); font-weight: 500; font-size: 17px;
+  letter-spacing: -0.01em; margin: 0;
+}
+.modal-box > header h3 em { font-style: italic; color: var(--v); }
+.modal-box > header .sotto { font-size: 12px; color: var(--ink-muted); margin: 3px 0 0; }
+.modal-box > header .chiudi {
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-muted); font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: var(--r-sm);
+}
+.modal-box > header .chiudi:hover { color: var(--ink); background: var(--paper-warm); }
+.modal-box > .body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.modal-box > footer {
+  padding: 14px 22px; background: var(--paper-warm);
+  border-top: 1px solid var(--line);
+  display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex-wrap: wrap;
+}
+.modal-box > footer .msg { margin-right: auto; font-size: 12.5px; }
+.modal-box > footer .msg.ok { color: var(--ok); }
+.modal-box > footer .msg.errore { color: var(--err); }
+/* conferma distruttiva: la pagina imposta --v: var(--err) sul .modal-box */
+.modal-box.pericolo { --v: var(--err); --v-soft: var(--err-soft); --v-ink: var(--err); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+
+/* ============================================================
+   10. UTILITÀ E ACCESSIBILITÀ
+   ============================================================ */
+
+.mono { font-family: var(--font-mono); }
+.nowrap { white-space: nowrap; }
+.muted { color: var(--ink-muted); }
+.vuoto { color: var(--ink-muted); font-size: 13px; font-style: italic; }
+[hidden] { display: none !important; }
+
+/* focus visibile su tutto ciò che è interattivo: --v a 1px di bordo è troppo debole */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--v);
+  outline-offset: 1px;
+  border-radius: var(--r-sm);
+}
+
+/* JSON grezzo / testo tecnico */
+pre.dettaglio {
+  max-height: 340px; overflow: auto;
+  background: var(--ink); color: var(--paper-warm);
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 14px; border-radius: var(--r-md);
+  white-space: pre-wrap; word-break: break-word; margin: 0;
+}
+
+/* ============================================================
+   10bis. ALBERO OFFERTA FORMATIVA (vista Ateneo)
+   ------------------------------------------------------------
+   I livelli tipologia/classe si aprono/chiudono con style.display
+   inline; il livello ateneo usa invece una classe, qui.
+   ============================================================ */
+
+.ateneo-body { display: none; }
+.ateneo-body.aperto { display: block; }
+
+/* ============================================================
+   11. RESPONSIVE
+   ------------------------------------------------------------
+   La Direzione A è disegnata per desktop ≥ 1440px: qui sotto non
+   c'è un design mobile, c'è un degrado corretto. Il design per
+   tablet e telefono è un lavoro a parte. Vedi HANDOFF.md §9.7.
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  body.a-shell { grid-template-columns: 1fr; }
+  aside.sidebar {
+    position: fixed; left: 0; top: 0; z-index: 90;
+    width: 260px; transform: translateX(-100%);
+    transition: transform .2s ease;
+    box-shadow: var(--sh-3);
+  }
+  body.a-shell.menu-aperto aside.sidebar { transform: none; }
+  body.a-shell.menu-aperto .sidebar-scrim { display: block; }
+  .menu-toggle { display: block; }
+  main.a-main { padding: 64px 20px 48px; }
+  .split { grid-template-columns: 360px minmax(0, 1fr); gap: 20px; }
+}
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: 1fr; }
+  /* a colonna singola lo sticky bloccherebbe il form in cima rendendo
+     irraggiungibile il risultato */
+  .form-col { position: static; }
+  .fc-body { max-height: none; }
+  .giud-row,
+  .insight .colonne,
+  .row2, .row3,
+  .form-grid { grid-template-columns: 1fr; }
+  .stepper { flex-wrap: wrap; padding: 8px; }
+  .step { flex: 1 1 45%; }
+  .step-sep { display: none; }
+  .res-head { flex-direction: column; align-items: flex-start; }
+  h1.page { font-size: 27px; }
+  .row-actions { opacity: 1; }
+}
+
+@media (max-width: 620px) {
+  main.a-main { padding: 60px 14px 40px; }
+  .card { padding: 16px; }
+  .lavorazione { padding: 18px; }
+  .step { flex: 1 1 100%; }
+  .toolbar .actions { margin-left: 0; width: 100%; }
+  .search-box { max-width: none; }
+}
+
+/* ============================================================
+   12. STAMPA
+   ------------------------------------------------------------
+   Serve soprattutto al rapporto dell'Analisi e al Confronto: il
+   promotore li stampa per portarseli al colloquio.
+   ============================================================ */
+
+@media print {
+  body.a-shell { display: block; }
+  aside.sidebar, .menu-toggle, .sidebar-scrim,
+  .form-col, .stepper, .crumb, .res-head .exports,
+  .toolbar, .tabs, .row-actions { display: none !important; }
+  main.a-main { padding: 0; max-width: none; }
+  .split { display: block; }
+  .card, .insight, .matrix-wrap, .table-wrap {
+    box-shadow: none; break-inside: avoid; page-break-inside: avoid;
+  }
+  a[href^="http"]::after { content: ' (' attr(href) ')'; font-size: 10px; color: #555; }
+}

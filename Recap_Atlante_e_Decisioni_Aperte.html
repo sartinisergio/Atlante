@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — Recap e decisioni aperte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f7f3ec; --paper-warm: #f1ebe0; --surface: #fffdf9; --ink: #262220;
+    --ink-2: #45403a; --ink-muted: #7a736a; --line: #e4dcc9; --line-soft: #ece5d5;
+    --font-serif: 'Fraunces', Georgia, serif; --font-sans: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --r-lg: 14px; --r-md: 9px; --r-sm: 5px; --sh-1: 0 1px 3px rgba(40,30,15,.06);
+    --ok: #3f7a4f; --ok-soft: #e4efe2; --warn: #a86a1f; --warn-soft: #f5e9d6;
+    --err: #b0432e; --err-soft: #f5e0da;
+    --c1: #7a5c3e; --c1-soft: #efe4d3; --c2: #3f6e6e; --c2-soft: #dfeced;
+    --c3: #6a5590; --c3-soft: #e6e0ef; --c4: #a8622f; --c4-soft: #f3e3d3;
+    --c5: #556b7a; --c5-soft: #dfe6ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans);
+    font-size: 15px; line-height: 1.6;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 56px 28px 100px; }
+  .kicker {
+    font-family: var(--font-mono); font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 10px;
+  }
+  h1 {
+    font-family: var(--font-serif); font-weight: 400; font-size: 40px;
+    letter-spacing: -0.02em; margin: 0 0 8px; line-height: 1.1;
+  }
+  h1 em { font-style: italic; color: var(--c1); }
+  .sub { font-size: 15.5px; color: var(--ink-2); max-width: 640px; margin: 0 0 40px; }
+  .sub b { color: var(--ink); }
+
+  h2 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 24px;
+    letter-spacing: -0.01em; margin: 56px 0 6px; padding-top: 20px; border-top: 1px solid var(--line);
+  }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h2 em { font-style: italic; color: var(--c1); }
+  .h2-dek { font-size: 13.5px; color: var(--ink-muted); margin: 0 0 24px; max-width: 620px; }
+
+  .aree-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+  .area-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--sh-1); padding: 16px 18px; position: relative;
+  }
+  .area-card::before {
+    content: ''; position: absolute; left: 0; top: 16px; bottom: 16px; width: 3px;
+    background: var(--dot, var(--c1)); border-radius: 0 3px 3px 0;
+  }
+  .area-card h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15.5px; margin: 0 0 4px;
+  }
+  .area-card p { font-size: 12.5px; color: var(--ink-muted); margin: 0; line-height: 1.5; }
+  .area-card .stato {
+    display: inline-block; margin-top: 8px; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    background: var(--ok-soft); color: var(--ok);
+  }
+
+  .voce {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--sh-1); padding: 18px 22px; margin-bottom: 14px;
+  }
+  .voce h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 17px; margin: 0 0 4px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .voce > p:first-of-type { margin-top: 0; }
+  .voce p { font-size: 13.5px; color: var(--ink-2); margin: 6px 0; line-height: 1.6; }
+  .voce ul { margin: 8px 0; padding-left: 20px; font-size: 13.5px; color: var(--ink-2); line-height: 1.65; }
+  .voce li { margin-bottom: 4px; }
+
+  .badge {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+  }
+  .b-fatto { background: var(--ok-soft); color: var(--ok); }
+  .b-attesa { background: var(--warn-soft); color: var(--warn); }
+  .b-bloccato { background: var(--err-soft); color: var(--err); }
+  .b-aperto { background: var(--c3-soft); color: var(--c3); }
+
+  .decisione {
+    background: linear-gradient(180deg, var(--c4-soft), transparent 90%);
+    border: 1px solid var(--c4-soft); border-radius: var(--r-lg);
+    padding: 18px 22px; margin-bottom: 14px; position: relative;
+  }
+  .decisione::before {
+    content: ''; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px;
+    background: var(--c4); border-radius: 0 3px 3px 0;
+  }
+  .decisione h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 17px; margin: 0 0 4px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .decisione p { font-size: 13.5px; color: var(--ink-2); margin: 6px 0; line-height: 1.6; }
+  .decisione .domanda {
+    font-family: var(--font-serif); font-style: italic; color: var(--c4); font-size: 14.5px;
+    margin: 10px 0 0;
+  }
+  .decisione ul { margin: 8px 0; padding-left: 20px; font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+
+  .footer-note {
+    margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-muted); font-family: var(--font-mono);
+  }
+  code {
+    font-family: var(--font-mono); font-size: 0.9em; background: var(--paper-warm);
+    padding: 1px 5px; border-radius: 4px; color: var(--ink-2);
+  }
+  a { color: var(--c2); }
+
+  @media (max-width: 640px) { .aree-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="kicker">Atlante — documento di lavoro personale</div>
+  <h1>Recap complessivo<em>.</em></h1>
+  <p class="sub">Stato dell'applicazione e <b>tutte le decisioni ancora aperte</b>, aggiornato al
+    31 luglio 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
+    contesto da capo — se qualcosa qui sotto viene deciso o cambia, va aggiornato in una nuova
+    conversazione con Claude Code.</p>
+
+  <h2>Le cinque aree<em>.</em></h2>
+  <p class="h2-dek">Tutte in produzione, tutte sugli stessi dati condivisi (manuali, framework).</p>
+  <div class="aree-grid">
+    <div class="area-card" style="--dot:var(--c1)">
+      <h3>Offerta formativa</h3>
+      <p>Insegnamenti e lauree di tutti gli atenei italiani, ricerca e vista ad albero per ateneo.</p>
+      <span class="stato">Live</span>
+    </div>
+    <div class="area-card" style="--dot:var(--c2)">
+      <h3>Confronto manuali</h3>
+      <p>Un framework (o, da oggi, nessuno) + più manuali → matrice di copertura, argomenti per l'adozione.</p>
+      <span class="stato">Live</span>
+    </div>
+    <div class="area-card" style="--dot:var(--c3)">
+      <h3>Analisi di un programma</h3>
+      <p>Un programma + manuale adottato/alternativi + framework (opzionale) → rapporto per il colloquio.</p>
+      <span class="stato">Live</span>
+    </div>
+    <div class="area-card" style="--dot:var(--c4)">
+      <h3>Piano di promozione</h3>
+      <p>Pipeline PDF → staging → database → campagne, con motivazioni ed email per docente target.</p>
+      <span class="stato">Live</span>
+    </div>
+    <div class="area-card" style="--dot:var(--c5)">
+      <h3>Utilità</h3>
+      <p>Manuali, framework, e link a dashboard esterne — anagrafica condivisa da tutte le altre aree.</p>
+      <span class="stato">Live</span>
+    </div>
+    <div class="area-card" style="--dot:var(--c1)">
+      <h3>Utenti (riservato ai gestori)</h3>
+      <p>Inviti, ruoli, rimozione accesso, consumo crediti per persona.</p>
+      <span class="stato">Live</span>
+    </div>
+  </div>
+
+  <h2>Piano di accesso — stato dei punti <em>A-F</em></h2>
+  <p class="h2-dek">Dal documento originale <code>Piano_Accesso_e_Modello_Commerciale.html</code>.</p>
+
+  <div class="voce">
+    <h3>B, C, D, A, E <span class="badge b-fatto">Fatto e verificato</span></h3>
+    <p>Pannello utenti, entitlement per voce, dashboard admin, sistema crediti reale (chiave
+      OpenAI unica di Sergio) — tutti implementati e testati dal vivo con dati reali su
+      Supabase il 29 luglio 2026.</p>
+  </div>
+
+  <div class="voce">
+    <h3>F — Pagamento/abbonamento via Stripe <span class="badge b-bloccato">Bloccato</span></h3>
+    <p>Non tecnico: serve prima la <b>P.IVA di Sergio</b> per poter incassare pagamenti reali.
+      Nessuna azione possibile finché non è pronta.</p>
+  </div>
+
+  <h2>Cambiamenti recenti<em>.</em></h2>
+  <p class="h2-dek">Sessione del 31 luglio 2026.</p>
+
+  <div class="voce">
+    <h3>Rename Catalogo → Utilità</h3>
+    <p>Il file è ora <code>app/utilita.html</code> (non più <code>catalogo.html</code>), con 4
+      tab invece di 2: Manuali, Framework, Iscritti e offerta formativa, Approfondimenti
+      disciplinari — questi ultimi due sono i 7 link esterni alle altre dashboard di Sergio.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Framework reso opzionale in Confronto manuali e Analisi di un programma</h3>
+    <p>Toggle esplicito "Con framework / Senza framework". Senza framework, un'unica chiamata
+      AI in più genera un elenco di moduli "usa e getta" (dagli indici dei manuali in
+      Confronto, dal testo del programma in Analisi) — poi tutta la pipeline esistente
+      funziona come prima. Avviso sempre visibile che dichiara che i moduli non vengono da un
+      framework validato.</p>
+    <p><b>Piano di promozione non è stato toccato</b>: aveva già questo comportamento, è stato
+      il modello di riferimento.</p>
+    <p><b>Da testare dal vivo</b>: le nuove chiamate AI di generazione moduli, non ancora
+      provate con login reale e crediti veri.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Fix editore Zanichelli/CEA</h3>
+    <p>CEA è un marchio di Zanichelli ma era salvato come editore distinto, rompendo il
+      riconoscimento "editore proprio" in tutta l'app. Migration pronta per unificare la
+      stringa editore — puro fix di dato.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Rename Catalogo → Utilità (nome file)</h3>
+    <p>Il file era già rinominato <code>utilita.html</code>, ma la sidebar mostrava ancora
+      "Utilità" mentre il file si chiamava <code>catalogo.html</code> — disallineamento
+      segnalato da Sergio. Rinominato il file per davvero e aggiornati tutti i link
+      (<code>home.html</code>, <code>js/shell.js</code>, <code>confronto.html</code>,
+      <code>analisi-programma.html</code>).</p>
+  </div>
+
+  <div class="voce">
+    <h3>Email del docente: visibile e modificabile in Piano di promozione</h3>
+    <p>Segnalato da Sergio: l'email del docente (<code>docente_email</code>) era editabile
+      solo da Staging, invisibile altrove. Ora:</p>
+    <ul>
+      <li><b>Database dei programmi confermati</b>: ogni riga mostra un badge con l'email (o
+        "email non disponibile"), più un bottone "✎ Email docente" per aggiungerla/correggerla
+        senza dover rimettere il programma in staging — azione dedicata e leggera, non tocca
+        manuali/materia né resetta la verifica già fatta.</li>
+      <li><b>Tabella target di una campagna</b>: stesso badge email sotto il nome del docente,
+        visibile a colpo d'occhio prima ancora di aprire la riga.</li>
+      <li><b>Drawer del target, email suggerita</b>: nuovo bottone "✉ Apri in client di posta"
+        — link <code>mailto:</code> con destinatario/oggetto/corpo già compilati, si apre nel
+        client di posta predefinito del PC (Outlook, o Gmail se impostato come gestore). L'invio
+        resta sempre una scelta manuale di Sergio, nessun accesso alla sua casella di posta.
+        Se il testo è troppo lungo per il link (~1900 caratteri), si apre comunque con
+        destinatario/oggetto pronti e un avviso rimanda a "Copia negli appunti" per il corpo.</li>
+    </ul>
+    <p>Discussa e scartata l'alternativa "l'email finisce da sola nelle bozze di Gmail/Outlook":
+      richiederebbe un'integrazione OAuth con l'API del provider (permesso di scrivere nella
+      casella di posta di Sergio) — stesso principio già applicato alla chiave OpenAI, il
+      rischio non giustifica il risparmio.</p>
+  </div>
+
+  <h2>Decisioni ancora <em>aperte</em></h2>
+  <p class="h2-dek">Quelle su cui serve una scelta di Sergio prima di poter procedere.</p>
+
+  <div class="decisione">
+    <h3>Integrazione "elenco docenti" <span class="badge b-aperto">Da decidere</span></h3>
+    <p>Database nazionale docenti↔insegnamenti (prototipo separato, non in Atlante:
+      <code>C:\Users\SARTINI\Desktop\elenco docenti</code>). Discusso a fondo, non deciso.</p>
+    <p class="domanda">La cornice giusta è arricchire Offerta formativa, o alzare la resa di
+      Piano di promozione?</p>
+    <ul>
+      <li><b>Offerta formativa</b> (nuova tab "Dipartimenti", o sotto-tab in Vista ateneo):
+        valore prevalentemente informativo, costo alto (100MB extra di dati in un browser che
+        già ne scarica 100 per il catalogo insegnamenti, architettura mono-utente/SQLite da
+        conciliare con Supabase multi-tenant).</li>
+      <li><b>Piano di promozione</b> (email docenti per il targeting delle campagne): valore
+        commerciale più diretto — oggi l'email del docente arriva solo se l'AI la trova nel
+        singolo PDF del programma; un database nazionale di 18-20mila email strutturate
+        potrebbe alzare sensibilmente la resa.</li>
+    </ul>
+    <p>Prima di scegliere la cornice, va anche chiarito se "elenco docenti" usa la stessa
+      fonte dati di <code>offerta-formativa.html</code> o un catalogo "MyUniversity"
+      parallelo da riconciliare.</p>
+    <p><b>Aggiornamento 1 agosto 2026</b> — le due cornici non sono in realtà alternative:
+      il dato sotto è lo stesso (nome, email, dipartimento, SSD, insegnamento collegato),
+      cambia solo come viene interrogato — navigabile (Offerta formativa) o interrogabile al
+      volo lato server (Piano di promozione). <b>Soluzione a due livelli individuata</b>: solo
+      la tabella <code>docenti</code> (~68mila righe, nome/email/ateneo/dipartimento/SSD)
+      migra davvero in Postgres su Supabase — stimata 10-30MB, ampio margine sul piano Free
+      (limite 500MB db, verificato) — sufficiente a sbloccare la ricerca email lato server
+      per Piano di promozione. Il dataset completo (dipartimenti, collegamenti insegnamenti)
+      può restare un file su Supabase Storage, stesso pattern già usato per Offerta
+      formativa, se e quando servirà davvero una tab consultabile — non serve scegliere,
+      bastano poche righe di tabella per sbloccare il caso d'uso più urgente.</p>
+    <p>Verificato anche il rischio "pausa dopo 7 giorni di inattività" del piano Free:
+      i dati non vengono mai cancellati, ripristino a un clic entro i primi 90 giorni di
+      pausa. Rischio comunque basso nel nostro caso, perché la tabella vivrebbe nello stesso
+      progetto Supabase già attivo per le altre 5 aree (login/uso quotidiano tiene sveglio
+      tutto il progetto). Se Atlante verrà caricato su GitHub, il rischio si azzera del tutto
+      con un workflow GitHub Actions schedulato (cron, due volte a settimana, un ping
+      leggero al database) — costo trascurabile (pochi minuti/mese sui 2.000 gratuiti per
+      repository privati). Analisi tecnica completa, fonti incluse, in
+      <code>C:\Users\SARTINI\Desktop\elenco docenti\RIEPILOGO_PROGETTO.md</code>.</p>
+  </div>
+
+  <div class="decisione">
+    <h3>Estendere il framework opzionale oltre Confronto/Analisi? <span class="badge b-aperto">Da riflettere</span></h3>
+    <p>Implementato per Confronto manuali e Analisi di un programma. Prima di investire altro
+      su questo fronte, valeva la pena chiedersi quanto spesso capiti davvero, in pratica, di
+      non avere un framework disponibile — se è un caso raro, non è una priorità.</p>
+  </div>
+
+  <div class="decisione">
+    <h3>Rifiniture deferite dal 29 luglio 2026 <span class="badge b-attesa">In coda</span></h3>
+    <ul>
+      <li>Pulsante "Riattiva" per un utente rimosso (oggi la rimozione è irreversibile da UI).</li>
+      <li>Guardia anti-ultimo-gestore in <code>utenti.html</code> (evitare di restare senza
+        nessun gestore).</li>
+      <li>Dashboard admin cross-cliente (rimandata: oggi solo Zanichelli + un cliente di
+        test, non ancora utile).</li>
+      <li>Ricalibrazione dei costi in crediti per voce (oggi segnaposto dichiarati, da
+        confrontare con la bolletta OpenAI reale una volta che c'è consumo vero).</li>
+    </ul>
+  </div>
+
+  <div class="decisione">
+    <h3>Hosting/dominio <span class="badge b-attesa">In attesa</span></h3>
+    <p>Atlante è solo file statici col backend su Supabase: Netlify/Cloudflare Pages/Vercel
+      sono equivalenti tecnicamente. Raccomandazione data: <b>Cloudflare Pages</b> (coerenza
+      con MATRIX Intelligence, stesso ecosistema). Il codice è già pronto per qualunque
+      dominio senza modifiche.</p>
+  </div>
+
+  <div class="decisione">
+    <h3>GitHub <span class="badge b-attesa">In attesa</span></h3>
+    <p>Sergio ha un account GitHub con altri progetti ma ha scelto di non collegarci ancora
+      Atlante. Nessuna azione richiesta finché non lo chiede lui.</p>
+  </div>
+
+  <div class="footer-note">
+    Generato da Claude Code il 31 luglio 2026. Per il dettaglio di ogni punto, vedi la
+    conversazione originale o i documenti <code>Piano_*.html</code> nella root del repo.
+  </div>
+
+</main>
+</body>
+</html>

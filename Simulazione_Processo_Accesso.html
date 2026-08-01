@@ -1,0 +1,1151 @@
+<title>Simulazione — processo di accesso e modello commerciale</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --flash: 214,235,255;
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+      --flash: 60,80,50;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55); --flash: 60,80,50;
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22); --flash: 214,235,255;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.5;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+  a{color:var(--accent-strong);}
+
+  .app{max-width:1180px; margin:0 auto; padding:28px 22px 60px;}
+
+  header.top{margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(19px,2.6vw,25px); letter-spacing:-.01em; margin:0 0 8px; text-wrap:balance;}
+  .top p{margin:0; max-width:70ch; color:var(--ink-muted); font-size:14px;}
+
+  .layout{display:grid; grid-template-columns:200px minmax(0,1fr) 260px; gap:18px; align-items:start;}
+  @media (max-width:980px){ .layout{grid-template-columns:1fr;} }
+
+  /* stepper */
+  nav.stepper{position:sticky; top:20px;}
+  @media (max-width:980px){ nav.stepper{position:static; overflow-x:auto; white-space:nowrap; padding-bottom:6px;} }
+  .phase-group{margin-bottom:14px;}
+  @media (max-width:980px){ .phase-group{display:inline-block; margin-right:14px; vertical-align:top;} }
+  .phase-label{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px; padding-left:2px;}
+  .step-btn{
+    display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:none; border:none;
+    padding:7px 8px; border-radius:7px; font-family:var(--sans); font-size:13px; color:var(--ink-muted); cursor:pointer;
+  }
+  @media (max-width:980px){ .step-btn{width:auto;} }
+  .step-btn:hover{background:var(--surface-2);}
+  .step-btn:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .step-btn .dot{
+    flex:none; width:18px; height:18px; border-radius:50%; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px; color:var(--ink-faint);
+  }
+  .step-btn.done .dot{background:var(--green); border-color:var(--green); color:var(--surface);}
+  .step-btn.current{color:var(--ink); font-weight:600;}
+  .step-btn.current .dot{border-color:var(--accent); color:var(--accent); background:var(--accent-tint);}
+  .step-btn.upcoming{color:var(--ink-faint); cursor:default;}
+  .step-btn.upcoming .dot{color:var(--ink-faint);}
+
+  /* stage */
+  .stage{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); min-height:480px; display:flex; flex-direction:column;}
+  .stage-head{padding:20px 24px 0;}
+  .stage-tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:2px 8px; display:inline-block; margin-bottom:10px;}
+  .viewer-tag{display:flex; align-items:center; gap:7px; font-family:var(--sans); font-size:12.5px; color:var(--ink-muted); background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:6px 10px; margin-bottom:12px; width:fit-content;}
+  .viewer-tag b{color:var(--ink); font-weight:700;}
+  .stage-title{font-family:var(--sans); font-weight:700; font-size:18px; margin:0 0 6px;}
+  .stage-sub{color:var(--ink-muted); font-size:13.5px; margin:0 0 18px; max-width:60ch;}
+  .screen{background:var(--surface-2); border:1px solid var(--line); border-radius:9px; margin:0 24px; padding:20px; flex:1; display:flex; flex-direction:column; gap:14px;}
+  .stage-foot{display:flex; justify-content:space-between; align-items:center; padding:16px 24px 22px; gap:10px;}
+  .stage-counter{font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .field{display:flex; flex-direction:column; gap:5px; max-width:360px;}
+  .field label{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-faint);}
+  .field input, .field select, .field textarea{
+    font-family:var(--sans); font-size:14px; padding:8px 10px; border-radius:6px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); resize:vertical;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  button.action{
+    font-family:var(--sans); font-weight:600; font-size:13.5px; padding:9px 16px; border-radius:7px; border:1px solid var(--accent);
+    background:var(--accent); color:var(--surface); cursor:pointer;
+  }
+  button.action:hover{background:var(--accent-strong); border-color:var(--accent-strong);}
+  button.action.secondary{background:none; color:var(--accent-strong); border-color:var(--line);}
+  button.action.secondary:hover{background:var(--accent-tint); border-color:var(--accent);}
+  button.action.ghost{background:none; color:var(--ink-muted); border-color:transparent;}
+  button.action.ghost:hover{color:var(--ink); background:var(--surface-2);}
+  button.action:disabled{opacity:.45; cursor:not-allowed;}
+  button.action:focus-visible{outline:2px solid var(--accent-strong); outline-offset:2px;}
+  .actions-row{display:flex; gap:9px; flex-wrap:wrap;}
+
+  .note{display:flex; gap:9px; padding:10px 12px; border-radius:7px; font-size:12.5px; background:var(--accent-tint); color:var(--ink);}
+  .note b{font-weight:700;}
+
+  /* mockup UI bits reused inside the fake screen */
+  .fake-topbar{display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint); border-bottom:1px dashed var(--line); padding-bottom:10px;}
+  .admin-shell{background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; margin:0 0 4px;}
+  .admin-shell .admin-header{display:flex; align-items:center; gap:8px; padding:9px 13px; background:var(--surface-2); border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+  .admin-shell .admin-header .logo{font-weight:700; color:var(--ink); letter-spacing:.02em;}
+  .admin-shell .admin-header .who{margin-left:auto;}
+  .admin-nav{display:flex; gap:2px; padding:0 10px; background:var(--surface-2); border-bottom:1px solid var(--line);}
+  .admin-nav span{font-family:var(--mono); font-size:11px; padding:8px 12px; color:var(--ink-faint); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .admin-nav span.active{color:var(--accent-strong); border-bottom-color:var(--accent); font-weight:700;}
+  .admin-body{padding:13px;}
+  .breadcrumb{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); margin:0;}
+  .breadcrumb b{color:var(--ink-muted); font-weight:600;}
+  .menu-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
+  .menu-item{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;
+  }
+  .menu-item .name{font-weight:600; font-size:13.5px;}
+  .menu-item .desc{font-size:12px; color:var(--ink-muted);}
+  .pill{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; border-radius:5px; padding:2px 7px; display:inline-block; width:fit-content;}
+  .pill.included{background:var(--green-tint); color:var(--green);}
+  .pill.trial{background:var(--amber-tint); color:var(--amber);}
+  .pill.blocked{background:var(--brick-tint); color:var(--brick);}
+  .counter-line{font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+  .upsell{font-size:11.5px; color:var(--brick); margin:0;}
+
+  .plan-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px;}
+  .plan-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:13px; cursor:pointer; display:flex; flex-direction:column; gap:7px;}
+  .plan-card:hover{border-color:var(--accent);}
+  .plan-card.selected{border-color:var(--accent); background:var(--accent-tint);}
+  .plan-card .pname{font-weight:700; font-size:13.5px;}
+  .plan-card .pdesc{font-size:11.5px; color:var(--ink-muted);}
+  .toggle-row{display:flex; gap:6px;}
+  .toggle-row button{font-family:var(--mono); font-size:11.5px; padding:5px 10px; border-radius:20px; border:1px solid var(--line); background:var(--surface); color:var(--ink-muted); cursor:pointer;}
+  .toggle-row button.active{background:var(--accent); color:var(--surface); border-color:var(--accent);}
+
+  .payform{display:flex; gap:10px; flex-wrap:wrap;}
+  .payform .field{flex:1; min-width:140px;}
+
+  .flash{animation:flashbg .9s ease-out;}
+  @keyframes flashbg{ from{background:rgba(var(--flash),0.9);} to{background:transparent;} }
+
+  /* state panel */
+  aside.statepanel{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:16px 16px 18px; position:sticky; top:20px;}
+  @media (max-width:980px){ aside.statepanel{position:static;} }
+  .statepanel h2{font-family:var(--mono); font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 12px;}
+  .state-block{margin-bottom:14px;}
+  .state-block h3{font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:var(--accent-strong); margin:0 0 6px;}
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:3px 8px; font-size:12px;}
+  .kv .k{color:var(--ink-faint); font-family:var(--mono); font-size:10.5px;}
+  .kv .v{font-family:var(--mono); font-size:12px; text-align:right; font-variant-numeric:tabular-nums;}
+  .empty-hint{font-size:12px; color:var(--ink-faint); font-style:italic;}
+  .profile-row{display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid var(--line);}
+  .profile-row:last-child{border-bottom:none;}
+  .profile-row .who{display:flex; flex-direction:column;}
+  .profile-row .email{color:var(--ink-faint); font-size:10.5px;}
+  .role-tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; color:var(--ink-muted); align-self:center;}
+  .status-tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; padding:1px 6px; border-radius:4px; align-self:center;}
+  .status-tag.attivo{background:var(--green-tint); color:var(--green);}
+  .status-tag.pending{background:var(--amber-tint); color:var(--amber);}
+  .status-tag.rimosso{background:var(--brick-tint); color:var(--brick);}
+  .ent-row{display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:3px 0;}
+
+  footer.credits{max-width:1180px; margin:8px auto 0; padding:0 22px; text-align:center; font-family:var(--mono); font-size:10.5px; color:var(--ink-faint);}
+</style>
+
+<div class="app">
+  <header class="top">
+    <p class="eyebrow">Simulazione — companion di Piano_Accesso_e_Modello_Commerciale.html</p>
+    <h1>Come funzionerebbe, passo per passo</h1>
+    <p>Non è codice reale: è una passeggiata attraverso le sette decisioni già prese (A→G), per vedere come si
+      comportano insieme prima di scrivere una riga di implementazione. A destra, lo stato dei dati che
+      cambierebbe davvero nel database a ogni passo.</p>
+  </header>
+
+  <div class="layout">
+    <nav class="stepper" id="stepper" aria-label="Passi della simulazione"></nav>
+    <div class="stage" id="stage"></div>
+    <aside class="statepanel" id="statepanel"></aside>
+  </div>
+</div>
+<footer class="credits">Simulazione a stato locale — nessun dato reale, nessuna chiamata di rete</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var PUBLISHERS = ["Zanichelli", "Mondadori Education", "Pearson Italia", "Il Mulino"];
+
+  // Costi/dotazioni illustrativi — grounded nei volumi di chiamate reali letti nel codice
+  // (confronto.html, analisi-programma.html, piano-promozione.html) e nei prezzi Claude del
+  // report, assumendo 1 credito ≈ $0,01 — cambio arbitrario, in attesa del log di consumo reale.
+  var COST_MODEL = {
+    offertaFormativa: { type:"flat", cost:2 },
+    confrontoManuali: { type:"perUnit", unit:"manuale confrontato", perUnit:2, fixedIfMulti:1 },
+    analisiProgramma: { type:"perUnit", unit:"manuale comparativo", fixedBase:3, perUnit:2, avanzataExtra:8 },
+    pianoPromozione: { type:"perUnit", unit:"programma in campagna", fixedBase:0, perUnit:20 }
+  };
+  var TRIAL_CREDIT_DEFAULT = 20;
+  var TRIAL_CREDIT_PER_POSTO = 10; // default suggerito = questo × posti dichiarati alla richiesta
+  // 28 luglio 2026: il livello ora fissa un credito per posto e un prezzo per posto, non più un
+  // pool/prezzo fisso — pool = crediti_per_posto × posti attivi, prezzo = prezzo_per_posto × posti
+  // attivi (minimo 1, quantity Stripe). Il tetto Base è stato alzato da 5 a 10. Numeri segnaposto.
+  var LEVELS = [
+    { id:"base", nome:"Base", creditiPerPosto: 15, prezzoPerPosto: 8, posti: 10, desc:"Uso occasionale." },
+    { id:"pro", nome:"Pro", creditiPerPosto: 20, prezzoPerPosto: 10, posti: 20, desc:"Uso regolare, più persone attive." },
+    { id:"business", nome:"Business", creditiPerPosto: 25, prezzoPerPosto: 12, posti: null, desc:"Rete commerciale numerosa." }
+  ];
+  var TOPUP_PACK = { crediti: 50, label: "Pacchetto da 50 crediti" };
+
+  var state = {
+    step: 0,
+    maxStep: 0,
+    request: { org: "Bruno Editore", email: "referente@brunoeditore.it", rosterText: "collega.uno@brunoeditore.it\ncollega.due@brunoeditore.it" },
+    cliente: null,
+    displayedCredits: null,
+    profili: [],
+    skippedInvites: [],
+    planChoice: { tipo: null, livello: null, periodicita: "mensile" },
+    payFailedOnce: false,
+    renewOutcome: null,
+    trialQty: { confrontoManuali:2, analisiProgramma:2, analisiAvanzata:false, pianoPromozione:3 },
+    consumLog: [],
+    topupCount: 0,
+    topupFailedOnce: false
+  };
+
+  function freshCliente(nome){
+    return {
+      nome: nome,
+      editoreProprio: null,
+      entitlements: { offertaFormativa:false, confrontoManuali:false, analisiProgramma:false, pianoPromozione:false },
+      creditiProva: TRIAL_CREDIT_DEFAULT,
+      abbonamento: { stato: "nessuno", piano: null, livello: null, periodicita: null, scadenza: null, creditiPeriodo: 0, creditiResidui: 0 },
+      provaEsauritaNotificata: false
+    };
+  }
+
+  function calcCost(key, opts){
+    var m = COST_MODEL[key];
+    if (m.type === "flat") return m.cost;
+    var n = Math.max(1, (opts && opts.qty) || 1);
+    if (key === "confrontoManuali") return n*m.perUnit + (n>=2 ? m.fixedIfMulti : 0);
+    if (key === "analisiProgramma") return m.fixedBase + n*m.perUnit + ((opts && opts.avanzata) ? m.avanzataExtra : 0);
+    if (key === "pianoPromozione") return m.fixedBase + n*m.perUnit;
+    return 0;
+  }
+
+  function costFor(key, cliente){
+    if (key === "offertaFormativa" && cliente.abbonamento.stato === "attivo") return 0;
+    if (COST_MODEL[key].type === "flat") return COST_MODEL[key].cost;
+    return calcCost(key, { qty: 1 }); // costo minimo indicativo, la voce reale è variabile
+  }
+
+  function checkTrialExhausted(cliente){
+    if (cliente.provaEsauritaNotificata) return false;
+    if (cliente.abbonamento.stato === "attivo") return false;
+    if (cliente.creditiProva > 0) return false;
+    cliente.provaEsauritaNotificata = true;
+    return true;
+  }
+
+  function addMonths(base, n){ var d = new Date(base); d.setMonth(d.getMonth()+n); return d; }
+  function fmt(d){ if(!d) return "—"; return d.toLocaleDateString("it-IT", {day:"2-digit",month:"short",year:"numeric"}); }
+
+  function activeSeats(){ return Math.max(1, state.profili.filter(function(p){ return p.stato==="attivo"; }).length); }
+  function levelByName(nome){ return LEVELS.filter(function(l){ return l.nome===nome; })[0]; }
+  function poolForLevel(level, seats){ return level.creditiPerPosto * seats; }
+  function priceForLevel(level, seats){ return level.prezzoPerPosto * seats; }
+
+  var changedKeys = {};
+  function markChanged(k){ changedKeys[k]=true; setTimeout(function(){ delete changedKeys[k]; }, 900); }
+
+  function logConsumo(chi, voceKey, crediti){
+    state.consumLog.push({ chi: chi, voce: voceKey, crediti: crediti });
+    markChanged("consumo");
+  }
+
+  function go(nextStep, mutate){
+    if (mutate) mutate();
+    state.step = nextStep;
+    if (nextStep > state.maxStep) state.maxStep = nextStep;
+    renderAll();
+  }
+
+  function view(step){
+    state.step = step;
+    renderAll();
+  }
+
+  var ADMIN_SECTIONS = ["Richieste", "Clienti", "Abbonamenti"];
+  function adminShell(activeSection, breadcrumb, bodyHTML){
+    var nav = ADMIN_SECTIONS.map(function(s){
+      return '<span'+(s===activeSection?' class="active"':'')+'>'+s+'</span>';
+    }).join("");
+    return '<div class="admin-shell">' +
+      '<div class="admin-header"><span class="logo">⚙ Atlante Admin</span><span class="who">sartinisergio@gmail.com</span></div>' +
+      '<div class="admin-nav">'+nav+'</div>' +
+      '<div class="admin-body">' +
+        (breadcrumb ? '<p class="breadcrumb">'+breadcrumb+'</p>' : '') +
+        bodyHTML +
+      '</div>' +
+    '</div>';
+  }
+
+  // ---- step screen builders. each returns {tag, title, sub, screenHTML, actionsHTML, wire} ----
+  var STEPS = [
+    { phase:"A", label:"Richiesta di accesso", build: screenRequest },
+    { phase:"A", label:"Attivazione manuale", build: screenActivate },
+    { phase:"B", label:"Editore proprio", build: screenPublisher },
+    { phase:"C", label:"Invito a un collega", build: screenInvite },
+    { phase:"C", label:"Il collega si attiva", build: screenAcceptInvite },
+    { phase:"D", label:"Menu con entitlement", build: screenMenu },
+    { phase:"E", label:"Uso della prova", build: screenTrial },
+    { phase:"E", label:"Scelta del piano", build: screenPlan },
+    { phase:"F", label:"Pagamento (checkout)", build: screenPayment },
+    { phase:"F", label:"Abbonamento attivo", build: screenActive },
+    { phase:"F", label:"Top-up crediti (G)", build: screenTopup },
+    { phase:"F", label:"Rinnovo o scadenza", build: screenRenew },
+    { phase:"F", label:"Fine simulazione", build: screenEnd }
+  ];
+
+  function screenRequest(){
+    return {
+      tag: "A · Accreditamento", title: "Richiesta di accesso pubblica",
+      viewer: "Visitatore pubblico — non ha ancora nessun account",
+      sub: "Decisione: resta “richiedi accesso” con attivazione manuale, non self-service. Aggiornamento 28 luglio 2026: un'organizzazione può già indicare qui il roster iniziale.",
+      screen:
+        '<div class="fake-topbar"><span>atlante.app/richiedi-accesso</span><span>form pubblico</span></div>' +
+        '<div class="field"><label for="org">Nome organizzazione</label><input id="org" type="text" value="'+state.request.org+'"></div>' +
+        '<div class="field"><label for="mail">Email del referente</label><input id="mail" type="email" value="'+state.request.email+'"></div>' +
+        '<div class="field"><label for="roster">Altri profili da attivare subito (opzionale, uno per riga)</label>' +
+        '<textarea id="roster" rows="3" placeholder="collega1@editore.it&#10;collega2@editore.it">'+state.request.rosterText+'</textarea></div>' +
+        '<div class="note"><span>ℹ</span><p>Nessun account viene creato ora. La richiesta arriva a Sergio, che attiva a mano. Il campo "altri profili" è un elenco concreto di email da invitare subito insieme al referente — non un numero indicativo (quello, "posti dichiarati", lo decide Sergio al passo successivo). Lascialo vuoto se non conosci ancora chi altro si unirà: potrai comunque invitare colleghi in seguito dal pannello utenti.</p></div>',
+      actions: '<button class="action" id="btnSend">Invia richiesta →</button>',
+      wire: function(root){
+        root.querySelector("#btnSend").addEventListener("click", function(){
+          state.request.org = root.querySelector("#org").value || state.request.org;
+          state.request.email = root.querySelector("#mail").value || state.request.email;
+          state.request.rosterText = root.querySelector("#roster").value || "";
+          go(1);
+        });
+      }
+    };
+  }
+
+  function screenActivate(){
+    return {
+      tag: "A · Accreditamento", title: "Dashboard admin — attivazione cliente",
+      viewer: "Vista interna — tu (Sergio), dashboard admin su Supabase",
+      sub: "La richiesta arriva alla dashboard admin: crei cliente e profilo/i con un form guidato che scrive su Supabase, non più a mano sul database.",
+      screen: (function(){
+        var rosterEmails = (state.request.rosterText||"").split("\n").map(function(s){return s.trim();}).filter(Boolean);
+        var suggestedSeats = 1 + rosterEmails.length;
+        var rosterNote = rosterEmails.length
+          ? '<div class="note"><span>👥</span><p>La richiesta include <b>'+rosterEmails.length+'</b> profili da attivare insieme al referente: '+rosterEmails.map(function(e){return '<code style="font-family:var(--mono)">'+e+'</code>';}).join(', ')+' — verranno creati come <b>promotore</b>, tutti in stato <em>pending</em>, con l\'invito già partito per ciascuno (stesso meccanismo del punto C, richiamato in blocco).</p></div>'
+          : '<div class="note"><span>ℹ</span><p>Nessun altro profilo dichiarato nella richiesta — solo il referente verrà creato ora; eventuali colleghi si aggiungeranno più avanti dal pannello utenti (punto C).</p></div>';
+        return adminShell("Richieste", "Richieste <b>›</b> in coda (1)",
+          '<div class="menu-item"><div class="name">'+state.request.org+'</div>' +
+          '<div class="desc">'+state.request.email+' · richiesta ricevuta ora</div></div>' +
+          '<div class="note"><span>ℹ</span><p>Il pulsante sotto crea <code style="font-family:var(--mono)">clienti</code> (1 riga) e <code style="font-family:var(--mono)">profili</code> su Supabase, dalla dashboard.</p></div>' +
+          rosterNote +
+          '<div class="field" style="max-width:220px"><label for="posti-dichiarati">Posti dichiarati (indicativo)</label>' +
+          '<input id="posti-dichiarati" type="number" min="1" value="'+suggestedSeats+'"></div>' +
+          '<div class="field" style="max-width:220px"><label for="trial-credits">Crediti di prova (pool unico)</label>' +
+          '<input id="trial-credits" type="number" min="0" value="'+(TRIAL_CREDIT_PER_POSTO*suggestedSeats)+'"></div>' +
+          '<div class="note"><span>ℹ</span><p>Aggiornamento 28 luglio 2026: il default suggerito è <b>'+TRIAL_CREDIT_PER_POSTO+' × posti dichiarati</b> (cambia il campo sopra per ricalcolarlo) — qui il default parte già da 1 + i profili del roster, ma resta un valore che modifichi a mano, calcolato una tantum: non si ricalcola più se il cliente invita altre persone durante la prova (i posti restano illimitati in prova). Pool condiviso da <b>tutta l\'organizzazione</b>, non per persona.</p></div>');
+      })(),
+      actions: '<button class="action" id="btnActivate">Attiva cliente →</button>',
+      wire: function(root){
+        var rosterEmails = (state.request.rosterText||"").split("\n").map(function(s){return s.trim();}).filter(Boolean);
+        var postiInput = root.querySelector("#posti-dichiarati");
+        var creditsInput = root.querySelector("#trial-credits");
+        postiInput.addEventListener("input", function(){
+          var seats = parseInt(postiInput.value, 10);
+          if (!isNaN(seats) && seats > 0) creditsInput.value = TRIAL_CREDIT_PER_POSTO * seats;
+        });
+        root.querySelector("#btnActivate").addEventListener("click", function(){
+          var v = parseInt(creditsInput.value, 10);
+          var credits = isNaN(v) || v < 0 ? TRIAL_CREDIT_DEFAULT : v;
+          go(2, function(){
+            state.cliente = freshCliente(state.request.org);
+            state.cliente.creditiProva = credits;
+            state.displayedCredits = credits;
+            var profili = [{ nome:"Referente "+state.request.org, email: state.request.email, ruolo:"gestore", stato:"attivo" }];
+            rosterEmails.forEach(function(email){
+              profili.push({ nome:"Collega (roster iniziale)", email: email, ruolo:"promotore", stato:"pending" });
+            });
+            state.profili = profili;
+            markChanged("cliente"); markChanged("profili");
+          });
+        });
+      }
+    };
+  }
+
+  function screenPublisher(){
+    var options = PUBLISHERS.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join("");
+    return {
+      tag: "B · Editore proprio", title: "Impostazione manuale, dalla dashboard",
+      viewer: "Vista interna — tu (Sergio), dashboard admin su Supabase",
+      sub: "Decisione: resta un campo che Sergio imposta manualmente, ora dalla dashboard invece che sul database; resta singolare, nessun gruppo multi-marchio.",
+      screen: adminShell("Clienti", "Clienti <b>›</b> "+state.cliente.nome+" <b>›</b> Editore proprio",
+        '<div class="field"><label for="pub">Editore proprio per questo cliente</label>' +
+        '<select id="pub"><option value="">— seleziona —</option>'+options+'</select></div>' +
+        '<div class="note"><span>ℹ</span><p>Determina cosa <code style="font-family:var(--mono)">manuale_tipo()</code> considera "proprio" vs "competitor" per questo cliente.</p></div>'),
+      actions: '<button class="action" id="btnSavePub" disabled>Salva →</button>',
+      wire: function(root){
+        var sel = root.querySelector("#pub"), btn = root.querySelector("#btnSavePub");
+        sel.addEventListener("change", function(){ btn.disabled = !sel.value; });
+        btn.addEventListener("click", function(){
+          go(3, function(){ state.cliente.editoreProprio = sel.value; markChanged("cliente"); });
+        });
+      }
+    };
+  }
+
+  var inviteCount = 0;
+
+  function screenInvite(){
+    inviteCount++;
+    var invited = state.profili.filter(function(p){ return p.ruolo !== "gestore" || p !== state.profili[0]; });
+    var queueHTML = invited.length
+      ? '<div class="menu-grid">' + invited.map(function(p){
+          return '<div class="menu-item"><div class="name">'+p.email+'</div>' +
+            '<div class="desc">ruolo: '+p.ruolo+'</div>' +
+            '<span class="status-tag '+p.stato+'" style="align-self:flex-start">'+p.stato+'</span></div>';
+        }).join("") + '</div>'
+      : '<p class="empty-hint" style="font-size:12.5px">Nessun collega invitato finora — per un promotore singolo che si abbona da solo (punto A) puoi anche non invitare nessuno e proseguire.</p>';
+    var subscribed = state.cliente.abbonamento.stato === "attivo";
+    var levelObj = subscribed ? LEVELS.filter(function(l){ return l.nome === state.cliente.abbonamento.livello; })[0] : null;
+    var postiMax = levelObj ? levelObj.posti : null;
+    var postiUsati = activeSeats();
+    var atCap = subscribed && postiMax !== null && postiUsati >= postiMax;
+    var seatNote = !subscribed
+      ? '<div class="note"><span>ℹ</span><p>In prova nessun tetto sui posti — solo il pool di crediti condiviso limita l\'uso. Con un abbonamento attivo, il tetto dipende dal livello (Base 10, Pro 20, Business illimitato).</p></div>'
+      : (postiMax === null
+          ? '<div class="note"><span>ℹ</span><p>Livello '+state.cliente.abbonamento.livello+': posti illimitati nella pratica. Profili attuali: '+postiUsati+'.</p></div>'
+          : '<div class="note" style="background:'+(atCap?"var(--brick-tint)":"var(--accent-tint)")+'"><span>'+(atCap?"⚠":"ℹ")+'</span><p>Livello '+state.cliente.abbonamento.livello+': <b>'+postiUsati+' di '+postiMax+'</b> posti usati.' +
+            (atCap ? ' Tetto raggiunto — per invitare un altro collega serve passare a un livello superiore.' : '') + '</p></div>');
+    return {
+      tag: "C · Ruoli", title: "Pannello utenti — invita colleghi",
+      viewer: "Gestore — "+state.cliente.nome,
+      sub: "Decisione: due ruoli (promotore/gestore); invito via email con link di attivazione, non dominio automatico. Puoi invitarne quanti vuoi prima di proseguire.",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+state.cliente.nome+'</span><span>ruolo: gestore</span></div>' +
+        seatNote +
+        '<div class="field"><label for="colmail">Email del collega</label><input id="colmail" type="email" value="collega'+inviteCount+'@'+ (state.request.email.split("@")[1]||"esempio.it") +'" '+(atCap?"disabled":"")+'></div>' +
+        '<div class="field" style="max-width:220px"><label for="colrole">Ruolo assegnato</label>' +
+        '<select id="colrole" '+(atCap?"disabled":"")+'><option value="promotore" selected>promotore</option><option value="gestore">gestore</option></select></div>' +
+        '<button class="action secondary" id="btnInvite" style="align-self:flex-start" '+(atCap?"disabled":"")+'>+ Invita questo collega</button>' +
+        '<div class="note"><span>ℹ</span><p>Ogni invio crea un profilo <b>pending</b> con un token a scadenza — non ancora un account funzionante. Una rete commerciale/editoriale numerosa (es. una decina di persone) si costruisce ripetendo questo passo.</p></div>' +
+        queueHTML,
+      actions: '<button class="action" id="btnContinue">Continua →</button>',
+      wire: function(root){
+        var btnInv = root.querySelector("#btnInvite");
+        if (btnInv) btnInv.addEventListener("click", function(){
+          var mail = root.querySelector("#colmail").value, role = root.querySelector("#colrole").value;
+          state.profili.push({ nome:"Collega invitato", email: mail, ruolo: role, stato:"pending" });
+          markChanged("profili");
+          renderAll();
+        });
+        root.querySelector("#btnContinue").addEventListener("click", function(){
+          var hasPending = state.profili.some(function(p){ return p.stato==="pending"; });
+          go(hasPending ? 4 : 5);
+        });
+      }
+    };
+  }
+
+  function screenAcceptInvite(){
+    var unresolved = state.profili.filter(function(p){
+      return p.stato==="pending" && state.skippedInvites.indexOf(p.email)===-1;
+    });
+    var pending = unresolved[0];
+    if (!pending){
+      var stillPendingCount = state.profili.filter(function(p){ return p.stato==="pending"; }).length;
+      return {
+        tag: "C · Ruoli", title: stillPendingCount ? "Si va avanti — alcuni inviti restano in sospeso" : "Tutti i colleghi invitati si sono attivati",
+        viewer: "Gestore — "+state.cliente.nome,
+        sub: "L'accesso del cliente non aspetta chi non ha ancora accettato.",
+        screen: stillPendingCount
+          ? '<div class="note"><span>ℹ</span><p>'+stillPendingCount+' invito/i restano <b>pending</b> a tempo indefinito, in attesa che quella persona apra il link. Non hanno un login funzionante, ma non bloccano in alcun modo il cliente: chi è già attivo (gestore e colleghi che hanno accettato) usa normalmente il pool di prove condiviso.</p></div>'
+          : '<div class="note"><span>✓</span><p>Ogni profilo invitato è passato da pending ad attivo.</p></div>',
+        actions: '<button class="action" id="btnNext">Continua →</button>',
+        wire: function(root){ root.querySelector("#btnNext").addEventListener("click", function(){ go(5); }); }
+      };
+    }
+    var doneCount = state.profili.filter(function(p){ return p.stato==="attivo" && p.ruolo!=="gestore"; }).length + state.skippedInvites.length;
+    var totalInvited = state.profili.filter(function(p){ return p.ruolo!=="gestore" || p!==state.profili[0]; }).length;
+    return {
+      tag: "C · Ruoli", title: "Email ricevuta dal collega ("+(doneCount+1)+" di "+totalInvited+")",
+      viewer: "Collega invitato — "+pending.email+" (non il gestore, non tu)",
+      sub: "Decisione 28 luglio 2026: attivazione via magic link, non password — il link stesso è l'autenticazione (Supabase Auth signInWithOtp), nessun form da compilare.",
+      screen:
+        '<div class="fake-topbar"><span>' + pending.email + '</span><span>mail simulata</span></div>' +
+        '<div class="menu-item"><div class="name">Sei stato invitato in '+state.cliente.nome+'</div>' +
+        '<div class="desc">Ruolo: '+pending.ruolo+'. Un solo clic sul link ti attiva — nessuna password da impostare.</div></div>' +
+        '<div class="note"><span>🔗</span><p>Magic link (Supabase Auth <code>signInWithOtp</code>): il clic <em>è</em> l\'accesso — il profilo passa da pending ad attivo nello stesso istante, senza un secondo passaggio.</p></div>' +
+        '<div class="note"><span>ℹ</span><p>Se questa persona non apre mai il link, il profilo resta <b>pending</b> per sempre — non impedisce agli altri di usare l\'accesso del cliente.</p></div>',
+      actions: '<button class="action" id="btnAccept">Clicca il magic link →</button>' +
+               '<button class="action ghost" id="btnSkip">Lascia in sospeso, per ora →</button>',
+      wire: function(root){
+        root.querySelector("#btnAccept").addEventListener("click", function(){
+          pending.stato = "attivo";
+          markChanged("profili");
+          renderAll();
+        });
+        root.querySelector("#btnSkip").addEventListener("click", function(){
+          state.skippedInvites.push(pending.email);
+          renderAll();
+        });
+      }
+    };
+  }
+
+  var VOCI = [
+    { key:"utilita", nome:"Utilità / Catalogo", sempre:true, desc:"Base dati condivisa dei manuali/framework." },
+    { key:"offertaFormativa", nome:"Offerta formativa", desc:"Adozioni per corso di laurea e sede." },
+    { key:"confrontoManuali", nome:"Confronto manuali", desc:"Confronto strutturale tra manuali." },
+    { key:"analisiProgramma", nome:"Analisi di un programma", desc:"Copertura di un programma dato." },
+    { key:"pianoPromozione", nome:"Piano di promozione", desc:"Piano d'azione per sede/corso." }
+  ];
+
+  function card(name, desc, pill){
+    return '<div class="menu-item"><div class="name">'+name+'</div><div class="desc">'+desc+'</div>'+pill+'</div>';
+  }
+
+  function costLabel(key){
+    var m = COST_MODEL[key];
+    if (m.type === "flat") return m.cost+" crediti/uso";
+    return "da "+calcCost(key,{qty:1})+" crediti (per "+m.unit+")";
+  }
+
+  function ventItem(v, cliente){
+    if (v.sempre){
+      return card(v.nome, v.desc, '<span class="pill included">Sempre incluso, gratuita</span>');
+    }
+    var subscribed = cliente.abbonamento.stato === "attivo";
+    if (subscribed){
+      var included = cliente.entitlements[v.key];
+      if (!included) return card(v.nome, v.desc, '<span class="pill blocked">Non incluso in questo piano</span>');
+      if (v.key === "offertaFormativa") return card(v.nome, v.desc, '<span class="pill included">Incluso nel piano, gratuita</span>');
+      return card(v.nome, v.desc, '<span class="pill included">Incluso nel piano · '+costLabel(v.key)+'</span>');
+    }
+    if (cliente.creditiProva > 0) return card(v.nome, v.desc, '<span class="pill trial">A consumo in prova · '+costLabel(v.key)+'</span>');
+    return card(v.nome, v.desc, '<span class="pill blocked">Bloccato</span>');
+  }
+
+  function creditBalanceStrip(cliente){
+    if (cliente.abbonamento.stato === "attivo"){
+      var lvl = levelByName(cliente.abbonamento.livello);
+      return '<div class="note"><span>💳</span><p>Saldo crediti: <b>'+cliente.abbonamento.creditiResidui+'</b> di '+cliente.abbonamento.creditiPeriodo+
+        ' (livello '+cliente.abbonamento.livello+' · '+lvl.creditiPerPosto+' crediti/posto × '+activeSeats()+' posti attivi) — l\'eccedenza inutilizzata si somma al rinnovo, fino a un tetto.</p></div>';
+    }
+    return '<div class="note"><span>💳</span><p>Crediti di prova rimasti: <b>'+cliente.creditiProva+'</b> — pool unico condiviso da tutte le voci a consumo (Utilità esclusa).</p></div>';
+  }
+
+  function screenMenu(){
+    return {
+      tag: "D · Entitlement per voce", title: "Il menu che vedrebbe questo cliente",
+      viewer: "Un profilo attivo qualsiasi — gestore o promotore — di "+state.cliente.nome,
+      sub: "Decisione: booleano per voce su clienti (quali voci) + crediti (quanto puoi usarle) — due assi indipendenti.",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+state.cliente.nome+'</span><span>nessun piano attivo</span></div>' +
+        creditBalanceStrip(state.cliente) +
+        '<div class="menu-grid">' + VOCI.map(function(v){ return ventItem(v, state.cliente); }).join("") + '</div>' +
+        '<div class="note"><span>ℹ</span><p>In prova, tutte le voci a consumo (Offerta formativa compresa) attingono dallo stesso pool di crediti — solo con un abbonamento attivo Offerta formativa diventa gratuita.</p></div>',
+      actions: '<button class="action" id="btnToTrial">Prova una voce →</button>',
+      wire: function(root){
+        root.querySelector("#btnToTrial").addEventListener("click", function(){
+          go(6, function(){ state.displayedCredits = state.cliente.creditiProva; });
+        });
+      }
+    };
+  }
+
+  var trialNotice = "";
+  var seatChangeNotice = "";
+
+  function trialCardFlat(v, cliente, shown, real){
+    var cost = COST_MODEL[v.key].cost;
+    var affordableShown = shown >= cost;
+    var affordableReal = real >= cost;
+    return '<div class="menu-item" data-voice="'+v.key+'">' +
+      '<div class="name">'+v.nome+'</div>' +
+      '<div class="counter-line">costa '+cost+' crediti/uso</div>' +
+      (!affordableShown ? '<p class="upsell">Credito insufficiente per questa voce — passa a un piano per continuare.</p>' : '') +
+      '<div class="actions-row">' +
+      '<button class="action secondary usebtn" data-voice="'+v.key+'" data-qty="1" '+(affordableShown?"":"disabled")+'>Usa ('+cost+' crediti)</button>' +
+      '<button class="action ghost elsewherebtn" data-voice="'+v.key+'" data-qty="1" '+(affordableReal?"":"disabled")+' style="font-size:11px">👥 simula: un collega altrove la usa</button>' +
+      '</div></div>';
+  }
+
+  function trialCardPerUnit(v, cliente, shown, real){
+    var q = state.trialQty;
+    var isAnalisi = v.key === "analisiProgramma";
+    var qty = q[v.key];
+    var opts = { qty: qty, avanzata: isAnalisi ? q.analisiAvanzata : false };
+    var cost = calcCost(v.key, opts);
+    var affordableShown = shown >= cost;
+    var affordableReal = real >= cost;
+    var m = COST_MODEL[v.key];
+    return '<div class="menu-item" data-voice="'+v.key+'">' +
+      '<div class="name">'+v.nome+'</div>' +
+      '<div class="field" style="max-width:220px"><label>Quanti '+m.unit+'?</label>' +
+      '<input type="number" min="1" value="'+qty+'" class="qtyinput" data-voice="'+v.key+'"></div>' +
+      (isAnalisi ? '<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-muted);">' +
+        '<input type="checkbox" class="avanzatacheck" '+(q.analisiAvanzata?"checked":"")+'> modalità avanzata (+'+m.avanzataExtra+' crediti)</label>' : '') +
+      '<div class="counter-line">costo per questa richiesta: <b>'+cost+' crediti</b></div>' +
+      (!affordableShown ? '<p class="upsell">Credito insufficiente per questa combinazione — riduci la quantità o passa a un piano.</p>' : '') +
+      '<div class="actions-row">' +
+      '<button class="action secondary usebtn" data-voice="'+v.key+'" data-qty="'+qty+'" data-avanzata="'+(opts.avanzata?"1":"0")+'" '+(affordableShown?"":"disabled")+'>Usa ('+cost+' crediti)</button>' +
+      '<button class="action ghost elsewherebtn" data-voice="'+v.key+'" data-qty="1" '+(affordableReal?"":"disabled")+' style="font-size:11px">👥 simula: un collega altrove ne usa 1</button>' +
+      '</div></div>';
+  }
+
+  function screenTrial(){
+    var cliente = state.cliente;
+    var shown = state.displayedCredits;
+    var real = cliente.creditiProva;
+    var stale = shown !== real;
+    var cards = VOCI.filter(function(v){return !v.sempre;}).map(function(v){
+      return COST_MODEL[v.key].type === "flat"
+        ? trialCardFlat(v, cliente, shown, real)
+        : trialCardPerUnit(v, cliente, shown, real);
+    }).join("");
+    return {
+      tag: "E · Prova gratuita", title: "Consumare i crediti di prova, voce per voce",
+      viewer: "Un profilo attivo qualsiasi — gestore o promotore — di "+cliente.nome,
+      sub: "Decisione: pool di crediti unico e condiviso, costo variabile per voce; ogni consumo è però ora attribuito a chi lo ha generato (log a destra), così ognuno vede il proprio consumo accanto al saldo condiviso.",
+      screen: '<div class="fake-topbar"><span>cliente: '+cliente.nome+'</span><span>prova a crediti, pool condiviso dall\'organizzazione</span></div>' +
+        '<div class="note"><span>💳</span><p>Saldo visualizzato: <b>'+shown+'</b> crediti' +
+        (stale ? ' — <span style="color:var(--amber)">⚠ un collega altrove lo ha aggiornato, reale: '+real+'</span>' : '') + '</p></div>' +
+        (trialNotice ? '<div class="note" style="background:var(--brick-tint)"><span>ℹ</span><p>'+trialNotice+'</p></div>' : '') +
+        (cliente.provaEsauritaNotificata ? '<div class="note" style="background:var(--accent-tint)"><span>✉</span><p><b>Email di cortesia inviata</b> a '+state.profili[0].email+' (una sola volta, appena il saldo è arrivato a zero): <em>"Hai esaurito la prova gratuita di Atlante — se ti sembra una buona soluzione per le tue necessità, scegli il piano di abbonamento che preferisci."</em> Tu, lato interno, vedresti ora questo cliente nella tua vista "prova esaurita, nessun piano attivo".</p></div>' : '') +
+        '<div class="menu-grid">'+cards+'</div>' +
+        '<div class="note"><span>ℹ</span><p>Costi in crediti illustrativi, in attesa dell\'analisi costi reale delle chiamate API. "Simula: un collega altrove" cambia il saldo reale nel pannello a destra senza toccare quello mostrato qui. "Usa" controlla sempre il saldo reale al momento del click, mai quello visualizzato.</p></div>',
+      actions: '<button class="action" id="btnToPlan">Vai alla scelta del piano →</button>' +
+               '<button class="action secondary" id="btnRefreshSection">↻ Rientra nella sezione (aggiorna)</button>' +
+               '<button class="action ghost" id="btnBackMenu">← torna al menu</button>' +
+               '<button class="action ghost" id="btnWalkAway" style="color:var(--ink-faint)">🚪 Il gestore non fa nulla, se ne va →</button>',
+      wire: function(root){
+        trialNotice = "";
+        root.querySelector("#btnWalkAway").addEventListener("click", function(){
+          go(12, function(){ state.renewOutcome = "abandoned"; });
+        });
+        root.querySelectorAll(".qtyinput").forEach(function(inp){
+          inp.addEventListener("change", function(){
+            var key = inp.getAttribute("data-voice");
+            var v = parseInt(inp.value, 10);
+            state.trialQty[key] = isNaN(v) || v < 1 ? 1 : v;
+            renderAll();
+          });
+        });
+        var avz = root.querySelector(".avanzatacheck");
+        if (avz) avz.addEventListener("change", function(){ state.trialQty.analisiAvanzata = avz.checked; renderAll(); });
+        root.querySelectorAll(".usebtn").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var key = btn.getAttribute("data-voice");
+            var qty = parseInt(btn.getAttribute("data-qty"), 10) || 1;
+            var avanzata = btn.getAttribute("data-avanzata") === "1";
+            var cost = calcCost(key, { qty: qty, avanzata: avanzata });
+            var realBal = state.cliente.creditiProva;
+            if (realBal < cost){
+              trialNotice = "Il saldo reale era già insufficiente per questa richiesta: un collega altrove ha speso crediti nel frattempo. Nessun uso concesso.";
+            } else {
+              state.cliente.creditiProva = realBal - cost;
+              trialNotice = "";
+              checkTrialExhausted(state.cliente);
+              logConsumo("tu", key, cost);
+            }
+            state.displayedCredits = state.cliente.creditiProva;
+            markChanged("crediti");
+            renderAll();
+          });
+        });
+        root.querySelectorAll(".elsewherebtn").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var key = btn.getAttribute("data-voice");
+            var cost = calcCost(key, { qty: 1 });
+            state.cliente.creditiProva = Math.max(0, state.cliente.creditiProva - cost);
+            checkTrialExhausted(state.cliente);
+            logConsumo("collega", key, cost);
+            markChanged("crediti");
+            renderAll();
+          });
+        });
+        root.querySelector("#btnRefreshSection").addEventListener("click", function(){
+          state.displayedCredits = state.cliente.creditiProva;
+          trialNotice = "";
+          renderAll();
+        });
+        root.querySelector("#btnToPlan").addEventListener("click", function(){ go(7); });
+        root.querySelector("#btnBackMenu").addEventListener("click", function(){ go(5); });
+      }
+    };
+  }
+
+  var PLANS = [
+    { id:"solo-of", nome:"Solo Offerta formativa", desc:"Solo l'entitlement Offerta formativa.", ents:{offertaFormativa:true,confrontoManuali:false,analisiProgramma:false,pianoPromozione:false} },
+    { id:"suite", nome:"Suite di promozione", desc:"Confronto manuali + Analisi di un programma + Piano di promozione, insieme.", ents:{offertaFormativa:false,confrontoManuali:true,analisiProgramma:true,pianoPromozione:true} },
+    { id:"tutto", nome:"Tutto incluso", desc:"Le 4 voci a pacchetto insieme.", ents:{offertaFormativa:true,confrontoManuali:true,analisiProgramma:true,pianoPromozione:true} }
+  ];
+
+  function screenPlan(){
+    var sel = state.planChoice;
+    var suiteCards = PLANS.map(function(p){
+      return '<div class="plan-card'+(sel.tipo===p.id?" selected":"")+'" data-plan="'+p.id+'" tabindex="0" role="button">' +
+        '<div class="pname">'+p.nome+'</div><div class="pdesc">'+p.desc+'</div></div>';
+    }).join("");
+    var seatsNow = activeSeats();
+    var levelCards = LEVELS.map(function(l){
+      var poolNow = poolForLevel(l, seatsNow);
+      var priceNow = priceForLevel(l, seatsNow);
+      var overCap = l.posti !== null && seatsNow > l.posti;
+      return '<div class="plan-card'+(sel.livello===l.id?" selected":"")+'" data-level="'+l.id+'" tabindex="0" role="button">' +
+        '<div class="pname">'+l.nome+'</div><div class="pdesc">'+l.desc+'<br><b>'+l.creditiPerPosto+' crediti/posto</b> · <b>€'+l.prezzoPerPosto+'/posto</b><br><b>'+(l.posti===null?"posti illimitati":"fino a "+l.posti+" profili")+'</b>' +
+        '<br><span style="color:'+(overCap?"var(--brick)":"var(--ink-faint)")+'">'+seatsNow+' posti attivi ora → <b>'+poolNow+' crediti</b> · <b>€'+priceNow+'/periodo</b>'+(overCap?" ⚠ oltre il tetto posti":"")+'</span></div></div>';
+    }).join("");
+    var ready = !!(sel.tipo && sel.livello);
+    var howArrived = state.cliente.provaEsauritaNotificata
+      ? '<div class="note" style="background:var(--accent-tint)"><span>✉</span><p>I crediti di prova sono esauriti — probabilmente sei qui perché hai ricevuto <b>l\'email di cortesia</b> inviata al passo precedente, oppure perché il gestore ha deciso comunque di dare un\'occhiata ai piani.</p></div>'
+      : '<div class="note"><span>ℹ</span><p>I crediti di prova <b>non sono ancora esauriti</b> (saldo: '+state.cliente.creditiProva+') — nessun problema: puoi richiedere l\'attivazione di un piano in qualunque momento.</p></div>';
+    return {
+      tag: "E · Piani", title: "Suite, livello e periodicità",
+      viewer: "Gestore — "+state.cliente.nome,
+      sub: "Decisione: suite (quali voci) e livello sono scelte indipendenti; il livello ora fissa un credito e un prezzo per posto, non più numeri fissi — entrambi dipendono da quanti posti sono davvero attivi. Numeri illustrativi, in attesa dell'analisi costi.",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+state.cliente.nome+'</span><span>ruolo: gestore</span></div>' +
+        '<p style="font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:0">Suite — quali voci</p>' +
+        '<div class="plan-grid">'+suiteCards+'</div>' +
+        '<p style="font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:0">Livello — quanti crediti</p>' +
+        '<div class="plan-grid">'+levelCards+'</div>' +
+        '<div class="note"><span>ℹ</span><p>Sia il pool sia il prezzo si calcolano come <b>per posto × posti attivi</b> (minimo 1) — non più numeri fissi per livello. Il prezzo è un subscription item Stripe a quantity-based pricing: cambia insieme al pool ogni volta che cambia il numero di posti attivi, anche dopo il rinnovo.</p></div>' +
+        '<div class="toggle-row" id="periodRow">' +
+          '<button data-p="mensile" class="'+(sel.periodicita==="mensile"?"active":"")+'">Mensile</button>' +
+          '<button data-p="annuale" class="'+(sel.periodicita==="annuale"?"active":"")+'">Annuale</button>' +
+        '</div>' +
+        howArrived +
+        '<div class="note"><span>ℹ</span><p>Solo il <b>gestore</b> vede questa azione — un promotore non può avviare un acquisto.</p></div>' +
+        (!ready ? '<div class="note" style="background:var(--amber-tint)"><span>⚠</span><p><b>Scegli sia una suite sia un livello</b> — sono due scelte indipendenti, servono entrambe per continuare.</p></div>' : ''),
+      actions: '<button class="action" id="btnToPay" '+(ready?"":"disabled")+'>Vai al pagamento automatico →</button>',
+      wire: function(root){
+        root.querySelectorAll(".plan-card[data-plan]").forEach(function(c){
+          c.addEventListener("click", function(){ state.planChoice.tipo = c.getAttribute("data-plan"); renderAll(); });
+        });
+        root.querySelectorAll(".plan-card[data-level]").forEach(function(c){
+          c.addEventListener("click", function(){ state.planChoice.livello = c.getAttribute("data-level"); renderAll(); });
+        });
+        root.querySelectorAll("#periodRow button").forEach(function(btn){
+          btn.addEventListener("click", function(){ state.planChoice.periodicita = btn.getAttribute("data-p"); renderAll(); });
+        });
+        var go2 = root.querySelector("#btnToPay");
+        if (go2) go2.addEventListener("click", function(){ go(8); });
+      }
+    };
+  }
+
+  function screenPayment(){
+    var plan = PLANS.filter(function(p){return p.id===state.planChoice.tipo;})[0];
+    var level = LEVELS.filter(function(l){return l.id===state.planChoice.livello;})[0];
+    var seats = activeSeats();
+    var price = priceForLevel(level, seats);
+    return {
+      tag: "F · Pagamento automatico", title: "Checkout automatico — nessun tuo intervento",
+      viewer: "Gestore — "+state.cliente.nome,
+      sub: "Decisione: checkout self-service (es. Stripe Checkout); un webhook attiva l'abbonamento subito, senza che tu debba fare nulla. Prezzo e crediti seguono entrambi lo stesso numero di posti attivi.",
+      screen:
+        '<div class="fake-topbar"><span>'+(plan?plan.nome:"—")+' · '+(level?level.nome:"—")+' · '+state.planChoice.periodicita+'</span><span>checkout Stripe</span></div>' +
+        '<div class="note"><span>💳</span><p>Prezzo: <b>€'+price+'</b>/'+(state.planChoice.periodicita==="annuale"?"anno":"mese")+' — <b>€'+level.prezzoPerPosto+'/posto</b> × <b>'+seats+' posti attivi</b>, subscription item Stripe a quantity-based pricing (quantity = posti attivi).</p></div>' +
+        '<div class="payform">' +
+          '<div class="field"><label>Numero carta</label><input value="4242 4242 4242 4242" disabled></div>' +
+          '<div class="field" style="max-width:100px"><label>Scad.</label><input value="12/28" disabled></div>' +
+          '<div class="field" style="max-width:90px"><label>CVC</label><input value="123" disabled></div>' +
+        '</div>' +
+        '<div class="note"><span>ℹ</span><p>Il gestore inserisce la carta direttamente nel checkout ospitato da Stripe — nessuna richiesta arriva a te, nessun link da inviare a mano.</p></div>' +
+        (state.payFailedOnce ? '<div class="note" style="background:var(--brick-tint)"><span>✕</span><p>Il pagamento precedente è stato rifiutato dalla carta. Nessun addebito, nessun entitlement cambiato — il gestore può ritentare subito.</p></div>' : ''),
+      actions: '<button class="action" id="btnPayOk">Simula: pagamento riuscito (webhook attiva subito) →</button>' +
+               '<button class="action secondary" id="btnPayFail">Simula: pagamento rifiutato</button>',
+      wire: function(root){
+        root.querySelector("#btnPayOk").addEventListener("click", function(){
+          go(9, function(){
+            var plan = PLANS.filter(function(p){return p.id===state.planChoice.tipo;})[0];
+            var level = LEVELS.filter(function(l){return l.id===state.planChoice.livello;})[0];
+            var months = state.planChoice.periodicita === "annuale" ? 12 : 1;
+            var pool = poolForLevel(level, activeSeats());
+            state.cliente.entitlements = Object.assign({}, plan.ents);
+            state.cliente.abbonamento = {
+              stato:"attivo", piano: plan.nome, livello: level.nome, periodicita: state.planChoice.periodicita,
+              scadenza: addMonths(new Date(), months),
+              creditiPeriodo: pool, creditiResidui: pool
+            };
+            state.payFailedOnce = false;
+            markChanged("cliente"); markChanged("entitlements"); markChanged("crediti");
+          });
+        });
+        root.querySelector("#btnPayFail").addEventListener("click", function(){
+          state.payFailedOnce = true; renderAll();
+        });
+      }
+    };
+  }
+
+  function screenActive(){
+    var c = state.cliente;
+    var level = levelByName(c.abbonamento.livello);
+    var seats = activeSeats();
+    var atCap = level.posti !== null && seats >= level.posti;
+    var canRemove = seats > 1;
+    return {
+      tag: "F · Abbonamento attivo", title: "Il menu, ora con il piano attivo",
+      viewer: "Un profilo attivo qualsiasi — gestore o promotore — di "+c.nome,
+      sub: "Le voci incluse passano a \"incluso\"; Offerta formativa diventa gratuita; le altre continuano a costare crediti per uso.",
+      screen:
+        '<div class="fake-topbar"><span>piano: '+c.abbonamento.piano+' · livello '+c.abbonamento.livello+' · '+c.abbonamento.periodicita+'</span><span>scade il '+fmt(c.abbonamento.scadenza)+'</span></div>' +
+        creditBalanceStrip(c) +
+        '<div class="note"><span>💳</span><p>Prezzo attuale: <b>€'+priceForLevel(level, seats)+'</b>/'+(c.abbonamento.periodicita==="annuale"?"anno":"mese")+' — '+level.prezzoPerPosto+'/posto × '+seats+' posti attivi.</p></div>' +
+        '<div class="menu-grid">' + VOCI.map(function(v){ return ventItem(v, c); }).join("") + '</div>' +
+        '<div class="note"><span>ℹ</span><p><strong>Aggiornamento 28 luglio 2026</strong>: il tetto posti (punto C) e il ricalcolo di prezzo/crediti (punti E/F) ora valgono in ogni momento della vita del cliente, non solo alla prima sottoscrizione — prova qui cosa succede se il numero di colleghi attivi cambia <em>dopo</em> essersi abbonati.</p></div>' +
+        '<div class="actions-row">' +
+          '<button class="action secondary" id="btnAddSeat" '+(atCap?"disabled":"")+'>+ Un collega si unisce e si attiva'+(atCap?" (tetto raggiunto)":"")+'</button>' +
+          '<button class="action secondary" id="btnRemoveSeat" '+(canRemove?"":"disabled")+'>− Un collega lascia l\'organizzazione</button>' +
+        '</div>' +
+        (seatChangeNotice ? '<div class="note" style="background:var(--accent-tint)"><span>👥</span><p>'+seatChangeNotice+'</p></div>' : ''),
+      actions: '<button class="action" id="btnFastForward">Avanza nel tempo →</button>',
+      wire: function(root){
+        root.querySelector("#btnFastForward").addEventListener("click", function(){ go(10); });
+        var addBtn = root.querySelector("#btnAddSeat");
+        if (addBtn) addBtn.addEventListener("click", function(){
+          if (level.posti !== null && activeSeats() >= level.posti){
+            seatChangeNotice = "Tetto posti del livello "+level.nome+" già raggiunto ("+level.posti+") — serve un upgrade di livello per aggiungere un altro posto, non solo un invito.";
+            renderAll();
+            return;
+          }
+          state.profili.push({ nome:"Collega aggiunto", email:"nuovo"+(state.profili.length+1)+"@"+(state.request.email.split("@")[1]||"esempio.it"), ruolo:"promotore", stato:"attivo" });
+          var newSeats = activeSeats();
+          var newPool = poolForLevel(level, newSeats);
+          var delta = newPool - c.abbonamento.creditiPeriodo;
+          c.abbonamento.creditiPeriodo = newPool;
+          c.abbonamento.creditiResidui += delta;
+          seatChangeNotice = "Posti attivi: "+(newSeats-1)+" → <b>"+newSeats+"</b>. Quantity Stripe aggiornata, addebito pro-quota di €"+level.prezzoPerPosto+" per il resto del periodo. Crediti: +"+delta+" aggiunti subito al saldo residuo (nuova dotazione periodica: "+newPool+").";
+          markChanged("cliente"); markChanged("profili"); markChanged("crediti");
+          renderAll();
+        });
+        var remBtn = root.querySelector("#btnRemoveSeat");
+        if (remBtn) remBtn.addEventListener("click", function(){
+          var idx = -1;
+          for (var i=state.profili.length-1; i>0; i--){ if (state.profili[i].stato==="attivo"){ idx=i; break; } }
+          if (idx<0) return;
+          var removed = state.profili[idx];
+          removed.stato = "rimosso";
+          removed.rimossoIl = new Date();
+          var newSeats = activeSeats();
+          var oldPeriodo = c.abbonamento.creditiPeriodo;
+          var newPool = poolForLevel(level, newSeats);
+          c.abbonamento.creditiPeriodo = newPool;
+          seatChangeNotice = "Posti attivi: "+(newSeats+1)+" → <b>"+newSeats+"</b> ("+removed.email+" rimosso/a — soft-delete, resta nel log per l'attribuzione storica, accesso interrotto subito dal controllo server-side del punto D). Quantity Stripe aggiornata, credito pro-quota di €"+level.prezzoPerPosto+" sul resto del periodo. Dotazione periodica: "+oldPeriodo+" → <b>"+newPool+"</b> — il saldo residuo <em>non</em> viene ridotto retroattivamente, nessun claw-back sul credito già concesso.";
+          markChanged("cliente"); markChanged("profili"); markChanged("crediti");
+          renderAll();
+        });
+      }
+    };
+  }
+
+  function screenTopup(){
+    var c = state.cliente;
+    var burnAmount = Math.min(40, c.abbonamento.creditiResidui);
+    return {
+      tag: "G · Top-up crediti", title: "Se il saldo cala prima del rinnovo",
+      viewer: "Gestore — "+c.nome,
+      sub: "Decisione: con un abbonamento attivo, il gestore può comprare un pacchetto di crediti aggiuntivi in qualunque momento del periodo — effetto immediato sul saldo, nessun cambio di livello, nessuna attesa del rinnovo. In prova questa opzione non esiste (blocco secco + invito a un piano, punto E).",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+c.nome+'</span><span>livello '+c.abbonamento.livello+' · scade il '+fmt(c.abbonamento.scadenza)+'</span></div>' +
+        creditBalanceStrip(c) +
+        '<div class="note"><span>ℹ</span><p>Per provare il caso, puoi simulare un periodo di uso più intenso del previsto, che consuma il saldo prima del rinnovo.</p></div>' +
+        '<div class="actions-row"><button class="action secondary" id="btnBurn" '+(c.abbonamento.creditiResidui<=0?"disabled":"")+'>Simula: consumo intenso del periodo (-'+burnAmount+')</button></div>' +
+        (state.topupFailedOnce ? '<div class="note" style="background:var(--brick-tint)"><span>✕</span><p>Il pagamento del top-up precedente è stato rifiutato dalla carta. Nessun addebito, nessun credito aggiunto — il gestore può ritentare subito.</p></div>' : '') +
+        '<div class="note"><span>💳</span><p>'+TOPUP_PACK.label+' · checkout self-service one-time, non un abbonamento — solo il gestore lo vede e lo avvia, stessa regola di chi acquista un piano (punto F).</p></div>' +
+        '<div class="actions-row">' +
+          '<button class="action" id="btnBuyTopup">Compra '+TOPUP_PACK.label+' →</button>' +
+          '<button class="action secondary" id="btnTopupFail">Simula: pagamento rifiutato</button>' +
+        '</div>' +
+        (state.topupCount>0 ? '<div class="note" style="background:var(--green-tint)"><span>✓</span><p>Top-up acquistati in questo periodo: <b>'+state.topupCount+'</b> ('+(state.topupCount*TOPUP_PACK.crediti)+' crediti aggiunti in totale) — la dotazione base del livello (<code>crediti_periodo</code>) non cambia, solo il saldo residuo.</p></div>' : ''),
+      actions: '<button class="action" id="btnContinueTopup">Continua verso il rinnovo →</button>',
+      wire: function(root){
+        var burn = root.querySelector("#btnBurn");
+        if (burn) burn.addEventListener("click", function(){
+          var amount = Math.min(40, state.cliente.abbonamento.creditiResidui);
+          state.cliente.abbonamento.creditiResidui -= amount;
+          markChanged("crediti");
+          renderAll();
+        });
+        root.querySelector("#btnBuyTopup").addEventListener("click", function(){
+          state.cliente.abbonamento.creditiResidui += TOPUP_PACK.crediti;
+          state.topupCount += 1;
+          state.topupFailedOnce = false;
+          markChanged("crediti");
+          renderAll();
+        });
+        root.querySelector("#btnTopupFail").addEventListener("click", function(){
+          state.topupFailedOnce = true;
+          renderAll();
+        });
+        root.querySelector("#btnContinueTopup").addEventListener("click", function(){ go(11); });
+      }
+    };
+  }
+
+  function screenRenew(){
+    var c = state.cliente;
+    var level = levelByName(c.abbonamento.livello);
+    var seatsNow = activeSeats();
+    var periodo = poolForLevel(level, seatsNow);
+    var periodoPrecedente = c.abbonamento.creditiPeriodo;
+    var residuo = c.abbonamento.creditiResidui;
+    var cap = periodo * 2;
+    var somma = residuo + periodo;
+    var nuovoSaldo = Math.min(somma, cap);
+    var persi = somma - nuovoSaldo;
+    return {
+      tag: "F · Rinnovo o scadenza", title: "È arrivata la data di scadenza",
+      viewer: "Evento di sistema — addebito automatico (es. Stripe), non un'azione tua né del cliente",
+      sub: "Decisione: rinnovo automatico; la dotazione si ricalcola sui posti attivi in quel momento, poi i crediti residui si sommano fino a un tetto (2× la nuova dotazione periodica).",
+      screen:
+        '<div class="fake-topbar"><span>scadenza raggiunta</span><span>'+fmt(c.abbonamento.scadenza)+'</span></div>' +
+        '<div class="note"><span>👥</span><p>Posti attivi ora: <b>'+seatsNow+'</b> → dotazione ricalcolata: <b>'+level.creditiPerPosto+' × '+seatsNow+' = '+periodo+'</b> crediti' +
+          (periodo !== periodoPrecedente ? ' <span style="color:var(--accent-strong)">(era '+periodoPrecedente+' nel periodo che si chiude — cambiata perché è cambiato il numero di posti attivi)</span>' : ' (invariata rispetto al periodo che si chiude)') + '.</p></div>' +
+        '<div class="note"><span>💳</span><p>Saldo residuo: <b>'+residuo+'</b> + nuova dotazione: <b>'+periodo+'</b> = '+somma+' — tetto: <b>'+cap+'</b> (2× la dotazione periodica) → nuovo saldo se rinnova: <b>'+nuovoSaldo+'</b>' +
+          (persi > 0 ? ' <span style="color:var(--brick)">(perdi '+persi+' crediti eccedenti il tetto)</span>' : ' (nessun credito perso, sei entro il tetto)') + '.</p></div>' +
+        '<div class="note"><span>ℹ</span><p>Scegli cosa succede in questo tentativo di addebito ricorrente automatico.</p></div>',
+      actions: '<button class="action" id="btnRenewOk">Rinnovo automatico riuscito →</button>' +
+               '<button class="action secondary" id="btnRenewFail">Il rinnovo non va a buon fine →</button>',
+      wire: function(root){
+        root.querySelector("#btnRenewOk").addEventListener("click", function(){
+          go(12, function(){
+            var months = state.cliente.abbonamento.periodicita === "annuale" ? 12 : 1;
+            state.cliente.abbonamento.scadenza = addMonths(state.cliente.abbonamento.scadenza, months);
+            state.cliente.abbonamento.creditiPeriodo = periodo;
+            state.cliente.abbonamento.creditiResidui = nuovoSaldo;
+            state.renewOutcome = "ok";
+            markChanged("cliente"); markChanged("crediti");
+          });
+        });
+        root.querySelector("#btnRenewFail").addEventListener("click", function(){
+          go(12, function(){
+            state.cliente.abbonamento.stato = "sospeso";
+            state.cliente.entitlements = { offertaFormativa:false, confrontoManuali:false, analisiProgramma:false, pianoPromozione:false };
+            state.renewOutcome = "fail";
+            markChanged("cliente"); markChanged("entitlements");
+          });
+        });
+      }
+    };
+  }
+
+  function screenEnd(){
+    var outcome = state.renewOutcome;
+    var title, bg, icon, body;
+    if (outcome === "ok"){
+      title = "Rinnovato — servizio continua";
+      bg = "var(--green-tint)"; icon = "✓";
+      body = "L'addebito ricorrente è andato a buon fine: il piano resta attivo, nuovo saldo crediti "+state.cliente.abbonamento.creditiResidui+", nuova scadenza "+fmt(state.cliente.abbonamento.scadenza)+".";
+    } else if (outcome === "abandoned"){
+      title = "Nessuno fa nulla — e va bene così";
+      bg = "var(--accent-tint)"; icon = "⏸";
+      body = "Il gestore ha esaurito i crediti di prova e non ha richiesto un piano. Non succede nient'altro di automatico: " +
+        "Utilità resta accessibile, le voci a consumo restano bloccate, non c'è nessuna scadenza da gestire perché " +
+        "non è mai esistito un abbonamento. L'unica email di cortesia è già partita una volta. Da qui in poi le uniche leve sono " +
+        "il gestore che torna quando vuole su \"Scelta del piano\", o tu che lo noti nella tua vista interna e decidi se e quando " +
+        "contattarlo — nessun secondo promemoria automatico, nessuna pulizia dati.";
+    } else {
+      title = "Sospeso — ma nulla è stato perso";
+      bg = "var(--amber-tint)"; icon = "⏸";
+      body = "Il rinnovo è fallito: le voci a pacchetto sono tornate non incluse, ma profilo, cliente e saldo crediti restano intatti nel pannello a destra — pronti a riattivarsi con un nuovo pagamento riuscito.";
+    }
+    return {
+      tag: "Fine", title: title,
+      sub: "Fine della simulazione. Nessuna riga di codice è stata scritta o modificata: solo lo stato a schermo.",
+      screen:
+        '<div class="note" style="background:'+bg+'">' +
+          '<span>'+icon+'</span><p>'+body+'</p></div>' +
+        '<div class="note"><span>i</span><p>Prossimo passo reale: implementare, nell\'ordine C → D → A → E → F (il punto B non richiede codice). Il pannello a destra è, riga per riga, quello che cambierebbe nel database.</p></div>',
+      actions: '<button class="action" id="btnRestart">↺ Ricomincia la simulazione</button>',
+      wire: function(root){ root.querySelector("#btnRestart").addEventListener("click", function(){
+        state = { step:0, maxStep:0, request:{org:"Bruno Editore", email:"referente@brunoeditore.it", rosterText:"collega.uno@brunoeditore.it\ncollega.due@brunoeditore.it"}, cliente:null, displayedCredits:null, profili:[], skippedInvites:[], planChoice:{tipo:null,livello:null,periodicita:"mensile"}, payFailedOnce:false, renewOutcome:null, trialQty:{confrontoManuali:2,analisiProgramma:2,analisiAvanzata:false,pianoPromozione:3}, consumLog:[], topupCount:0, topupFailedOnce:false };
+        renderAll();
+      }); }
+    };
+  }
+
+  function renderStepper(){
+    var el = document.getElementById("stepper");
+    var byPhase = {};
+    var order = [];
+    STEPS.forEach(function(s, i){
+      if (!byPhase[s.phase]) { byPhase[s.phase] = []; order.push(s.phase); }
+      byPhase[s.phase].push(i);
+    });
+    el.innerHTML = order.map(function(phase){
+      var items = byPhase[phase].map(function(i){
+        var cls = i === state.step ? "current" : (i < state.maxStep ? "done" : "upcoming");
+        var dotContent = i < state.maxStep ? "✓" : "";
+        return '<button class="step-btn '+cls+'" data-step="'+i+'" '+(i>state.maxStep?"disabled":"")+'>' +
+          '<span class="dot">'+dotContent+'</span><span>'+STEPS[i].label+'</span></button>';
+      }).join("");
+      return '<div class="phase-group"><p class="phase-label">Punto '+phase+'</p>'+items+'</div>';
+    }).join("");
+    el.querySelectorAll(".step-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var i = parseInt(btn.getAttribute("data-step"), 10);
+        if (i <= state.maxStep) view(i);
+      });
+    });
+  }
+
+  function renderStage(){
+    var el = document.getElementById("stage");
+    var def = STEPS[state.step].build();
+    var isPast = state.step < state.maxStep;
+    var actionsHTML = isPast
+      ? '<button class="action" id="btnResume">Torna al passo corrente ('+(state.maxStep+1)+') →</button>'
+      : def.actions;
+    el.innerHTML =
+      '<div class="stage-head">' +
+        '<span class="stage-tag">'+def.tag+'</span>' +
+        (def.viewer ? '<div class="viewer-tag">👁 Chi vede questa schermata: <b>'+def.viewer+'</b></div>' : '') +
+        '<h2 class="stage-title">'+def.title+'</h2>' +
+        '<p class="stage-sub">'+def.sub+'</p>' +
+        (isPast ? '<div class="note" style="background:var(--amber-tint); margin-bottom:14px;"><span>↺</span><p>Stai rivedendo un passo già completato — solo consultazione, nessuna azione qui viene ripetuta.</p></div>' : '') +
+      '</div>' +
+      '<div class="screen">'+def.screen+'</div>' +
+      '<div class="stage-foot">' +
+        '<button class="action ghost" id="btnBack" '+(state.step===0?"disabled":"")+'>← Indietro</button>' +
+        '<div class="actions-row">'+actionsHTML+'</div>' +
+        '<span class="stage-counter">passo '+(state.step+1)+' / '+STEPS.length+'</span>' +
+      '</div>';
+    if (isPast){
+      el.querySelector("#btnResume").addEventListener("click", function(){ view(state.maxStep); });
+    } else {
+      def.wire(el);
+    }
+    var back = el.querySelector("#btnBack");
+    if (back) back.addEventListener("click", function(){ if (state.step>0) view(state.step-1); });
+  }
+
+  function kv(k,v,key){
+    var cls = changedKeys[key] ? " flash" : "";
+    return '<div class="k'+cls+'">'+k+'</div><div class="v'+cls+'">'+v+'</div>';
+  }
+
+  function renderStatePanel(){
+    var el = document.getElementById("statepanel");
+    var c = state.cliente;
+    var html = '<h2>Stato dati simulato</h2>';
+    if (!c){
+      html += '<p class="empty-hint">Nessun cliente creato ancora — avanza nella simulazione.</p>';
+    } else {
+      html += '<div class="state-block"><h3>clienti</h3><div class="kv">' +
+        kv("nome", c.nome, "cliente") +
+        kv("editore_proprio", c.editoreProprio || "—", "cliente") +
+        kv("piano", c.abbonamento.piano || "—", "cliente") +
+        kv("livello", c.abbonamento.livello || "—", "cliente") +
+        kv("periodicità", c.abbonamento.periodicita || "—", "cliente") +
+        kv("stato abbonam.", c.abbonamento.stato, "cliente") +
+        kv("scadenza", fmt(c.abbonamento.scadenza), "cliente") +
+        '</div></div>';
+
+      var subscribedTop = c.abbonamento.stato === "attivo";
+      var levelObjTop = subscribedTop ? LEVELS.filter(function(l){ return l.nome === c.abbonamento.livello; })[0] : null;
+      var activeCount = state.profili.filter(function(p){ return p.stato==="attivo"; }).length;
+      var postiLabel = !subscribedTop ? "illimitati (prova)" : (levelObjTop && levelObjTop.posti !== null ? activeCount+" / "+levelObjTop.posti : "illimitati (Business)");
+      html += '<div class="state-block"><h3>profili — '+activeCount+' attivi, '+state.profili.length+' totali — posti: '+postiLabel+'</h3>';
+      if (state.profili.length===0) html += '<p class="empty-hint">nessuno</p>';
+      state.profili.forEach(function(p){
+        html += '<div class="profile-row'+(changedKeys.profili?" flash":"")+'"><span class="who">'+p.nome+'<span class="email">'+p.email+'</span></span>' +
+          '<span class="role-tag">'+p.ruolo+'</span><span class="status-tag '+p.stato+'">'+p.stato+'</span></div>';
+      });
+      html += '</div>';
+
+      html += '<div class="state-block"><h3>entitlement per voce</h3>';
+      VOCI.filter(function(v){return !v.sempre;}).forEach(function(v){
+        var on = c.entitlements[v.key];
+        html += '<div class="ent-row'+(changedKeys.entitlements?" flash":"")+'"><span>'+v.nome+'</span>' +
+          '<span class="pill '+(on?"included":"blocked")+'">'+(on?"true":"false")+'</span></div>';
+      });
+      html += '</div>';
+
+      var subscribed = c.abbonamento.stato === "attivo";
+      html += '<div class="state-block"><h3>crediti</h3><div class="kv'+(changedKeys.crediti?" flash":"")+'">';
+      if (subscribed){
+        html += kv("crediti/periodo", c.abbonamento.creditiPeriodo, "crediti");
+        html += kv("crediti residui", c.abbonamento.creditiResidui, "crediti");
+        html += kv("tetto rollover", c.abbonamento.creditiPeriodo*2, "crediti");
+        if (state.topupCount>0) html += kv("top-up acquistati", state.topupCount+" ("+(state.topupCount*TOPUP_PACK.crediti)+" crediti)", "crediti");
+      } else {
+        html += kv("crediti di prova", c.creditiProva, "crediti");
+      }
+      html += '</div></div>';
+
+      var perPersona = { tu:0, collega:0 };
+      var usiPerPersona = { tu:0, collega:0 };
+      state.consumLog.forEach(function(e){ perPersona[e.chi]+=e.crediti; usiPerPersona[e.chi]+=1; });
+      html += '<div class="state-block"><h3>consumo per persona (log)</h3>';
+      if (state.consumLog.length===0){
+        html += '<p class="empty-hint">nessun consumo ancora registrato</p>';
+      } else {
+        html += '<div class="kv'+(changedKeys.consumo?" flash":"")+'">' +
+          kv("tu", perPersona.tu+" crediti ("+usiPerPersona.tu+" usi)", "consumo") +
+          kv("colleghi (simulato)", perPersona.collega+" crediti ("+usiPerPersona.collega+" usi)", "consumo") +
+          '</div>';
+      }
+      html += '<p class="empty-hint" style="margin-top:6px">Ogni consumo è attribuito a chi lo ha generato, non solo al saldo condiviso.</p>';
+      html += '</div>';
+
+      var noPlan = !subscribed;
+      var esaurita = noPlan && c.creditiProva <= 0;
+      html += '<div class="state-block"><h3>vista interna per te</h3><div class="kv">' +
+        kv("prova esaurita", esaurita ? "sì" : "no", "cliente") +
+        kv("email cortesia inviata", c.provaEsauritaNotificata ? "sì" : "no", "cliente") +
+        '</div></div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderAll(){
+    renderStepper();
+    renderStage();
+    renderStatePanel();
+  }
+
+  renderAll();
+})();
+</script>

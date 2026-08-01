@@ -1,0 +1,603 @@
+<title>Percorso reale — Accesso e crediti, punti B→E</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --flash: 214,235,255;
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+      --flash: 60,80,50;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55); --flash: 60,80,50;
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22); --flash: 214,235,255;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.5;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+  a{color:var(--accent-strong);}
+
+  .app{max-width:1180px; margin:0 auto; padding:28px 22px 60px;}
+
+  header.top{margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(19px,2.6vw,25px); letter-spacing:-.01em; margin:0 0 8px; text-wrap:balance;}
+  .top p{margin:0; max-width:70ch; color:var(--ink-muted); font-size:14px;}
+
+  .layout{display:grid; grid-template-columns:200px minmax(0,1fr) 260px; gap:18px; align-items:start;}
+  @media (max-width:980px){ .layout{grid-template-columns:1fr;} }
+
+  nav.stepper{position:sticky; top:20px;}
+  @media (max-width:980px){ nav.stepper{position:static; overflow-x:auto; white-space:nowrap; padding-bottom:6px;} }
+  .phase-group{margin-bottom:14px;}
+  @media (max-width:980px){ .phase-group{display:inline-block; margin-right:14px; vertical-align:top;} }
+  .phase-label{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px; padding-left:2px;}
+  .step-btn{
+    display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:none; border:none;
+    padding:7px 8px; border-radius:7px; font-family:var(--sans); font-size:13px; color:var(--ink-muted); cursor:pointer;
+  }
+  @media (max-width:980px){ .step-btn{width:auto;} }
+  .step-btn:hover{background:var(--surface-2);}
+  .step-btn:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .step-btn .dot{
+    flex:none; width:18px; height:18px; border-radius:50%; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px; color:var(--ink-faint);
+  }
+  .step-btn.done .dot{background:var(--green); border-color:var(--green); color:var(--surface);}
+  .step-btn.current{color:var(--ink); font-weight:600;}
+  .step-btn.current .dot{border-color:var(--accent); color:var(--accent); background:var(--accent-tint);}
+  .step-btn.upcoming{color:var(--ink-faint); cursor:default;}
+  .step-btn.upcoming .dot{color:var(--ink-faint);}
+
+  .stage{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); min-height:480px; display:flex; flex-direction:column;}
+  .stage-head{padding:20px 24px 0;}
+  .stage-tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:2px 8px; display:inline-block; margin-bottom:10px;}
+  .real-tag{display:flex; align-items:center; gap:7px; font-family:var(--sans); font-size:12.5px; color:var(--green); background:var(--green-tint); border:1px solid var(--line); border-radius:7px; padding:6px 10px; margin-bottom:12px; width:fit-content; font-weight:600;}
+  .stage-title{font-family:var(--sans); font-weight:700; font-size:18px; margin:0 0 6px;}
+  .stage-sub{color:var(--ink-muted); font-size:13.5px; margin:0 0 18px; max-width:60ch;}
+  .screen{background:var(--surface-2); border:1px solid var(--line); border-radius:9px; margin:0 24px; padding:20px; flex:1; display:flex; flex-direction:column; gap:14px;}
+  .stage-foot{display:flex; justify-content:space-between; align-items:center; padding:16px 24px 22px; gap:10px;}
+  .stage-counter{font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .field{display:flex; flex-direction:column; gap:5px; max-width:360px;}
+  .field label{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-faint);}
+  .field input, .field select, .field textarea{
+    font-family:var(--sans); font-size:14px; padding:8px 10px; border-radius:6px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); resize:vertical;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  button.action{
+    font-family:var(--sans); font-weight:600; font-size:13.5px; padding:9px 16px; border-radius:7px; border:1px solid var(--accent);
+    background:var(--accent); color:var(--surface); cursor:pointer;
+  }
+  button.action:hover{background:var(--accent-strong); border-color:var(--accent-strong);}
+  button.action.secondary{background:none; color:var(--accent-strong); border-color:var(--line);}
+  button.action.secondary:hover{background:var(--accent-tint); border-color:var(--accent);}
+  button.action.ghost{background:none; color:var(--ink-muted); border-color:transparent;}
+  button.action.ghost:hover{color:var(--ink); background:var(--surface-2);}
+  button.action:disabled{opacity:.45; cursor:not-allowed;}
+  button.action:focus-visible{outline:2px solid var(--accent-strong); outline-offset:2px;}
+  .actions-row{display:flex; gap:9px; flex-wrap:wrap;}
+
+  .note{display:flex; gap:9px; padding:10px 12px; border-radius:7px; font-size:12.5px; background:var(--accent-tint); color:var(--ink);}
+  .note b{font-weight:700;}
+  .note.ok{background:var(--green-tint);}
+  .note.warn{background:var(--amber-tint);}
+  .note.err{background:var(--brick-tint);}
+
+  .fake-topbar{display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint); border-bottom:1px dashed var(--line); padding-bottom:10px;}
+  .admin-shell{background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; margin:0 0 4px;}
+  .admin-shell .admin-header{display:flex; align-items:center; gap:8px; padding:9px 13px; background:var(--surface-2); border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+  .admin-shell .admin-header .logo{font-weight:700; color:var(--ink); letter-spacing:.02em;}
+  .admin-shell .admin-header .who{margin-left:auto;}
+  .admin-body{padding:13px;}
+  .breadcrumb{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); margin:0;}
+  .breadcrumb b{color:var(--ink-muted); font-weight:600;}
+  .menu-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
+  .menu-item{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;
+  }
+  .menu-item .name{font-weight:600; font-size:13.5px;}
+  .menu-item .desc{font-size:12px; color:var(--ink-muted);}
+  .pill{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; border-radius:5px; padding:2px 7px; display:inline-block; width:fit-content;}
+  .pill.included{background:var(--green-tint); color:var(--green);}
+  .pill.blocked{background:var(--brick-tint); color:var(--brick);}
+  .counter-line{font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .toggle-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .toggle-row label{display:flex; align-items:center; gap:6px; font-size:12.5px; background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:5px 11px 5px 8px;}
+
+  .flash{animation:flashbg .9s ease-out;}
+  @keyframes flashbg{ from{background:rgba(var(--flash),0.9);} to{background:transparent;} }
+
+  aside.statepanel{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:16px 16px 18px; position:sticky; top:20px;}
+  @media (max-width:980px){ aside.statepanel{position:static;} }
+  .statepanel h2{font-family:var(--mono); font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 12px;}
+  .state-block{margin-bottom:14px;}
+  .state-block h3{font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:var(--accent-strong); margin:0 0 6px;}
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:3px 8px; font-size:12px;}
+  .kv .k{color:var(--ink-faint); font-family:var(--mono); font-size:10.5px;}
+  .kv .v{font-family:var(--mono); font-size:12px; text-align:right; font-variant-numeric:tabular-nums;}
+  .empty-hint{font-size:12px; color:var(--ink-faint); font-style:italic;}
+  .profile-row{display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid var(--line);}
+  .profile-row:last-child{border-bottom:none;}
+  .profile-row .who{display:flex; flex-direction:column;}
+  .profile-row .email{color:var(--ink-faint); font-size:10.5px;}
+  .role-tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; color:var(--ink-muted); align-self:center;}
+  .status-tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; padding:1px 6px; border-radius:4px; align-self:center;}
+  .status-tag.attivo{background:var(--green-tint); color:var(--green);}
+  .status-tag.pending{background:var(--amber-tint); color:var(--amber);}
+  .status-tag.rimosso{background:var(--brick-tint); color:var(--brick);}
+  .ent-row{display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:3px 0;}
+  .log-row{display:flex; justify-content:space-between; font-size:11.5px; padding:3px 0; border-bottom:1px solid var(--line);}
+  .log-row:last-child{border-bottom:none;}
+  .log-row .chi{color:var(--ink-muted);}
+
+  footer.credits{max-width:1180px; margin:8px auto 0; padding:0 22px; text-align:center; font-family:var(--mono); font-size:10.5px; color:var(--ink-faint);}
+</style>
+
+<div class="app">
+  <header class="top">
+    <p class="eyebrow">Stato reale del progetto — non una simulazione</p>
+    <h1>Come funziona oggi, passo per passo</h1>
+    <p>Questa è una passeggiata attraverso quello che è stato davvero costruito e verificato (punti B, C, D, A, E
+      del Piano di accesso) — non un'ipotesi di design come la simulazione originale, ma il comportamento reale del
+      codice in produzione. Si ferma prima del Punto F (pagamento), che resta in sospeso in attesa della P.IVA.
+      A destra, lo stato dei dati come cambierebbe davvero in Supabase a ogni passo.</p>
+  </header>
+
+  <div class="layout">
+    <nav class="stepper" id="stepper" aria-label="Passi del percorso"></nav>
+    <div class="stage" id="stage"></div>
+    <aside class="statepanel" id="statepanel"></aside>
+  </div>
+</div>
+<footer class="credits">Percorso a stato locale, per la lettura — nessuna chiamata di rete reale. Il codice descritto è quello davvero deployato.</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    step: 0,
+    maxStep: 0,
+    cliente: null,
+    profili: [],
+    consumLog: [],
+    saldoMostrato: null,
+  };
+
+  function freshCliente(){
+    return {
+      nome: "Bruno Editore",
+      editoreProprio: "Bruno Editore",
+      entitlements: { offertaFormativa: false, confrontoManuali: true, analisiProgramma: true, pianoPromozione: true },
+      creditiResidui: 100,
+    };
+  }
+
+  var changedKeys = {};
+  function markChanged(k){ changedKeys[k]=true; setTimeout(function(){ delete changedKeys[k]; }, 900); }
+
+  function go(nextStep, mutate){
+    if (mutate) mutate();
+    state.step = nextStep;
+    if (nextStep > state.maxStep) state.maxStep = nextStep;
+    renderAll();
+  }
+  function view(step){ state.step = step; renderAll(); }
+
+  var ADMIN_SECTIONS = ["Richieste", "Clienti"];
+  function adminShell(activeSection, breadcrumb, bodyHTML){
+    var nav = ["Richieste","Clienti"].map(function(s){
+      return '<span style="font-family:var(--mono);font-size:11px;padding:8px 12px;color:'+(s===activeSection?'var(--accent-strong)':'var(--ink-faint)')+';border-bottom:2px solid '+(s===activeSection?'var(--accent)':'transparent')+';font-weight:'+(s===activeSection?'700':'400')+'">'+s+'</span>';
+    }).join("");
+    return '<div class="admin-shell">' +
+      '<div class="admin-header"><span class="logo">⚙ Atlante Admin</span><span class="who">sartinisergio@gmail.com</span></div>' +
+      '<div style="display:flex;gap:2px;padding:0 10px;background:var(--surface-2);border-bottom:1px solid var(--line)">'+nav+'</div>' +
+      '<div class="admin-body">' +
+        (breadcrumb ? '<p class="breadcrumb">'+breadcrumb+'</p>' : '') +
+        bodyHTML +
+      '</div>' +
+    '</div>';
+  }
+
+  var VOCI = [
+    { key:"offertaFormativa", nome:"Offerta formativa", col:"offerta_formativa_inclusa" },
+    { key:"confrontoManuali", nome:"Confronto manuali", col:"confronto_manuali_incluso" },
+    { key:"analisiProgramma", nome:"Analisi di un programma", col:"analisi_programma_incluso" },
+    { key:"pianoPromozione", nome:"Piano di promozione", col:"piano_promozione_incluso" },
+  ];
+
+  var COSTI = {
+    confronto: { manuale: 2, reciproco: 1 },
+    analisi: { nucleo: 2, manuale_comparativo: 2, sintesi: 1, avanzata: 2 },
+    piano: { preclassifica: 2, generazione: 4 },
+  };
+
+  var STEPS = [
+    { phase:"A", label:"Attivazione cliente", build: screenAdmin },
+    { phase:"C", label:"Invito a un collega", build: screenInvite },
+    { phase:"C", label:"Il collega si attiva", build: screenAccept },
+    { phase:"C", label:"Rimozione, se serve", build: screenRimozione },
+    { phase:"D", label:"Menu con entitlement", build: screenMenu },
+    { phase:"E", label:"Uso reale, a crediti", build: screenUso },
+    { phase:"E", label:"Crediti esauriti", build: screenBloccato },
+    { phase:"—", label:"Monitoraggio", build: screenMonitoraggio },
+    { phase:"—", label:"Punto F: in sospeso", build: screenStandby },
+  ];
+
+  function screenAdmin(){
+    var c = state.cliente;
+    return {
+      tag: "A · Attivazione cliente — app/admin.html", title: "Dashboard admin, riservata a te",
+      real: "Codice reale: Edge Function admin-crea-cliente + app/admin.html",
+      sub: "Nessun form pubblico di richiesta accesso (rimandato): l'attivazione parte direttamente da qui. La funzione verifica che sia tu, per email, prima di scrivere qualunque cosa — non c'è nessuna RLS a cui appoggiarsi perché il cliente non esiste ancora.",
+      screen:
+        '<div class="fake-topbar"><span>atlante.app/admin.html</span><span>solo sartinisergio@gmail.com</span></div>' +
+        adminShell("Clienti", "Clienti <b>›</b> nuovo",
+          '<div class="field"><label>Nome cliente</label><input value="Bruno Editore" disabled></div>' +
+          '<div class="field" style="margin-top:10px"><label>Editore proprio (menu dai publisher reali del catalogo)</label><input value="Bruno Editore" disabled></div>' +
+          '<div class="field" style="margin-top:10px"><label>Email del referente (diventa gestore)</label><input value="referente@brunoeditore.it" disabled></div>' +
+          '<div class="field" style="margin-top:10px"><label>Altri colleghi da invitare subito (opzionale)</label><input value="(nessuno per questo esempio)" disabled></div>' +
+          '<div class="field" style="margin-top:10px"><label>Voci incluse</label>' +
+          '<div class="toggle-row" style="margin-top:4px">' +
+            '<label><input type="checkbox" disabled> Offerta formativa</label>' +
+            '<label><input type="checkbox" checked disabled> Confronto manuali</label>' +
+            '<label><input type="checkbox" checked disabled> Analisi di un programma</label>' +
+            '<label><input type="checkbox" checked disabled> Piano di promozione</label>' +
+          '</div></div>' +
+          '<div class="note" style="margin-top:12px"><span>ℹ</span><p>Il punto B (editore proprio) è questo stesso campo — non un passo separato. Niente "posti dichiarati" o "crediti di prova": quel calcolo dipende dal Punto F (livelli/abbonamento), non ancora costruito. Il saldo iniziale è un valore fisso segnaposto (100 crediti).</p></div>'
+        ),
+      actions: '<button class="action" id="btnCrea">Attiva cliente →</button>',
+      wire: function(root){
+        root.querySelector("#btnCrea").addEventListener("click", function(){
+          go(1, function(){
+            state.cliente = freshCliente();
+            state.saldoMostrato = state.cliente.creditiResidui;
+            state.profili = [{ id:"u1", nome:"Referente Bruno Editore", email:"referente@brunoeditore.it", ruolo:"gestore", stato:"attivo" }];
+            markChanged("cliente"); markChanged("profili");
+          });
+        });
+      }
+    };
+  }
+
+  var inviteCount = 0;
+  function screenInvite(){
+    inviteCount++;
+    return {
+      tag: "C · Ruoli — app/utenti.html", title: "Pannello utenti — invita un collega",
+      real: "Codice reale: Edge Function invita-utente + app/utenti.html",
+      sub: "Solo il gestore vede questa pagina. L'invito crea l'utente Auth (email non ancora registrata su Atlante) e il profilo in stato pending nello stesso passaggio — l'inserimento passa dalla RLS reale (profili_insert_gestore), non da un controllo solo applicativo.",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+state.cliente.nome+'</span><span>ruolo: gestore</span></div>' +
+        '<div class="field"><label>Email del collega</label><input value="collega'+inviteCount+'@brunoeditore.it" disabled></div>' +
+        '<div class="field" style="max-width:200px"><label>Ruolo assegnato</label><input value="promotore" disabled></div>' +
+        '<div class="note"><span>ℹ</span><p>Se l\'email esiste già su un altro cliente, l\'invito viene rifiutato esplicitamente invece di creare un profilo ambiguo — comportamento verificato con un caso reale durante i test.</p></div>' +
+        '<div class="menu-grid">' + state.profili.map(function(p){
+          return '<div class="menu-item"><div class="name">'+p.email+'</div><div class="desc">ruolo: '+p.ruolo+'</div><span class="status-tag '+p.stato+'" style="align-self:flex-start">'+p.stato+'</span></div>';
+        }).join("") + '</div>',
+      actions: '<button class="action" id="btnInvita">+ Invita questo collega →</button>',
+      wire: function(root){
+        root.querySelector("#btnInvita").addEventListener("click", function(){
+          go(2, function(){
+            state.profili.push({ id:"u"+(state.profili.length+1), nome:"Collega invitato", email:"collega"+inviteCount+"@brunoeditore.it", ruolo:"promotore", stato:"pending" });
+            markChanged("profili");
+          });
+        });
+      }
+    };
+  }
+
+  function screenAccept(){
+    var pending = state.profili.filter(function(p){ return p.stato === "pending"; })[0];
+    if (!pending){
+      return {
+        tag: "C · Ruoli", title: "Nessun invito in sospeso",
+        real: "Codice reale: atlante-shared.js → avviaSessione()",
+        sub: "Tutti i profili invitati sono già attivi.",
+        screen: '<div class="note ok"><span>✓</span><p>Niente da mostrare qui in questo esempio — procedi pure.</p></div>',
+        actions: '<button class="action" id="btnNext">Continua →</button>',
+        wire: function(root){ root.querySelector("#btnNext").addEventListener("click", function(){ go(3); }); }
+      };
+    }
+    return {
+      tag: "C · Ruoli", title: "Il collega clicca il magic link",
+      real: "Codice reale: avviaSessione() in atlante-shared.js, eseguito ad ogni caricamento pagina",
+      sub: "Nessuna password, nessun secondo sistema: il link stesso è l'autenticazione (Supabase Auth). Al primo caricamento di una pagina dopo il click, avviaSessione() vede stato='pending' e lo aggiorna a 'attivo' prima di mostrare qualunque contenuto — un'unica UPDATE, permessa dalla policy profili_update_self corretta insieme a questo punto.",
+      screen:
+        '<div class="fake-topbar"><span>'+pending.email+'</span><span>mail reale, non simulata</span></div>' +
+        '<div class="menu-item"><div class="name">Sei stato invitato in '+state.cliente.nome+'</div><div class="desc">Ruolo: '+pending.ruolo+'. Un clic sul link ti attiva.</div></div>',
+      actions: '<button class="action" id="btnAccetta">Clicca il magic link →</button>',
+      wire: function(root){
+        root.querySelector("#btnAccetta").addEventListener("click", function(){
+          pending.stato = "attivo";
+          markChanged("profili");
+          renderAll();
+        });
+      }
+    };
+  }
+
+  function screenRimozione(){
+    var attivo = state.profili.filter(function(p){ return p.stato === "attivo" && p.ruolo !== "gestore"; })[0];
+    return {
+      tag: "C · Ruoli", title: "Rimozione — soft delete, effetto immediato",
+      real: "Codice reale: cliente_corrente()/ruolo_corrente() aggiornate per escludere stato='rimosso' — verificato dal vivo",
+      sub: "Rimuovere non cancella la riga: scrive rimosso_il e stato='rimosso'. Le due funzioni usate da ogni RLS dell'app tagliano l'accesso da quel momento, non solo la vista del pannello utenti — confermato durante i test con un profilo reale, rientrato con l'accesso già bloccato.",
+      screen: attivo
+        ? '<div class="menu-item"><div class="name">'+attivo.email+'</div><div class="desc">ruolo: '+attivo.ruolo+' · stato: '+attivo.stato+'</div></div>' +
+          '<div class="note warn"><span>!</span><p>Rimuovendo, questo profilo perde accesso a tutta l\'app — non solo a questa pagina — al prossimo caricamento.</p></div>'
+        : '<div class="note"><span>ℹ</span><p>Nessun collega da rimuovere in questo esempio.</p></div>',
+      actions: '<button class="action" id="btnRimuovi" '+(attivo?"":"disabled")+'>Rimuovi →</button><button class="action secondary" id="btnSalta">Salta →</button>',
+      wire: function(root){
+        var b = root.querySelector("#btnRimuovi");
+        if (b) b.addEventListener("click", function(){
+          go(4, function(){
+            attivo.stato = "rimosso"; attivo.rimossoIl = new Date();
+            markChanged("profili");
+          });
+        });
+        root.querySelector("#btnSalta").addEventListener("click", function(){ go(4); });
+      }
+    };
+  }
+
+  function ventItem(v, cliente){
+    var on = cliente.entitlements[v.key];
+    return '<div class="menu-item"><div class="name">'+v.nome+'</div><div class="desc">colonna: '+v.col+'</div>' +
+      '<span class="pill '+(on?"included":"blocked")+'">'+(on?"incluso":"non incluso")+'</span></div>';
+  }
+
+  function screenMenu(){
+    return {
+      tag: "D · Entitlement — shell.js / pagine", title: "Il menu che vede questo cliente",
+      real: "Codice reale: popolaSidebar() in shell.js + gate lato pagina in ciascun file",
+      sub: "Un booleano per voce su clienti, letto una volta da avviaSessione(). Se il flag è falso, la voce sparisce dalla sidebar e la pagina stessa mostra un blocco se qualcuno ci arriva comunque per URL diretto.",
+      screen:
+        '<div class="fake-topbar"><span>cliente: '+state.cliente.nome+'</span><span>4 voci a pacchetto</span></div>' +
+        '<div class="menu-grid">' + VOCI.map(function(v){ return ventItem(v, state.cliente); }).join("") + '</div>',
+      actions: '<button class="action" id="btnToUso">Vai all\'uso reale →</button>',
+      wire: function(root){
+        root.querySelector("#btnToUso").addEventListener("click", function(){ go(5); });
+      }
+    };
+  }
+
+  function costoVoce(voce, unita){ return COSTI[voce][unita]; }
+
+  function screenUso(){
+    var c = state.cliente;
+    return {
+      tag: "E · Crediti — Edge Function ai-proxy", title: "Confronto manuali, chiamata reale",
+      real: "Codice reale: supabase/functions/ai-proxy/index.ts — verificato dal vivo con consumo osservato",
+      sub: "La chiave OpenAI è quella di Sergio, mai quella dell'utente. Ogni chiamata passa da ai-proxy: verifica l'entitlement, calcola il costo, scala i crediti con un'unica UPDATE atomica (scala_crediti in SQL), registra la riga in consumo_log, solo dopo chiama OpenAI.",
+      screen:
+        '<div class="note"><span>💳</span><p>Saldo mostrato: <b>'+state.saldoMostrato+'</b> crediti · pool unico condiviso da tutta l\'organizzazione.</p></div>' +
+        '<div class="menu-item"><div class="name">Confronto manuali</div>' +
+        '<div class="counter-line">costo reale: '+costoVoce("confronto","manuale")+' crediti per manuale confrontato + '+costoVoce("confronto","reciproco")+' se il confronto reciproco scatta (2+ manuali)</div></div>' +
+        '<div class="menu-item"><div class="name">Analisi di un programma</div>' +
+        '<div class="counter-line">nucleo '+costoVoce("analisi","nucleo")+' · '+costoVoce("analisi","manuale_comparativo")+'/manuale comparativo · '+costoVoce("analisi","sintesi")+' sintesi ranking · +'+costoVoce("analisi","avanzata")+'/chiamata in modalità avanzata (5 chiamate extra)</div></div>' +
+        '<div class="menu-item"><div class="name">Piano di promozione</div>' +
+        '<div class="counter-line">'+costoVoce("piano","preclassifica")+' pre-classificazione · '+costoVoce("piano","generazione")+'/chiamata di generazione per programma</div></div>' +
+        '<div class="note"><span>ℹ</span><p>Numeri reali, non più segnaposto della simulazione originale — sono quelli davvero nel codice deployato oggi. Restano comunque una stima iniziale: verranno ricalibrati confrontando consumo_log con la bolletta OpenAI reale.</p></div>',
+      actions: '<button class="action secondary" id="btnUsa">Usa Confronto manuali (2 crediti)</button><button class="action" id="btnContinuaUso">Continua →</button>',
+      wire: function(root){
+        root.querySelector("#btnUsa").addEventListener("click", function(){
+          var costo = costoVoce("confronto","manuale");
+          if (state.cliente.creditiResidui < costo) { renderAll(); return; }
+          state.cliente.creditiResidui -= costo;
+          state.saldoMostrato = state.cliente.creditiResidui;
+          state.consumLog.push({ chi:"tu", voce:"confronto", unita:"manuale", crediti: costo });
+          markChanged("crediti"); markChanged("consumo");
+          renderAll();
+        });
+        root.querySelector("#btnContinuaUso").addEventListener("click", function(){ go(6); });
+      }
+    };
+  }
+
+  function screenBloccato(){
+    var c = state.cliente;
+    return {
+      tag: "E · Crediti", title: "Cosa succede a saldo zero",
+      real: "Codice reale: UPDATE ... WHERE crediti_residui >= costo — 0 righe → 402, verificato dal vivo",
+      sub: "Il controllo è atomico lato database, non un if lato client: due persone che consumano nello stesso istante non possono mai far scendere il saldo sotto zero.",
+      screen:
+        '<div class="note"><span>💳</span><p>Saldo attuale: <b>'+state.cliente.creditiResidui+'</b> crediti.</p></div>' +
+        '<div class="actions-row"><button class="action secondary" id="btnAzzera">Simula: azzera il saldo</button></div>' +
+        (state.cliente.creditiResidui <= 0
+          ? '<div class="note err"><span>✕</span><p><b>402 — Crediti esauriti per questo cliente.</b> Nessuna chiamata OpenAI viene effettuata: il blocco avviene prima, non dopo aver già speso.</p></div>'
+          : ''),
+      actions: '<button class="action" id="btnToMonitor">Continua →</button>',
+      wire: function(root){
+        var b = root.querySelector("#btnAzzera");
+        if (b) b.addEventListener("click", function(){
+          state.cliente.creditiResidui = 0; state.saldoMostrato = 0;
+          markChanged("crediti"); renderAll();
+        });
+        root.querySelector("#btnToMonitor").addEventListener("click", function(){ go(7); });
+      }
+    };
+  }
+
+  function screenMonitoraggio(){
+    var perPersona = {};
+    state.consumLog.forEach(function(e){ perPersona[e.chi] = (perPersona[e.chi]||0) + e.crediti; });
+    return {
+      tag: "Monitoraggio — home.html + utenti.html", title: "Dove si vede il consumo, dentro Atlante",
+      real: "Codice reale: card in home.html, tabella in utenti.html — nessuna nuova migration, dati già in consumo_log",
+      sub: "Nessun dashboard elaborato: solo ciò che serve per non scoprire il blocco alla cieca.",
+      screen:
+        '<div class="menu-item"><div class="name">home.html</div><div class="desc">card "Crediti residui: '+state.cliente.creditiResidui+'" nella griglia numeri, visibile a chiunque.</div></div>' +
+        '<div class="menu-item"><div class="name">utenti.html</div><div class="desc">tabella "Consumo per persona": ' +
+          (Object.keys(perPersona).length
+            ? Object.keys(perPersona).map(function(k){ return k+': '+perPersona[k]+' crediti'; }).join(', ')
+            : 'nessun consumo ancora in questo esempio') +
+          '</div></div>',
+      actions: '<button class="action" id="btnFine">Vai alla situazione sul Punto F →</button>',
+      wire: function(root){ root.querySelector("#btnFine").addEventListener("click", function(){ go(8); }); }
+    };
+  }
+
+  function screenStandby(){
+    return {
+      tag: "F · In sospeso", title: "Pagamento e abbonamento — non ancora costruito",
+      sub: "Decisione del 29 luglio 2026: si ferma qui, deliberatamente.",
+      screen:
+        '<div class="note warn"><span>⏸</span><p><b>Il Punto F (Stripe, livelli, rinnovo) resta in sospeso</b> in attesa della tua P.IVA — prerequisito non tecnico, necessario prima di poter incassare qualunque pagamento reale. Nessun codice è stato scritto per quella parte.</p></div>' +
+        '<div class="note"><span>ℹ</span><p>Oggi ogni cliente ha un unico pool di crediti sempre attivo (equivalente a "sempre in prova"): funziona già così, in produzione, indipendentemente da quando F verrà ripreso.</p></div>',
+      actions: '<button class="action" id="btnRestart">↺ Ricomincia dall\'inizio</button>',
+      wire: function(root){
+        root.querySelector("#btnRestart").addEventListener("click", function(){
+          state = { step:0, maxStep:0, cliente:null, profili:[], consumLog:[], saldoMostrato:null };
+          renderAll();
+        });
+      }
+    };
+  }
+
+  function renderStepper(){
+    var el = document.getElementById("stepper");
+    var byPhase = {}; var order = [];
+    STEPS.forEach(function(s, i){
+      if (!byPhase[s.phase]) { byPhase[s.phase] = []; order.push(s.phase); }
+      byPhase[s.phase].push(i);
+    });
+    el.innerHTML = order.map(function(phase){
+      var items = byPhase[phase].map(function(i){
+        var cls = i === state.step ? "current" : (i < state.maxStep ? "done" : "upcoming");
+        var dotContent = i < state.maxStep ? "✓" : "";
+        return '<button class="step-btn '+cls+'" data-step="'+i+'" '+(i>state.maxStep?"disabled":"")+'>' +
+          '<span class="dot">'+dotContent+'</span><span>'+STEPS[i].label+'</span></button>';
+      }).join("");
+      return '<div class="phase-group"><p class="phase-label">'+(phase==="—"?"Extra":"Punto "+phase)+'</p>'+items+'</div>';
+    }).join("");
+    el.querySelectorAll(".step-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var i = parseInt(btn.getAttribute("data-step"), 10);
+        if (i <= state.maxStep) view(i);
+      });
+    });
+  }
+
+  function renderStage(){
+    var el = document.getElementById("stage");
+    if (state.step > 0 && !state.cliente) state.step = 0;
+    var def = STEPS[state.step].build();
+    var isPast = state.step < state.maxStep;
+    var actionsHTML = isPast
+      ? '<button class="action" id="btnResume">Torna al passo corrente ('+(state.maxStep+1)+') →</button>'
+      : def.actions;
+    el.innerHTML =
+      '<div class="stage-head">' +
+        '<span class="stage-tag">'+def.tag+'</span>' +
+        (def.real ? '<div class="real-tag">✓ '+def.real+'</div>' : '') +
+        '<h2 class="stage-title">'+def.title+'</h2>' +
+        '<p class="stage-sub">'+def.sub+'</p>' +
+        (isPast ? '<div class="note warn" style="margin-bottom:14px"><span>↺</span><p>Passo già completato — solo consultazione.</p></div>' : '') +
+      '</div>' +
+      '<div class="screen">'+def.screen+'</div>' +
+      '<div class="stage-foot">' +
+        '<button class="action ghost" id="btnBack" '+(state.step===0?"disabled":"")+'>← Indietro</button>' +
+        '<div class="actions-row">'+actionsHTML+'</div>' +
+        '<span class="stage-counter">passo '+(state.step+1)+' / '+STEPS.length+'</span>' +
+      '</div>';
+    if (isPast){
+      el.querySelector("#btnResume").addEventListener("click", function(){ view(state.maxStep); });
+    } else if (def.wire){
+      def.wire(el);
+    }
+    var back = el.querySelector("#btnBack");
+    if (back) back.addEventListener("click", function(){ if (state.step>0) view(state.step-1); });
+  }
+
+  function kv(k,v,key){
+    var cls = changedKeys[key] ? " flash" : "";
+    return '<div class="k'+cls+'">'+k+'</div><div class="v'+cls+'">'+v+'</div>';
+  }
+
+  function renderStatePanel(){
+    var el = document.getElementById("statepanel");
+    var c = state.cliente;
+    var html = '<h2>Stato dati reale</h2>';
+    if (!c){
+      html += '<p class="empty-hint">Nessun cliente creato ancora — avanza nel percorso.</p>';
+    } else {
+      html += '<div class="state-block"><h3>clienti</h3><div class="kv'+(changedKeys.cliente?" flash":"")+'">' +
+        kv("nome", c.nome, "cliente") +
+        kv("editore_proprio", c.editoreProprio, "cliente") +
+        '</div></div>';
+
+      html += '<div class="state-block"><h3>profili — '+state.profili.length+'</h3>';
+      if (state.profili.length===0) html += '<p class="empty-hint">nessuno</p>';
+      state.profili.forEach(function(p){
+        html += '<div class="profile-row'+(changedKeys.profili?" flash":"")+'"><span class="who">'+p.nome+'<span class="email">'+p.email+'</span></span>' +
+          '<span class="role-tag">'+p.ruolo+'</span><span class="status-tag '+p.stato+'">'+p.stato+'</span></div>';
+      });
+      html += '</div>';
+
+      html += '<div class="state-block"><h3>entitlement per voce</h3>';
+      VOCI.forEach(function(v){
+        var on = c.entitlements[v.key];
+        html += '<div class="ent-row"><span>'+v.nome+'</span><span class="pill '+(on?"included":"blocked")+'">'+(on?"true":"false")+'</span></div>';
+      });
+      html += '</div>';
+
+      html += '<div class="state-block"><h3>crediti</h3><div class="kv'+(changedKeys.crediti?" flash":"")+'">' +
+        kv("crediti_residui", c.creditiResidui, "crediti") + '</div></div>';
+
+      html += '<div class="state-block"><h3>consumo_log</h3>';
+      if (state.consumLog.length===0){
+        html += '<p class="empty-hint">nessuna riga ancora</p>';
+      } else {
+        state.consumLog.forEach(function(e){
+          html += '<div class="log-row'+(changedKeys.consumo?" flash":"")+'"><span class="chi">'+e.chi+' · '+e.voce+'/'+e.unita+'</span><span>'+e.crediti+'</span></div>';
+        });
+      }
+      html += '</div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderAll(){
+    renderStepper();
+    renderStage();
+    renderStatePanel();
+  }
+
+  renderAll();
+})();
+</script>

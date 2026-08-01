@@ -1,0 +1,14 @@
+{
+  "name": "atlante-import",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "import": "node scripts/import-map-matrix.mjs",
+    "upload:offerta-formativa": "node scripts/upload-offerta-formativa.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5"
+  }
+}

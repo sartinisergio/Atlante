@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>A · Confronto manuali — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-confronto);
+    --v-soft: var(--voce-confronto-soft);
+    --v-ink: var(--voce-confronto-ink);
+    --voce-corrente-soft: var(--voce-confronto-soft);
+    --voce-corrente-ink: var(--voce-confronto-ink);
+  }
+
+  main.a-main { max-width: 1520px; }
+
+  /* Stepper (riuso dallo stile Analisi) */
+  .stepper {
+    display: flex; align-items: center; gap: 0;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 10px 14px; margin-bottom: 24px;
+    box-shadow: var(--sh-1);
+  }
+  .step { display: flex; align-items: center; gap: 10px; padding: 6px 14px; flex: 1; }
+  .step .n {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--paper-warm); color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex: none;
+    font-family: var(--font-serif);
+  }
+  .step .l { line-height: 1.2; }
+  .step .l strong { display: block; font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .step .l span { font-size: 11px; color: var(--ink-muted); }
+  .step.done .n { background: var(--v); color: #fff; }
+  .step.done .l strong { color: var(--v-ink); }
+  .step.on .n { background: var(--v-ink); color: #fff; box-shadow: 0 0 0 4px var(--v-soft); }
+  .step.on .l strong { color: var(--v-ink); }
+  .step-sep { width: 32px; height: 1px; background: var(--line); flex: none; }
+
+  .split { display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: flex-start; }
+
+  .form-col { position: sticky; top: 20px; }
+  .form-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden;
+  }
+  .fc-head { background: var(--paper-warm); border-bottom: 1px solid var(--line); padding: 14px 18px; }
+  .fc-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0; letter-spacing: -0.01em; }
+  .fc-head p { font-size: 12px; color: var(--ink-muted); margin: 3px 0 0; }
+  .fc-body { padding: 16px 18px; }
+  .fc-body .campo { margin-bottom: 14px; }
+  .fc-body .campo:last-child { margin-bottom: 0; }
+  .fc-body label { display: block; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 5px; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .lista-manuali {
+    border: 1px solid var(--line); border-radius: 7px;
+    padding: 2px 10px; background: var(--paper);
+    max-height: 260px; overflow-y: auto;
+  }
+  .m-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .m-item:last-child { border-bottom: none; }
+  .m-item .principale { flex: 1; line-height: 1.3; }
+  .m-item .principale small { display: block; color: var(--ink-muted); font-size: 11px; margin-top: 1px; }
+  .m-item .badge-ok { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+  .m-item .badge-nd { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); color: var(--ink-muted); font-weight: 600; }
+  .m-item.selezionato { background: var(--v-soft); margin: 0 -10px; padding: 8px 10px; border-radius: 4px; }
+
+  .fc-foot {
+    padding: 14px 18px; background: var(--paper-warm);
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cost-hint { font-size: 11px; color: var(--ink-muted); margin-left: auto; }
+  .cost-hint b { color: var(--ink); font-family: var(--font-mono); }
+
+  /* Results */
+  .res-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+  .res-head h2 { font-family: var(--font-serif); font-weight: 500; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+  .res-head .meta { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+  .res-head .exports { display: flex; gap: 4px; }
+  .res-head .exports button {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 5px 10px; border-radius: 6px; font-size: 12px;
+    color: var(--ink-2); cursor: pointer; font-family: inherit;
+  }
+  .res-head .exports button:hover { border-color: var(--v); color: var(--v-ink); }
+
+  /* Sintesi cards per manuale (tipo scoreboard) */
+  .scoreboard {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin-bottom: 24px;
+  }
+  .score-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--sh-1);
+    position: relative; overflow: hidden;
+  }
+  .score-card.winner { border-color: var(--v); }
+  .score-card.winner::before {
+    content: 'Migliore copertura'; position: absolute; top: 8px; right: 8px;
+    font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;
+    background: var(--v); color: #fff; padding: 3px 8px; border-radius: 3px;
+    font-weight: 600;
+  }
+  .score-card.proprio h4::after {
+    content: 'editore proprio'; font-size: 9.5px; margin-left: 8px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--v); font-weight: 700; font-family: var(--font-sans);
+  }
+  .score-card h4 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15px;
+    margin: 0 0 2px; letter-spacing: -0.005em;
+    padding-right: 100px;
+  }
+  .score-card .auth {
+    font-size: 12px; color: var(--ink-muted); margin-bottom: 12px;
+  }
+  .score-card .cov-bar {
+    height: 6px; background: var(--paper-warm); border-radius: 3px; overflow: hidden;
+    display: flex; margin: 10px 0 6px;
+  }
+  .score-card .cov-bar .p1 { background: var(--ok); }
+  .score-card .cov-bar .p2 { background: var(--warn); }
+  .score-card .cov-bar .p3 { background: var(--err); }
+  .score-card .cov-lab {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13.5px; color: var(--v-ink); margin-bottom: 10px;
+  }
+  .score-card .cifre {
+    display: flex; gap: 12px; margin-top: 8px;
+    padding-top: 10px; border-top: 1px solid var(--line-soft);
+  }
+  .score-card .cifre .cell { line-height: 1.15; }
+  .score-card .cifre .cell .v {
+    font-family: var(--font-serif); font-size: 20px; font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .score-card .cifre .cell .v.ok { color: var(--ok); }
+  .score-card .cifre .cell .v.warn { color: var(--warn); }
+  .score-card .cifre .cell .v.err { color: var(--err); }
+  .score-card .cifre .cell .l {
+    font-size: 10.5px; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  /* Matrice moduli × manuali */
+  .matrix-wrap {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden; margin-bottom: 20px;
+  }
+  .matrix-head {
+    padding: 16px 22px 12px;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--line);
+  }
+  .matrix-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0 0 3px; letter-spacing: -0.01em; }
+  .matrix-head p { font-size: 12px; color: var(--ink-muted); margin: 0; }
+  table.matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  table.matrix thead th {
+    text-align: left; padding: 10px 14px;
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--line);
+    vertical-align: bottom;
+  }
+  table.matrix thead th.libro { color: var(--ink); font-size: 12px; text-transform: none; letter-spacing: 0; font-weight: 500; }
+  table.matrix thead th.libro small { display: block; color: var(--ink-muted); font-weight: 400; font-size: 10.5px; margin-top: 2px; }
+  table.matrix thead th.libro.proprio { background: var(--v-soft); border-top: 3px solid var(--v); }
+  table.matrix tbody td {
+    padding: 12px 14px; border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  table.matrix tbody tr:last-child td { border-bottom: none; }
+  table.matrix tbody td.mod-name { font-weight: 500; color: var(--ink); }
+  table.matrix tbody td.mod-name .glossa { font-size: 11.5px; color: var(--ink-muted); font-weight: 400; margin-top: 2px; }
+  table.matrix tbody td.proprio { background: color-mix(in srgb, var(--v-soft) 40%, transparent); }
+  table.matrix tbody td .note {
+    font-size: 11.5px; color: var(--ink-muted); margin-top: 3px; line-height: 1.4;
+  }
+
+  /* Sintesi qualitativa per manuale */
+  .verdetto-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin-top: 20px;
+  }
+  .verdetto {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 18px 20px; box-shadow: var(--sh-1);
+  }
+  .verdetto.proprio { border-color: var(--v); }
+  .verdetto h4 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15px;
+    margin: 0 0 12px; letter-spacing: -0.005em;
+  }
+  .verdetto h5 {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint); font-weight: 700;
+    margin: 12px 0 6px;
+  }
+  .verdetto ul {
+    margin: 0; padding-left: 18px;
+    font-size: 12.5px; color: var(--ink-2); line-height: 1.55;
+  }
+  .verdetto ul.forza li::marker { color: var(--ok); }
+  .verdetto ul.debol li::marker { color: var(--err); }
+  .verdetto p.sintesi {
+    font-family: var(--font-serif); font-size: 13.5px;
+    line-height: 1.55; color: var(--ink-2);
+    margin: 0 0 12px; font-style: italic;
+  }
+
+  /* Reciproco */
+  .card-reciproco {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 20px 22px; box-shadow: var(--sh-1);
+    margin: 20px 0; position: relative;
+  }
+  .card-reciproco::before {
+    content: ''; position: absolute; left: 0; top: 20px; bottom: 20px;
+    width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+  }
+  .card-reciproco h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .card-reciproco .dek { font-size: 12px; color: var(--ink-muted); margin: 0 0 14px; }
+
+  .reciproco-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 14px; }
+  .rec-common {
+    grid-column: 1 / -1;
+    padding: 14px 16px; background: var(--paper);
+    border: 1px solid var(--line-soft); border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .rec-common h5, .rec-col h5 {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--ink-muted); margin: 0 0 6px; font-weight: 500;
+  }
+  .rec-common ul, .rec-col ul {
+    margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.55; color: var(--ink);
+  }
+  .rec-col { padding: 14px 16px; border: 1px solid var(--line-soft); border-radius: 8px; }
+  .rec-col.proprio { border-color: var(--v); background: color-mix(in srgb, var(--v-soft) 30%, var(--surface)); }
+  .rec-col h4 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 14px;
+    margin: 0 0 4px;
+  }
+  .rec-col .auth { font-size: 11.5px; color: var(--ink-muted); margin-bottom: 10px; }
+
+  /* Adozione (insight commerciale) */
+  .adozione {
+    background: linear-gradient(180deg, var(--v-soft), transparent);
+    border: 1px solid var(--v-soft); border-radius: var(--r-lg);
+    padding: 22px 24px; margin-top: 20px;
+    position: relative;
+  }
+  .adozione::before {
+    content: ''; position: absolute; left: 0; top: 20px; bottom: 20px;
+    width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+  }
+  .adozione h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 17px;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .adozione h3::before { content: '★'; color: var(--v); margin-right: 8px; font-size: 14px; }
+  .adozione .dek { font-size: 12px; color: var(--ink-muted); margin: 0 0 14px; }
+  .adozione h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--v-ink); margin: 12px 0 6px; font-weight: 700;
+  }
+  .adozione ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+  .adozione p { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb"><a href="A-home.html">Atlante</a><span class="sep">›</span><a href="#">Zanichelli</a><span class="sep">›</span><span>Confronto manuali</span></div>
+
+  <h1 class="page">Confronto manuali<em>.</em></h1>
+  <p class="subtitle">Scegli un framework di valutazione, poi due o più manuali della stessa materia. Ottieni la matrice di copertura modulo per modulo, il confronto reciproco tra i manuali e — se hai un editore proprio — un argomentario per l'adozione.</p>
+
+  <!-- Stepper -->
+  <nav class="stepper" aria-label="Fasi del confronto">
+    <div class="step done"><div class="n">1</div><div class="l"><strong>Framework</strong><span>Riferimento</span></div></div>
+    <div class="step-sep"></div>
+    <div class="step done"><div class="n">2</div><div class="l"><strong>Manuali</strong><span>2 o più della stessa materia</span></div></div>
+    <div class="step-sep"></div>
+    <div class="step on"><div class="n">3</div><div class="l"><strong>Risultato</strong><span>Matrice · reciproco · adozione</span></div></div>
+  </nav>
+
+  <div class="split">
+
+    <!-- FORM COLUMN -->
+    <div class="form-col">
+      <div class="form-card">
+        <div class="fc-head">
+          <h3>Parametri</h3>
+          <p>Puoi rilanciare senza ricominciare.</p>
+        </div>
+        <div class="fc-body">
+
+          <div class="campo">
+            <label>Framework</label>
+            <select class="field">
+              <option>Farmacologia — MAP Farmacologia 2024 v.2</option>
+            </select>
+            <p style="font-size: 11.5px; color: var(--ink-muted); margin: 6px 0 0;">Materia: <strong style="color: var(--ink);">Farmacologia</strong> · 6 moduli · 4 classi di laurea</p>
+          </div>
+
+          <div class="campo">
+            <label>Manuali da confrontare <span style="color: var(--ink); font-weight: 700;">(3 selezionati)</span></label>
+            <div class="lista-manuali">
+              <div class="m-item selezionato">
+                <input type="checkbox" checked>
+                <div class="principale"><strong>Katzung — Farmacologia generale e clinica</strong><small>Piccin · 12ª ed. · competitor</small></div>
+                <span class="badge-ok">indice ✓</span>
+              </div>
+              <div class="m-item selezionato">
+                <input type="checkbox" checked>
+                <div class="principale"><strong>Goodman &amp; Gilman — Le basi farmacologiche</strong><small>Zanichelli · 14ª ed. · <span style="color: var(--v);">proprio</span></small></div>
+                <span class="badge-ok">indice ✓</span>
+              </div>
+              <div class="m-item selezionato">
+                <input type="checkbox" checked>
+                <div class="principale"><strong>Rossi–Cuomo — Farmacologia</strong><small>Minerva Medica · 4ª ed. · competitor</small></div>
+                <span class="badge-ok">indice ✓</span>
+              </div>
+              <div class="m-item">
+                <input type="checkbox">
+                <div class="principale"><strong>Rang–Dale — Farmacologia</strong><small>Elsevier · 9ª ed.</small></div>
+                <span class="badge-nd">senza indice</span>
+              </div>
+              <div class="m-item">
+                <input type="checkbox">
+                <div class="principale"><strong>Furlanut — Farmacologia</strong><small>Zanichelli · 3ª ed.</small></div>
+                <span class="badge-ok">indice ✓</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div class="campo">
+              <label>Modello</label>
+              <select class="field"><option>gpt-4o</option></select>
+            </div>
+            <div class="campo">
+              <label>Chiave API</label>
+              <input type="password" class="field" value="sk-••••••••••" />
+            </div>
+          </div>
+        </div>
+        <div class="fc-foot">
+          <button class="btn btn-primary">↻ Rilancia</button>
+          <button class="btn btn-quiet">Bozza</button>
+          <span class="cost-hint">stima ~<b>0,12 $</b> · 45 s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS COLUMN -->
+    <div>
+      <div class="res-head">
+        <div>
+          <h2>Farmacologia — 3 manuali <em style="font-style: italic; color: var(--ink-muted); font-family: var(--font-serif); font-size: 15px;">vs</em> MAP Farmacologia 2024</h2>
+          <div class="meta">Analisi completata · 25 luglio 2026 · h. 09:37 · modello gpt-4o</div>
+        </div>
+        <div class="exports">
+          <button>↓ Markdown</button>
+          <button>↓ HTML</button>
+          <button>↓ PDF</button>
+        </div>
+      </div>
+
+      <!-- Scoreboard: card per manuale -->
+      <div class="scoreboard">
+        <div class="score-card">
+          <h4>Katzung</h4>
+          <div class="auth">Piccin · 12ª ed. · competitor</div>
+          <div class="cov-bar"><div class="p1" style="flex:4"></div><div class="p2" style="flex:1"></div><div class="p3" style="flex:1"></div></div>
+          <div class="cov-lab">Copre la grande maggioranza del programma</div>
+          <div class="cifre">
+            <div class="cell"><div class="v ok">4</div><div class="l">presenti</div></div>
+            <div class="cell"><div class="v warn">1</div><div class="l">parziale</div></div>
+            <div class="cell"><div class="v err">1</div><div class="l">assente</div></div>
+          </div>
+        </div>
+        <div class="score-card winner proprio">
+          <h4>Goodman &amp; Gilman</h4>
+          <div class="auth">Zanichelli · 14ª ed.</div>
+          <div class="cov-bar"><div class="p1" style="flex:6"></div><div class="p2" style="flex:0.3"></div></div>
+          <div class="cov-lab">Copre praticamente tutto il framework</div>
+          <div class="cifre">
+            <div class="cell"><div class="v ok">6</div><div class="l">presenti</div></div>
+            <div class="cell"><div class="v warn">0</div><div class="l">parziale</div></div>
+            <div class="cell"><div class="v err">0</div><div class="l">assente</div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <h4>Rossi–Cuomo</h4>
+          <div class="auth">Minerva Medica · 4ª ed. · competitor</div>
+          <div class="cov-bar"><div class="p1" style="flex:3"></div><div class="p2" style="flex:2"></div><div class="p3" style="flex:1"></div></div>
+          <div class="cov-lab">Copertura parziale del framework</div>
+          <div class="cifre">
+            <div class="cell"><div class="v ok">3</div><div class="l">presenti</div></div>
+            <div class="cell"><div class="v warn">2</div><div class="l">parziali</div></div>
+            <div class="cell"><div class="v err">1</div><div class="l">assente</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matrice moduli -->
+      <div class="matrix-wrap">
+        <div class="matrix-head">
+          <h3>Matrice di copertura</h3>
+          <p>Moduli del framework in verticale, manuali in orizzontale. La colonna evidenziata è l'editore proprio.</p>
+        </div>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th style="width: 28%">Modulo del framework</th>
+              <th class="libro">Katzung<small>Piccin, 12ª</small></th>
+              <th class="libro proprio">Goodman &amp; Gilman<small>Zanichelli, 14ª</small></th>
+              <th class="libro">Rossi–Cuomo<small>Minerva, 4ª</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mod-name">Farmacocinetica<div class="glossa">Distribuzione, metabolismo, escrezione</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Cap. 3–5</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 2–4</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Cap. 2, sintetico</div></td>
+            </tr>
+            <tr>
+              <td class="mod-name">Farmacodinamica<div class="glossa">Recettori, meccanismi molecolari</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Cap. 2, esteso</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 3</div></td>
+              <td><span class="status s-parz">Parziale</span><div class="note">Cap. 3, senza meccanismi molecolari</div></td>
+            </tr>
+            <tr>
+              <td class="mod-name">Interazioni farmacologiche<div class="glossa">Farmaco-farmaco, farmaco-cibo</div></td>
+              <td><span class="status s-parz">Parziale</span><div class="note">Sparso in vari capitoli</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 66 dedicato</div></td>
+              <td><span class="status s-parz">Parziale</span><div class="note">Solo cenni</div></td>
+            </tr>
+            <tr>
+              <td class="mod-name">Farmacogenomica<div class="glossa">Variabilità genetica nella risposta</div></td>
+              <td><span class="status s-ass">Assente</span><div class="note">Non coperto</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 7</div></td>
+              <td><span class="status s-ass">Assente</span><div class="note">Non coperto</div></td>
+            </tr>
+            <tr>
+              <td class="mod-name">Farmacologia per apparati<div class="glossa">Cardio, SNC, endocrino, digerente</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Cap. 6–42, ossatura</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 12–65</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Cap. 5–20</div></td>
+            </tr>
+            <tr>
+              <td class="mod-name">Tossicologia<div class="glossa">Effetti avversi, avvelenamenti</div></td>
+              <td><span class="status s-pres">Presente</span><div class="note">Sez. VIII</div></td>
+              <td class="proprio"><span class="status s-pres">Presente</span><div class="note">Cap. 4, sintetico</div></td>
+              <td><span class="status s-parz">Parziale</span><div class="note">Solo effetti avversi</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Verdetti per manuale -->
+      <div class="verdetto-grid">
+        <div class="verdetto">
+          <h4>Katzung</h4>
+          <p class="sintesi">Testo storico solidissimo sulla farmacologia per apparati, ma non più aggiornato sui temi trasversali. Ottima tossicologia.</p>
+          <h5>Punti di forza</h5>
+          <ul class="forza"><li>Ossatura per apparati coerente</li><li>Tossicologia dedicata</li></ul>
+          <h5>Limiti</h5>
+          <ul class="debol"><li>Interazioni disperse</li><li>Farmacogenomica assente</li></ul>
+        </div>
+        <div class="verdetto proprio">
+          <h4>Goodman &amp; Gilman <span style="font-size: 10px; letter-spacing: 0.07em; color: var(--v); font-weight: 700; margin-left: 6px; text-transform: uppercase; font-family: var(--font-sans);">proprio</span></h4>
+          <p class="sintesi">L'unico che copre in modo strutturato l'intero framework, con capitoli dedicati ai temi trasversali. Tossicologia meno estesa ma sufficiente.</p>
+          <h5>Punti di forza</h5>
+          <ul class="forza"><li>Interazioni (Cap. 66)</li><li>Farmacogenomica (Cap. 7)</li><li>Box clinici recenti</li></ul>
+          <h5>Limiti</h5>
+          <ul class="debol"><li>Tossicologia più sintetica</li></ul>
+        </div>
+        <div class="verdetto">
+          <h4>Rossi–Cuomo</h4>
+          <p class="sintesi">Adatto a un corso di farmacologia generale di base, meno all'ultimo biennio della magistrale. Buona introduzione, poca profondità.</p>
+          <h5>Punti di forza</h5>
+          <ul class="forza"><li>Linguaggio accessibile</li><li>Prezzo contenuto</li></ul>
+          <h5>Limiti</h5>
+          <ul class="debol"><li>Assente farmacogenomica</li><li>Farmacodinamica parziale</li></ul>
+        </div>
+      </div>
+
+      <!-- Confronto reciproco -->
+      <div class="card-reciproco">
+        <h3>Confronto reciproco</h3>
+        <div class="dek">Argomenti in comune fra tutti e tre; punti di forza distintivi di ciascuno.</div>
+
+        <div class="rec-common">
+          <h5>Argomenti trattati bene da tutti e tre</h5>
+          <ul><li>Farmacocinetica di base</li><li>Farmacologia per apparati (cardio, SNC)</li></ul>
+        </div>
+
+        <div class="reciproco-grid">
+          <div class="rec-col">
+            <h4>Katzung, solo lui</h4>
+            <div class="auth">Piccin · competitor</div>
+            <h5>Punti distintivi</h5>
+            <ul>
+              <li>Sezione tossicologia più estesa del panorama italiano</li>
+              <li>Casi clinici alla fine di ogni capitolo</li>
+            </ul>
+          </div>
+          <div class="rec-col proprio">
+            <h4>Goodman &amp; Gilman, solo lui</h4>
+            <div class="auth">Zanichelli · proprio</div>
+            <h5>Punti distintivi</h5>
+            <ul>
+              <li><strong>Cap. 66</strong> interamente dedicato alle interazioni</li>
+              <li><strong>Cap. 7</strong> sulla farmacogenomica</li>
+              <li>Riferimenti a letteratura recente</li>
+            </ul>
+          </div>
+          <div class="rec-col" style="grid-column: 1 / -1;">
+            <h4>Rossi–Cuomo, solo lui</h4>
+            <div class="auth">Minerva Medica · competitor</div>
+            <h5>Punti distintivi</h5>
+            <ul>
+              <li>Approccio più didattico e accessibile per il primo approccio</li>
+              <li>Molti riquadri di sintesi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Argomenti per l'adozione -->
+      <div class="adozione">
+        <h3>Argomenti per l'adozione di <em style="font-style: italic; color: var(--v);">Goodman &amp; Gilman</em></h3>
+        <div class="dek">Sezione ad alta priorità per il promotore Zanichelli. Argomenti basati sulla matrice sopra, mai su preferenze editoriali.</div>
+
+        <h4>Perché è il più adatto a coprire il framework MAP Farmacologia 2024</h4>
+        <ul>
+          <li>È l'<strong>unico</strong> dei tre a coprire in modo strutturato <em>tutti</em> e sei i moduli.</li>
+          <li>Su interazioni e farmacogenomica — i due temi meno trattati dagli altri manuali — dispone di capitoli dedicati.</li>
+          <li>Il taglio clinico-applicativo si presta ai corsi degli ultimi anni della magistrale.</li>
+        </ul>
+
+        <h4>Attenzione</h4>
+        <p>Sulla tossicologia Katzung resta più esteso: se il framework locale dà peso alto a questa dimensione, Goodman &amp; Gilman va integrato con letture aggiuntive. Su corsi di primo approccio (triennale o Farmacologia I) Rossi–Cuomo può essere una buona co-adozione per il registro didattico più accessibile.</p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="shell.js" data-attiva="confronto"></script>
+</body>
+</html>

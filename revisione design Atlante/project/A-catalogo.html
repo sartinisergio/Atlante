@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>A · Catalogo — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+    --voce-corrente-soft: var(--voce-utilita-soft);
+    --voce-corrente-ink: var(--voce-utilita-ink);
+  }
+
+  main.a-main { max-width: 1320px; }
+
+  /* Toggle tra Manuali e Framework */
+  .switch-view {
+    display: inline-flex; gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px; margin-bottom: 22px;
+  }
+  .switch-view button {
+    border: none; background: transparent; padding: 8px 18px;
+    font-size: 13px; font-weight: 500; color: var(--ink-muted);
+    cursor: pointer; border-radius: 7px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+  }
+  .switch-view button:hover { color: var(--ink); }
+  .switch-view button.on { background: var(--v); color: #fff; }
+  .switch-view button .n { font-size: 11px; opacity: 0.75; }
+
+  /* Toolbar */
+  .toolbar-cat {
+    display: flex; gap: 10px; align-items: center;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .search-box {
+    flex: 1; max-width: 480px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .search-box::before {
+    content: '⌕'; color: var(--ink-faint); font-size: 16px;
+  }
+  .search-box input {
+    border: none; background: transparent;
+    flex: 1; font-size: 13px; color: var(--ink);
+    outline: none; font-family: inherit;
+  }
+  .toolbar-cat .filter {
+    padding: 8px 12px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; font-size: 13px; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .toolbar-cat .filter .lab { color: var(--ink-muted); font-size: 12px; }
+  .toolbar-cat .filter .caret { color: var(--ink-faint); }
+  .toolbar-cat .actions { margin-left: auto; display: flex; gap: 6px; }
+
+  /* Callout "Matrix Builder" */
+  .callout {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 18px; margin-bottom: 22px;
+    background: linear-gradient(180deg, var(--v-soft), transparent 90%);
+    border: 1px solid var(--v-soft);
+    border-radius: var(--r-lg);
+    position: relative;
+  }
+  .callout::before {
+    content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+    width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+  }
+  .callout .ic {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 22px; color: var(--v); flex: none; line-height: 1; margin-top: 2px;
+  }
+  .callout .body h4 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 14.5px; margin: 0 0 4px; color: var(--v-ink);
+  }
+  .callout .body p {
+    font-size: 12.5px; color: var(--ink-2);
+    line-height: 1.55; margin: 0;
+  }
+  .callout .body a { color: var(--v-ink); font-weight: 600; }
+
+  /* Materia section (accordion-like) */
+  .materia-block {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-1);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .materia-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--line);
+  }
+  .materia-block.closed .materia-head { border-bottom: none; }
+  .materia-head .arrow {
+    color: var(--ink-muted); font-size: 12px;
+    transition: transform .12s;
+  }
+  .materia-block.closed .materia-head .arrow { transform: rotate(-90deg); }
+  .materia-head h3 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 17px; margin: 0; letter-spacing: -0.01em;
+    color: var(--ink);
+    flex: 1;
+  }
+  .materia-head .n {
+    font-size: 12px; color: var(--ink-muted);
+    font-family: var(--font-mono);
+  }
+  .materia-head .n b { color: var(--ink); }
+
+  .materia-block.closed table { display: none; }
+
+  table.libri {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 13px;
+  }
+  table.libri thead th {
+    text-align: left; padding: 10px 20px;
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  table.libri tbody td {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  table.libri tbody tr:last-child td { border-bottom: none; }
+  table.libri tbody tr:hover { background: color-mix(in srgb, var(--v-soft) 30%, transparent); }
+  table.libri tbody tr:hover .r-act { opacity: 1; }
+  table.libri td .aut { font-weight: 500; color: var(--ink); }
+  table.libri td .sub { font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+  table.libri td .titolo-libro { color: var(--ink); }
+  table.libri td .titolo-libro em { font-style: italic; color: var(--ink-muted); font-size: 11.5px; margin-left: 6px; }
+
+  .b-proprio { background: var(--v-soft); color: var(--v-ink); }
+  .b-competitor { background: var(--paper-warm); color: var(--ink-muted); }
+  .b-idxok { background: var(--ok-soft); color: var(--ok); }
+  .b-idxno { background: var(--surface-2); color: var(--ink-faint); }
+
+  .r-act { opacity: 0; transition: opacity .1s; display: flex; gap: 4px; justify-content: flex-end; }
+  .r-act button {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 3px 8px;
+    font-size: 11px; color: var(--ink-2); cursor: pointer;
+    font-family: inherit;
+  }
+  .r-act button:hover { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+
+  /* Empty state materie */
+  .empty-block {
+    padding: 30px; text-align: center;
+    color: var(--ink-muted); font-size: 13px;
+  }
+
+  /* Contatori summary */
+  .cat-stats {
+    display: flex; gap: 24px; margin-bottom: 24px;
+    padding: 18px 22px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    flex-wrap: wrap;
+  }
+  .cat-stats .cell { display: flex; flex-direction: column; }
+  .cat-stats .cell .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); font-weight: 600; }
+  .cat-stats .cell .v { font-family: var(--font-serif); font-size: 22px; color: var(--ink); font-weight: 400; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .cat-stats .cell .v small { font-size: 13px; color: var(--ink-muted); font-family: var(--font-sans); margin-left: 4px; }
+  .cat-stats .sep { width: 1px; background: var(--line); }
+
+  .foot-add {
+    text-align: right; margin-top: 8px;
+    font-size: 12px; color: var(--ink-muted);
+  }
+  .foot-add a { color: var(--v); font-weight: 500; text-decoration: none; margin-left: 8px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb"><a href="A-home.html">Atlante</a><span class="sep">›</span><a href="#">Zanichelli</a><span class="sep">›</span><span>Catalogo</span></div>
+
+  <h1 class="page">Catalogo<em>.</em></h1>
+  <p class="subtitle">Anagrafica condivisa di manuali e framework di valutazione, la stessa fonte dati usata dalle altre sezioni di Atlante. Chi ha ruolo di gestore può aggiungere, modificare o segnalare voci; tutti possono consultare e cercare.</p>
+
+  <!-- Statistiche -->
+  <div class="cat-stats">
+    <div class="cell"><div class="l">Manuali totali</div><div class="v">348</div></div>
+    <div class="sep"></div>
+    <div class="cell"><div class="l">Zanichelli</div><div class="v" style="color: var(--v-ink)">42 <small>editore proprio</small></div></div>
+    <div class="sep"></div>
+    <div class="cell"><div class="l">Competitor</div><div class="v">306</div></div>
+    <div class="sep"></div>
+    <div class="cell"><div class="l">Con indice caricato</div><div class="v">287 <small style="color: var(--ok)">82%</small></div></div>
+    <div class="sep"></div>
+    <div class="cell"><div class="l">Framework</div><div class="v">17</div></div>
+    <div class="sep"></div>
+    <div class="cell"><div class="l">Materie coperte</div><div class="v">14</div></div>
+  </div>
+
+  <!-- Callout: Matrix Builder -->
+  <div class="callout">
+    <span class="ic">✎</span>
+    <div class="body">
+      <h4>Prima di aggiungere: prepara l'indice</h4>
+      <p>Per creare un framework nuovo o l'indice di un manuale a partire da un PDF, usa <a href="https://matrix-framework-builder.netlify.app/" target="_blank" rel="noopener">MATRIX Framework Builder ↗</a>. Poi incolla qui sotto il JSON generato — Atlante estrae automaticamente titolo, autore, editore e materia.</p>
+    </div>
+  </div>
+
+  <!-- Switch tra Manuali e Framework -->
+  <div class="switch-view">
+    <button class="on">Manuali <span class="n">348</span></button>
+    <button>Framework <span class="n">17</span></button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar-cat">
+    <div class="search-box">
+      <input placeholder="Cerca per titolo o autore…" value="" />
+    </div>
+    <div class="filter">
+      <span class="lab">Materia:</span>
+      <span>Tutte</span>
+      <span class="caret">▾</span>
+    </div>
+    <div class="filter">
+      <span class="lab">Editore:</span>
+      <span>Tutti</span>
+      <span class="caret">▾</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost">↓ Esporta CSV</button>
+      <button class="btn btn-primary">＋ Aggiungi manuale</button>
+    </div>
+  </div>
+
+  <!-- Materia: Farmacologia -->
+  <div class="materia-block">
+    <div class="materia-head">
+      <span class="arrow">▾</span>
+      <h3>Farmacologia</h3>
+      <span class="n"><b>8</b> manuali · <b>2</b> Zanichelli · <b>2</b> framework</span>
+    </div>
+    <table class="libri">
+      <thead>
+        <tr>
+          <th style="width: 20%">Autore</th>
+          <th>Titolo</th>
+          <th style="width: 18%">Editore</th>
+          <th style="width: 10%">Edizione</th>
+          <th style="width: 10%">Tipo</th>
+          <th style="width: 12%">Indice</th>
+          <th style="width: 8%; text-align:right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="aut">Bertram G. Katzung</span></td>
+          <td><span class="titolo-libro">Farmacologia generale e clinica</span></td>
+          <td>Piccin</td>
+          <td>12ª · 2024</td>
+          <td><span class="badge b-competitor">competitor</span></td>
+          <td><span class="badge b-idxok">✓ caricato</span></td>
+          <td class="right"><div class="r-act"><button>Vedi</button><button>✎</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="aut">Laurence L. Brunton (ed.)</span></td>
+          <td><span class="titolo-libro">Goodman &amp; Gilman — Le basi farmacologiche della terapia</span></td>
+          <td>Zanichelli</td>
+          <td>14ª · 2025</td>
+          <td><span class="badge b-proprio">proprio</span></td>
+          <td><span class="badge b-idxok">✓ caricato</span></td>
+          <td class="right"><div class="r-act"><button>Vedi</button><button>✎</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="aut">Rossi F., Cuomo V.</span></td>
+          <td><span class="titolo-libro">Farmacologia — Principi di base e applicazioni</span></td>
+          <td>Minerva Medica</td>
+          <td>4ª · 2023</td>
+          <td><span class="badge b-competitor">competitor</span></td>
+          <td><span class="badge b-idxok">✓ caricato</span></td>
+          <td class="right"><div class="r-act"><button>Vedi</button><button>✎</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="aut">H.P. Rang, J. Ritter et al.</span></td>
+          <td><span class="titolo-libro">Farmacologia</span></td>
+          <td>Elsevier</td>
+          <td>9ª · 2024</td>
+          <td><span class="badge b-competitor">competitor</span></td>
+          <td><span class="badge b-idxno">— da caricare</span></td>
+          <td class="right"><div class="r-act"><button>Vedi</button><button>✎</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="aut">M. Furlanut</span></td>
+          <td><span class="titolo-libro">Farmacologia — Principi e applicazioni terapeutiche</span></td>
+          <td>Zanichelli</td>
+          <td>3ª · 2023</td>
+          <td><span class="badge b-proprio">proprio</span></td>
+          <td><span class="badge b-idxok">✓ caricato</span></td>
+          <td class="right"><div class="r-act"><button>Vedi</button><button>✎</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot-add" style="padding: 10px 20px 14px; background: var(--paper-warm); border-top: 1px solid var(--line-soft);">
+      Mostrati 5 di 8 · <a href="#">Mostra tutti →</a>
+    </div>
+  </div>
+
+  <!-- Materia: Biochimica -->
+  <div class="materia-block closed">
+    <div class="materia-head">
+      <span class="arrow">▾</span>
+      <h3>Biochimica</h3>
+      <span class="n"><b>11</b> manuali · <b>3</b> Zanichelli · <b>1</b> framework</span>
+    </div>
+    <table class="libri"><tbody><!-- collapsed --></tbody></table>
+  </div>
+
+  <!-- Materia: Chimica organica -->
+  <div class="materia-block closed">
+    <div class="materia-head">
+      <span class="arrow">▾</span>
+      <h3>Chimica organica</h3>
+      <span class="n"><b>9</b> manuali · <b>2</b> Zanichelli · <b>1</b> framework</span>
+    </div>
+    <table class="libri"><tbody><!-- collapsed --></tbody></table>
+  </div>
+
+  <!-- Materia: Economia aziendale -->
+  <div class="materia-block closed">
+    <div class="materia-head">
+      <span class="arrow">▾</span>
+      <h3>Economia aziendale</h3>
+      <span class="n"><b>14</b> manuali · <b>4</b> Zanichelli · <b>2</b> framework</span>
+    </div>
+    <table class="libri"><tbody><!-- collapsed --></tbody></table>
+  </div>
+
+  <!-- Materia: Fisica generale -->
+  <div class="materia-block closed">
+    <div class="materia-head">
+      <span class="arrow">▾</span>
+      <h3>Fisica generale</h3>
+      <span class="n"><b>13</b> manuali · <b>3</b> Zanichelli · <b>1</b> framework</span>
+    </div>
+    <table class="libri"><tbody><!-- collapsed --></tbody></table>
+  </div>
+
+  <p style="text-align: center; margin-top: 30px; font-size: 13px; color: var(--ink-muted); font-family: var(--font-serif); font-style: italic;">Altre 9 materie coperte · <a href="#" style="color: var(--v); font-style: normal; font-weight: 500;">mostra tutte →</a></p>
+
+</main>
+
+<script src="shell.js" data-attiva="catalogo"></script>
+</body>
+</html>

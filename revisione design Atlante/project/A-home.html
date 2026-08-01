@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — home</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+    --voce-corrente-soft: transparent;
+    --voce-corrente-ink: var(--ink);
+  }
+
+  main.a-main { max-width: 1240px; }
+
+  /* Saluto */
+  .hello { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+  .hello .now {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--ink-muted);
+  }
+  h1.page { font-size: 44px; margin-bottom: 4px; }
+  .subtitle { max-width: 620px; }
+
+  /* Numeri sintetici del cliente */
+  .numeri {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin: 20px 0 40px;
+  }
+  .n-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 18px 20px;
+    box-shadow: var(--sh-1);
+    position: relative;
+  }
+  .n-card::before {
+    content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 3px; background: var(--voce);
+    border-radius: 0 3px 3px 0;
+  }
+  .n-card .l {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--ink-muted); font-weight: 600;
+  }
+  .n-card .v {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 34px; color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.05; margin: 6px 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .n-card .d {
+    font-size: 12px; color: var(--ink-muted); line-height: 1.4;
+  }
+  .n-card .d b { color: var(--voce); font-weight: 600; }
+
+  /* Sezione titoli */
+  h2.section {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 22px; letter-spacing: -0.01em;
+    margin: 40px 0 4px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2.section em { font-style: italic; color: var(--v); }
+  h2.section .side {
+    font-family: var(--font-sans); font-size: 12.5px;
+    color: var(--ink-muted); font-weight: 400;
+    margin-left: auto;
+  }
+  h2.section .side a { color: var(--v); text-decoration: none; font-weight: 500; }
+  p.section-dek { font-size: 13.5px; color: var(--ink-muted); margin: 0 0 20px; }
+
+  /* Griglia voci come "porte d'ingresso" */
+  .voci-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .porta {
+    display: block; text-decoration: none;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 22px 22px 20px;
+    box-shadow: var(--sh-1);
+    position: relative; overflow: hidden;
+    transition: transform .12s, box-shadow .12s, border-color .12s;
+  }
+  .porta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-2);
+    border-color: var(--voce);
+  }
+  .porta .cerchio {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--voce-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--voce-ink); font-size: 18px; font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .porta h3 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 19px; letter-spacing: -0.01em;
+    margin: 0 0 6px; color: var(--ink);
+  }
+  .porta p {
+    font-size: 12.5px; color: var(--ink-muted);
+    line-height: 1.5; margin: 0 0 14px;
+    min-height: 3.6em;
+  }
+  .porta .go {
+    font-size: 12px; color: var(--voce); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .porta .quick {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 11.5px; color: var(--ink-muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .porta .quick b { color: var(--voce); font-weight: 600; }
+
+  /* Attività recente */
+  .attivita {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden;
+  }
+  .attivita .riga {
+    display: grid;
+    grid-template-columns: 24px 1fr auto auto;
+    align-items: center; gap: 14px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .attivita .riga:last-child { border-bottom: none; }
+  .attivita .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--voce); }
+  .attivita .titolo { color: var(--ink); }
+  .attivita .titolo b { font-weight: 600; }
+  .attivita .titolo .sub { color: var(--ink-muted); font-size: 11.5px; margin-top: 2px; display: block; }
+  .attivita .quando { font-size: 12px; color: var(--ink-muted); font-family: var(--font-serif); font-style: italic; }
+  .attivita .apri {
+    font-size: 12px; color: var(--v); text-decoration: none;
+    padding: 4px 10px; border-radius: 5px;
+  }
+  .attivita .apri:hover { background: var(--v-soft); }
+
+  /* Sezione "sapete cosa" */
+  .tip {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--paper-warm); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 18px 22px;
+    margin-top: 40px;
+    max-width: 900px;
+  }
+  .tip .ic {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 32px; line-height: 1;
+    color: var(--voce-analisi); flex: none;
+  }
+  .tip h4 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 15px; margin: 0 0 4px;
+  }
+  .tip p {
+    font-size: 13px; color: var(--ink-2);
+    line-height: 1.55; margin: 0;
+  }
+  .tip p a { color: var(--voce-analisi); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+
+  <div class="hello">
+    <div>
+      <h1 class="page">Buongiorno, <em>Sergio</em>.</h1>
+      <p class="subtitle">Un solo posto per manuali, framework, programmi e offerta formativa. Qui sotto trovi i numeri aggiornati di Zanichelli e le tue attività recenti.</p>
+    </div>
+    <div class="now">Giovedì · 25 luglio 2026 · h. 09:14</div>
+  </div>
+
+  <!-- Numeri sintetici -->
+  <div class="numeri">
+    <div class="n-card" style="--voce: var(--voce-offerta)">
+      <div class="l">Insegnamenti</div>
+      <div class="v">223.481</div>
+      <div class="d"><b>+ 1.204</b> vs. anno scorso · 98 atenei</div>
+    </div>
+    <div class="n-card" style="--voce: var(--voce-utilita)">
+      <div class="l">Manuali a catalogo</div>
+      <div class="v">348</div>
+      <div class="d"><b>42</b> Zanichelli · 306 competitor</div>
+    </div>
+    <div class="n-card" style="--voce: var(--voce-analisi)">
+      <div class="l">Framework disponibili</div>
+      <div class="v">17</div>
+      <div class="d">14 materie · <b>3</b> aggiornati questo mese</div>
+    </div>
+    <div class="n-card" style="--voce: var(--voce-piano)">
+      <div class="l">Programmi analizzati</div>
+      <div class="v">64</div>
+      <div class="d"><b>12</b> nuovi questa settimana</div>
+    </div>
+  </div>
+
+  <!-- Aree di lavoro -->
+  <h2 class="section">Le tue <em>aree di lavoro</em><span class="side">clicca per aprire</span></h2>
+  <p class="section-dek">Le cinque sezioni di Atlante. Ognuna ha un colore-guida che ritrovi nella sidebar e nei documenti esportati.</p>
+
+  <div class="voci-grid">
+    <a class="porta" href="A-offerta-formativa.html" style="--voce: var(--voce-offerta); --voce-soft: var(--voce-offerta-soft); --voce-ink: var(--voce-offerta-ink);">
+      <div class="cerchio">I</div>
+      <h3>Offerta formativa</h3>
+      <p>Cerca insegnamenti e lauree fra tutti gli atenei italiani. Salva ricerche, esporta in Excel, apri la vista ad albero per ateneo.</p>
+      <span class="go">Consulta il catalogo insegnamenti →</span>
+      <div class="quick"><b>▸</b> ultima ricerca: <em>Farmacologia Nord-Ovest</em></div>
+    </a>
+    <a class="porta" href="A-confronto.html" style="--voce: var(--voce-confronto); --voce-soft: var(--voce-confronto-soft); --voce-ink: var(--voce-confronto-ink);">
+      <div class="cerchio">II</div>
+      <h3>Confronto manuali</h3>
+      <p>Scegli un framework di valutazione e uno o più manuali della stessa materia. Ottieni un report qualitativo pronto per il colloquio.</p>
+      <span class="go">Confronta manuali →</span>
+      <div class="quick"><b>▸</b> ultimo: <em>Farmacologia · Katzung vs Goodman</em></div>
+    </a>
+    <a class="porta" href="A-analisi-programma.html" style="--voce: var(--voce-analisi); --voce-soft: var(--voce-analisi-soft); --voce-ink: var(--voce-analisi-ink);">
+      <div class="cerchio">III</div>
+      <h3>Analisi di un programma</h3>
+      <p>Un programma didattico + il manuale adottato + framework: rapporto qualitativo con opportunità commerciale motivata.</p>
+      <span class="go">Analizza un programma →</span>
+      <div class="quick"><b>▸</b> ultima: <em>Farmacologia clinica · Prof. Bianchi</em></div>
+    </a>
+    <a class="porta" href="A-piano-promozione.html" style="--voce: var(--voce-piano); --voce-soft: var(--voce-piano-soft); --voce-ink: var(--voce-piano-ink);">
+      <div class="cerchio">IV</div>
+      <h3>Piano di promozione</h3>
+      <p>Pipeline dei programmi: carica PDF → staging → database → campagne. Motivazioni ed email per singolo docente target.</p>
+      <span class="go">Vai al piano →</span>
+      <div class="quick"><b>▸</b> in coda: <em>3 programmi in staging</em></div>
+    </a>
+    <a class="porta" href="A-catalogo.html" style="--voce: var(--voce-utilita); --voce-soft: var(--voce-utilita-soft); --voce-ink: var(--voce-utilita-ink);">
+      <div class="cerchio">V</div>
+      <h3>Catalogo</h3>
+      <p>Anagrafica condivisa di manuali e framework. La stessa fonte dati usata da tutte le altre sezioni — modifichi qui, cambia ovunque.</p>
+      <span class="go">Gestisci catalogo →</span>
+      <div class="quick"><b>▸</b> 348 manuali · 17 framework</div>
+    </a>
+    <div class="porta" style="--voce: var(--ink-muted); --voce-soft: var(--paper-warm); --voce-ink: var(--ink); background: transparent; box-shadow: none; border-style: dashed;">
+      <div class="cerchio" style="background: var(--paper-warm); color: var(--ink-muted);">?</div>
+      <h3 style="color: var(--ink-muted)">Guida rapida</h3>
+      <p>Nuovo su Atlante? Un tour di 3 minuti sulle cinque aree e su come collegarle nel tuo lavoro quotidiano.</p>
+      <span class="go" style="color: var(--ink-muted)">Apri la guida →</span>
+    </div>
+  </div>
+
+  <!-- Attività recente -->
+  <h2 class="section">Attività <em>recente</em><span class="side"><a href="#">Vedi tutte →</a></span></h2>
+  <p class="section-dek">Le ultime cose che hai fatto tu e i tuoi colleghi. Riprendi dove hai lasciato.</p>
+
+  <div class="attivita">
+    <div class="riga">
+      <div class="dot" style="--voce: var(--voce-analisi)"></div>
+      <div class="titolo"><b>Analisi</b> di <em>Farmacologia clinica</em> — Prof. Bianchi, Torino<span class="sub">Consigliata adozione di Goodman &amp; Gilman · 3 gap chiusi</span></div>
+      <span class="quando">3 ore fa</span>
+      <a href="A-analisi-programma.html" class="apri">Apri →</a>
+    </div>
+    <div class="riga">
+      <div class="dot" style="--voce: var(--voce-piano)"></div>
+      <div class="titolo"><b>Campagna</b> "Farmacologia autunno 2026" — 12 target selezionati<span class="sub">Bozza · in attesa di rilascio</span></div>
+      <span class="quando">ieri, 17:42</span>
+      <a href="A-piano-promozione.html" class="apri">Apri →</a>
+    </div>
+    <div class="riga">
+      <div class="dot" style="--voce: var(--voce-confronto)"></div>
+      <div class="titolo"><b>Confronto</b> Katzung · Goodman · Rang-Dale sul framework MAP Farmacologia<span class="sub">Report PDF esportato</span></div>
+      <span class="quando">2 giorni fa</span>
+      <a href="A-confronto.html" class="apri">Apri →</a>
+    </div>
+    <div class="riga">
+      <div class="dot" style="--voce: var(--voce-utilita)"></div>
+      <div class="titolo"><b>Nuovo manuale</b> aggiunto: <em>Rang-Dale · Farmacologia 9ª ed.</em><span class="sub">Aggiunto da Anna Bassi · indice ancora da caricare</span></div>
+      <span class="quando">3 giorni fa</span>
+      <a href="A-catalogo.html" class="apri">Apri →</a>
+    </div>
+    <div class="riga">
+      <div class="dot" style="--voce: var(--voce-offerta)"></div>
+      <div class="titolo"><b>Ricerca salvata</b>: <em>Farmacologia Nord-Ovest</em><span class="sub">6 filtri combinati · 127 insegnamenti in scope</span></div>
+      <span class="quando">4 giorni fa</span>
+      <a href="A-offerta-formativa.html" class="apri">Apri →</a>
+    </div>
+  </div>
+
+  <!-- Tip -->
+  <div class="tip">
+    <div class="ic">*</div>
+    <div>
+      <h4>Sapevi che puoi collegare le sezioni?</h4>
+      <p>Da <a href="A-offerta-formativa.html">Offerta formativa</a> selezioni un insegnamento e passi con un click ad <a href="A-analisi-programma.html">Analisi programma</a> con framework e manuale già pre-compilati. E da lì, con altrettanti click, aggiungi il docente a una <a href="A-piano-promozione.html">campagna di promozione</a>.</p>
+    </div>
+  </div>
+
+</main>
+
+<script src="shell.js" data-attiva=""></script>
+</body>
+</html>

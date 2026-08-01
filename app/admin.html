@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — amministrazione</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+  }
+  body { background: var(--paper); min-height: 100vh; display: flex; justify-content: center; padding: 48px 20px; }
+  .wrap { width: 100%; max-width: 620px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--sh-1); padding: 26px 28px;
+  }
+  h1.page { margin: 0 0 6px; }
+  .subtitle { margin: 0 0 24px; }
+  .voci-check { display: flex; flex-wrap: wrap; gap: 14px; }
+  .voci-check label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); }
+  #risultato { margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <h1 class="page">Amministrazione<em>.</em></h1>
+    <p class="subtitle">Attiva un nuovo cliente Atlante: crea il cliente, il profilo del referente
+      (gestore) e, se li conosci già, i profili dei suoi colleghi — tutti invitati subito.</p>
+
+    <div id="stato-iniziale" class="vuoto">Caricamento…</div>
+
+    <div id="contenuto" hidden>
+      <div class="campo">
+        <label for="nomeCliente">Nome cliente</label>
+        <input class="field" id="nomeCliente" placeholder="es. Mondadori Education" />
+      </div>
+      <div class="campo">
+        <label for="editoreProprio">Editore proprio</label>
+        <select class="field" id="editoreProprio"><option value="">— seleziona —</option></select>
+        <p class="aiuto">Determina cosa l'app considera "proprio" vs "competitor" per questo cliente.
+          Elenco preso dai publisher già presenti nel catalogo condiviso — deve corrispondere
+          esattamente, altrimenti il confronto proprio/competitor si rompe in silenzio.</p>
+      </div>
+      <div class="campo">
+        <label for="referenteEmail">Email del referente (diventa gestore)</label>
+        <input class="field" id="referenteEmail" type="email" placeholder="referente@editore.it" />
+      </div>
+      <div class="campo">
+        <label for="rosterEmails">Altri colleghi da invitare subito (opzionale, una email per riga)</label>
+        <textarea class="field" id="rosterEmails" rows="3" placeholder="collega1@editore.it&#10;collega2@editore.it"></textarea>
+        <p class="aiuto">Verranno creati come promotore, tutti in stato pending. Se non li conosci ancora, lascia vuoto — si aggiungono in seguito dal pannello utenti del cliente.</p>
+      </div>
+      <div class="campo">
+        <label>Voci incluse</label>
+        <div class="voci-check">
+          <label><input type="checkbox" id="vOfferta" /> Offerta formativa</label>
+          <label><input type="checkbox" id="vConfronto" /> Confronto manuali</label>
+          <label><input type="checkbox" id="vAnalisi" /> Analisi di un programma</label>
+          <label><input type="checkbox" id="vPiano" /> Piano di promozione</label>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="btnCrea">Attiva cliente →</button>
+      <div id="risultato"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/admin-crea-cliente`;
+
+  // Solo un controllo di comodo lato UI: la protezione vera è nella Edge Function, che
+  // verifica di nuovo la stessa email lato server prima di scrivere qualunque cosa.
+  const ADMIN_EMAILS = ['sartinisergio@gmail.com'];
+
+  async function crea() {
+    const risultato = document.getElementById('risultato');
+    const btn = document.getElementById('btnCrea');
+    const nome_cliente = document.getElementById('nomeCliente').value.trim();
+    const editore_proprio = document.getElementById('editoreProprio').value.trim();
+    const referente_email = document.getElementById('referenteEmail').value.trim();
+    const roster_emails = document.getElementById('rosterEmails').value
+      .split('\n').map(s => s.trim()).filter(Boolean);
+    const voci = {
+      offerta_formativa_inclusa: document.getElementById('vOfferta').checked,
+      confronto_manuali_incluso: document.getElementById('vConfronto').checked,
+      analisi_programma_incluso: document.getElementById('vAnalisi').checked,
+      piano_promozione_incluso: document.getElementById('vPiano').checked,
+    };
+
+    if (!nome_cliente || !editore_proprio || !referente_email) {
+      risultato.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>Nome cliente, editore proprio ed email del referente sono obbligatori.</div></div>`;
+      return;
+    }
+
+    btn.disabled = true;
+    risultato.innerHTML = '';
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      const resp = await fetch(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome_cliente, editore_proprio, referente_email, roster_emails, voci,
+          redirectTo: new URL('login.html', window.location.href).href,
+        }),
+      });
+      const body = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        risultato.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>${escapeHtml(body.error || 'Attivazione non riuscita.')}</div></div>`;
+        return;
+      }
+      const nInvitati = body.profili.length;
+      const erroriHtml = (body.errori_roster || []).length
+        ? `<div class="helper attesa"><span class="ic">!</span><div>Alcuni colleghi del roster non sono stati invitati: ${body.errori_roster.map(escapeHtml).join('; ')}</div></div>`
+        : '';
+      risultato.innerHTML = `<div class="helper ok"><span class="ic">✓</span><div><strong>${escapeHtml(body.cliente.nome)}</strong> creato, ${nInvitati} invito/i inviato/i.</div></div>${erroriHtml}`;
+      document.getElementById('nomeCliente').value = '';
+      document.getElementById('editoreProprio').value = '';
+      document.getElementById('referenteEmail').value = '';
+      document.getElementById('rosterEmails').value = '';
+    } catch (err) {
+      risultato.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>Errore di rete: ${escapeHtml(err.message)}</div></div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('btnCrea').addEventListener('click', crea);
+
+  async function popolaEditoriProprio() {
+    const select = document.getElementById('editoreProprio');
+    const { data, error } = await supabaseClient.from('manuali').select('publisher');
+    if (error || !data) return;
+    const editori = [...new Set(data.map(m => m.publisher).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    select.insertAdjacentHTML('beforeend', editori.map(e => `<option value="${escapeHtml(e)}">${escapeHtml(e)}</option>`).join(''));
+  }
+
+  async function main() {
+    const statoIniziale = document.getElementById('stato-iniziale');
+    const sessione = await avviaSessione(supabaseClient, { redirect: true });
+    if (!sessione) return; // avviaSessione ha già rediretto a login.html
+
+    const email = (sessione.session.user.email || '').toLowerCase();
+    if (!ADMIN_EMAILS.includes(email)) {
+      statoIniziale.innerHTML = `<div class="empty">
+        <h4>Pagina riservata</h4>
+        <p>Questa pagina è visibile solo all'amministratore di Atlante.</p>
+      </div>`;
+      return;
+    }
+
+    statoIniziale.hidden = true;
+    document.getElementById('contenuto').hidden = false;
+    popolaEditoriProprio();
+  }
+
+  main();
+</script>
+</body>
+</html>

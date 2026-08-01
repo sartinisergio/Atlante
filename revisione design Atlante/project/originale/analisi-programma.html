@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — analisi di un programma</title>
+<link rel="stylesheet" href="css/atlante-theme.css" />
+<style>
+  html { background: color-mix(in srgb, var(--paper) 80%, var(--voce-analisi-tint) 20%); }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 40px auto; padding: 0 20px; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, var(--voce-analisi-tint) 20%); }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 21px; margin-bottom: 4px; }
+  #chi { font-size: 13px; color: var(--ink-muted); margin-bottom: 8px; }
+  #chi a { color: var(--voce-analisi); }
+  nav { font-size: 13px; margin-bottom: 24px; }
+  nav a { color: var(--voce-analisi); }
+  h2 { font-size: 15px; margin: 30px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  h3 { font-size: 14px; margin: 20px 0 8px; }
+  select, input[type=text], input[type=number], textarea { padding: 8px; font-size: 14px; width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  textarea { min-height: 160px; font-family: inherit; }
+  .campo { margin: 16px 0; }
+  .campo label { display: block; font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; }
+  .campo p.aiuto { font-size: 12px; color: var(--ink-muted); margin: 4px 0 0; }
+  .riga2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .elenco-manuali { border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px; }
+  .riga-manuale { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .riga-manuale:last-child { border-bottom: none; }
+  .riga-manuale .principale { flex: 1; }
+  .riga-manuale .principale small { color: var(--ink-muted); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .disponibile { background: var(--green-tint); color: var(--green); }
+  .non-disponibile { background: var(--surface-2); color: var(--ink-muted); }
+  button#analizza { padding: 10px 18px; font-size: 14px; cursor: pointer; margin-top: 10px; background: var(--voce-analisi); color: #fff; border: none; border-radius: 6px; }
+  button#analizza:hover { background: var(--voce-analisi-strong); }
+  button#analizza:disabled { opacity: .5; cursor: not-allowed; }
+  .upload { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  #msg { font-size: 13px; margin-top: 10px; }
+  #msg.errore { color: var(--brick); }
+  #msg.attesa { color: var(--voce-analisi); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--voce-analisi); border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #stato { padding: 12px; border-radius: 6px; background: var(--amber-tint); margin: 20px 0; }
+  .panoramiche p { font-size: 14px; line-height: 1.55; }
+  table.risultato { width: 100%; border-collapse: collapse; font-size: 13px; margin: 14px 0; }
+  table.risultato th, table.risultato td { text-align: left; padding: 8px 10px; border: 1px solid var(--line); vertical-align: top; }
+  table.risultato th { background: var(--surface-2); font-size: 12px; }
+  table.risultato td.modulo { min-width: 200px; font-weight: 600; }
+  .stato-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
+  .stato-presente { background: var(--green-tint); color: var(--green); }
+  .stato-parziale { background: var(--amber-tint); color: #8a6417; }
+  .stato-assente { background: var(--brick-tint); color: var(--brick); }
+  .stato-n\/d { background: var(--surface-2); color: var(--ink-muted); }
+  .nota { color: var(--ink); margin-top: 3px; }
+  .etichetta-lista { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); margin: 10px 0 4px; }
+  .giudizio-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; white-space: nowrap; }
+  .giudizio-insufficiente { background: #f1dbd7; color: #9c3b30; }
+  .giudizio-sufficiente { background: #f6e2d0; color: #96591b; }
+  .giudizio-discreto { background: #f3e6cc; color: #8a6417; }
+  .giudizio-buono { background: #e3ecd8; color: #4f7a2f; }
+  .giudizio-molto-buono { background: #dcece3; color: #2f6b4f; }
+  .giudizio-eccellente { background: #d6e8f5; color: #1f5c8a; }
+  .giudizio-n\/d { background: var(--surface-2); color: var(--ink-muted); }
+  .adozione { margin-top: 30px; border: 1px solid #cfe0d0; background: #f5faf6; border-radius: 8px; padding: 4px 20px 16px; }
+  .adozione h2 { border-bottom-color: #cfe0d0; }
+  .adozione ul { font-size: 14px; line-height: 1.5; padding-left: 20px; }
+  .adozione-avviso { font-size: 12px; color: var(--ink-muted); font-style: italic; }
+  .esportazioni { margin: 20px 0; display: none; gap: 8px; }
+  .esportazioni button { padding: 7px 12px; font-size: 13px; cursor: pointer; background: var(--surface); color: var(--voce-analisi); border: 1px solid var(--voce-analisi); border-radius: 6px; }
+  .esportazioni button:hover { background: var(--voce-analisi-tint); }
+  .radio-riga { display: flex; gap: 20px; font-size: 14px; }
+  .radio-riga label { display: flex; align-items: center; gap: 6px; font-weight: normal; }
+  .peso-tag { display: inline-block; font-size: 10.5px; color: var(--ink-muted); border: 1px solid #cfe0d0; border-radius: 10px; padding: 1px 8px; margin-top: 4px; }
+  .esito-box { background: var(--surface); border: 1px solid #cfe0d0; border-left: 3px solid var(--voce-analisi); border-radius: 6px; padding: 12px 16px; margin: 10px 0 16px; }
+  .esito-box p { margin: 0; font-size: 13.5px; }
+  .regola-colloquio { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; padding: 12px 0; border-bottom: 1px solid #cfe0d0; }
+  .regola-colloquio:last-of-type { border-bottom: none; }
+  .regola-colloquio .proponi { font-size: 13px; font-weight: 600; color: var(--voce-analisi); margin: 0 0 4px; }
+  .fallback-box { border: 1px dashed #cfe0d0; border-radius: 6px; padding: 12px 16px; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<h1>Atlante — analisi di un programma</h1>
+<div id="chi">Caricamento...</div>
+<nav><a href="home.html">← Menu</a></nav>
+
+<details class="come-funziona" style="--voce-corrente: var(--voce-analisi)">
+  <summary>❓ Come funziona questa sezione</summary>
+  <p>Carica o incolla il programma di un singolo insegnamento, insieme al framework di riferimento e al manuale già adottato (più eventuali alternativi in bibliografia). L'analisi valuta il programma su più dimensioni e confronta la copertura dei manuali disponibili — sempre con giudizi qualitativi, mai un punteggio numerico o un manuale "vincitore" imposto a priori: il consiglio finale tiene conto di quanto il programma stesso pesa ogni argomento.</p>
+</details>
+
+<div id="contenuto" style="display:none">
+
+  <h2>1. Framework e contesto</h2>
+  <div class="campo">
+    <label>Framework</label>
+    <select id="selFramework"><option value="">— seleziona —</option></select>
+  </div>
+  <div class="riga2">
+    <div class="campo">
+      <label>Classe di laurea</label>
+      <select id="selContesto" disabled><option value="">— seleziona prima un framework —</option></select>
+      <input id="inputContestoAltro" type="text" placeholder="Nome della classe di laurea" style="display:none;margin-top:6px" />
+    </div>
+    <div class="campo">
+      <label>CFU (opzionale)</label>
+      <input id="inputCfu" type="number" min="0" />
+    </div>
+  </div>
+  <div class="campo">
+    <label>Ore (opzionale)</label>
+    <input id="inputOre" type="number" min="0" style="max-width:200px" />
+  </div>
+
+  <h2>2. Manuale adottato e bibliografia</h2>
+  <div class="campo">
+    <label>Manuale adottato (dal catalogo condiviso)</label>
+    <select id="selManualeAdottato"><option value="">— seleziona prima un framework —</option></select>
+    <p class="aiuto">Se il manuale non è a catalogo, aggiungilo prima in <a href="catalogo.html">Utilità</a>.</p>
+  </div>
+  <div class="campo">
+    <label>Altri manuali in bibliografia (opzionale)</label>
+    <div id="elencoAlternativi" class="elenco-manuali"><p style="color:var(--ink-muted);font-size:13px">Seleziona prima un framework e il manuale adottato.</p></div>
+  </div>
+
+  <h2>3. Programma didattico</h2>
+  <div class="upload">
+    <input type="file" id="fileInput" accept=".pdf,.txt" />
+  </div>
+  <textarea id="testoInput" placeholder="Incolla qui il testo del programma, oppure carica un file PDF/TXT sopra..."></textarea>
+
+  <h2>4. Analisi</h2>
+  <div class="campo">
+    <label>Tipo di analisi</label>
+    <div class="radio-riga">
+      <label><input type="radio" name="tipoAnalisi" value="base" checked /> Base</label>
+      <label><input type="radio" name="tipoAnalisi" value="avanzata" /> Avanzata (include strategia commerciale e colloquio)</label>
+    </div>
+  </div>
+  <div class="campo">
+    <label>Chiave API OpenAI (usata solo dal tuo browser, non viene salvata su Atlante)</label>
+    <input id="apiKey" type="password" placeholder="sk-..." />
+  </div>
+  <div class="campo">
+    <label>Modello</label>
+    <select id="modello">
+      <option value="gpt-4o-mini">gpt-4o-mini (consigliato — l'analisi avanzata comporta molte chiamate)</option>
+      <option value="gpt-4o">gpt-4o (più capace, più lento e costoso)</option>
+    </select>
+  </div>
+
+  <button id="analizza" disabled>Analizza</button>
+  <div id="msg"></div>
+
+  <div id="esportazioni" class="esportazioni">
+    <button id="espMarkdown">Scarica Markdown</button>
+    <button id="espHtml">Scarica HTML</button>
+    <button id="espPdf">Scarica PDF</button>
+  </div>
+
+  <div id="risultato"></div>
+
+</div>
+<div id="stato" style="display:none"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let tuttiFramework = [];
+  let tuttiManuali = [];
+  let frameworkScelto = null;
+  let editoreProprio = null;
+  let ultimoRisultato = null;
+
+  // ---- estrazione tollerante da dati.raw, stessa logica di confronto.html ----
+  function estraiModuliFramework(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const moduli = raw.syllabus_modules || (raw.content && raw.content.framework && raw.content.framework.syllabus_modules) || raw.modules;
+    if (!Array.isArray(moduli) || moduli.length === 0) return null;
+    return moduli.map(m => ({ nome: m.name || m.nome || '(senza nome)', contenuti: m.core_contents || m.contenuti || '' }));
+  }
+
+  function estraiProfiliLaurea(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const profili = raw.program_profiles || (raw.content && raw.content.framework && raw.content.framework.program_profiles);
+    if (!Array.isArray(profili) || profili.length === 0) return null;
+    const puliti = profili
+      .map(p => ({ nome: p.name || p.nome || '', priorita: p.priority_modules || p.priorita || '' }))
+      .filter(p => p.nome && p.priorita);
+    return puliti.length > 0 ? puliti : null;
+  }
+
+  function estraiCriteriValutazione(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const criteri = raw.evaluation_criteria || (raw.content && raw.content.framework && raw.content.framework.evaluation_criteria);
+    if (!criteri || typeof criteri !== 'object' || Array.isArray(criteri)) return null;
+    const voci = Object.entries(criteri).filter(([k, v]) => typeof v === 'string' && v.trim());
+    return voci.length > 0 ? voci.map(([chiave, testo]) => ({ chiave, testo })) : null;
+  }
+
+
+  function calcolaRangoMedio(moduli) {
+    if (!moduli || moduli.length === 0) return 0;
+    const somma = moduli.reduce((acc, m) => acc + (RANGO_STATO[m.stato] ?? 0), 0);
+    return somma / moduli.length;
+  }
+
+  function etichettaCopertura(rangoMedio) {
+    if (rangoMedio >= 1.8) return 'Copre praticamente tutto il programma';
+    if (rangoMedio >= 1.5) return 'Copre la grande maggioranza del programma';
+    if (rangoMedio >= 1.2) return 'Copre buona parte del programma';
+    if (rangoMedio >= 0.8) return 'Copre una parte significativa del programma';
+    if (rangoMedio >= 0.4) return 'Copertura parziale del programma';
+    return 'Copertura scarsa del programma';
+  }
+
+  // ---- giudizio complessivo del programma: calcolato in JS dalla media dei giudizi atomici
+  // (4 dimensioni + copertura moduli), mai chiesto come voto unico all'AI ----
+  function calcolaGiudizioComplessivo(valutazioneProgramma) {
+    const rangoDim = ['obiettivi_formativi', 'metodologia_didattica', 'allineamento_curriculum', 'risultati_attesi']
+      .map(k => rangoGiudizio(normalizzaGiudizio(valutazioneProgramma[k] && valutazioneProgramma[k].giudizio)))
+      .filter(r => r !== -1);
+    const rangoModuli = (calcolaRangoMedio(valutazioneProgramma.moduli) / 2) * (GIUDIZI.length - 1);
+    const tutti = [...rangoDim, rangoModuli];
+    const media = tutti.reduce((a, b) => a + b, 0) / tutti.length;
+    const indice = Math.max(0, Math.min(GIUDIZI.length - 1, Math.round(media)));
+    return GIUDIZI[indice];
+  }
+
+  function popolaSelectFramework() {
+    const sel = document.getElementById('selFramework');
+    const ordinati = [...tuttiFramework].sort((a, b) => (a.materia || '').localeCompare(b.materia || '') || a.nome.localeCompare(b.nome));
+    sel.innerHTML = '<option value="">— seleziona —</option>' + ordinati.map(f =>
+      `<option value="${f.id}">${escapeHtml(f.materia || '(senza materia)')} — ${escapeHtml(f.nome)}</option>`
+    ).join('');
+  }
+
+  function popolaSelectContesto() {
+    const sel = document.getElementById('selContesto');
+    const box = document.getElementById('inputContestoAltro');
+    if (!frameworkScelto) {
+      sel.innerHTML = '<option value="">— seleziona prima un framework —</option>';
+      sel.disabled = true;
+      box.style.display = 'none';
+      return;
+    }
+    const profili = estraiProfiliLaurea(frameworkScelto);
+    if (profili) {
+      sel.innerHTML = profili.map(p => `<option value="${escapeHtml(p.nome)}">${escapeHtml(p.nome)}</option>`).join('') +
+        '<option value="__altro__">Altro (specifica)</option>';
+      sel.disabled = false;
+    } else {
+      sel.innerHTML = '<option value="__altro__" selected>Nessuna classe di laurea nel framework — specifica</option>';
+      sel.disabled = false;
+    }
+    box.style.display = sel.value === '__altro__' ? 'block' : 'none';
+  }
+
+  function popolaSelectManualeAdottato() {
+    const sel = document.getElementById('selManualeAdottato');
+    if (!frameworkScelto) {
+      sel.innerHTML = '<option value="">— seleziona prima un framework —</option>';
+      return;
+    }
+    const candidati = tuttiManuali.filter(m => m.materia === frameworkScelto.materia);
+    if (candidati.length === 0) {
+      sel.innerHTML = `<option value="">Nessun manuale in catalogo per "${escapeHtml(frameworkScelto.materia || '')}"</option>`;
+      return;
+    }
+    sel.innerHTML = '<option value="">— seleziona —</option>' + candidati.map(m => {
+      const disponibile = estraiIndiceManuale(m) !== null;
+      return `<option value="${m.id}" ${disponibile ? '' : 'disabled'}>${escapeHtml(m.autore || '(autore sconosciuto)')} — ${escapeHtml(m.titolo)}${disponibile ? '' : ' (indice non disponibile)'}</option>`;
+    }).join('');
+  }
+
+  function renderElencoAlternativi() {
+    const box = document.getElementById('elencoAlternativi');
+    const idAdottato = document.getElementById('selManualeAdottato').value;
+    if (!frameworkScelto) { box.innerHTML = '<p style="color:var(--ink-muted);font-size:13px">Seleziona prima un framework e il manuale adottato.</p>'; return; }
+    const candidati = tuttiManuali.filter(m => m.materia === frameworkScelto.materia && m.id !== idAdottato);
+    if (candidati.length === 0) { box.innerHTML = '<p style="color:var(--ink-muted);font-size:13px">Nessun altro manuale disponibile in questa materia.</p>'; return; }
+    box.innerHTML = candidati.map(m => {
+      const disponibile = estraiIndiceManuale(m) !== null;
+      return `<div class="riga-manuale">
+        <input type="checkbox" data-id="${m.id}" ${disponibile ? '' : 'disabled'} />
+        <span class="principale">${escapeHtml(m.autore || '(autore sconosciuto)')} <small>${escapeHtml(m.titolo)}${m.publisher ? ' · ' + escapeHtml(m.publisher) : ''}</small></span>
+        <span class="badge ${disponibile ? 'disponibile' : 'non-disponibile'}">${disponibile ? 'indice disponibile' : 'indice non disponibile'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function resettaRisultato() {
+    ultimoRisultato = null;
+    document.getElementById('risultato').innerHTML = '';
+    document.getElementById('msg').className = '';
+    document.getElementById('msg').textContent = '';
+    document.getElementById('esportazioni').style.display = 'none';
+  }
+
+  function aggiornaStatoBottone() {
+    const testo = document.getElementById('testoInput').value.trim();
+    const ok = !!frameworkScelto && !!document.getElementById('selManualeAdottato').value && testo.length > 0;
+    document.getElementById('analizza').disabled = !ok;
+  }
+
+  async function estraiTestoDaPdf(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let testo = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      testo += content.items.map(it => it.str).join(' ') + '\n';
+    }
+    return testo;
+  }
+
+  // ---- elaborazione risultato di UN manuale vs programma: coperti/gap/copertura calcolati in
+  // JS dai giudizi atomici per modulo, mai richiesti come numero all'AI ----
+  function elaboraAnalisiManuale(risultatoAI, moduli) {
+    const moduliFull = moduli.map((mo, idx) => {
+      const r = (risultatoAI.moduli || [])[idx];
+      return r ? { modulo: mo.nome, stato: r.stato, capitoli: r.capitoli || '', nota: r.nota } : { modulo: mo.nome, stato: null, capitoli: '', nota: '(dato mancante nella risposta del modello)' };
+    });
+    const coperti = moduliFull.filter(m => m.stato === 'presente');
+    const gap = moduliFull.filter(m => m.stato === 'parziale' || m.stato === 'assente');
+    const rangoMedio = calcolaRangoMedio(moduliFull);
+    return {
+      moduli: moduliFull,
+      coperti,
+      gap,
+      rangoMedio,
+      etichettaCopertura: etichettaCopertura(rangoMedio),
+      eccedenti: (risultatoAI.eccedenti || []).filter(Boolean),
+      punti_forza: risultatoAI.punti_forza || [],
+      punti_debolezza: risultatoAI.punti_debolezza || [],
+      sintesi: risultatoAI.sintesi || '',
+      compatibilita_criteri: risultatoAI.compatibilita_criteri || null,
+    };
+  }
+
+  // ---- confronto oggettivo tra due manuali già analizzati, calcolato modulo per modulo
+  // (stesso principio di calcolaArgomentiAdozione in confronto.html) ----
+  function calcolaConfrontoManuali(analisiA, analisiB) {
+    const aFavore = [];
+    const attenzione = [];
+    for (let i = 0; i < analisiA.moduli.length; i++) {
+      const ra = RANGO_STATO[analisiA.moduli[i].stato] ?? 0;
+      const rb = RANGO_STATO[analisiB.moduli[i].stato] ?? 0;
+      if (ra > rb) aFavore.push({ modulo: analisiA.moduli[i].modulo, nota: analisiA.moduli[i].nota });
+      else if (rb > ra) attenzione.push({ modulo: analisiA.moduli[i].modulo, nota: analisiB.moduli[i].nota });
+    }
+    return { aFavore, attenzione };
+  }
+
+  function costruisciPromptQuadro(testo, frameworkScelto, moduli, profiloClasseTesto, contesto, criteri, cfu, ore) {
+    const promptModuli = moduli.map((m, i) => `${i + 1}. ${m.nome}${m.contenuti ? ' — ' + m.contenuti : ''}`).join('\n');
+    return `Sei un esperto di didattica universitaria che analizza un programma di corso per un promotore editoriale.
+
+PROGRAMMA DIDATTICO:
+${testo.slice(0, 9000)}
+
+FRAMEWORK DI RIFERIMENTO: "${frameworkScelto.nome}" (materia: ${frameworkScelto.materia || 'non specificata'})
+MODULI DEL FRAMEWORK:
+${promptModuli}
+
+CONTESTO:
+- Classe di laurea indicata dal promotore: ${contesto || 'non specificata'}
+- CFU: ${cfu || 'non specificato'}
+- Ore: ${ore || 'non specificato'}
+
+COMPITO 1 — METADATA: estrai università, corso di laurea, denominazione dell'insegnamento, docente (stringa vuota se non presente nel testo, mai inventare).
+
+COMPITO 2 — QUADRO GENERALE: tipologia del corso in una riga; livello di complessità (base/intermedio/avanzato); una nota di sintesi di 2-3 righe. (Il peso di ciascun modulo viene valutato in una fase successiva insieme alla sua copertura, non qui — per evitare di giudicare "quanto un argomento pesa" prima ancora di aver stabilito se il programma lo tratta.)
+
+COMPITO 3 — PROFILO PEDAGOGICO DEL DOCENTE: approccio (teorico/applicativo/sperimentale/misto), livello, stile (classico/moderno/innovativo/tradizionale), orientamento (disciplinare puro/applicato/misto), 3-5 enfasi specifiche citate dal programma, metodologia didattica (come insegna e valuta, se dichiarato), una nota sulle caratteristiche distintive.
+
+${profiloClasseTesto ? `COMPITO 4 — ALLINEAMENTO CON LA CLASSE DI LAUREA: il framework indica queste priorità per "${contesto}":
+${profiloClasseTesto}
+Per ciascuna priorità valuta se il programma la soddisfa (si/parzialmente/no) citando un'evidenza specifica dal testo, e un giudizio (Perfetto allineamento/Buon allineamento/Allineamento parziale/Disallineamento). Poi un allineamento complessivo (Alto/Medio-Alto/Medio/Medio-Basso/Basso).` : ''}
+
+${criteri ? `COMPITO 5 — CRITERI DISCIPLINARI SPECIFICI: per ciascun criterio sotto, indica come si posiziona questo programma, con evidenze citate dal testo, e una confidenza (alta/media/bassa):
+${criteri.map(c => `- ${c.chiave}: ${c.testo}`).join('\n')}` : ''}
+
+Non inventare informazioni non presenti nel programma: se un dato manca, dillo esplicitamente invece di stimarlo.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{
+  "metadata": {"universita":"", "corso_laurea":"", "denominazione_corso":"", "docente":""},
+  "quadro_generale": {"tipologia":"", "livello_complessita":"base|intermedio|avanzato", "note":""},
+  "profilo_pedagogico": {"approccio":"", "livello":"", "stile":"", "orientamento":"", "enfasi":["",""], "metodologia":"", "note":""}${profiloClasseTesto ? `,
+  "allineamento_classe": {"valutazioni":[{"priorita":"","soddisfatta":"si|parzialmente|no","evidenza":"","valutazione":""}], "allineamento_complessivo":""}` : ''}${criteri ? `,
+  "criteri_disciplinari": [{"criterio":"","posizione_programma":"","evidenze":"","confidenza":"alta|media|bassa"}]` : ''}
+}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptValutazione(testo, moduli, quadroRaw) {
+    const promptModuli = moduli.map((m, i) => `${i + 1}. ${m.nome}${m.contenuti ? ' — ' + m.contenuti : ''}`).join('\n');
+    return `Sei un esperto di didattica universitaria. Hai già analizzato il quadro generale di questo programma (${quadroRaw.quadro_generale.tipologia}); ora valuta nel dettaglio la sua qualità didattica.
+
+PROGRAMMA DIDATTICO:
+${testo}
+
+MODULI DEL FRAMEWORK (devono risultare esattamente ${moduli.length} voci, stesso ordine):
+${promptModuli}
+
+PARTE A — Per OGNUNO dei moduli sopra, valuta se il PROGRAMMA (non un manuale) tratta quell'argomento:
+- "presente": il modulo è trattato in modo sostanziale nel programma
+- "parziale": è trattato solo in parte
+- "assente": non risulta nel programma
+Scrivi una "nota" di 1-2 frasi che cita il punto specifico del testo del programma su cui si basa il giudizio. Indica anche un "peso" (alto/medio/basso) — quanto spazio occupa quel modulo nel programma, valutato ORA che hai già deciso se è presente/parziale/assente, non prima: ⚠️ REGOLA VINCOLANTE — se lo stato è "assente", il peso non può essere "alto" né "medio" (un argomento su cui il programma non spende nessuno spazio non può pesare molto in quel programma): usa "basso". Solo per i moduli "presente" o "parziale" ha senso distinguere alto/medio/basso in base a quanto spazio occupano rispetto agli altri moduli trattati.
+
+PARTE B — Valuta queste 4 dimensioni del programma, usando ESCLUSIVAMENTE una di queste sei etichette (testo esatto, minuscolo): insufficiente, sufficiente, discreto, buono, molto buono, eccellente. Scrivi anche una "nota" di 1-2 frasi con evidenza specifica dal testo.
+1. Obiettivi formativi: completezza, chiarezza, misurabilità, coerenza con standard accademici
+2. Metodologia didattica: didattica attiva, materiali, modalità di valutazione, supporto allo studente
+3. Allineamento curriculum: coerenza con altri insegnamenti, progressione didattica, flessibilità
+4. Risultati attesi: competenze tecnico-scientifiche, trasversali, preparazione professionale
+
+PARTE C — SINTESI: scrivi 3-5 frasi che riassumono il programma nel suo complesso (tipologia, punti di forza, eventuali lacune rispetto ai moduli del framework, adeguatezza alla classe di laurea) — questo è il primo testo che il promotore legge, deve stare in piedi da solo senza il resto del report.
+
+Non inventare contenuti non presenti nel programma.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{
+  "moduli": [{"modulo":"<nome esatto>","stato":"presente|parziale|assente","peso":"alto|medio|basso","nota":"..."}],
+  "obiettivi_formativi": {"giudizio":"...", "nota":"..."},
+  "metodologia_didattica": {"giudizio":"...", "nota":"..."},
+  "allineamento_curriculum": {"giudizio":"...", "nota":"..."},
+  "risultati_attesi": {"giudizio":"...", "nota":"..."},
+  "sintesi": "..."
+}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptManualeVsProgramma(manuale, testo, moduli, criteri, valutazioneProgramma) {
+    const promptModuli = moduli.map((m, i) => `${i + 1}. ${m.nome}${m.contenuti ? ' — ' + m.contenuti : ''}`).join('\n');
+    const contestoProgramma = valutazioneProgramma.moduli.map(m => `- ${m.modulo}: il programma lo tratta come "${m.stato}" (${m.nota})`).join('\n');
+    return `Sei un analista editoriale senior. Valuta l'indice di UN SOLO manuale rispetto a questo programma didattico e ai moduli del framework.
+
+PROGRAMMA DIDATTICO (per contesto):
+${testo.slice(0, 6000)}
+
+COME IL PROGRAMMA TRATTA CIASCUN MODULO (già analizzato, usalo come riferimento — non ridiscuterlo):
+${contestoProgramma}
+
+MANUALE DA ANALIZZARE: ${manuale.etichettaLunga}
+INDICE DEL MANUALE:
+${manuale.indice}
+
+Per OGNUNO dei moduli sotto (esattamente ${moduli.length} voci, stesso ordine), valuta se questo MANUALE copre quanto il programma richiede su quel modulo (non il modulo in astratto: guarda cosa serve SPECIFICAMENTE a questo programma, riportato sopra):
+${promptModuli}
+- "presente": il manuale copre in modo sostanziale ciò che il programma richiede su questo modulo
+- "parziale": copre solo in parte
+- "assente": non copre quanto richiesto
+Scrivi "capitoli" con il/i numeri di capitolo dell'indice che coprono il modulo (stringa breve, es. "Cap. 5, 6, 7"; stringa vuota se assente). Scrivi una "nota" che cita SEMPRE il capitolo/argomento specifico dell'indice — non ripetere qui i numeri già in "capitoli", spiega invece COSA tratta e come si collega a quanto richiede il programma.
+
+Poi scrivi:
+- "eccedenti": 0-5 argomenti presenti nell'indice del manuale ma non richiesti da nessuno dei moduli sopra (contenuto che va oltre il programma). Scrivi il NOME dell'argomento (es. "Reazioni radicaliche a catena"), MAI il solo numero di capitolo da solo — un numero senza nome non è leggibile da chi non ha l'indice sotto mano. Array vuoto se non ce ne sono.
+- "punti_forza": 2-4 aspetti del manuale particolarmente adatti a QUESTO programma (non genericità)
+- "punti_debolezza": 1-3 limiti del manuale rispetto a QUESTO programma
+- "sintesi": 2-3 frasi che riassumono l'adeguatezza di questo manuale per QUESTO programma — deve stare in piedi da sola, il promotore la legge senza il resto del report
+${criteri ? `- "compatibilita_criteri": una nota (max 200 caratteri) su come il manuale si posiziona rispetto ai criteri disciplinari specifici della materia: ${criteri.map(c => c.chiave).join(', ')}` : ''}
+
+Non citare mai numeri di pagina. Non inventare contenuti non presenti nell'indice.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"moduli":[{"modulo":"<nome esatto>","stato":"presente|parziale|assente","capitoli":"","nota":"..."}],"eccedenti":[""],"punti_forza":["",""],"punti_debolezza":[""],"sintesi":""${criteri ? `,"compatibilita_criteri":""` : ''}}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptMotivazioniScelta(testo, quadroRaw, manualeAdottato, alternativi) {
+    const sezioneAlternativi = alternativi.length > 0
+      ? alternativi.map((a, i) => `Alternativo ${i + 1}: ${a.etichettaLunga}\nINDICE:\n${a.indice.slice(0, 3000)}`).join('\n\n')
+      : 'Nessun manuale alternativo in bibliografia.';
+    return `Sei un esperto di analisi editoriale universitaria e strategie commerciali per case editrici.
+
+PROGRAMMA (per contesto):
+${testo.slice(0, 5000)}
+
+QUADRO GIA' ANALIZZATO:
+${JSON.stringify(quadroRaw.quadro_generale)}
+${JSON.stringify(quadroRaw.profilo_pedagogico)}
+
+MANUALE PRINCIPALE ADOTTATO: ${manualeAdottato.etichettaLunga}
+INDICE:
+${manualeAdottato.indice.slice(0, 4000)}
+
+MANUALI ALTERNATIVI IN BIBLIOGRAFIA:
+${sezioneAlternativi}
+
+COMPITO:
+1. Analizza 3-5 fattori decisivi (con peso alto/medio/basso, evidenza citata dal programma, e una spiegazione di 1 frase del perché questo fattore conta) che spiegano perché il docente ha scelto il manuale principale; classifica la natura della scelta (convinta/ereditata/compromesso) con una breve spiegazione e una confidenza (alta/media/bassa).
+2. Elenca 2-3 priorità di fondo del docente per QUESTO corso (non attributi del manuale, ma obiettivi didattici che il docente sembra perseguire — es. "fornire una base teorica solida", "enfatizzare gli aspetti applicativi").
+${alternativi.length > 0 ? `3. Per ciascun alternativo, indica il ruolo che sembra avere nella bibliografia (approfondimento/semplificazione/esercizi/modulo specifico/alternativa per gli studenti) confrontando gli indici, e cosa questo rivela di un possibile gap del manuale principale.
+4. Suggerisci COSA verificare con il docente in colloquio a proposito di questa combinazione di testi (non una domanda diretta, un'indicazione strategica).` : ''}
+5. Profilo decisionale: cosa cerca (3 punti), cosa evita (2 punti), sensibilità al prezzo (alta/media/bassa), familiarità con l'editore proprio a giudicare dalla scelta attuale (alta/media/bassa/nulla), apertura a un cambio del manuale principale (alta/media/bassa), apertura a integrare un alternativo in più (alta/media/bassa).
+
+Usa linguaggio qualitativo ("probabilmente", "sembra"). Non inventare dati numerici. Basa tutto sul programma e sugli indici forniti.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{
+  "motivazioni_principale": [{"fattore":"","peso":"alto|medio|basso","evidenza":"","spiegazione":""}],
+  "natura_scelta": "convinta|ereditata|compromesso",
+  "natura_scelta_spiegazione": "",
+  "priorita_docente": ["","",""],
+  ${alternativi.length > 0 ? `"alternativi": [{"titolo":"","ruolo":"","cosa_rivela":""}],
+  "cosa_verificare_colloquio": "",` : ''}
+  "profilo_decisionale": {"cosa_cerca":["","",""],"cosa_evita":["",""],"sensibilita_prezzo":"alta|media|bassa","familiarita_editore":"alta|media|bassa|nulla","apertura_cambio":"alta|media|bassa","apertura_integrazione_alternativo":"alta|media|bassa"}
+}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptProfiloDocente(testo, quadroRaw, contesto) {
+    return `Sei un assistente strategico per promotori editoriali universitari.
+
+QUADRO GIA' ANALIZZATO DEL PROGRAMMA:
+${JSON.stringify(quadroRaw.quadro_generale)}
+${JSON.stringify(quadroRaw.profilo_pedagogico)}
+
+PROGRAMMA (per contesto):
+${testo.slice(0, 5000)}
+
+CLASSE DI LAUREA: ${contesto || 'non specificata'}
+
+Ogni affermazione deve contenere un riferimento specifico al programma (argomento, metodologia, formulazione), un dato concreto solo se presente, oppure un'inferenza non ovvia che collega due elementi del programma. Evita generalità come "importanza di teoria e pratica": scrivi cosa nello specifico lo suggerisce.
+
+COMPITO:
+- Sintetizza in una frase il "tipo" di docente (es. innovatore, tradizionalista pragmatico, ecc.) con la sensibilità chiave che lo caratterizza
+- 2-3 leve potenziali per un promotore (perché funzionerebbero con QUESTO docente, quale elemento del programma lo suggerisce)
+- 1-2 possibili resistenze (come si manifesterebbero in un colloquio)
+- un approccio consigliato per aprire una conversazione commerciale con questo docente
+- 2-3 argomenti/temi del programma particolarmente rilevanti per capire questo docente (breve elenco finale, per chi vuole rileggere il programma con questa chiave di lettura)
+
+Non inventare dati numerici. Usa linguaggio qualitativo.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{"tipo_docente":"","sensibilita_chiave":"","leve_potenziali":["",""],"possibili_resistenze":["",""],"approccio_consigliato":"","argomenti_rilevanti":["",""]}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptInsightsCommerciali(analisiAdottato, quadroRaw, profiloDocente, migliorProprio, confrontoMigliore, editoreProprio) {
+    const gapConPeso = analisiAdottato.gap.slice(0, 3).map(g => ({ modulo: g.modulo, peso: pesoModulo(g.modulo, quadroRaw) || 'non specificato' }));
+    const nienteAltoMedio = gapConPeso.every(g => g.peso !== 'alto' && g.peso !== 'medio');
+    const nettoMigliore = confrontoMigliore ? confrontoMigliore.aFavore.length - confrontoMigliore.attenzione.length : null;
+    return `Sei un assistente strategico per un promotore editoriale di ${editoreProprio || 'un editore'}.
+
+Il promotore ha già letto nel report il quadro del programma, il profilo del docente (${profiloDocente ? profiloDocente.tipo_docente : 'n/d'}) e questa gap analysis del manuale adottato — NON ripetere questi elenchi, aggiungi solo interpretazione commerciale:
+
+GAP DEL MANUALE ADOTTATO (già nel report, MASSIMO 3 — i più critici per l'insegnamento) con il peso che il programma stesso attribuisce a ciascuno:
+${JSON.stringify(gapConPeso)}
+⚠️ Non esiste un syllabus nazionale condiviso per gli insegnamenti universitari: un modulo del framework assente dal programma non è di per sé una lacuna, solo se il docente lo considera importante (peso alto/medio). ${nienteAltoMedio ? 'Nessuno dei gap sopra ha peso alto o medio per questo corso: NON presentarli come problemi urgenti o come una forte opportunità commerciale — dillo con onestà nel testo, anche se questo significa un\'opportunità più modesta.' : 'Dai priorità nel testo ai gap di peso alto/medio, non a quelli di peso basso.'}
+PUNTI DI FORZA (già nel report):
+${JSON.stringify(analisiAdottato.punti_forza)}
+COPERTURA: ${analisiAdottato.etichettaCopertura}
+
+${migliorProprio ? `MANUALE ${editoreProprio || 'PROPRIO'} GIA' INDIVIDUATO COME IL PIU' ADATTO (calcolato altrove nel report, non ridiscuterlo, non proporne un altro): "${migliorProprio.manuale.etichettaLunga}"
+Punti di forza già stabiliti per questo manuale (usa SOLO questi per il punto 3, non inventarne altri e non citare un titolo diverso): ${JSON.stringify(migliorProprio.analisi.punti_forza)}
+${nettoMigliore !== null && nettoMigliore <= 0 ? `⚠️ FATTO GIA' CALCOLATO, VINCOLANTE: questo manuale NON ha un vantaggio di copertura netto rispetto all'adottato (bilancio ${nettoMigliore <= 0 ? 'nullo o negativo' : 'positivo'}) — è il meno peggio tra i candidati, non un'opportunità concreta. Nel punto 3, NON descriverlo come se risolvesse i gap: dillo esplicitamente, l'opportunità reale qui è modesta o assente.` : ''}` : `Nessun manuale ${editoreProprio || 'proprio'} disponibile in catalogo per questa materia: salta il punto 3, lascia "opportunita_manuale" vuoto.`}
+
+COMPITO — aggiungi SOLO informazioni nuove:
+1. 2-3 punti di forza del programma che rendono più facile una proposta commerciale
+2. 2-3 aspetti migliorabili del manuale attuale che aprono un'opportunità (collegati ai gap sopra, ma NON ripeterli testualmente — spiega l'implicazione commerciale, temperata dal peso reale indicato sopra)
+${migliorProprio ? `3. Una descrizione specifica (120-180 parole) di come "${migliorProprio.manuale.etichettaLunga}" risolverebbe meglio i gap, basata SOLO sui punti di forza già stabiliti sopra` : ''}
+4. Per CIASCUNO dei gap elencati sopra (nello stesso ordine, stesso nome esatto), descrivi separatamente: cosa deve fare CONCRETAMENTE il docente oggi per compensarlo (dispense, materiale esterno, tempo extra) e come questo si ripercuote sugli studenti — se il peso è basso, descrivilo come un impatto minore, non come un'emergenza
+5. Un paragrafo finale (100-150 parole) sui benefici concreti di un cambio manuale — non ripetere i gap, descrivi cosa migliorerebbe per docente e studenti, con lo stesso realismo sul peso
+
+Non usare punteggi numerici o percentuali nel testo. Linguaggio qualitativo.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{"punti_forza_commerciali":["",""],"aspetti_migliorabili":["",""],"opportunita_manuale":"","gap_critici_impatto":[{"gap":"<nome esatto>","impatto_docente":"","impatto_studenti":""}],"benefici_cambio":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  // ---- peso di un modulo per QUESTO programma (alto/medio/basso), dal quadro generale gia'
+  // calcolato in Fase 1 — mai assunto: se il framework/quadro non lo specifica, torna null e il
+  // modulo viene trattato come "peso non specificato" (mai gonfiato a priorita' alta di default) ----
+  function pesoModulo(nomeModulo, quadroRaw) {
+    const voce = (quadroRaw.quadro_generale.distribuzione_tematica || []).find(d => d.modulo === nomeModulo);
+    return voce ? voce.peso : null;
+  }
+
+  // ---- mappa "gap del programma -> chi lo risolve", interamente calcolata: nessuna chiamata AI
+  // decide chi e' il manuale da proporre. Ogni gap dell'adottato e' marcato col peso che il
+  // programma stesso gli attribuisce (mai un modulo del framework trattato come lacuna solo
+  // perche' assente: senza syllabus nazionale condiviso, l'assenza puo' riflettere una scelta
+  // legittima del docente — vedi promemoria in eseguiAnalisi) e collegato ai candidati propri
+  // che lo coprono meglio dell'adottato (dal confronto per-modulo gia' calcolato altrove) ----
+  function calcolaMappaColloquio(analisiAdottato, quadroRaw, confrontoPropri) {
+    const righe = analisiAdottato.gap.map(g => {
+      const peso = pesoModulo(g.modulo, quadroRaw);
+      const risolutori = confrontoPropri
+        .map(p => {
+          const voce = p.confrontoConAdottato.aFavore.find(x => x.modulo === g.modulo);
+          return voce ? { manuale: p.manuale.etichettaLunga, nota: voce.nota } : null;
+        })
+        .filter(Boolean);
+      return { modulo: g.modulo, peso, risolutori };
+    });
+    const altoMedio = righe.filter(r => r.peso === 'alto' || r.peso === 'medio');
+    const basso = righe.filter(r => r.peso !== 'alto' && r.peso !== 'medio');
+    return {
+      altoMedioRisolti: altoMedio.filter(r => r.risolutori.length > 0),
+      altoMedioNonRisolti: altoMedio.filter(r => r.risolutori.length === 0),
+      bassoRisolti: basso.filter(r => r.risolutori.length > 0),
+      bassoNonRisolti: basso.filter(r => r.risolutori.length === 0),
+    };
+  }
+
+  function calcolaEsitoColloquio(mappa, manualeAdottato) {
+    const totAltoMedio = mappa.altoMedioRisolti.length + mappa.altoMedioNonRisolti.length;
+    if (totAltoMedio === 0) {
+      return `Nessuno dei moduli assenti nel manuale adottato ha peso "alto" o "medio" secondo il quadro generale del programma — sono tutti marginali per questo corso specifico. Su ciò che il docente sembra considerare centrale, "${manualeAdottato.etichettaLunga}" copre già tutto: le eventuali corrispondenze qui sotto riguardano argomenti di peso "basso" — utili da menzionare, non un argomento forte di conversione.`;
+    }
+    const parti = [];
+    if (mappa.altoMedioRisolti.length > 0) {
+      parti.push(`${mappa.altoMedioRisolti.length} argomento/i di peso alto o medio non coperto/i dall'adottato ${mappa.altoMedioRisolti.length === 1 ? 'ha' : 'hanno'} un candidato proprio che lo risolve — un argomento di conversione concreto, vedi sotto.`);
+    }
+    if (mappa.altoMedioNonRisolti.length > 0) {
+      parti.push(`${mappa.altoMedioNonRisolti.length} argomento/i di peso alto o medio non ${mappa.altoMedioNonRisolti.length === 1 ? 'è coperto' : 'sono coperti'} dall'adottato, ma nessun manuale proprio in catalogo li risolve oggi: vale la pena segnalarlo per l'ampliamento del catalogo, non portarlo in colloquio come argomento di vendita.`);
+    }
+    return parti.join(' ');
+  }
+
+  function calcolaFallbackColloquio(migliorProprio, confrontoMigliore, quadroRaw, quasiPareggioPropri, candidatiAllaPari) {
+    if (!migliorProprio) return null;
+    const moduliRisolti = confrontoMigliore.aFavore.map(x => ({ ...x, peso: pesoModulo(x.modulo, quadroRaw) }));
+    const nAltoMedio = moduliRisolti.filter(m => m.peso === 'alto' || m.peso === 'medio').length;
+    const elenco = moduliRisolti.map(m => `${m.modulo} (peso ${m.peso || 'non specificato'})`).join(', ');
+    const coda = moduliRisolti.length === 0
+      ? `Non risulta più forte dell'adottato su nessun modulo: è il primo in classifica solo per bilancio netto complessivo, non per un vantaggio concreto identificabile.`
+      : nAltoMedio === 0
+        ? `Nessuno di questi è di peso alto o medio per questo corso: non risolve un problema sostanziale, è solo il punto di partenza più ragionevole in assenza di altre indicazioni.`
+        : `Tra questi, ${nAltoMedio} di peso alto o medio: un argomento reale, non solo di completezza.`;
+    const premessaPareggio = (quasiPareggioPropri && candidatiAllaPari.length > 1)
+      ? `Il bilancio netto tra i primi candidati è molto vicino (differenza di 1 modulo o meno tra ${candidatiAllaPari.map(p => `"${p.manuale.etichettaLunga}"`).join(', ')}): a piccoli cambiamenti nell'analisi il primo posto potrebbe scambiarsi tra questi, quindi vale il gruppo più del singolo nome. Tra questi, il primo in classifica ora è `
+      : `Il candidato con il miglior bilancio netto complessivo è `;
+    return `${premessaPareggio}"${migliorProprio.manuale.etichettaLunga}". ${moduliRisolti.length > 0 ? `Risolve rispetto all'adottato: ${elenco}.` : ''} ${coda}`;
+  }
+
+  // ---- pitch e guida al colloquio: NESSUN nome di manuale, perche' quale proporre dipende da
+  // cosa emerge nel colloquio (mappa sopra), non da un singolo raccomandato deciso in anticipo ----
+  function costruisciPromptGuidaColloquio(profiloDocente) {
+    return `Sei un consulente per promotori editoriali universitari. Non sai ancora quale manuale specifico verrà proposto al docente — dipende da cosa emerge nella conversazione, quindi NON nominare alcun titolo di manuale, editore o autore.
+
+PROFILO DOCENTE: ${profiloDocente ? JSON.stringify(profiloDocente) : 'non disponibile'}
+
+COMPITO 1 — Due varianti di pitch di apertura (2-3 frasi ciascuna), agganciate a un tratto specifico del profilo sopra: una per il primo contatto (il promotore non ha ancora una relazione con questo docente), una per un docente già conosciuto (tono più diretto). Il pitch deve aprire sul CAPIRE cosa serve al docente, non su un prodotto da vendere.
+
+COMPITO 2 — Una guida pratica al colloquio in 5 punti (max 150 parole totali): come aprire, come ascoltare per individuare un problema specifico, quale domanda fare per farlo emergere, come rispondere una volta capito il problema (rimandando alla mappa "se lamenta X" già nel report — non specificare qui quale manuale, solo che va scelto in base a quanto emerso), come chiudere.
+
+Non nominare alcun libro, editore o autore specifico. Non usare punteggi numerici.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{"pitch_apertura": {"primo_contatto":"","docente_conosciuto":""}, "guida_pratica":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptExecutiveSummary(quadroRaw, giudizioComplessivo, etichettaCoperturaProgramma, analisiAdottato, migliorProprio, esitoColloquio) {
+    return `Sei un assistente strategico per un promotore editoriale universitario. Il promotore sta per entrare nell'ufficio del docente e ha 30 secondi per leggere questo sommario.
+
+DATI GIA' CALCOLATI (usali, non rielaborarli):
+- Valutazione complessiva del programma: ${giudizioComplessivo} — ${etichettaCoperturaProgramma}
+- Manuale adottato: copertura ${analisiAdottato.etichettaCopertura}, principali gap: ${JSON.stringify(analisiAdottato.gap.slice(0, 3).map(g => g.modulo))}
+- Manuale con il miglior bilancio tra i propri disponibili (non necessariamente da proporre: dipende dal colloquio): ${migliorProprio ? migliorProprio.manuale.etichettaLunga : 'nessuno disponibile'}
+- Esito dell'incrocio gap/peso/candidati (già calcolato, riassumilo non ripeterlo parola per parola): ${esitoColloquio || 'non disponibile'}
+- Profilo pedagogico del docente: ${JSON.stringify(quadroRaw.profilo_pedagogico)}
+
+Genera un executive summary con ESATTAMENTE questi 5 campi, ciascuno di massimo 1 riga (max 100 caratteri), telegraficamente sintetico, specifico per QUESTO programma, senza punteggi numerici. Nel campo "opportunita", se l'esito sopra dice che non ci sono argomenti di peso alto/medio, dillo onestamente invece di inventare un'opportunità che non c'è.
+
+{"docente_in_breve":"","situazione_attuale":"","opportunita":"","approccio_colloquio":"","attenzione":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function costruisciPromptSintesiRanking(analisiPropri, manualeAdottato) {
+    const righe = analisiPropri.map((p, i) => `${i + 1}. ${p.manuale.etichettaLunga} — copertura: ${p.analisi.etichettaCopertura}; rispetto all'adottato: più forte su ${p.confrontoConAdottato.aFavore.length} moduli, più debole su ${p.confrontoConAdottato.attenzione.length}; punti di forza: ${p.analisi.punti_forza.join('; ')}`).join('\n');
+    return `Sei un consulente editoriale. Questi manuali sono già stati valutati singolarmente (dati oggettivi, calcolati — non ridiscuterli):
+
+MANUALE ADOTTATO: ${manualeAdottato.etichettaLunga}
+
+MANUALI CANDIDATI VALUTATI (in ordine di copertura):
+${righe}
+
+COMPITO: scrivi UN paragrafo (100-150 parole) che sintetizza per il promotore quale candidato scegliere e perché, menzionando anche quando gli altri candidati (se ce ne sono) potrebbero essere preferibili invece del primo in lista — usa i dati sopra, non aggiungerne di nuovi, non usare punteggi numerici.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{"sintesi":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function mostraSelezionePropri(manuali) {
+    return new Promise((resolve) => {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;';
+      const modal = document.createElement('div');
+      modal.style.cssText = 'background:#fff;border-radius:10px;max-width:520px;width:90%;max-height:80vh;overflow:auto;padding:20px;';
+      modal.innerHTML = `<h3 style="margin-top:0">Seleziona i manuali da valutare</h3>
+        <p style="font-size:13px;color:var(--ink-muted)">Trovati ${manuali.length} manuali propri per questa materia. Seleziona fino a 5 da includere nel ranking.</p>`;
+      const lista = document.createElement('div');
+      const checks = manuali.map((m, i) => {
+        const id = 'sel-proprio-' + i;
+        const row = document.createElement('div');
+        row.style.cssText = 'padding:6px 0;border-bottom:1px solid var(--line);';
+        row.innerHTML = `<label style="font-size:13px;display:flex;gap:8px;align-items:center"><input type="checkbox" id="${id}" ${i < 5 ? 'checked' : ''}/> ${escapeHtml((m.autore ? m.autore + ' — ' : '') + m.titolo)}</label>`;
+        lista.appendChild(row);
+        return row.querySelector('input');
+      });
+      modal.appendChild(lista);
+      const bottone = document.createElement('button');
+      bottone.textContent = 'Procedi';
+      bottone.style.cssText = 'margin-top:14px;padding:8px 16px;';
+      bottone.addEventListener('click', () => {
+        const selezionati = manuali.filter((_, i) => checks[i].checked);
+        document.body.removeChild(overlay);
+        resolve(selezionati);
+      });
+      modal.appendChild(bottone);
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+    });
+  }
+
+  async function eseguiAnalisi() {
+    const msg = document.getElementById('msg');
+    const risultatoBox = document.getElementById('risultato');
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if (!apiKey) { msg.className = 'errore'; msg.textContent = 'Inserisci la chiave API OpenAI.'; return; }
+    salvaChiaveOpenAI(apiKey);
+    const modello = document.getElementById('modello').value;
+    salvaModelloOpenAI(modello);
+
+    const tipoAnalisi = document.querySelector('input[name="tipoAnalisi"]:checked').value;
+
+    if (!frameworkScelto) { msg.className = 'errore'; msg.textContent = 'Seleziona un framework.'; return; }
+    const moduli = estraiModuliFramework(frameworkScelto);
+    if (!moduli) { msg.className = 'errore'; msg.textContent = 'Questo framework non ha moduli riconoscibili.'; return; }
+    const profiliLaurea = estraiProfiliLaurea(frameworkScelto);
+    const criteri = estraiCriteriValutazione(frameworkScelto);
+
+    const idAdottato = document.getElementById('selManualeAdottato').value;
+    if (!idAdottato) { msg.className = 'errore'; msg.textContent = 'Seleziona il manuale adottato.'; return; }
+    const rowAdottato = tuttiManuali.find(m => m.id === idAdottato);
+    const indiceAdottato = estraiIndiceManuale(rowAdottato);
+    if (!indiceAdottato) { msg.className = 'errore'; msg.textContent = 'Il manuale adottato selezionato non ha un indice disponibile.'; return; }
+
+    const selContesto = document.getElementById('selContesto');
+    const contesto = selContesto.value === '__altro__' ? document.getElementById('inputContestoAltro').value.trim() : selContesto.value;
+    if (!contesto) { msg.className = 'errore'; msg.textContent = 'Indica la classe di laurea.'; return; }
+    const cfu = document.getElementById('inputCfu').value.trim();
+    const ore = document.getElementById('inputOre').value.trim();
+    const testo = document.getElementById('testoInput').value.trim();
+    if (!testo || testo.length < 100) { msg.className = 'errore'; msg.textContent = 'Carica un file o incolla il testo del programma (minimo 100 caratteri).'; return; }
+
+    const idAlternativi = [...document.querySelectorAll('#elencoAlternativi input[type=checkbox]:checked')].map(cb => cb.dataset.id);
+    const rowsAlternativi = idAlternativi.map(id => tuttiManuali.find(m => m.id === id)).filter(Boolean);
+
+    function pacchettoManuale(row) {
+      return {
+        row,
+        etichettaLunga: (row.autore ? row.autore + ' — ' : '') + row.titolo + (row.edizione ? ' (' + row.edizione + ')' : ''),
+        indice: estraiIndiceManuale(row),
+      };
+    }
+    const manualeAdottato = pacchettoManuale(rowAdottato);
+    const alternativi = rowsAlternativi.map(pacchettoManuale);
+
+    let profiloClasseTesto = null;
+    if (profiliLaurea && contesto) {
+      const match = profiliLaurea.find(p => p.nome === contesto || p.nome.includes(contesto) || contesto.includes(p.nome.split(' ')[0]));
+      if (match) profiloClasseTesto = match.priorita;
+    }
+
+    msg.className = 'attesa';
+    document.getElementById('analizza').disabled = true;
+    document.getElementById('esportazioni').style.display = 'none';
+    risultatoBox.innerHTML = '';
+
+    let faseNumero = 0;
+    let faseDescrizione = '';
+    let secondiTrascorsi = 0;
+    const aggiornaMsgAttesa = () => {
+      msg.innerHTML = `<span class="spinner"></span>Fase ${faseNumero}: ${faseDescrizione}... ${secondiTrascorsi}s`;
+    };
+    const timerAttesa = setInterval(() => { secondiTrascorsi++; aggiornaMsgAttesa(); }, 1000);
+
+    async function chiamaOpenAI(promptTesto) {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: modello,
+          // zero apposta, su tutte le chiamate: qui non serve mai varieta' creativa, solo un
+          // giudizio ripetibile — i giudizi per modulo (stato/peso, copertura manuale) sono
+          // compiti fattuali ripetuti 30 volte per chiamata, e anche una piccola variabilita'
+          // campionaria si accumula e puo' cambiare chi vince il ranking finale tra due
+          // esecuzioni identiche. Zero non garantisce determinismo assoluto lato API, ma lo
+          // riduce al minimo pratico.
+          temperature: 0,
+          max_tokens: 3000,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: 'Sei un analista editoriale senior che valuta programmi universitari e manuali. Scrivi in modo argomentato e specifico, mai generico, citando sempre passaggi precisi. Rispondi sempre e solo con JSON valido.' },
+            { role: 'user', content: promptTesto },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error?.message || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      return JSON.parse(data.choices[0].message.content);
+    }
+
+    const avvisi = [];
+    try {
+      faseNumero++; faseDescrizione = 'quadro del programma'; aggiornaMsgAttesa();
+      const quadroRaw = await chiamaOpenAI(costruisciPromptQuadro(testo, frameworkScelto, moduli, profiloClasseTesto, contesto, criteri, cfu, ore));
+
+      faseNumero++; faseDescrizione = 'valutazione didattica del programma'; aggiornaMsgAttesa();
+      const valutazioneRaw = await chiamaOpenAI(costruisciPromptValutazione(testo, moduli, quadroRaw));
+      if (!Array.isArray(valutazioneRaw.moduli) || valutazioneRaw.moduli.length !== moduli.length) {
+        avvisi.push(`Valutazione programma: ${valutazioneRaw.moduli?.length ?? 0} moduli invece di ${moduli.length}.`);
+      }
+      // il peso viene deciso nella STESSA risposta dello stato (mai in una chiamata separata, vedi
+      // costruisciPromptValutazione) — e qui viene comunque forzato a "basso" se lo stato e' assente,
+      // per costruzione: un modulo assente dal programma non puo' pesare "alto" o "medio" in quel
+      // programma, indipendentemente da cosa ha risposto il modello (istruzione nel prompt +
+      // applicazione deterministica in JS, mai fidarsi solo della prima).
+      const valutazioneModuli = moduli.map((mo, idx) => {
+        const r = (valutazioneRaw.moduli || [])[idx];
+        if (!r) return { modulo: mo.nome, stato: null, peso: null, nota: '(dato mancante)' };
+        const peso = r.stato === 'assente' ? 'basso' : (r.peso || null);
+        return { modulo: mo.nome, stato: r.stato, peso, nota: r.nota };
+      });
+      const valutazioneProgramma = {
+        moduli: valutazioneModuli,
+        obiettivi_formativi: valutazioneRaw.obiettivi_formativi,
+        metodologia_didattica: valutazioneRaw.metodologia_didattica,
+        allineamento_curriculum: valutazioneRaw.allineamento_curriculum,
+        risultati_attesi: valutazioneRaw.risultati_attesi,
+        sintesi: valutazioneRaw.sintesi || '',
+      };
+      const giudizioComplessivo = calcolaGiudizioComplessivo(valutazioneProgramma);
+      const etichettaCoperturaProgramma = etichettaCopertura(calcolaRangoMedio(valutazioneModuli));
+      // "distribuzione_tematica" ora e' solo una vista del peso gia' deciso sopra insieme allo stato,
+      // mantenuta per compatibilita' con render/export e con pesoModulo() che la consultano.
+      quadroRaw.quadro_generale.distribuzione_tematica = valutazioneModuli.map(m => ({ modulo: m.modulo, peso: m.peso }));
+
+      faseNumero++; faseDescrizione = `analisi di ${manualeAdottato.etichettaLunga}`; aggiornaMsgAttesa();
+      const gapAdottatoRaw = await chiamaOpenAI(costruisciPromptManualeVsProgramma(manualeAdottato, testo, moduli, criteri, valutazioneProgramma));
+      const analisiAdottato = elaboraAnalisiManuale(gapAdottatoRaw, moduli);
+
+      const analisiAlternativi = [];
+      for (const alt of alternativi) {
+        faseNumero++; faseDescrizione = `analisi di ${alt.etichettaLunga}`; aggiornaMsgAttesa();
+        const gapAltRaw = await chiamaOpenAI(costruisciPromptManualeVsProgramma(alt, testo, moduli, criteri, valutazioneProgramma));
+        analisiAlternativi.push({ manuale: alt, analisi: elaboraAnalisiManuale(gapAltRaw, moduli) });
+      }
+
+      let motivazioniScelta = null;
+      let profiloDocente = null;
+      if (tipoAnalisi === 'avanzata') {
+        try {
+          faseNumero++; faseDescrizione = 'logica della scelta editoriale'; aggiornaMsgAttesa();
+          motivazioniScelta = await chiamaOpenAI(costruisciPromptMotivazioniScelta(testo, quadroRaw, manualeAdottato, alternativi));
+        } catch (e) { console.warn('Motivazioni scelta fallita:', e.message); }
+        try {
+          faseNumero++; faseDescrizione = 'profilo del docente'; aggiornaMsgAttesa();
+          profiloDocente = await chiamaOpenAI(costruisciPromptProfiloDocente(testo, quadroRaw, contesto));
+        } catch (e) { console.warn('Profilo docente fallito:', e.message); }
+      }
+
+      const propriDisponibiliGrezzi = tuttiManuali.filter(m =>
+        m.materia === frameworkScelto.materia && editoreProprio && m.publisher === editoreProprio &&
+        m.id !== rowAdottato.id && !alternativi.some(a => a.row.id === m.id));
+      // il catalogo condiviso puo' contenere righe duplicate (stesso titolo/autore/edizione, id diverso —
+      // residuo dell'import da piu' fonti): non e' un bug di questa pagina, ma senza questo filtro il
+      // promotore vedrebbe lo stesso manuale valutato due volte nel ranking. Se l'edizione differisce non
+      // e' considerato duplicato: potrebbero essere davvero due edizioni distinte.
+      const chiaveManuale = m => `${(m.titolo || '').trim().toLowerCase()}|${(m.autore || '').trim().toLowerCase()}|${(m.edizione || '').trim().toLowerCase()}`;
+      const chiaviViste = new Set();
+      const propriDisponibili = [];
+      let duplicatiTrovati = 0;
+      for (const m of propriDisponibiliGrezzi) {
+        const chiave = chiaveManuale(m);
+        if (chiaviViste.has(chiave)) { duplicatiTrovati++; continue; }
+        chiaviViste.add(chiave);
+        propriDisponibili.push(m);
+      }
+      if (duplicatiTrovati > 0) {
+        avvisi.push(`Il catalogo condiviso contiene ${duplicatiTrovati} voce/i duplicata/e (stesso titolo/autore/edizione) per questa materia, escluse dal ranking — segnalalo in Utilità per una pulizia del catalogo.`);
+      }
+      let propriDaValutare = propriDisponibili;
+      let notaSelezionePropri = '';
+      if (propriDisponibili.length > 5) {
+        faseDescrizione = 'in attesa della selezione manuali propri'; aggiornaMsgAttesa();
+        propriDaValutare = await mostraSelezionePropri(propriDisponibili);
+        notaSelezionePropri = `Valutati ${propriDaValutare.length} manuali propri su ${propriDisponibili.length} disponibili in catalogo per questa materia (selezionati dal promotore).`;
+      }
+
+      const analisiPropri = [];
+      for (const row of propriDaValutare) {
+        const pacchetto = pacchettoManuale(row);
+        if (!pacchetto.indice) { avvisi.push(`${pacchetto.etichettaLunga}: indice non disponibile, escluso dal ranking.`); continue; }
+        faseNumero++; faseDescrizione = `valutazione di ${pacchetto.etichettaLunga}`; aggiornaMsgAttesa();
+        const raw = await chiamaOpenAI(costruisciPromptManualeVsProgramma(pacchetto, testo, moduli, criteri, valutazioneProgramma));
+        const analisi = elaboraAnalisiManuale(raw, moduli);
+        analisiPropri.push({ manuale: pacchetto, analisi, confrontoConAdottato: calcolaConfrontoManuali(analisi, analisiAdottato) });
+      }
+      // ranking basato sul vantaggio NETTO rispetto all'adottato (moduli in cui e' piu' forte meno
+      // quelli in cui e' piu' debole), non sulla copertura assoluta: un candidato che copre bene molti
+      // moduli gia' coperti anche dall'adottato non e' di per se' un buon motivo per cambiare — quello
+      // che conta e' quanto migliora rispetto a quanto gia' in uso. La copertura assoluta resta come
+      // spareggio in caso di parita' netta.
+      analisiPropri.sort((a, b) => {
+        const nettoA = a.confrontoConAdottato.aFavore.length - a.confrontoConAdottato.attenzione.length;
+        const nettoB = b.confrontoConAdottato.aFavore.length - b.confrontoConAdottato.attenzione.length;
+        if (nettoB !== nettoA) return nettoB - nettoA;
+        return b.analisi.rangoMedio - a.analisi.rangoMedio;
+      });
+      const migliorProprio = analisiPropri[0] || null;
+      const confrontoPropri = analisiPropri;
+      const confrontoMigliore = confrontoPropri[0] ? confrontoPropri[0].confrontoConAdottato : null;
+      // il confronto modulo-per-modulo di ciascun candidato varia leggermente da un'esecuzione
+      // all'altra (30 giudizi soggettivi per manuale, non tutti netti) — quando il primo e il
+      // secondo classificato sono a un solo modulo di distanza, dichiararlo esplicitamente e' piu'
+      // onesto che presentare con sicurezza un "vincitore" che potrebbe cambiare alla prossima analisi.
+      const nettoDiCandidato = p => p.confrontoConAdottato.aFavore.length - p.confrontoConAdottato.attenzione.length;
+      const candidatiAllaPari = migliorProprio
+        ? analisiPropri.filter(p => (nettoDiCandidato(migliorProprio) - nettoDiCandidato(p)) <= 1)
+        : [];
+      const quasiPareggioPropri = candidatiAllaPari.length >= 2;
+
+      let sintesiRankingPropri = null;
+      if (confrontoPropri.length >= 2) {
+        try {
+          faseNumero++; faseDescrizione = 'sintesi ranking manuali propri'; aggiornaMsgAttesa();
+          const raw = await chiamaOpenAI(costruisciPromptSintesiRanking(confrontoPropri, manualeAdottato));
+          sintesiRankingPropri = raw.sintesi || null;
+        } catch (e) { console.warn('Sintesi ranking propri fallita:', e.message); }
+      }
+
+      // mappa gap->peso->candidato che lo risolve: calcolata sempre in analisi avanzata, mai
+      // decisa da una chiamata AI (vedi promemoria autonomia didattica sopra costruisciPromptGuidaColloquio)
+      let mappaColloquio = null, esitoColloquio = null, fallbackColloquio = null;
+      if (tipoAnalisi === 'avanzata') {
+        mappaColloquio = calcolaMappaColloquio(analisiAdottato, quadroRaw, confrontoPropri);
+        esitoColloquio = calcolaEsitoColloquio(mappaColloquio, manualeAdottato);
+        fallbackColloquio = calcolaFallbackColloquio(migliorProprio, confrontoMigliore, quadroRaw, quasiPareggioPropri, candidatiAllaPari);
+      }
+
+      let insightsCommerciali = null;
+      if (tipoAnalisi === 'avanzata') {
+        try {
+          faseNumero++; faseDescrizione = 'insights commerciali'; aggiornaMsgAttesa();
+          insightsCommerciali = await chiamaOpenAI(costruisciPromptInsightsCommerciali(analisiAdottato, quadroRaw, profiloDocente, migliorProprio, confrontoMigliore, editoreProprio));
+        } catch (e) { console.warn('Insights commerciali falliti:', e.message); }
+      }
+
+      let guidaColloquio = null;
+      if (tipoAnalisi === 'avanzata') {
+        try {
+          faseNumero++; faseDescrizione = 'guida al colloquio'; aggiornaMsgAttesa();
+          guidaColloquio = await chiamaOpenAI(costruisciPromptGuidaColloquio(profiloDocente));
+        } catch (e) { console.warn('Guida al colloquio fallita:', e.message); }
+      }
+
+      let executiveSummary = null;
+      if (tipoAnalisi === 'avanzata') {
+        try {
+          faseNumero++; faseDescrizione = 'executive summary'; aggiornaMsgAttesa();
+          executiveSummary = await chiamaOpenAI(costruisciPromptExecutiveSummary(quadroRaw, giudizioComplessivo, etichettaCoperturaProgramma, analisiAdottato, migliorProprio, esitoColloquio));
+        } catch (e) { console.warn('Executive summary fallito:', e.message); }
+      }
+
+      clearInterval(timerAttesa);
+      msg.className = avvisi.length ? 'errore' : '';
+      msg.textContent = avvisi.length ? 'Attenzione — ' + avvisi.join(' ') : '';
+
+      ultimoRisultato = {
+        tipoAnalisi, frameworkScelto, contesto, cfu, ore,
+        metadata: quadroRaw.metadata, quadroGenerale: quadroRaw.quadro_generale, profiloPedagogico: quadroRaw.profilo_pedagogico,
+        allineamentoClasse: quadroRaw.allineamento_classe || null, criteriDisciplinari: quadroRaw.criteri_disciplinari || null,
+        valutazioneProgramma, giudizioComplessivo, etichettaCoperturaProgramma,
+        manualeAdottato, analisiAdottato, alternativi: analisiAlternativi,
+        propriDisponibiliCount: propriDisponibili.length, notaSelezionePropri, analisiPropri: confrontoPropri, migliorProprio, sintesiRankingPropri, quasiPareggioPropri, candidatiAllaPari,
+        motivazioniScelta, profiloDocente, insightsCommerciali, mappaColloquio, esitoColloquio, fallbackColloquio, guidaColloquio, executiveSummary,
+      };
+
+      risultatoBox.innerHTML = renderRisultato(ultimoRisultato);
+      document.getElementById('esportazioni').style.display = 'flex';
+    } catch (err) {
+      clearInterval(timerAttesa);
+      msg.className = 'errore';
+      msg.textContent = 'Errore: ' + err.message;
+      ultimoRisultato = null;
+      document.getElementById('esportazioni').style.display = 'none';
+    } finally {
+      clearInterval(timerAttesa);
+      document.getElementById('analizza').disabled = false;
+    }
+  }
+
+  function badgeGiudizio(g) {
+    const norm = normalizzaGiudizio(g) || 'n/d';
+    return `<span class="giudizio-badge giudizio-${norm.replace(/\s+/g, '-')}">${escapeHtml(norm)}</span>`;
+  }
+  function badgeStato(s) {
+    const stato = s || 'n/d';
+    return `<span class="stato-badge stato-${escapeHtml(stato)}">${escapeHtml(stato.replace(/_/g, ' '))}</span>`;
+  }
+
+  function renderTabellaModuliProgramma(moduli) {
+    const righe = moduli.map(m => `<tr><td class="modulo">${escapeHtml(m.modulo)}</td><td>${badgeStato(m.stato)}<div class="nota">${escapeHtml(m.nota || '')}</div></td></tr>`).join('');
+    return `<table class="risultato"><thead><tr><th>Modulo</th><th>Copertura</th></tr></thead><tbody>${righe}</tbody></table>`;
+  }
+
+  function renderTabellaModuli(moduli) {
+    const righe = moduli.map(m => `<tr><td class="modulo">${escapeHtml(m.modulo)}</td><td>${escapeHtml(m.capitoli || '—')}</td><td>${badgeStato(m.stato)}<div class="nota">${escapeHtml(m.nota || '')}</div></td></tr>`).join('');
+    return `<table class="risultato"><thead><tr><th>Modulo</th><th>Capitoli</th><th>Copertura</th></tr></thead><tbody>${righe}</tbody></table>`;
+  }
+
+  function renderAnalisiManuale(analisi) {
+    let html = `<p><strong>Copertura:</strong> ${escapeHtml(analisi.etichettaCopertura)}</p>`;
+    if (analisi.sintesi) html += `<p>${escapeHtml(analisi.sintesi)}</p>`;
+    if (analisi.punti_forza.length) html += `<p class="etichetta-lista">Punti di forza</p><ul>${analisi.punti_forza.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+    if (analisi.punti_debolezza.length) html += `<p class="etichetta-lista">Punti di debolezza</p><ul>${analisi.punti_debolezza.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+    if (analisi.compatibilita_criteri) html += `<p><strong>Criteri disciplinari:</strong> ${escapeHtml(analisi.compatibilita_criteri)}</p>`;
+    html += renderTabellaModuli(analisi.moduli);
+    if (analisi.eccedenti.length) html += `<p class="etichetta-lista">Argomenti del manuale eccedenti rispetto al programma</p><ul>${analisi.eccedenti.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+    return html;
+  }
+
+  function renderRisultato(r) {
+    let html = '';
+    const meta = r.metadata || {};
+    html += `<div class="panoramiche"><p><strong>${escapeHtml(meta.denominazione_corso || 'Programma')}</strong>${meta.universita ? ' — ' + escapeHtml(meta.universita) : ''}${meta.docente ? ' — Docente: ' + escapeHtml(meta.docente) : ''}</p>
+    <p style="font-size:12px;color:var(--ink-muted)">Materia: ${escapeHtml(r.frameworkScelto.materia || '')} · Framework: ${escapeHtml(r.frameworkScelto.nome)} · Classe di laurea: ${escapeHtml(r.contesto || 'non specificata')}${r.cfu ? ' · CFU: ' + escapeHtml(r.cfu) : ''}${r.ore ? ' · Ore: ' + escapeHtml(r.ore) : ''} · Analisi ${escapeHtml(r.tipoAnalisi)}</p>
+    <p><strong>Valutazione complessiva:</strong> ${badgeGiudizio(r.giudizioComplessivo)} — ${escapeHtml(r.etichettaCoperturaProgramma)}</p>
+    ${r.valutazioneProgramma.sintesi ? `<p>${escapeHtml(r.valutazioneProgramma.sintesi)}</p>` : ''}
+    </div>`;
+
+    if (r.executiveSummary) {
+      const es = r.executiveSummary;
+      html += `<div class="adozione"><h2>Executive summary</h2><ul>
+        <li><strong>Docente:</strong> ${escapeHtml(es.docente_in_breve || '')}</li>
+        <li><strong>Situazione attuale:</strong> ${escapeHtml(es.situazione_attuale || '')}</li>
+        <li><strong>Opportunità:</strong> ${escapeHtml(es.opportunita || '')}</li>
+        <li><strong>Approccio al colloquio:</strong> ${escapeHtml(es.approccio_colloquio || '')}</li>
+        <li><strong>Attenzione:</strong> ${escapeHtml(es.attenzione || '')}</li>
+      </ul></div>`;
+    }
+
+    html += `<h2>Quadro del programma</h2>`;
+    html += `<p>${escapeHtml(r.quadroGenerale.tipologia || '')} ${escapeHtml(r.quadroGenerale.note || '')}</p>`;
+    html += `<p><strong>Livello di complessità:</strong> ${escapeHtml(r.quadroGenerale.livello_complessita || 'n/d')}</p>`;
+    if (Array.isArray(r.quadroGenerale.distribuzione_tematica) && r.quadroGenerale.distribuzione_tematica.length) {
+      html += `<p class="etichetta-lista">Peso dei moduli nel programma</p><ul>${r.quadroGenerale.distribuzione_tematica.map(d => `<li>${escapeHtml(d.modulo)}: ${escapeHtml(d.peso)}</li>`).join('')}</ul>`;
+    }
+    html += `<h3>Profilo pedagogico del docente</h3>`;
+    const pp = r.profiloPedagogico || {};
+    html += `<p>Approccio: ${escapeHtml(pp.approccio || 'n/d')} · Livello: ${escapeHtml(pp.livello || 'n/d')} · Stile: ${escapeHtml(pp.stile || 'n/d')} · Orientamento: ${escapeHtml(pp.orientamento || 'n/d')}</p>`;
+    if (Array.isArray(pp.enfasi) && pp.enfasi.length) html += `<p><strong>Enfasi:</strong> ${pp.enfasi.map(escapeHtml).join(', ')}</p>`;
+    if (pp.metodologia) html += `<p><strong>Metodologia:</strong> ${escapeHtml(pp.metodologia)}</p>`;
+
+    if (r.allineamentoClasse) {
+      html += `<h3>Allineamento con la classe di laurea</h3>`;
+      html += `<p><strong>Allineamento complessivo:</strong> ${escapeHtml(r.allineamentoClasse.allineamento_complessivo || 'n/d')}</p>`;
+      html += `<ul>${(r.allineamentoClasse.valutazioni || []).map(v => `<li><strong>${escapeHtml(v.priorita)}</strong> — ${escapeHtml(v.valutazione)}: ${escapeHtml(v.evidenza)}</li>`).join('')}</ul>`;
+    }
+
+    if (Array.isArray(r.criteriDisciplinari) && r.criteriDisciplinari.length) {
+      html += `<h3>Criteri disciplinari specifici</h3><ul>${r.criteriDisciplinari.map(c => `<li><strong>${escapeHtml(c.criterio)}</strong> (confidenza ${escapeHtml(c.confidenza)}): ${escapeHtml(c.posizione_programma)} — ${escapeHtml(c.evidenze)}</li>`).join('')}</ul>`;
+    }
+
+    html += `<h2>Valutazione didattica del programma</h2>`;
+    const dims = [['obiettivi_formativi', 'Obiettivi formativi'], ['metodologia_didattica', 'Metodologia didattica'], ['allineamento_curriculum', 'Allineamento curriculum'], ['risultati_attesi', 'Risultati attesi']];
+    html += `<ul>${dims.map(([k, label]) => { const d = r.valutazioneProgramma[k] || {}; return `<li><strong>${label}:</strong> ${badgeGiudizio(d.giudizio)} — ${escapeHtml(d.nota || '')}</li>`; }).join('')}</ul>`;
+    html += `<h3>Copertura dei moduli nel programma</h3>`;
+    html += renderTabellaModuliProgramma(r.valutazioneProgramma.moduli);
+
+    if (r.motivazioniScelta) {
+      html += `<h2>Perché ha scelto questo manuale</h2>`;
+      if (Array.isArray(r.motivazioniScelta.priorita_docente) && r.motivazioniScelta.priorita_docente.length) {
+        html += `<p class="etichetta-lista">Priorità del docente per questo corso</p><ul>${r.motivazioniScelta.priorita_docente.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+      }
+      html += `<p class="etichetta-lista">Perché questo manuale principale</p>`;
+      html += `<ul>${(r.motivazioniScelta.motivazioni_principale || []).map(m => `<li>${escapeHtml(m.fattore)} (peso ${escapeHtml(m.peso)}) — ${escapeHtml((m.evidenza || '').replace(/[.\s]+$/, ''))}${m.spiegazione ? '. ' + escapeHtml(m.spiegazione) : ''}</li>`).join('')}</ul>`;
+      html += `<p><strong>Natura della scelta:</strong> ${escapeHtml(r.motivazioniScelta.natura_scelta || 'n/d')}${r.motivazioniScelta.natura_scelta_spiegazione ? ' — ' + escapeHtml(r.motivazioniScelta.natura_scelta_spiegazione) : ''}</p>`;
+      if (r.motivazioniScelta.alternativi) {
+        html += `<p class="etichetta-lista">Ruolo dei testi alternativi in bibliografia</p><ul>${r.motivazioniScelta.alternativi.map(a => `<li><strong>${escapeHtml(a.titolo)}</strong> — ${escapeHtml(a.ruolo)}: ${escapeHtml(a.cosa_rivela)}</li>`).join('')}</ul>`;
+        if (r.motivazioniScelta.cosa_verificare_colloquio) html += `<p><strong>Da verificare in colloquio:</strong> ${escapeHtml(r.motivazioniScelta.cosa_verificare_colloquio)}</p>`;
+      }
+      const pd = r.motivazioniScelta.profilo_decisionale || {};
+      html += `<p><strong>Profilo decisionale:</strong> cerca ${(pd.cosa_cerca || []).map(escapeHtml).join(', ')}; evita ${(pd.cosa_evita || []).map(escapeHtml).join(', ')}.</p>`;
+      html += `<p>Sensibilità prezzo: ${escapeHtml(pd.sensibilita_prezzo || 'n/d')} · Familiarità con l'editore proprio: ${escapeHtml(pd.familiarita_editore || 'n/d')} · Apertura al cambio del principale: ${escapeHtml(pd.apertura_cambio || 'n/d')} · Apertura a un alternativo in più: ${escapeHtml(pd.apertura_integrazione_alternativo || 'n/d')}.</p>`;
+    }
+
+    if (r.profiloDocente) {
+      const dp = r.profiloDocente;
+      html += `<div class="adozione"><h2>Profilo del docente (analisi avanzata)</h2>`;
+      html += `<p><strong>Tipo docente:</strong> ${escapeHtml(dp.tipo_docente || '')}</p>`;
+      html += `<p><strong>Sensibilità chiave:</strong> ${escapeHtml(dp.sensibilita_chiave || '')}</p>`;
+      html += `<p><strong>Approccio consigliato:</strong> ${escapeHtml(dp.approccio_consigliato || '')}</p>`;
+      if (dp.leve_potenziali && dp.leve_potenziali.length) html += `<p class="etichetta-lista">Leve potenziali</p><ul>${dp.leve_potenziali.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
+      if (dp.possibili_resistenze && dp.possibili_resistenze.length) html += `<p class="etichetta-lista">Possibili resistenze</p><ul>${dp.possibili_resistenze.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
+      if (dp.argomenti_rilevanti && dp.argomenti_rilevanti.length) html += `<p style="font-size:12px;color:var(--ink-muted)"><strong>Argomenti rilevanti:</strong> ${dp.argomenti_rilevanti.map(escapeHtml).join(' · ')}</p>`;
+      html += `</div>`;
+    }
+
+    html += `<h2>Manuale adottato — ${escapeHtml(r.manualeAdottato.etichettaLunga)}</h2>`;
+    html += renderAnalisiManuale(r.analisiAdottato);
+
+    if (r.alternativi.length) {
+      html += `<h2>Manuali alternativi in bibliografia</h2>`;
+      for (const a of r.alternativi) { html += `<h3>${escapeHtml(a.manuale.etichettaLunga)}</h3>`; html += renderAnalisiManuale(a.analisi); }
+    }
+
+    if (r.insightsCommerciali) {
+      const ic = r.insightsCommerciali;
+      html += `<div class="adozione"><h2>Insights commerciali</h2>`;
+      if (ic.punti_forza_commerciali) html += `<p class="etichetta-lista">Punti di forza del programma (commerciali)</p><ul>${ic.punti_forza_commerciali.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+      if (ic.aspetti_migliorabili) html += `<p class="etichetta-lista">Aspetti migliorabili (opportunità)</p><ul>${ic.aspetti_migliorabili.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+      if (ic.opportunita_manuale) html += `<p><strong>Opportunità manuale:</strong> ${escapeHtml(ic.opportunita_manuale)}</p>`;
+      if (Array.isArray(ic.gap_critici_impatto) && ic.gap_critici_impatto.length) {
+        html += `<p class="etichetta-lista">Impatto dei gap critici</p><ul>${ic.gap_critici_impatto.map(g => `<li><strong>${escapeHtml(g.gap)}</strong><br>Per il docente: ${escapeHtml(g.impatto_docente)}<br>Per gli studenti: ${escapeHtml(g.impatto_studenti)}</li>`).join('')}</ul>`;
+      }
+      if (ic.benefici_cambio) html += `<p><strong>Benefici di un cambio manuale:</strong> ${escapeHtml(ic.benefici_cambio)}</p>`;
+      html += `</div>`;
+    }
+
+    html += `<h2>Manuali propri disponibili per questa materia</h2>`;
+    if (r.propriDisponibiliCount === 0) {
+      html += `<p style="color:var(--ink-muted);font-size:13px">Nessun manuale proprio in catalogo per questa materia.</p>`;
+    } else {
+      if (r.notaSelezionePropri) html += `<p class="adozione-avviso">${escapeHtml(r.notaSelezionePropri)}</p>`;
+      if (r.quasiPareggioPropri) html += `<p class="adozione-avviso">Quasi pareggio tra ${r.candidatiAllaPari.length} candidati (differenza di 1 modulo o meno): ${r.candidatiAllaPari.map(p => escapeHtml(p.manuale.etichettaLunga)).join(', ')} — a piccoli cambiamenti nell'analisi il primo posto potrebbe scambiarsi tra questi.</p>`;
+      for (const p of r.analisiPropri) {
+        const raccomandato = r.migliorProprio && p.manuale.row.id === r.migliorProprio.manuale.row.id;
+        const allaPari = r.candidatiAllaPari && r.candidatiAllaPari.some(x => x.manuale.row.id === p.manuale.row.id);
+        const nFavore = p.confrontoConAdottato.aFavore.length, nAttenzione = p.confrontoConAdottato.attenzione.length;
+        const nPari = p.analisi.moduli.length - nFavore - nAttenzione;
+        const badge = raccomandato
+          ? (r.quasiPareggioPropri ? ' <span class="badge disponibile">primo in classifica (quasi pareggio)</span>' : ' <span class="badge disponibile">miglior bilancio netto</span>')
+          : (allaPari ? ' <span class="badge disponibile">a un modulo di distanza dal primo</span>' : '');
+        html += `<h3>${escapeHtml(p.manuale.etichettaLunga)}${badge}</h3>`;
+        html += `<p><strong>Copertura:</strong> ${escapeHtml(p.analisi.etichettaCopertura)}</p>`;
+        html += `<p style="font-size:12px;color:var(--ink-muted)">Rispetto all'adottato (calcolato): più forte su ${nFavore} modulo/i, alla pari su ${nPari}, più debole su ${nAttenzione} (di ${p.analisi.moduli.length} moduli totali).</p>`;
+        html += `<p class="etichetta-lista">Rispetto al manuale adottato (calcolato, non generato)</p>`;
+        html += p.confrontoConAdottato.aFavore.length
+          ? `<ul>${p.confrontoConAdottato.aFavore.map(x => `<li>Più forte su: ${escapeHtml(x.modulo)}</li>`).join('')}</ul>`
+          : `<p style="font-size:13px;color:var(--ink-muted)">Nessun vantaggio di copertura emerso rispetto all'adottato.</p>`;
+        if (p.confrontoConAdottato.attenzione.length) html += `<p class="etichetta-lista">Da presidiare (l'adottato è più forte qui)</p><ul>${p.confrontoConAdottato.attenzione.map(x => `<li>${escapeHtml(x.modulo)}</li>`).join('')}</ul>`;
+        if (p.analisi.punti_forza.length) html += `<p class="etichetta-lista">Punti di forza</p><ul>${p.analisi.punti_forza.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+      }
+      if (r.sintesiRankingPropri) html += `<p class="etichetta-lista">Sintesi generale</p><p>${escapeHtml(r.sintesiRankingPropri)}</p>`;
+    }
+
+    if (r.mappaColloquio) {
+      const m = r.mappaColloquio;
+      html += `<div class="adozione"><h2>Guida per il colloquio</h2>`;
+      html += `<p class="adozione-avviso">Non esiste un syllabus nazionale condiviso per gli insegnamenti universitari, e l'autonomia del docente nella scelta dei contenuti è ampia. La conseguenza è che l'assenza nel programma di un modulo del framework non è di per sé una lacuna: la matrice di valutazione è stata costruita analizzando un numero significativo di programmi per trovare gli elementi comuni, ma poi è il docente a scegliere legittimamente cosa trattare. Per questo ogni gap è marcato col peso che il programma stesso gli attribuisce. È opportuno tenerlo presente nel colloquio e utilizzarlo soltanto se è alto o medio.</p>`;
+
+      if (r.esitoColloquio) html += `<div class="esito-box"><p>${escapeHtml(r.esitoColloquio)}</p></div>`;
+
+      const risolte = [...m.altoMedioRisolti, ...m.bassoRisolti];
+      if (risolte.length) {
+        html += `<h3>Se il docente lamenta…</h3>`;
+        for (const riga of risolte) {
+          const marginale = riga.peso !== 'alto' && riga.peso !== 'medio';
+          html += `<div class="regola-colloquio">
+            <div><p style="margin:0">${escapeHtml(riga.modulo)}, assente nell'adottato</p><span class="peso-tag">peso nel programma: ${escapeHtml(riga.peso || 'non specificato')}</span></div>
+            <div>${riga.risolutori.map(x => `<p class="proponi">→ ${escapeHtml(x.manuale)}</p>`).join('')}
+              <p style="font-size:12.5px;color:var(--ink-muted);margin:2px 0 0">${marginale ? 'Peso marginale per questo corso: probabilmente non centrale per il docente, ma se lo cita è comunque risolvibile.' : 'Peso alto o medio: un argomento di conversione concreto.'}</p>
+            </div>
+          </div>`;
+        }
+      }
+
+      const nonRisolte = [...m.altoMedioNonRisolti, ...m.bassoNonRisolti];
+      if (nonRisolte.length) {
+        const tutteBasso = m.altoMedioNonRisolti.length === 0;
+        html += `<p class="etichetta-lista">${tutteBasso ? 'Altri moduli assenti, tutti di peso marginale — probabilmente fuori scopo per scelta del docente, non lacune' : 'Moduli assenti non coperti da nessun manuale proprio in catalogo'}</p>`;
+        html += `<ul>${nonRisolte.map(riga => `<li>${escapeHtml(riga.modulo)}${riga.peso === 'alto' || riga.peso === 'medio' ? ` <span class="peso-tag">peso: ${escapeHtml(riga.peso)}</span>` : ''}</li>`).join('')}</ul>`;
+        if (!tutteBasso) html += `<p class="adozione-avviso">Utile da segnalare per l'ampliamento del catalogo in Utilità, più che da portare in colloquio come argomento di vendita.</p>`;
+      }
+
+      if (r.fallbackColloquio) {
+        html += `<div class="fallback-box"><p class="etichetta-lista">Se il colloquio non fa emergere nulla di specifico (fallback)</p><p style="margin:0">${escapeHtml(r.fallbackColloquio)}</p></div>`;
+      }
+
+      if (r.guidaColloquio) {
+        const gc = r.guidaColloquio;
+        if (gc.pitch_apertura) {
+          html += `<h3>Pitch di apertura</h3>`;
+          html += `<p><strong>Primo contatto:</strong> ${escapeHtml(gc.pitch_apertura.primo_contatto || '')}</p>`;
+          html += `<p><strong>Docente già conosciuto:</strong> ${escapeHtml(gc.pitch_apertura.docente_conosciuto || '')}</p>`;
+        }
+        if (gc.guida_pratica) html += `<p>${escapeHtml(gc.guida_pratica)}</p>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `<p style="font-size:12px;color:var(--ink-muted)">Generato il ${new Date().toLocaleDateString('it-IT')} — Atlante, Analisi di un programma.</p>`;
+    return html;
+  }
+
+  function blocchiAnalisiManuale(analisi) {
+    const blocchi = [];
+    blocchi.push({ t: 'p', text: `Copertura: ${analisi.etichettaCopertura}` });
+    if (analisi.sintesi) blocchi.push({ t: 'p', text: analisi.sintesi });
+    if (analisi.punti_forza.length) { blocchi.push({ t: 'p', text: 'Punti di forza:' }); blocchi.push({ t: 'ul', items: analisi.punti_forza }); }
+    if (analisi.punti_debolezza.length) { blocchi.push({ t: 'p', text: 'Punti di debolezza:' }); blocchi.push({ t: 'ul', items: analisi.punti_debolezza }); }
+    if (analisi.compatibilita_criteri) blocchi.push({ t: 'p', text: `Criteri disciplinari: ${analisi.compatibilita_criteri}` });
+    blocchi.push({ t: 'table', headers: ['Modulo', 'Capitoli', 'Stato', 'Nota'], rows: analisi.moduli.map(m => [m.modulo, m.capitoli || '—', m.stato || 'n/d', m.nota || '']) });
+    if (analisi.eccedenti.length) { blocchi.push({ t: 'p', text: 'Argomenti del manuale eccedenti rispetto al programma:' }); blocchi.push({ t: 'ul', items: analisi.eccedenti }); }
+    return blocchi;
+  }
+
+  function costruisciBlocchi(r) {
+    const blocchi = [];
+    const meta = r.metadata || {};
+    blocchi.push({ t: 'h1', text: `Analisi programma — ${meta.denominazione_corso || r.frameworkScelto.materia || ''}` });
+    blocchi.push({ t: 'p', text: `${meta.universita || ''}${meta.docente ? ' · Docente: ' + meta.docente : ''} · CFU: ${r.cfu || 'n/d'} · Classe di laurea: ${r.contesto || 'n/d'} · Framework: ${r.frameworkScelto.nome} · Tipo analisi: ${r.tipoAnalisi}` });
+    blocchi.push({ t: 'p', text: `Valutazione complessiva: ${r.giudizioComplessivo} — ${r.etichettaCoperturaProgramma}` });
+    if (r.valutazioneProgramma.sintesi) blocchi.push({ t: 'p', text: r.valutazioneProgramma.sintesi });
+
+    if (r.executiveSummary) {
+      const es = r.executiveSummary;
+      blocchi.push({ t: 'h2', text: 'Executive summary' });
+      blocchi.push({
+        t: 'ul', items: [
+          `Docente: ${es.docente_in_breve || ''}`,
+          `Situazione attuale: ${es.situazione_attuale || ''}`,
+          `Opportunità: ${es.opportunita || ''}`,
+          `Approccio al colloquio: ${es.approccio_colloquio || ''}`,
+          `Attenzione: ${es.attenzione || ''}`,
+        ],
+      });
+    }
+
+    blocchi.push({ t: 'h2', text: 'Quadro del programma' });
+    blocchi.push({ t: 'p', text: `${r.quadroGenerale.tipologia || ''} ${r.quadroGenerale.note || ''}` });
+    blocchi.push({ t: 'p', text: `Livello di complessità: ${r.quadroGenerale.livello_complessita || 'n/d'}` });
+    if (Array.isArray(r.quadroGenerale.distribuzione_tematica) && r.quadroGenerale.distribuzione_tematica.length) {
+      blocchi.push({ t: 'p', text: 'Peso dei moduli nel programma:' });
+      blocchi.push({ t: 'ul', items: r.quadroGenerale.distribuzione_tematica.map(d => `${d.modulo}: ${d.peso}`) });
+    }
+    const pp = r.profiloPedagogico || {};
+    blocchi.push({ t: 'h3', text: 'Profilo pedagogico del docente' });
+    blocchi.push({ t: 'p', text: `Approccio: ${pp.approccio || 'n/d'} · Livello: ${pp.livello || 'n/d'} · Stile: ${pp.stile || 'n/d'} · Orientamento: ${pp.orientamento || 'n/d'}` });
+    if (pp.enfasi && pp.enfasi.length) blocchi.push({ t: 'p', text: `Enfasi: ${pp.enfasi.join(', ')}` });
+    if (pp.metodologia) blocchi.push({ t: 'p', text: `Metodologia: ${pp.metodologia}` });
+
+    if (r.allineamentoClasse) {
+      blocchi.push({ t: 'h3', text: 'Allineamento con la classe di laurea' });
+      blocchi.push({ t: 'p', text: `Allineamento complessivo: ${r.allineamentoClasse.allineamento_complessivo || 'n/d'}` });
+      blocchi.push({ t: 'ul', items: (r.allineamentoClasse.valutazioni || []).map(v => `${v.priorita} — ${v.valutazione}: ${v.evidenza}`) });
+    }
+
+    if (Array.isArray(r.criteriDisciplinari) && r.criteriDisciplinari.length) {
+      blocchi.push({ t: 'h3', text: 'Criteri disciplinari specifici' });
+      blocchi.push({ t: 'ul', items: r.criteriDisciplinari.map(c => `${c.criterio} (confidenza ${c.confidenza}): ${c.posizione_programma} — ${c.evidenze}`) });
+    }
+
+    blocchi.push({ t: 'h2', text: 'Valutazione didattica del programma' });
+    const dims = [['obiettivi_formativi', 'Obiettivi formativi'], ['metodologia_didattica', 'Metodologia didattica'], ['allineamento_curriculum', 'Allineamento curriculum'], ['risultati_attesi', 'Risultati attesi']];
+    blocchi.push({ t: 'ul', items: dims.map(([k, label]) => { const d = r.valutazioneProgramma[k] || {}; return `${label}: ${d.giudizio || 'n/d'} — ${d.nota || ''}`; }) });
+    blocchi.push({ t: 'h3', text: 'Copertura dei moduli nel programma' });
+    blocchi.push({ t: 'table', headers: ['Modulo', 'Stato', 'Nota'], rows: r.valutazioneProgramma.moduli.map(m => [m.modulo, m.stato || 'n/d', m.nota || '']) });
+
+    if (r.motivazioniScelta) {
+      blocchi.push({ t: 'h2', text: 'Perché ha scelto questo manuale' });
+      if (Array.isArray(r.motivazioniScelta.priorita_docente) && r.motivazioniScelta.priorita_docente.length) {
+        blocchi.push({ t: 'p', text: 'Priorità del docente per questo corso:' });
+        blocchi.push({ t: 'ul', items: r.motivazioniScelta.priorita_docente });
+      }
+      blocchi.push({ t: 'p', text: 'Perché questo manuale principale:' });
+      blocchi.push({ t: 'ul', items: (r.motivazioniScelta.motivazioni_principale || []).map(m => `${m.fattore} (peso ${m.peso}) — ${(m.evidenza || '').replace(/[.\s]+$/, '')}${m.spiegazione ? '. ' + m.spiegazione : ''}`) });
+      blocchi.push({ t: 'p', text: `Natura della scelta: ${r.motivazioniScelta.natura_scelta || 'n/d'}${r.motivazioniScelta.natura_scelta_spiegazione ? ' — ' + r.motivazioniScelta.natura_scelta_spiegazione : ''}` });
+      if (r.motivazioniScelta.alternativi) {
+        blocchi.push({ t: 'p', text: 'Ruolo dei testi alternativi in bibliografia:' });
+        blocchi.push({ t: 'ul', items: r.motivazioniScelta.alternativi.map(a => `${a.titolo} — ${a.ruolo}: ${a.cosa_rivela}`) });
+        if (r.motivazioniScelta.cosa_verificare_colloquio) blocchi.push({ t: 'p', text: `Da verificare in colloquio: ${r.motivazioniScelta.cosa_verificare_colloquio}` });
+      }
+      const pd = r.motivazioniScelta.profilo_decisionale || {};
+      blocchi.push({ t: 'p', text: `Profilo decisionale: cerca ${(pd.cosa_cerca || []).join(', ')}; evita ${(pd.cosa_evita || []).join(', ')}.` });
+      blocchi.push({ t: 'p', text: `Sensibilità prezzo: ${pd.sensibilita_prezzo || 'n/d'} · Familiarità con l'editore proprio: ${pd.familiarita_editore || 'n/d'} · Apertura al cambio del principale: ${pd.apertura_cambio || 'n/d'} · Apertura a un alternativo in più: ${pd.apertura_integrazione_alternativo || 'n/d'}.` });
+    }
+
+    if (r.profiloDocente) {
+      const dp = r.profiloDocente;
+      blocchi.push({ t: 'h2', text: 'Profilo del docente (analisi avanzata)' });
+      blocchi.push({ t: 'p', text: `Tipo docente: ${dp.tipo_docente || ''}` });
+      blocchi.push({ t: 'p', text: `Sensibilità chiave: ${dp.sensibilita_chiave || ''}` });
+      blocchi.push({ t: 'p', text: `Approccio consigliato: ${dp.approccio_consigliato || ''}` });
+      if (dp.leve_potenziali && dp.leve_potenziali.length) { blocchi.push({ t: 'p', text: 'Leve potenziali:' }); blocchi.push({ t: 'ul', items: dp.leve_potenziali }); }
+      if (dp.possibili_resistenze && dp.possibili_resistenze.length) { blocchi.push({ t: 'p', text: 'Possibili resistenze:' }); blocchi.push({ t: 'ul', items: dp.possibili_resistenze }); }
+      if (dp.argomenti_rilevanti && dp.argomenti_rilevanti.length) blocchi.push({ t: 'p', text: `Argomenti rilevanti: ${dp.argomenti_rilevanti.join(' · ')}` });
+    }
+
+    blocchi.push({ t: 'h2', text: `Manuale adottato — ${r.manualeAdottato.etichettaLunga}` });
+    blocchi.push(...blocchiAnalisiManuale(r.analisiAdottato));
+
+    if (r.alternativi.length) {
+      blocchi.push({ t: 'h2', text: 'Manuali alternativi in bibliografia' });
+      for (const a of r.alternativi) {
+        blocchi.push({ t: 'h3', text: a.manuale.etichettaLunga });
+        blocchi.push(...blocchiAnalisiManuale(a.analisi));
+      }
+    }
+
+    if (r.insightsCommerciali) {
+      const ic = r.insightsCommerciali;
+      blocchi.push({ t: 'h2', text: 'Insights commerciali' });
+      if (ic.punti_forza_commerciali) blocchi.push({ t: 'ul', items: ic.punti_forza_commerciali });
+      if (ic.aspetti_migliorabili) blocchi.push({ t: 'ul', items: ic.aspetti_migliorabili });
+      if (ic.opportunita_manuale) blocchi.push({ t: 'p', text: `Opportunità manuale: ${ic.opportunita_manuale}` });
+      if (Array.isArray(ic.gap_critici_impatto) && ic.gap_critici_impatto.length) {
+        blocchi.push({ t: 'p', text: 'Impatto dei gap critici:' });
+        blocchi.push({ t: 'ul', items: ic.gap_critici_impatto.map(g => `${g.gap} — per il docente: ${g.impatto_docente}; per gli studenti: ${g.impatto_studenti}`) });
+      }
+      if (ic.benefici_cambio) blocchi.push({ t: 'p', text: `Benefici di un cambio manuale: ${ic.benefici_cambio}` });
+    }
+
+    blocchi.push({ t: 'h2', text: 'Manuali propri disponibili per questa materia' });
+    if (r.propriDisponibiliCount === 0) {
+      blocchi.push({ t: 'p', text: 'Nessun manuale proprio in catalogo per questa materia.' });
+    } else {
+      if (r.notaSelezionePropri) blocchi.push({ t: 'p', text: r.notaSelezionePropri });
+      if (r.quasiPareggioPropri) blocchi.push({ t: 'p', text: `Quasi pareggio tra ${r.candidatiAllaPari.length} candidati (differenza di 1 modulo o meno): ${r.candidatiAllaPari.map(p => p.manuale.etichettaLunga).join(', ')} — a piccoli cambiamenti nell'analisi il primo posto potrebbe scambiarsi tra questi.` });
+      for (const p of r.analisiPropri) {
+        const raccomandato = r.migliorProprio && p.manuale.row.id === r.migliorProprio.manuale.row.id;
+        const nFavore = p.confrontoConAdottato.aFavore.length, nAttenzione = p.confrontoConAdottato.attenzione.length;
+        const nPari = p.analisi.moduli.length - nFavore - nAttenzione;
+        const etichettaStato = raccomandato ? (r.quasiPareggioPropri ? ' (primo in classifica, quasi pareggio)' : ' (miglior bilancio netto)') : '';
+        blocchi.push({ t: 'h3', text: p.manuale.etichettaLunga + etichettaStato });
+        blocchi.push({ t: 'p', text: `Copertura: ${p.analisi.etichettaCopertura}` });
+        blocchi.push({ t: 'p', text: `Rispetto all'adottato (calcolato): più forte su ${nFavore} modulo/i, alla pari su ${nPari}, più debole su ${nAttenzione} (di ${p.analisi.moduli.length} moduli totali).` });
+        blocchi.push({ t: 'p', text: "Rispetto al manuale adottato (calcolato, non generato dall'AI):" });
+        blocchi.push({ t: 'ul', items: p.confrontoConAdottato.aFavore.length ? p.confrontoConAdottato.aFavore.map(x => `Più forte su: ${x.modulo}`) : ["Nessun vantaggio di copertura emerso rispetto all'adottato."] });
+        if (p.confrontoConAdottato.attenzione.length) blocchi.push({ t: 'ul', items: p.confrontoConAdottato.attenzione.map(x => `Da presidiare: l'adottato è più forte su ${x.modulo}`) });
+        if (p.analisi.punti_forza.length) blocchi.push({ t: 'ul', items: p.analisi.punti_forza });
+      }
+      if (r.sintesiRankingPropri) blocchi.push({ t: 'p', text: `Sintesi generale: ${r.sintesiRankingPropri}` });
+    }
+
+    if (r.mappaColloquio) {
+      const m = r.mappaColloquio;
+      blocchi.push({ t: 'h2', text: 'Guida per il colloquio' });
+      blocchi.push({ t: 'p', text: "Non esiste un syllabus nazionale condiviso per gli insegnamenti universitari, e l'autonomia del docente nella scelta dei contenuti è ampia. La conseguenza è che l'assenza nel programma di un modulo del framework non è di per sé una lacuna: la matrice di valutazione è stata costruita analizzando un numero significativo di programmi per trovare gli elementi comuni, ma poi è il docente a scegliere legittimamente cosa trattare. Per questo ogni gap è marcato col peso che il programma stesso gli attribuisce. È opportuno tenerlo presente nel colloquio e utilizzarlo soltanto se è alto o medio." });
+
+      if (r.esitoColloquio) blocchi.push({ t: 'p', text: r.esitoColloquio });
+
+      const risolte = [...m.altoMedioRisolti, ...m.bassoRisolti];
+      if (risolte.length) {
+        blocchi.push({ t: 'h3', text: 'Se il docente lamenta…' });
+        blocchi.push({
+          t: 'ul', items: risolte.map(riga => {
+            const marginale = riga.peso !== 'alto' && riga.peso !== 'medio';
+            const proposte = riga.risolutori.map(x => x.manuale).join(' oppure ');
+            return `${riga.modulo} (peso ${riga.peso || 'non specificato'}) → ${proposte}${marginale ? ' — peso marginale, non centrale ma comunque risolvibile' : ' — argomento di conversione concreto'}`;
+          }),
+        });
+      }
+
+      const nonRisolte = [...m.altoMedioNonRisolti, ...m.bassoNonRisolti];
+      if (nonRisolte.length) {
+        const tutteBasso = m.altoMedioNonRisolti.length === 0;
+        blocchi.push({ t: 'h3', text: tutteBasso ? 'Altri moduli assenti, tutti di peso marginale — probabilmente fuori scopo per scelta del docente' : 'Moduli assenti non coperti da nessun manuale proprio in catalogo' });
+        blocchi.push({ t: 'ul', items: nonRisolte.map(riga => `${riga.modulo}${riga.peso === 'alto' || riga.peso === 'medio' ? ` (peso ${riga.peso})` : ''}`) });
+        if (!tutteBasso) blocchi.push({ t: 'p', text: "Utile da segnalare per l'ampliamento del catalogo in Utilità, più che da portare in colloquio come argomento di vendita." });
+      }
+
+      if (r.fallbackColloquio) {
+        blocchi.push({ t: 'h3', text: 'Se il colloquio non fa emergere nulla di specifico (fallback)' });
+        blocchi.push({ t: 'p', text: r.fallbackColloquio });
+      }
+
+      if (r.guidaColloquio) {
+        const gc = r.guidaColloquio;
+        if (gc.pitch_apertura) {
+          blocchi.push({ t: 'p', text: `Pitch di apertura — primo contatto: ${gc.pitch_apertura.primo_contatto || ''}` });
+          blocchi.push({ t: 'p', text: `Pitch di apertura — docente già conosciuto: ${gc.pitch_apertura.docente_conosciuto || ''}` });
+        }
+        if (gc.guida_pratica) blocchi.push({ t: 'p', text: gc.guida_pratica });
+      }
+    }
+
+    blocchi.push({ t: 'p', text: `Generato il ${new Date().toLocaleDateString('it-IT')} — Atlante, Analisi di un programma.` });
+    return blocchi;
+  }
+
+  function blocchiToMarkdown(blocchi) {
+    return blocchi.map(b => {
+      if (b.t === 'h1') return `# ${b.text}`;
+      if (b.t === 'h2') return `## ${b.text}`;
+      if (b.t === 'h3') return `### ${b.text}`;
+      if (b.t === 'p') return b.text;
+      if (b.t === 'ul') return b.items.map(i => `- ${i}`).join('\n');
+      if (b.t === 'table') {
+        const header = `| ${b.headers.join(' | ')} |`;
+        const sep = `| ${b.headers.map(() => '---').join(' | ')} |`;
+        const rows = b.rows.map(row => `| ${row.map(c => String(c).replace(/\n/g, ' ').replace(/\|/g, '\\|')).join(' | ')} |`);
+        return [header, sep, ...rows].join('\n');
+      }
+      return '';
+    }).join('\n\n');
+  }
+
+  function blocchiToHtmlBody(blocchi) {
+    return blocchi.map(b => {
+      if (b.t === 'h1') return `<h1>${escapeHtml(b.text)}</h1>`;
+      if (b.t === 'h2') return `<h2>${escapeHtml(b.text)}</h2>`;
+      if (b.t === 'h3') return `<h3>${escapeHtml(b.text)}</h3>`;
+      if (b.t === 'p') return `<p>${escapeHtml(b.text)}</p>`;
+      if (b.t === 'ul') return `<ul>${b.items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
+      if (b.t === 'table') {
+        const thead = `<tr>${b.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>`;
+        const tbody = b.rows.map(row => `<tr>${row.map(c => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
+        return `<table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+      }
+      return '';
+    }).join('\n');
+  }
+
+  function costruisciHtmlCompleto(risultato) {
+    // <\/ spezzato di proposito: un tag di chiusura scritto per intero dentro questa stringa
+    // verrebbe scambiato da Live Server per la fine della pagina reale (bug gia' visto in
+    // confronto.html), interrompendo lo <script> a meta'.
+    const body = blocchiToHtmlBody(costruisciBlocchi(risultato));
+    return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8" />
+<title>Analisi programma — ${escapeHtml(risultato.frameworkScelto.materia || '')}<\/title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1b2430; }
+  h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 32px; border-bottom: 1px solid #e2e6ea; padding-bottom: 4px; } h3 { font-size: 14px; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; } th, td { border: 1px solid #e2e6ea; padding: 6px 8px; text-align: left; vertical-align: top; white-space: pre-line; }
+  th { background: #f7f8fa; }
+<\/style><\/head><body>${body}<\/body><\/html>`;
+  }
+
+  function scaricaFile(nomeFile, contenuto, mime) {
+    const blob = new Blob([contenuto], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nomeFile;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function esportaPdf(risultato) {
+    const blocchi = costruisciBlocchi(risultato);
+    const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+    const marginX = 40;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - marginX * 2;
+    let y = 50;
+
+    function servePagina(altezza) {
+      if (y + altezza > pageHeight - 40) { doc.addPage(); y = 50; }
+    }
+
+    for (const b of blocchi) {
+      if (b.t === 'h1') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+        servePagina(24); doc.text(b.text, marginX, y); y += 26;
+      } else if (b.t === 'h2') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+        servePagina(22); y += 8; doc.text(b.text, marginX, y); y += 18;
+      } else if (b.t === 'h3') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        servePagina(18); y += 4; doc.text(b.text, marginX, y); y += 14;
+      } else if (b.t === 'p') {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        const righe = doc.splitTextToSize(b.text, maxWidth);
+        servePagina(righe.length * 13);
+        doc.text(righe, marginX, y); y += righe.length * 13 + 6;
+      } else if (b.t === 'ul') {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        for (const item of b.items) {
+          const righe = doc.splitTextToSize('•  ' + item, maxWidth - 10);
+          servePagina(righe.length * 13);
+          doc.text(righe, marginX + 6, y); y += righe.length * 13 + 2;
+        }
+        y += 6;
+      } else if (b.t === 'table') {
+        if (typeof doc.autoTable === 'function') {
+          servePagina(40);
+          doc.autoTable({ head: [b.headers], body: b.rows, startY: y, margin: { left: marginX, right: marginX }, styles: { fontSize: 8, cellPadding: 4 } });
+          y = doc.lastAutoTable.finalY + 16;
+        } else {
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+          servePagina(14); doc.text(b.headers.join('  |  '), marginX, y); y += 14;
+          doc.setFont('helvetica', 'normal');
+          for (const row of b.rows) {
+            const righe = doc.splitTextToSize(row.join('  |  '), maxWidth);
+            servePagina(righe.length * 13);
+            doc.text(righe, marginX, y); y += righe.length * 13 + 4;
+          }
+        }
+      }
+    }
+    doc.save('analisi-programma.pdf');
+  }
+
+  async function main() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const chi = document.getElementById('chi');
+
+    if (!session) {
+      chi.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>';
+      return;
+    }
+
+    const { data: profilo, error: eProfilo } = await supabaseClient
+      .from('profili')
+      .select('ruolo, clienti(nome, editore_proprio)')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (eProfilo || !profilo) {
+      chi.innerHTML = `Connesso come ${session.user.email}, ma nessun profilo collegato. Contatta l'amministratore.`;
+      return;
+    }
+
+    chi.textContent = `${session.user.email} · ${profilo.ruolo} · ${profilo.clienti.nome}`;
+    editoreProprio = profilo.clienti.editore_proprio;
+
+    const [{ data: framework, error: eFramework }, { data: manuali, error: eManuali }] = await Promise.all([
+      supabaseClient.from('framework').select('id, nome, materia, dati').order('nome'),
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia, edizione, dati').order('autore'),
+    ]);
+
+    if (eFramework || eManuali) {
+      document.getElementById('stato').style.display = 'block';
+      document.getElementById('stato').textContent = 'Errore nel caricamento: ' + (eFramework || eManuali).message;
+      return;
+    }
+
+    tuttiFramework = framework;
+    tuttiManuali = manuali;
+    document.getElementById('contenuto').style.display = 'block';
+
+    const chiaveSalvata = leggiChiaveOpenAI();
+    if (chiaveSalvata) document.getElementById('apiKey').value = chiaveSalvata;
+    const modelloSalvato = leggiModelloOpenAI();
+    if (modelloSalvato) document.getElementById('modello').value = modelloSalvato;
+
+    popolaSelectFramework();
+
+    document.getElementById('selFramework').addEventListener('change', (e) => {
+      frameworkScelto = tuttiFramework.find(f => f.id === e.target.value) || null;
+      popolaSelectContesto();
+      popolaSelectManualeAdottato();
+      renderElencoAlternativi();
+      aggiornaStatoBottone();
+      resettaRisultato();
+    });
+
+    document.getElementById('selContesto').addEventListener('change', (e) => {
+      document.getElementById('inputContestoAltro').style.display = e.target.value === '__altro__' ? 'block' : 'none';
+    });
+
+    document.getElementById('selManualeAdottato').addEventListener('change', () => {
+      renderElencoAlternativi();
+      aggiornaStatoBottone();
+      resettaRisultato();
+    });
+
+    document.getElementById('elencoAlternativi').addEventListener('change', resettaRisultato);
+    document.getElementById('testoInput').addEventListener('input', aggiornaStatoBottone);
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const msg = document.getElementById('msg');
+      try {
+        let testo = '';
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          testo = await estraiTestoDaPdf(file);
+        } else {
+          testo = await file.text();
+        }
+        document.getElementById('testoInput').value = testo.trim();
+        aggiornaStatoBottone();
+        resettaRisultato();
+      } catch (err) {
+        msg.className = 'errore';
+        msg.textContent = 'Errore nella lettura del file: ' + err.message;
+      }
+    });
+
+    document.getElementById('espMarkdown').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      scaricaFile('analisi-programma.md', blocchiToMarkdown(costruisciBlocchi(ultimoRisultato)), 'text/markdown;charset=utf-8');
+    });
+    document.getElementById('espHtml').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      scaricaFile('analisi-programma.html', costruisciHtmlCompleto(ultimoRisultato), 'text/html;charset=utf-8');
+    });
+    document.getElementById('espPdf').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      esportaPdf(ultimoRisultato);
+    });
+
+    document.getElementById('analizza').addEventListener('click', eseguiAnalisi);
+  }
+
+  main();
+</script>
+</body>
+</html>

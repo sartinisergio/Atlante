@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+    /* in home nessuna voce della sidebar è "corrente" */
+    --voce-corrente-soft: transparent;
+    --voce-corrente-ink: var(--ink);
+  }
+
+  main.a-main { max-width: 1240px; }
+
+  #stato-iniziale { max-width: 480px; margin: 120px auto; text-align: center; font-size: 14px; color: var(--ink-muted); }
+  #stato-iniziale a { color: var(--v); font-weight: 600; }
+
+  .hello { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+  .hello .now { font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--ink-muted); }
+  h1.page { font-size: 44px; margin-bottom: 4px; }
+  .subtitle { max-width: 620px; }
+
+  /* Numeri sintetici del cliente */
+  .numeri { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin: 20px 0 40px; }
+  .n-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 18px 20px;
+    box-shadow: var(--sh-1); position: relative;
+  }
+  .n-card::before {
+    content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 3px; background: var(--voce); border-radius: 0 3px 3px 0;
+  }
+  .n-card .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); font-weight: 600; }
+  .n-card .v {
+    font-family: var(--font-serif); font-weight: 400; font-size: 34px; color: var(--ink);
+    letter-spacing: -0.015em; line-height: 1.05; margin: 6px 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .n-card .d { font-size: 12px; color: var(--ink-muted); line-height: 1.4; }
+  .n-card .d b { color: var(--voce); font-weight: 600; }
+
+  /* Le cinque aree come "porte d'ingresso" */
+  .voci-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .porta {
+    display: block; text-decoration: none;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 22px 22px 20px;
+    box-shadow: var(--sh-1); position: relative; overflow: hidden;
+    transition: transform .12s, box-shadow .12s, border-color .12s;
+  }
+  .porta:hover { transform: translateY(-2px); box-shadow: var(--sh-2); border-color: var(--voce); }
+  .porta .cerchio {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--voce-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--voce-ink); font-size: 18px; font-weight: 500; margin-bottom: 12px;
+  }
+  .porta h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 19px;
+    letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink);
+  }
+  .porta p { font-size: 12.5px; color: var(--ink-muted); line-height: 1.5; margin: 0 0 14px; min-height: 3.6em; }
+  .porta .go { font-size: 12px; color: var(--voce); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .porta .quick {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line-soft);
+    font-size: 11.5px; color: var(--ink-muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .porta .quick b { color: var(--voce); font-weight: 600; }
+  .porta .quick[hidden] { display: none; }
+
+  /* Attività recente */
+  .attivita {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1); overflow: hidden;
+  }
+  .attivita .riga {
+    display: grid; grid-template-columns: 10px 1fr auto auto;
+    align-items: center; gap: 14px;
+    padding: 12px 18px; border-bottom: 1px solid var(--line-soft); font-size: 13px;
+  }
+  .attivita .riga:last-child { border-bottom: none; }
+  .attivita .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--voce); }
+  .attivita .titolo { color: var(--ink); min-width: 0; }
+  .attivita .titolo b { font-weight: 600; }
+  .attivita .titolo .sub { color: var(--ink-muted); font-size: 11.5px; margin-top: 2px; display: block; }
+  .attivita .quando { font-size: 12px; color: var(--ink-muted); font-family: var(--font-serif); font-style: italic; white-space: nowrap; }
+  .attivita .apri { font-size: 12px; color: var(--v); text-decoration: none; padding: 4px 10px; border-radius: 5px; white-space: nowrap; }
+  .attivita .apri:hover { background: var(--v-soft); }
+  .attivita .vuoto-riga { padding: 26px 18px; text-align: center; color: var(--ink-muted); font-size: 13px; }
+
+  /* Suggerimento in fondo */
+  .tip {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--paper-warm); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 18px 22px;
+    margin-top: 40px; max-width: 900px;
+  }
+  .tip .ic { font-family: var(--font-serif); font-style: italic; font-size: 32px; line-height: 1; color: var(--voce-analisi); flex: none; }
+  .tip h4 { font-family: var(--font-serif); font-weight: 500; font-size: 15px; margin: 0 0 4px; text-transform: none; letter-spacing: normal; color: var(--ink); }
+  .tip p { font-size: 13px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+  .tip p a { color: var(--voce-analisi); font-weight: 600; }
+</style>
+</head>
+<body class="a-shell">
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+
+  <div id="stato-iniziale">Caricamento…</div>
+
+  <div id="contenuto" hidden>
+    <div class="hello">
+      <div>
+        <h1 class="page">Buongiorno, <em id="saluto-nome">—</em>.</h1>
+        <p class="subtitle">Un solo posto per manuali, framework, programmi e offerta formativa.
+          Qui sotto trovi i numeri aggiornati di <span id="saluto-cliente">—</span> e le attività recenti.</p>
+      </div>
+      <div class="now" id="oggi"></div>
+    </div>
+
+    <!-- Numeri sintetici -->
+    <div class="numeri" id="numeri"></div>
+
+    <!-- Aree di lavoro -->
+    <h2 class="section">Le tue <em>aree di lavoro</em><span class="side">clicca per aprire</span></h2>
+    <p class="section-dek">Le cinque sezioni di Atlante. Ognuna ha un colore-guida che ritrovi nella sidebar.</p>
+
+    <div class="voci-grid">
+      <a class="porta" id="porta-offerta" href="offerta-formativa.html" hidden
+         style="--voce: var(--voce-offerta); --voce-soft: var(--voce-offerta-soft); --voce-ink: var(--voce-offerta-ink);">
+        <div class="cerchio">I</div>
+        <h3>Offerta formativa</h3>
+        <p>Cerca insegnamenti e lauree fra tutti gli atenei italiani. Salva ricerche, esporta in Excel, apri la vista ad albero per ateneo.</p>
+        <span class="go">Consulta il catalogo insegnamenti →</span>
+        <div class="quick" id="quick-offerta" hidden></div>
+      </a>
+
+      <a class="porta" href="confronto.html"
+         style="--voce: var(--voce-confronto); --voce-soft: var(--voce-confronto-soft); --voce-ink: var(--voce-confronto-ink);">
+        <div class="cerchio">II</div>
+        <h3>Confronto manuali</h3>
+        <p>Scegli un framework di valutazione e uno o più manuali della stessa materia. Ottieni un report qualitativo pronto per il colloquio.</p>
+        <span class="go">Confronta manuali →</span>
+      </a>
+
+      <a class="porta" href="analisi-programma.html"
+         style="--voce: var(--voce-analisi); --voce-soft: var(--voce-analisi-soft); --voce-ink: var(--voce-analisi-ink);">
+        <div class="cerchio">III</div>
+        <h3>Analisi di un programma</h3>
+        <p>Un programma didattico + il manuale adottato + framework: rapporto qualitativo con opportunità commerciale motivata.</p>
+        <span class="go">Analizza un programma →</span>
+      </a>
+
+      <a class="porta" href="piano-promozione.html"
+         style="--voce: var(--voce-piano); --voce-soft: var(--voce-piano-soft); --voce-ink: var(--voce-piano-ink);">
+        <div class="cerchio">IV</div>
+        <h3>Piano di promozione</h3>
+        <p>Pipeline dei programmi: carica PDF → staging → database → campagne. Motivazioni ed email per singolo docente target.</p>
+        <span class="go">Vai al piano →</span>
+        <div class="quick" id="quick-piano" hidden></div>
+      </a>
+
+      <a class="porta" href="utilita.html"
+         style="--voce: var(--voce-utilita); --voce-soft: var(--voce-utilita-soft); --voce-ink: var(--voce-utilita-ink);">
+        <div class="cerchio">V</div>
+        <h3>Utilità</h3>
+        <p>Anagrafica condivisa di manuali e framework, più le dashboard di approfondimento esterne. Modifichi qui, cambia ovunque.</p>
+        <span class="go">Apri Utilità →</span>
+        <div class="quick" id="quick-catalogo" hidden></div>
+      </a>
+    </div>
+
+    <!-- Attività recente -->
+    <h2 class="section">Attività <em>recente</em></h2>
+    <p class="section-dek">Le ultime cose fatte da te e dai tuoi colleghi. Riprendi da dove hai lasciato.</p>
+    <div class="attivita" id="attivita">
+      <div class="vuoto-riga">Caricamento…</div>
+    </div>
+
+    <div class="tip">
+      <div class="ic">*</div>
+      <div>
+        <h4>Le cinque aree lavorano sugli stessi dati</h4>
+        <p>In <a href="utilita.html">Utilità</a> c'è l'unica anagrafica di manuali e framework: quello
+        che aggiungi lì compare subito in <a href="analisi-programma.html">Analisi</a>,
+        <a href="confronto.html">Confronto</a> e <a href="piano-promozione.html">Piano di promozione</a>.
+        I programmi caricati nel Piano restano disponibili per tutte le campagne successive.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script src="js/shell.js" data-attiva=""></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Il totale degli insegnamenti vive nei CSV che offerta-formativa.html carica in
+  // DuckDB: contarli qui vorrebbe dire scaricare ~100MB per mostrare un numero.
+  // Finché non esiste un aggregato salvato su Supabase queste due cifre sono
+  // costanti — vanno riallineate quando si rigenerano i CSV con
+  // scripts/upload-offerta-formativa.mjs. Vedi HANDOFF.md §9.1.
+  const TOTALE_INSEGNAMENTI = 223481;   // aggiornato: 25 luglio 2026
+  const TOTALE_ATENEI = 98;             // aggiornato: 25 luglio 2026
+
+  function cardNumero(voce, label, valore, dettaglio) {
+    return `<div class="n-card" style="--voce: var(--voce-${voce})">
+      <div class="l">${escapeHtml(label)}</div>
+      <div class="v">${valore}</div>
+      <div class="d">${dettaglio}</div>
+    </div>`;
+  }
+
+  async function caricaNumeri(cliente) {
+    const editore = cliente.editore_proprio;
+    const [nManuali, nPropri, framework, nConfermati, nStaging] = await Promise.all([
+      supabaseClient.from('manuali').select('*', { count: 'exact', head: true }),
+      supabaseClient.from('manuali').select('*', { count: 'exact', head: true }).eq('publisher', editore),
+      supabaseClient.from('framework').select('materia'),
+      supabaseClient.from('programmi').select('*', { count: 'exact', head: true }).eq('stato', 'confermato'),
+      supabaseClient.from('programmi').select('*', { count: 'exact', head: true }).eq('stato', 'staging'),
+    ]);
+
+    const tot = nManuali.count || 0;
+    const propri = nPropri.count || 0;
+    const materie = new Set((framework.data || []).map(f => f.materia).filter(Boolean));
+    const confermati = nConfermati.count || 0;
+    const staging = nStaging.count || 0;
+
+    const cards = [];
+    if (typeof cliente.crediti_residui === 'number') {
+      cards.push(cardNumero('confronto', 'Crediti residui', formattaNumero(cliente.crediti_residui),
+        'pool condiviso da tutta l\'organizzazione — Confronto, Analisi, Piano di promozione'));
+    }
+    if (cliente.offerta_formativa_inclusa) {
+      cards.push(cardNumero('offerta', 'Insegnamenti', formattaNumero(TOTALE_INSEGNAMENTI),
+        `su <b>${TOTALE_ATENEI}</b> atenei italiani`));
+    }
+    cards.push(cardNumero('utilita', 'Manuali a catalogo', formattaNumero(tot),
+      `<b>${propri}</b> ${escapeHtml(editore || 'editore proprio')} · ${formattaNumero(tot - propri)} competitor`));
+    cards.push(cardNumero('analisi', 'Framework disponibili', formattaNumero((framework.data || []).length),
+      `su <b>${materie.size}</b> materie`));
+    cards.push(cardNumero('piano', 'Programmi in database', formattaNumero(confermati),
+      staging ? `<b>${staging}</b> in attesa di verifica in staging` : 'nessuno in staging'));
+
+    document.getElementById('numeri').innerHTML = cards.join('');
+
+    // scorciatoie nelle "porte", mostrate solo quando c'è davvero qualcosa da dire
+    if (staging) {
+      const q = document.getElementById('quick-piano');
+      q.innerHTML = `<b>▸</b> in coda: <em>${staging} programm${staging === 1 ? 'o' : 'i'} in staging</em>`;
+      q.hidden = false;
+    }
+    const qc = document.getElementById('quick-catalogo');
+    qc.innerHTML = `<b>▸</b> ${formattaNumero(tot)} manuali · ${(framework.data || []).length} framework`;
+    qc.hidden = false;
+
+    if (cliente.offerta_formativa_inclusa) {
+      // le ricerche salvate dell'Offerta vivono nel localStorage di questo browser
+      try {
+        const salvate = Object.keys(JSON.parse(localStorage.getItem('atlante_offerta_ricerche_ins_v1') || '{}'));
+        if (salvate.length) {
+          const q = document.getElementById('quick-offerta');
+          q.innerHTML = `<b>▸</b> ultima ricerca salvata: <em>${escapeHtml(salvate[salvate.length - 1])}</em>`;
+          q.hidden = false;
+        }
+      } catch { /* localStorage illeggibile: la scorciatoia resta nascosta */ }
+    }
+  }
+
+  // Non esiste un log di attività: l'elenco è l'unione delle ultime righe create
+  // nelle tabelle che hanno un created_at, ordinate lato client. Vedi HANDOFF.md §9.1.
+  async function caricaAttivita() {
+    const [programmi, campagne, manuali] = await Promise.all([
+      supabaseClient.from('programmi')
+        .select('id, docente_nome, ateneo, materia_inferita, stato, created_at')
+        .order('created_at', { ascending: false }).limit(5),
+      supabaseClient.from('campagne')
+        .select('id, materia, modalita, libro_titolo, stato, created_at')
+        .order('created_at', { ascending: false }).limit(5),
+      supabaseClient.from('manuali')
+        .select('id, titolo, autore, publisher, materia, created_at')
+        .order('created_at', { ascending: false }).limit(5),
+    ]);
+
+    const voci = [];
+    for (const p of programmi.data || []) {
+      voci.push({
+        voce: 'piano', quando: p.created_at, href: 'piano-promozione.html',
+        titolo: `<b>Programma</b> di ${escapeHtml(p.docente_nome || 'docente non identificato')}${p.ateneo ? ' — ' + escapeHtml(p.ateneo) : ''}`,
+        sub: `${escapeHtml(p.materia_inferita || 'materia non identificata')} · ${p.stato === 'staging' ? 'in staging, da verificare' : 'confermato nel database'}`,
+      });
+    }
+    for (const c of campagne.data || []) {
+      voci.push({
+        voce: 'piano', quando: c.created_at, href: 'piano-promozione.html',
+        titolo: `<b>Campagna</b> ${escapeHtml(c.modalita === 'catalogo_materia' ? 'catalogo ' + c.materia : (c.libro_titolo || c.materia))}`,
+        sub: `${escapeHtml(c.materia)} · ${escapeHtml(c.stato)}`,
+      });
+    }
+    for (const m of manuali.data || []) {
+      voci.push({
+        voce: 'utilita', quando: m.created_at, href: 'utilita.html',
+        titolo: `<b>Manuale</b> a catalogo: <em>${escapeHtml(m.titolo)}</em>`,
+        sub: `${escapeHtml(m.autore || 'autore n/d')}${m.publisher ? ' · ' + escapeHtml(m.publisher) : ''}${m.materia ? ' · ' + escapeHtml(m.materia) : ''}`,
+      });
+    }
+
+    voci.sort((a, b) => new Date(b.quando) - new Date(a.quando));
+    const box = document.getElementById('attivita');
+    if (!voci.length) {
+      box.innerHTML = `<div class="vuoto-riga">Ancora nessuna attività. Comincia da
+        <a href="utilita.html" style="color:var(--v);font-weight:600">Utilità</a> o carica un programma nel
+        <a href="piano-promozione.html" style="color:var(--v);font-weight:600">Piano di promozione</a>.</div>`;
+      return;
+    }
+    box.innerHTML = voci.slice(0, 6).map(v => `
+      <div class="riga">
+        <div class="dot" style="--voce: var(--voce-${v.voce})"></div>
+        <div class="titolo">${v.titolo}<span class="sub">${v.sub}</span></div>
+        <span class="quando">${escapeHtml(tempoRelativo(v.quando))}</span>
+        <a href="${v.href}" class="apri">Apri →</a>
+      </div>`).join('');
+  }
+
+  async function main() {
+    const statoIniziale = document.getElementById('stato-iniziale');
+    const sessione = await avviaSessione(supabaseClient, { redirect: false });
+
+    if (!sessione) {
+      statoIniziale.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>';
+      return;
+    }
+    if (!sessione.profilo) {
+      statoIniziale.innerHTML = bloccoSenzaProfilo(sessione.session.user.email);
+      return;
+    }
+
+    popolaSidebar(sessione, supabaseClient);
+
+    const cliente = sessione.profilo.clienti || {};
+    const nomeUtente = sessione.profilo.nome_completo || (sessione.session.user.email || '').split('@')[0];
+    document.getElementById('saluto-nome').textContent = nomeUtente.split(/[\s.]+/)[0] || nomeUtente;
+    document.getElementById('saluto-cliente').textContent = cliente.nome || 'questo editore';
+    document.getElementById('oggi').textContent = new Date().toLocaleDateString('it-IT', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    });
+
+    if (cliente.offerta_formativa_inclusa) document.getElementById('porta-offerta').hidden = false;
+
+    statoIniziale.hidden = true;
+    document.getElementById('contenuto').hidden = false;
+
+    caricaNumeri(cliente);
+    caricaAttivita();
+  }
+
+  main();
+</script>
+</body>
+</html>

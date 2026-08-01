@@ -1,0 +1,257 @@
+<title>Piano di sviluppo — voce "Offerta formativa" (MyUniversity)</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important; transition:none !important; animation:none !important;} }
+
+  .wrap{max-width:920px; margin:0 auto; padding:44px 24px 80px;}
+
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 10px;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(21px,3.2vw,28px); letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;}
+  .lede{font-size:16px; color:var(--ink-muted); max-width:70ch; margin:0 0 6px;}
+  .meta-row{display:flex; gap:16px; flex-wrap:wrap; margin-top:18px; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);}
+
+  h2{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink); margin:0 0 14px;}
+  h3{font-family:var(--sans); font-weight:700; font-size:17px; margin:0 0 8px;}
+  h4{font-family:var(--sans); font-weight:700; font-size:14.5px; margin:16px 0 6px; color:var(--accent-strong);}
+  p{margin:0 0 13px; max-width:72ch;}
+  ul,ol{margin:0 0 14px; padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{font-weight:700;}
+  code{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.15em .4em; border-radius:4px; border:1px solid var(--line);}
+  pre{font-family:var(--mono); font-size:12.5px; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 14px;}
+  pre code{background:none; border:none; padding:0;}
+
+  section{margin:0 0 46px;}
+  .divider{border:none; border-top:1px solid var(--line); margin:0 0 46px;}
+
+  .callout{display:flex; gap:11px; padding:13px 15px; border-radius:8px; margin:16px 0; font-size:14px;}
+  .callout .ic{flex:none; font-family:var(--mono); font-weight:700; font-size:11px; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .callout p{margin:0; max-width:none;}
+  .callout--decision{background:var(--amber-tint); color:var(--ink);}
+  .callout--decision .ic{background:var(--amber); color:var(--surface);}
+  .callout--risk{background:var(--brick-tint); color:var(--ink);}
+  .callout--risk .ic{background:var(--brick); color:var(--surface);}
+  .callout--note{background:var(--accent-tint); color:var(--ink);}
+  .callout--note .ic{background:var(--accent); color:var(--surface);}
+  .callout--ok{background:var(--green-tint); color:var(--ink);}
+  .callout--ok .ic{background:var(--green); color:var(--surface);}
+
+  .phase{background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:24px 26px; margin-bottom:20px; position:relative;}
+  .phase-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:6px; flex-wrap:wrap;}
+  .phase-tag{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:3px 9px; white-space:nowrap;}
+  .phase-title{font-family:var(--sans); font-weight:700; font-size:19px; margin:2px 0 0;}
+  .phase-goal{color:var(--ink-muted); font-size:14.5px; margin:6px 0 16px; max-width:66ch;}
+  .phase-badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+  .badge{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:20px; padding:2px 9px;}
+
+  .actionlist{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px;}
+  .actionlist li{display:flex; gap:10px; align-items:flex-start; font-size:14px; margin:0; background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:9px 11px;}
+  .actionlist li::before{content:"□"; font-family:var(--mono); color:var(--accent); flex:none; font-size:13px; line-height:1.5;}
+
+  .decision-box{margin-top:16px; border:1px dashed var(--amber); background:var(--amber-tint); border-radius:8px; padding:13px 15px;}
+  .decision-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+  .decision-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .decision-box p:last-child{margin-bottom:0;}
+
+  .keep-box{margin-top:16px; border:1px solid var(--green); background:var(--green-tint); border-radius:8px; padding:13px 15px;}
+  .keep-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--green); font-weight:700; margin-bottom:6px;}
+  .keep-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .keep-box p:last-child{margin-bottom:0;}
+
+  .change-box{margin-top:16px; border:1px solid var(--brick); background:var(--brick-tint); border-radius:8px; padding:13px 15px;}
+  .change-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--brick); font-weight:700; margin-bottom:6px;}
+  .change-box p{margin:0 0 8px; font-size:14px; color:var(--ink);}
+  .change-box p:last-child{margin-bottom:0;}
+
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:8px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .stato-badge{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:5px; padding:2px 8px; white-space:nowrap; display:inline-block;}
+  .stato-badge.ia{background:var(--accent-tint); color:var(--accent-strong);}
+  .stato-badge.js{background:var(--green-tint); color:var(--green);}
+  .stato-badge.locale{background:var(--amber-tint); color:var(--amber);}
+
+  footer{max-width:920px; margin:0 auto; padding:0 24px 60px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Bozza di lavoro — da validare prima di scrivere codice</p>
+  <h1>Piano di sviluppo — voce "Offerta formativa" (base MyUniversity 2.0)</h1>
+  <p class="lede">Quinta voce del menu di Atlante, proposta e discussa il 24 luglio 2026. Base di riferimento: <strong>MyUniversity-web 2.0</strong> (cartella <code>Desktop/MyUniversity-web-2.0</code>, deploy <code>myuniversity-20.netlify.app</code>) — <strong>mai modificata</strong>, solo studiata come riferimento, stesso principio già seguito per le voci 1-4. Questo documento riporta cosa ho letto nel codice sorgente, cosa intendo portare avanti/cambiare e le decisioni ancora aperte, pensato per essere usato come punto di partenza di una sessione dedicata a questa sola voce.</p>
+  <div class="meta-row">
+    <span>Rif. Piano_Integrazione_Ecosistema.html — filone MyUniversity</span>
+    <span>·</span>
+    <span>Non ancora iniziata — bozza di piano</span>
+    <span>·</span>
+    <span>24 luglio 2026</span>
+  </div>
+
+  <div class="callout callout--note" style="margin-top:24px;">
+    <span class="ic">i</span>
+    <p><strong>Perché questa voce, e perché ora.</strong> MyUniversity 2.0 censisce oltre 200.000 insegnamenti su più di 5.500 corsi di laurea — una scala che, secondo Sergio, non ha equivalenti pubblici in Italia. L'obiettivo immediato non è (solo) arricchire Atlante: è avere una <strong>versione presentabile di Atlante</strong> da mostrare a un potenziale cliente — con la possibilità concreta, in caso di interesse reale, di dare un accesso a tempo (un cliente "demo" con scadenza, stesso modello multi-tenant già in uso). "Offerta formativa" rende visibile e dimostrabile l'idea di tier: la voce compare o resta bloccata secondo l'entitlement del cliente che ha fatto login, non è un link a un altro sito con un'altra password.</p>
+  </div>
+
+  <hr class="divider" style="margin-top:32px" />
+
+  <section>
+    <h2>1. La differenza architetturale che conta più di tutto il resto</h2>
+    <p>Le quattro voci già costruite in Atlante (<code>confronto.html</code>, <code>analisi-programma.html</code>, <code>piano-promozione.html</code>, <code>catalogo.html</code>) condividono tutte lo stesso impianto: poche righe/decine di righe di catalogo condiviso lette da Supabase, e il lavoro pesante è una pipeline di chiamate IA con calcolo JS sopra i giudizi atomici.</p>
+    <p>"Offerta formativa" è <strong>un animale diverso</strong>: zero intelligenza artificiale, un motore di interrogazione su un dataset enorme (~200.000 righe insegnamenti + migliaia di lauree) che gira interamente <strong>nel browser</strong> via <strong>DuckDB-WASM</strong> — nessuna chiamata OpenAI, nessun giudizio da calcolare, solo caricamento dati + filtri + SQL client-side. Il problema da risolvere non è "far ragionare un LLM in modo coerente", è "consegnare in sicurezza, solo a chi ha diritto, un dataset che oggi è un file statico pubblico".</p>
+    <div class="callout callout--decision">
+      <span class="ic">!</span>
+      <p><strong>Conseguenza pratica</strong>: questa voce non estende il principio "IA giudica, JS calcola" già consolidato in Atlante — semplicemente non si applica, qui non c'è IA. L'unico problema di progettazione è l'accesso ai dati (vedi punto 4) e il porting dell'interfaccia di ricerca/filtro.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Cosa fa oggi MyUniversity 2.0 — le tre tab, in dettaglio</h2>
+    <p>Letto per intero <code>index.html</code> (1809 righe): un'unica pagina, tre tab, un motore dati condiviso. Nessun backend — tutto il calcolo avviene nel browser dell'utente dopo aver scaricato i CSV.</p>
+
+    <h4>Motore dati (comune alle tre tab)</h4>
+    <p><code>initDuckDB()</code> carica DuckDB-WASM da CDN (import ESM), poi <code>caricaCSV()</code> scarica <code>data/manifest.json</code> (elenco dei CSV per ateneo) e tutti i CSV elencati (oggi file statici pubblici, <strong>senza alcuna autenticazione reale</strong> — vedi <code>[[project_myuniversity_monetizzazione]]</code>), li registra in DuckDB (<code>registerFileText</code>) e li unifica in due tabelle SQL vere: <code>insegnamenti</code> e <code>lauree</code> (<code>CREATE TABLE ... AS SELECT * FROM read_csv_auto(...) UNION ALL ...</code>). Da quel momento ogni ricerca è una query SQL contro queste tabelle, eseguita localmente, nessuna rete.</p>
+
+    <h4>Tab 1 — Ricerca Insegnamenti (la più ricca, e la più costosa da portare)</h4>
+    <ul>
+      <li><strong>11 filtri combinabili</strong>: ateneo, regione, zona, tipologia, classe di laurea, SSD vecchio, SSD nuovo, lingua, anno di corso, insegnamento (testo libero), docente (testo libero) — tutti multi-selezione tramite la libreria Choices.js, tranne i due testo libero.</li>
+      <li><strong>Cascata SSD → Classe</strong> (<code>aggiornaCascataSsdClasse</code>): selezionando un SSD, l'elenco delle classi di laurea proposte si restringe a quelle che hanno insegnamenti in quel SSD — piccola query DuckDB dedicata a ogni cambio filtro.</li>
+      <li><strong>Ricerca testo libero intelligente</strong> (<code>costruisciClausolaTestoLibero</code>): supporta più termini separati da virgola (OR tra termini), match esatto tra <code>&lt;angolari&gt;</code>, e per un termine con più parole richiede tutte le parole presenti in qualunque ordine (AND tra parole dello stesso termine) — non un semplice <code>LIKE '%...%'</code> ingenuo.</li>
+      <li><strong>Ricerca docente con sinonimi</strong> (<code>costruisciClausolaDocente</code>): logica simile, dedicata al campo docente.</li>
+      <li>Risultati in tabella (DataTables.net), <strong>limite 5.000 righe</strong> hardcoded, con badge tipologia, link diretti al programma/corso sul sito dell'ateneo, bottone "Piano" (apre il piano di studi completo del corso) e — solo per il gestore — bottoni modifica/disattiva.</li>
+      <li><strong>Sistema "delta" locale</strong> (<code>applicaModifiche</code>/<code>applicaAggiunte</code>, chiavi <code>localStorage</code>): un promotore può correggere un insegnamento, disattivarlo, o aggiungerne uno nuovo — tutto salvato <em>solo nel proprio browser</em>, poi esportabile/importabile come file JSON per condividere le correzioni con altri (bottone "Export/Import delta" nell'header). Nessuna scrittura sui CSV originali.</li>
+      <li><strong>Ricerche salvate</strong> (<code>localStorage</code>, chiave <code>mu2_ricerche_ins_v1</code>): salva l'intera combinazione di filtri con un nome, richiamabile in seguito.</li>
+      <li>Export Excel dei risultati correnti.</li>
+    </ul>
+
+    <h4>Tab 2 — Vista Ateneo (la più semplice, ma non indipendente)</h4>
+    <p><code>costruisciVistaAteneo()</code> costruisce un albero (ateneo → tipologia → classe di laurea → corso, con conteggio insegnamenti) da un'unica query di aggregazione sulla tabella <code>insegnamenti</code> <strong>già caricata dalla Tab 1</strong> (il messaggio di caricamento lo dice esplicitamente: "Carica i dati dalla tab Ricerca..."). Nessun filtro proprio oltre a un campo di ricerca testuale sull'albero già costruito. Non ha senso costruirla come primo pezzo: dipende dal motore dati che la Tab 1 mette in piedi.</p>
+
+    <h4>Tab 3 — Ricerca Lauree (indipendente, genuinamente più semplice)</h4>
+    <p>Stessa logica della Tab 1 ma sulla tabella <code>lauree</code>, con <strong>solo 6 filtri</strong> (ateneo, regione, zona, tipologia, classe, nome corso testo libero), nessun modale di modifica visto nel codice letto, dataset molto più piccolo, <strong>limite 3.000 righe</strong>. Stesso meccanismo di ricerche salvate, chiave <code>localStorage</code> separata.</p>
+
+    <h4>Funzione trasversale — "Piano di studi"</h4>
+    <p><code>mostraPianoDiStudi()</code>: dato un ateneo+corso, mostra tutti gli insegnamenti raggruppati per anno con SSD/CFU/semestre/lingua/docente/link al programma — usata da entrambe le tab di ricerca tramite un bottone "Piano".</p>
+  </section>
+
+  <section>
+    <h2>3. Cosa portare avanti così com'è, cosa cambiare</h2>
+    <div class="keep-box">
+      <div class="dtitle">Da portare avanti così com'è</div>
+      <p><strong>Il motore DuckDB-WASM stesso</strong>: è già veloce, gratuito (gira nel browser dell'utente, zero costo server), collaudato su ~200.000 righe. Nessun motivo di sostituirlo con query server-side — sarebbe il "Livello 2" pesante di cui si è già discusso e scartato per ora.</p>
+      <p><strong>La logica di ricerca testo-libero/docente</strong> (<code>costruisciClausolaTestoLibero</code>, <code>costruisciClausolaDocente</code>) e la <strong>cascata SSD→Classe</strong>: sono raffinamenti già maturi, da riportare senza modifiche concettuali.</p>
+      <p><strong>"Piano di studi"</strong>: funzione trasversale utile e già ben fatta, da portare identica.</p>
+    </div>
+    <div class="change-box">
+      <div class="dtitle">Da cambiare — non è un dettaglio, è il cuore di questa voce</div>
+      <p><strong>Il caricamento dati</strong>: oggi <code>fetch('data/manifest.json')</code> e ogni CSV sono richieste dirette a file statici pubblici su Netlify, senza alcuna autenticazione reale — chiunque conosca l'URL scarica tutto (vedi <code>[[project_myuniversity_monetizzazione]]</code>). In Atlante, il caricamento dati deve passare da un controllo di accesso reale (dettaglio al punto 4) prima di ottenere i file da registrare in DuckDB — il resto del motore (query, tabelle, filtri) non cambia.</p>
+      <p><strong>Il sistema "delta" locale</strong> (modifiche/disattivazioni/aggiunte in <code>localStorage</code> + export/import JSON manuale): funziona, ma è pensato per un solo promotore su un solo browser che poi condivide un file a mano. In un'app multi-tenant con Supabase già disponibile, ha senso valutare se spostarlo in una tabella Supabase per-cliente (persistente, condivisa tra i promotori dello stesso cliente, niente più file da scambiarsi) — <strong>ma è un miglioramento, non un requisito per la prima versione funzionante</strong>: si può portare identico (locale) all'inizio e migliorare dopo.</p>
+      <p><strong>Le ricerche salvate</strong>: stesso ragionamento — <code>localStorage</code> funziona per partire, migrarle su Supabase (per-utente, non per-browser) è un miglioramento successivo, non bloccante.</p>
+      <p><strong>Il limite 5.000/3.000 righe hardcoded</strong>: da rendere una costante nominata, non necessariamente da cambiare nel valore.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Il gate di accesso — l'unico vero pezzo di infrastruttura nuova</h2>
+    <p>Deciso insieme (24 luglio 2026): <strong>MyUniversity-web 2.0 non si tocca</strong>. Questo significa che il gate non può essere "aggiunto davanti" al codice esistente di MyUniversity (richiederebbe modificarlo) — va costruito come parte della nuova voce "Offerta formativa" dentro Atlante, che userà lo stesso motore (DuckDB-WASM) ma con un proprio caricamento dati autenticato.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pezzo</th><th>Proposta</th></tr></thead>
+        <tbody>
+          <tr><td>Dove vivono i CSV</td><td>Un bucket <strong>Supabase Storage privato</strong> (non pubblico) — copia dei CSV oggi serviti da Netlify. Riusa il progetto Supabase già in uso da Atlante, nessuna infrastruttura nuova da gestire.</td></tr>
+          <tr><td>Verifica accesso</td><td>Una <strong>Supabase Edge Function</strong>: riceve la richiesta autenticata (stesso Supabase Auth/JWT del login Atlante), verifica l'entitlement del cliente (nuovo campo, vedi decisioni sotto), e se autorizzato genera <strong>URL firmati temporanei</strong> (funzionalità nativa di Supabase Storage — <code>createSignedUrl</code>, non da costruire da zero) per ciascun file del manifest.</td></tr>
+          <tr><td>Lato "Offerta formativa" in Atlante</td><td>Al posto di <code>fetch('data/manifest.json')</code> diretto, prima chiama l'Edge Function per ottenere gli URL firmati, poi scarica/registra i CSV in DuckDB esattamente come fa oggi MyUniversity — il motore di query non cambia, cambia solo da dove arrivano i file.</td></tr>
+          <tr><td>Scadenza/revoca</td><td>Gli URL firmati scadono di per sé (parametro nativo Supabase, es. 10-15 minuti — tempo di caricamento iniziale, non serve di più); l'entitlement del cliente (o la scadenza del cliente demo, vedi filone parallelo) è il controllo reale e ripetuto a ogni richiesta di nuovi URL.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout--risk">
+      <span class="ic">⚠</span>
+      <p><strong>Limite onesto di questo modello (già segnalato nel filone MyUniversity generale)</strong>: chi ha un accesso legittimo può comunque salvare la copia dei CSV una volta scaricati. Non elimina il rischio, lo riduce a "serve comunque un login valido per prendere il dato la prima volta" — coerente con l'obiettivo attuale (rendere l'accesso vendibile/dimostrabile), non con un DRM perfetto che non è lo scopo qui.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Decisioni da prendere insieme prima di scrivere codice</h2>
+    <div class="decision-box">
+      <div class="dtitle">1 — Come si esprime l'entitlement "Offerta formativa" nello schema clienti</div>
+      <p>Un campo booleano semplice (<code>clienti.offerta_formativa_inclusa</code>) o un campo <code>tier</code> più generale (es. <code>'solo_myuniversity' | 'solo_suite' | 'bundle'</code>) che in futuro potrebbe governare anche l'accesso alle altre 4 voci? Il secondo è più coerente con "tier diversi, prezzi diversi" di cui si è parlato, ma tocca anche le voci già fatte (oggi nessuna di esse controlla un tier, solo il ruolo promotore/gestore). Consiglio di partire dal campo booleano semplice per questa voce, e affrontare un vero sistema di tier multi-voce solo se/quando serve davvero per un cliente reale — evita di ridisegnare le 4 voci esistenti solo per questa.</p>
+    </div>
+    <div class="decision-box">
+      <div class="dtitle">2 — Sistema "delta" e ricerche salvate: locale o su Supabase fin da subito?</div>
+      <p>Proposta: <strong>locale (com'è oggi) per la prima versione funzionante</strong>, migrazione a Supabase come miglioramento successivo esplicito — evita di far dipendere la prima versione dimostrabile da uno schema dati non ancora scritto. Da confermare.</p>
+    </div>
+    <div class="decision-box">
+      <div class="dtitle">3 — Aggiornamento dati: un posto o due?</div>
+      <p>Oggi l'offerta formativa nazionale si aggiorna una volta l'anno (nuovo anno accademico) nei CSV di MyUniversity. Se il bucket Supabase è una copia, ogni aggiornamento va pubblicato in due posti. Da valutare se serve un piccolo script di sincronizzazione (Netlify → bucket Supabase) o se l'aggiornamento resta manuale vista la cadenza annuale — probabilmente non urgente da automatizzare subito.</p>
+    </div>
+    <div class="decision-box">
+      <div class="dtitle">4 — Collegamento con il filone "cliente demo con scadenza"</div>
+      <p>Sono due esigenze distinte ma con lo stesso meccanismo sotto: un cliente con <code>scade_il</code> nel passato deve perdere accesso a tutto, incluso "Offerta formativa" — <code>cliente_corrente()</code> aggiornato per quel filone copre automaticamente anche questo, nessun lavoro duplicato se i due filoni vengono coordinati.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Ordine di costruzione (deciso, 24 luglio 2026)</h2>
+    <p>Confermato con Sergio: si vogliono tutte e tre le viste (il valore di MyUniversity non si percepisce a metà), ma <strong>Vista Ateneo dipende tecnicamente dai dati caricati da Ricerca Insegnamenti</strong> — non è un candidato indipendente per iniziare, anche se la sua interfaccia è la più semplice delle tre.</p>
+    <ol>
+      <li><strong>Gate di accesso</strong> (punto 4) + <strong>Ricerca Insegnamenti</strong>: il pezzo più costoso (11 filtri, motore dati, cascata SSD→classe, ricerca testo libero/docente), ma anche quello che mette in piedi l'infrastruttura (autenticazione dati, tabelle DuckDB) che serve alle altre due. Include "Piano di studi" (usato da questa tab).</li>
+      <li><strong>Vista Ateneo</strong>: si appoggia ai dati già caricati al passo 1, aggiunge solo la query di aggregazione e l'albero.</li>
+      <li><strong>Ricerca Lauree</strong>: indipendente, filtri più semplici, dataset più piccolo — può slittare prima o dopo il punto 2 a seconda del tempo disponibile.</li>
+    </ol>
+    <div class="callout callout--note">
+      <span class="ic">i</span>
+      <p>Il sistema "delta" locale e le ricerche salvate (decisione 2 sopra) si portano insieme alla tab a cui appartengono — non serve costruirli come pezzo a parte.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. Cautele</h2>
+    <ul>
+      <li>Nessun dato riservato in gioco in questa fase: Zanichelli è oggi solo un potenziale cliente, non esiste un rapporto commerciale attivo — non c'è "dato reale di un cliente" da proteggere, solo il principio di accesso da dimostrare.</li>
+      <li>Prima di dare un accesso di prova a un vero potenziale cliente (di questa voce o di qualunque altra), completare la verifica RLS su Supabase già in backlog (Fase 4 di <code>Piano_Integrazione_Ecosistema.html</code>) — un prospect che esplora l'app da solo potrebbe notare esattamente i problemi che una revisione tecnica esterna ha già segnalato.</li>
+      <li>Il codice SQL costruito per interpolazione di stringa (visto in tutto <code>cercaInsegnamenti</code>/<code>cercaLauree</code> di MyUniversity) non è un rischio di SQL injection nel senso classico — gira contro un DuckDB locale nel browser dell'utente, senza dati altrui da esporre. Da portare avanti con lo stesso pattern, senza bisogno di query parametrizzate che DuckDB-WASM non supporta comunque nello stesso modo di un DB server.</li>
+    </ul>
+  </section>
+
+</div>
+<footer>Bozza di lavoro — analisi del codice sorgente di MyUniversity-web 2.0, da rivedere insieme prima di iniziare l'implementazione</footer>

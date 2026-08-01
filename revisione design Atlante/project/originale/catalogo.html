@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — catalogo</title>
+<link rel="stylesheet" href="css/atlante-theme.css" />
+<style>
+  html { background: color-mix(in srgb, var(--paper) 80%, var(--voce-utilita-tint) 20%); }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, var(--voce-utilita-tint) 20%); }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 21px; margin-bottom: 4px; }
+  #chi { font-size: 13px; color: var(--ink-muted); margin-bottom: 24px; }
+  #chi a { color: var(--voce-utilita); }
+  .filtri { display: flex; gap: 10px; margin-bottom: 16px; }
+  .filtri input, .filtri select { padding: 8px; font-size: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .filtri input { flex: 1; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .proprio { background: var(--green-tint); color: var(--green); }
+  .competitor { background: var(--brick-tint); color: var(--brick); }
+  #stato { padding: 12px; border-radius: 6px; background: var(--amber-tint); margin: 20px 0; }
+  h2 { font-size: 15px; margin: 30px 0 10px; }
+  a.azione { font-size: 12px; color: var(--voce-utilita); cursor: pointer; }
+  .form { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 40px; }
+  .form h3 { font-size: 14px; margin: 0 0 12px; }
+  .campi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .campi label { display: block; font-size: 12px; color: var(--ink-muted); margin-bottom: 3px; }
+  .campi input, .campi textarea { width: 100%; padding: 7px; font-size: 14px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .campi .full { grid-column: 1 / -1; }
+  .form button { padding: 8px 14px; font-size: 14px; cursor: pointer; margin-right: 8px; background: var(--voce-utilita); color: #fff; border: none; border-radius: 6px; }
+  .form button:hover { background: var(--voce-utilita-strong); }
+  .form button[type="button"] { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .form-msg { font-size: 13px; margin-top: 8px; }
+  .form-msg.ok { color: var(--green); }
+  .form-msg.errore { color: var(--brick); }
+  details summary { cursor: pointer; font-size: 13px; color: var(--voce-utilita); margin-bottom: 10px; }
+  pre.dettaglio { max-height: 320px; overflow: auto; background: var(--ink); color: #dbe2e8; font-size: 12px; padding: 12px; border-radius: 6px; white-space: pre-wrap; word-break: break-word; }
+  .callout-fb { display: flex; gap: 10px; align-items: flex-start; background: var(--voce-utilita-tint); border: 1px solid var(--voce-utilita); border-radius: 8px; padding: 12px 16px; margin: 0 0 20px; font-size: 13.5px; color: var(--ink); }
+  .callout-fb .ic { flex: none; font-size: 18px; line-height: 1; }
+  .callout-fb a { color: var(--voce-utilita-strong); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>Atlante — catalogo</h1>
+<div id="chi">Caricamento...</div>
+<nav style="font-size:13px;margin-bottom:16px"><a href="home.html" style="color:var(--voce-utilita)">← Menu</a></nav>
+
+<details class="come-funziona" style="--voce-corrente: var(--voce-utilita)">
+  <summary>❓ Come funziona questa sezione</summary>
+  <p>Il catalogo condiviso di manuali e framework raggruppato per materia — è la stessa fonte dati usata da tutte le altre sezioni di Atlante, non una copia separata. Chiunque acceda può consultarlo e cercare; solo chi ha ruolo di gestore può aggiungere o modificare manuali e framework.</p>
+</details>
+
+<div class="callout-fb">
+  <span class="ic">🛠️</span>
+  <div>Per creare un framework nuovo o l'indice di un manuale nuovo da un PDF, usa
+  <a href="https://matrix-framework-builder.netlify.app/" target="_blank" rel="noopener">MATRIX Framework Builder ↗</a> —
+  poi incolla qui sotto il JSON che genera.</div>
+</div>
+<div id="contenuto" style="display:none">
+
+  <h2>Manuali</h2>
+  <div class="filtri">
+    <input id="ricerca" type="text" placeholder="Cerca per titolo o autore..." />
+    <select id="materiaFiltro"><option value="">Tutte le materie</option></select>
+  </div>
+  <div id="gruppiManuali"></div>
+
+  <details id="formManualiBox" class="form" style="display:none">
+    <summary><h3 id="formManualiTitolo" style="display:inline;margin:0">Aggiungi manuale</h3></summary>
+    <div class="campi">
+      <div><label>Titolo *</label><input id="mTitolo" /></div>
+      <div><label>Autore</label><input id="mAutore" /></div>
+      <div><label>Editore (publisher)</label><input id="mPublisher" /></div>
+      <div><label>Materia</label><input id="mMateria" /></div>
+      <div><label>Edizione</label><input id="mEdizione" /></div>
+      <div><label>Anno pubblicazione</label><input id="mAnno" type="number" /></div>
+      <div><label>Volume</label><input id="mVolume" type="number" /></div>
+    </div>
+    <details id="mJsonBox">
+      <summary>Incolla JSON indice manuale generato da Matrix Framework Builder (facoltativo)</summary>
+      <div class="campi">
+        <div class="full">
+          <textarea id="mJson" rows="6" placeholder='Incolla qui il JSON del modulo "JSON indice manuale" — riempie automaticamente titolo/autore/editore/materia se li trova, e salva l&#39;indice completo'></textarea>
+        </div>
+      </div>
+    </details>
+    <button id="mSalva">Salva</button>
+    <button id="mAnnulla" type="button">Annulla</button>
+    <div id="mMsg" class="form-msg"></div>
+  </details>
+
+  <h2>Framework</h2>
+  <div id="gruppiFramework"></div>
+
+  <details id="formFrameworkBox" class="form" style="display:none">
+    <summary><h3 id="formFrameworkTitolo" style="display:inline;margin:0">Aggiungi framework</h3></summary>
+    <div class="campi">
+      <div><label>Nome *</label><input id="fNome" /></div>
+      <div><label>Materia</label><input id="fMateria" /></div>
+      <div><label>Versione</label><input id="fVersione" /></div>
+    </div>
+    <details id="fJsonBox">
+      <summary>Incolla JSON generato da Matrix Framework Builder (facoltativo)</summary>
+      <div class="campi">
+        <div class="full">
+          <textarea id="fJson" rows="6" placeholder='Incolla qui il JSON esportato dal Framework Builder — riempie automaticamente nome/materia se li trova, e viene comunque salvato tutto'></textarea>
+        </div>
+      </div>
+    </details>
+    <button id="fSalva">Salva</button>
+    <button id="fAnnulla" type="button">Annulla</button>
+    <div id="fMsg" class="form-msg"></div>
+  </details>
+
+</div>
+<div id="stato" style="display:none"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let tuttiManuali = [];
+  let tuttiFramework = [];
+  let editoreProprio = null;
+  let ruoloUtente = null;
+  let mIdInModifica = null;
+  let fIdInModifica = null;
+
+  function badgeTipo(publisher) {
+    const proprio = editoreProprio && publisher === editoreProprio;
+    return `<span class="badge ${proprio ? 'proprio' : 'competitor'}">${proprio ? 'proprio' : 'competitor'}</span>`;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  window.toggleDettagli = function (id) {
+    const el = document.getElementById('dett-' + id);
+    el.style.display = el.style.display === 'none' ? '' : 'none';
+  };
+
+  function tabellaManualiHtml(elenco) {
+    const gestore = ruoloUtente === 'gestore';
+    return `<table>
+      <thead><tr><th>Autore</th><th>Titolo</th><th>Editore</th><th>Materia</th><th>Tipo</th><th></th></tr></thead>
+      <tbody>${elenco.map(m => `
+        <tr>
+          <td>${m.autore || ''}</td>
+          <td>${m.titolo || ''}</td>
+          <td>${m.publisher || ''}</td>
+          <td>${m.materia || ''}</td>
+          <td>${badgeTipo(m.publisher)}</td>
+          <td>
+            <a class="azione" onclick="toggleDettagli('m-${m.id}')">Dettagli</a>
+            ${gestore ? ` · <a class="azione" onclick="apriModificaManuale('${m.id}')">Modifica</a>` : ''}
+          </td>
+        </tr>
+        <tr id="dett-m-${m.id}" style="display:none"><td colspan="6"><pre class="dettaglio">${escapeHtml(JSON.stringify(m.dati || {}, null, 2))}</pre></td></tr>
+      `).join('')}</tbody>
+    </table>`;
+  }
+
+  function raggruppaPerMateria(elenco) {
+    const gruppi = {};
+    for (const x of elenco) {
+      const chiave = x.materia || '(senza materia)';
+      (gruppi[chiave] ||= []).push(x);
+    }
+    return gruppi;
+  }
+
+  // vista compatta: un manuale/framework alla volta e' troppo per l'occhio (86+ righe),
+  // quindi raggruppati per materia e chiusi di default; l'utente apre solo quella che gli serve
+  function renderManuali(elenco) {
+    document.getElementById('gruppiManuali').innerHTML = tabellaManualiHtml(elenco);
+  }
+
+  function renderManualiRaggruppati(elenco) {
+    const gruppi = raggruppaPerMateria(elenco);
+    const materie = Object.keys(gruppi).sort();
+    document.getElementById('gruppiManuali').innerHTML = materie.map(mat => `
+      <details>
+        <summary>${mat} (${gruppi[mat].length})</summary>
+        ${tabellaManualiHtml(gruppi[mat])}
+      </details>
+    `).join('');
+  }
+
+  function tabellaFrameworkHtml(elenco) {
+    const gestore = ruoloUtente === 'gestore';
+    return `<table>
+      <thead><tr><th>Nome</th><th>Materia</th><th></th></tr></thead>
+      <tbody>${elenco.map(f => `
+        <tr>
+          <td>${f.nome || ''}</td>
+          <td>${f.materia || ''}</td>
+          <td>
+            <a class="azione" onclick="toggleDettagli('f-${f.id}')">Dettagli</a>
+            ${gestore ? ` · <a class="azione" onclick="apriModificaFramework('${f.id}')">Modifica</a>` : ''}
+          </td>
+        </tr>
+        <tr id="dett-f-${f.id}" style="display:none"><td colspan="3"><pre class="dettaglio">${escapeHtml(JSON.stringify(f.dati || {}, null, 2))}</pre></td></tr>
+      `).join('')}</tbody>
+    </table>`;
+  }
+
+  function renderFrameworkRaggruppati(elenco) {
+    const gruppi = raggruppaPerMateria(elenco);
+    const materie = Object.keys(gruppi).sort();
+    document.getElementById('gruppiFramework').innerHTML = materie.map(mat => `
+      <details>
+        <summary>${mat} (${gruppi[mat].length})</summary>
+        ${tabellaFrameworkHtml(gruppi[mat])}
+      </details>
+    `).join('');
+  }
+
+  function applicaFiltri() {
+    const testo = document.getElementById('ricerca').value.trim().toLowerCase();
+    const materia = document.getElementById('materiaFiltro').value;
+    if (!testo && !materia) {
+      renderManualiRaggruppati(tuttiManuali);
+      return;
+    }
+    const filtrati = tuttiManuali.filter(m => {
+      const okTesto = !testo || (m.titolo || '').toLowerCase().includes(testo) || (m.autore || '').toLowerCase().includes(testo);
+      const okMateria = !materia || m.materia === materia;
+      return okTesto && okMateria;
+    });
+    renderManuali(filtrati);
+  }
+
+  // ---- form manuali ----
+  function resetFormManuali() {
+    mIdInModifica = null;
+    document.getElementById('formManualiTitolo').textContent = 'Aggiungi manuale';
+    for (const id of ['mTitolo','mAutore','mPublisher','mMateria','mEdizione','mAnno','mVolume','mJson']) document.getElementById(id).value = '';
+    document.getElementById('mJsonBox').style.display = '';
+    document.getElementById('mMsg').textContent = '';
+  }
+
+  window.apriModificaManuale = function (id) {
+    const m = tuttiManuali.find(x => x.id === id);
+    if (!m) return;
+    mIdInModifica = id;
+    document.getElementById('formManualiTitolo').textContent = 'Modifica manuale';
+    document.getElementById('mTitolo').value = m.titolo || '';
+    document.getElementById('mAutore').value = m.autore || '';
+    document.getElementById('mPublisher').value = m.publisher || '';
+    document.getElementById('mMateria').value = m.materia || '';
+    document.getElementById('mEdizione').value = m.edizione || '';
+    document.getElementById('mAnno').value = m.anno_pubblicazione || '';
+    document.getElementById('mVolume').value = m.volume || '';
+    document.getElementById('mJson').value = '';
+    // l'incolla-JSON serve solo per un manuale nuovo, non per correggere l'anagrafica di uno esistente
+    document.getElementById('mJsonBox').style.display = 'none';
+    document.getElementById('mMsg').textContent = '';
+    document.getElementById('formManualiBox').open = true;
+    document.getElementById('formManualiBox').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('mJson').addEventListener('input', (e) => {
+      try {
+        const j = JSON.parse(e.target.value);
+        const titolo = j.title || j.titolo;
+        const autore = j.author || j.autore;
+        const publisher = j.publisher;
+        const materia = j.subject || j.materia;
+        if (titolo && !document.getElementById('mTitolo').value) document.getElementById('mTitolo').value = titolo;
+        if (autore && !document.getElementById('mAutore').value) document.getElementById('mAutore').value = autore;
+        if (publisher && !document.getElementById('mPublisher').value) document.getElementById('mPublisher').value = publisher;
+        if (materia && !document.getElementById('mMateria').value) document.getElementById('mMateria').value = materia;
+      } catch {
+        // JSON non ancora valido/completo mentre l'utente incolla: nessun errore mostrato
+      }
+    });
+  });
+
+  async function salvaManuale() {
+    const msg = document.getElementById('mMsg');
+    const riga = {
+      titolo: document.getElementById('mTitolo').value.trim(),
+      autore: document.getElementById('mAutore').value.trim() || null,
+      publisher: document.getElementById('mPublisher').value.trim() || null,
+      materia: document.getElementById('mMateria').value.trim() || null,
+      edizione: document.getElementById('mEdizione').value.trim() || null,
+      anno_pubblicazione: document.getElementById('mAnno').value ? Number(document.getElementById('mAnno').value) : null,
+      volume: document.getElementById('mVolume').value ? Number(document.getElementById('mVolume').value) : null,
+    };
+    if (!riga.titolo) { msg.className = 'form-msg errore'; msg.textContent = 'Il titolo è obbligatorio.'; return; }
+
+    const jsonTesto = document.getElementById('mJson').value.trim();
+    let datiExtra = { import_source: 'manuale' };
+    if (jsonTesto) {
+      try { datiExtra = { import_source: 'framework_builder_indice', raw: JSON.parse(jsonTesto) }; }
+      catch { msg.className = 'form-msg errore'; msg.textContent = 'Il JSON incollato non è valido.'; return; }
+    }
+
+    const query = mIdInModifica
+      ? supabaseClient.from('manuali').update(riga).eq('id', mIdInModifica).select().single()
+      : supabaseClient.from('manuali').insert({ ...riga, dati: datiExtra }).select().single();
+
+    const { data, error } = await query;
+    if (error) { msg.className = 'form-msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+
+    if (mIdInModifica) {
+      const i = tuttiManuali.findIndex(x => x.id === mIdInModifica);
+      tuttiManuali[i] = data;
+    } else {
+      tuttiManuali.push(data);
+    }
+    aggiornaFiltroMaterie();
+    applicaFiltri();
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Salvato.';
+    resetFormManuali();
+  }
+
+  function aggiornaFiltroMaterie() {
+    const materie = [...new Set(tuttiManuali.map(m => m.materia).filter(Boolean))].sort();
+    const sel = document.getElementById('materiaFiltro');
+    const attuale = sel.value;
+    sel.innerHTML = '<option value="">Tutte le materie</option>' + materie.map(m => `<option value="${m}">${m}</option>`).join('');
+    sel.value = attuale;
+  }
+
+  // ---- form framework ----
+  function resetFormFramework() {
+    fIdInModifica = null;
+    document.getElementById('formFrameworkTitolo').textContent = 'Aggiungi framework';
+    document.getElementById('fNome').value = '';
+    document.getElementById('fMateria').value = '';
+    document.getElementById('fVersione').value = '';
+    document.getElementById('fJson').value = '';
+    document.getElementById('fJsonBox').style.display = '';
+    document.getElementById('fMsg').textContent = '';
+  }
+
+  window.apriModificaFramework = function (id) {
+    const f = tuttiFramework.find(x => x.id === id);
+    if (!f) return;
+    fIdInModifica = id;
+    document.getElementById('formFrameworkTitolo').textContent = 'Modifica framework';
+    document.getElementById('fNome').value = f.nome || '';
+    document.getElementById('fMateria').value = f.materia || '';
+    document.getElementById('fVersione').value = f.versione || '';
+    document.getElementById('fJson').value = '';
+    // l'incolla-JSON serve solo per un framework nuovo, non per correggere l'anagrafica di uno esistente
+    document.getElementById('fJsonBox').style.display = 'none';
+    document.getElementById('fMsg').textContent = '';
+    document.getElementById('formFrameworkBox').open = true;
+    document.getElementById('formFrameworkBox').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('fJson').addEventListener('input', (e) => {
+      try {
+        const j = JSON.parse(e.target.value);
+        const nome = j.name || j.nome || j.content?.framework?.name;
+        const materia = j.subject || j.materia || j.disciplina;
+        const versione = j.version || j.versione || j.content?.framework?.version;
+        if (nome && !document.getElementById('fNome').value) document.getElementById('fNome').value = nome;
+        if (materia && !document.getElementById('fMateria').value) document.getElementById('fMateria').value = materia;
+        if (versione && !document.getElementById('fVersione').value) document.getElementById('fVersione').value = versione;
+      } catch {
+        // JSON non ancora valido/completo mentre l'utente incolla: nessun errore mostrato
+      }
+    });
+  });
+
+  async function salvaFramework() {
+    const msg = document.getElementById('fMsg');
+    const riga = {
+      nome: document.getElementById('fNome').value.trim(),
+      materia: document.getElementById('fMateria').value.trim() || null,
+      versione: document.getElementById('fVersione').value.trim() || null,
+    };
+    if (!riga.nome) { msg.className = 'form-msg errore'; msg.textContent = 'Il nome è obbligatorio.'; return; }
+
+    const jsonTesto = document.getElementById('fJson').value.trim();
+    let datiExtra = { import_source: 'manuale' };
+    if (jsonTesto) {
+      try { datiExtra = { import_source: 'framework_builder', raw: JSON.parse(jsonTesto) }; }
+      catch { msg.className = 'form-msg errore'; msg.textContent = 'Il JSON incollato non è valido.'; return; }
+    }
+
+    const query = fIdInModifica
+      ? supabaseClient.from('framework').update(riga).eq('id', fIdInModifica).select().single()
+      : supabaseClient.from('framework').insert({ ...riga, dati: datiExtra }).select().single();
+
+    const { data, error } = await query;
+    if (error) { msg.className = 'form-msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+
+    if (fIdInModifica) {
+      const i = tuttiFramework.findIndex(x => x.id === fIdInModifica);
+      tuttiFramework[i] = data;
+    } else {
+      tuttiFramework.push(data);
+    }
+    renderFrameworkRaggruppati(tuttiFramework);
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Salvato.';
+    resetFormFramework();
+  }
+
+  async function main() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const chi = document.getElementById('chi');
+
+    if (!session) {
+      chi.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>';
+      return;
+    }
+
+    const { data: profilo, error: eProfilo } = await supabaseClient
+      .from('profili')
+      .select('ruolo, clienti(nome, editore_proprio)')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (eProfilo || !profilo) {
+      chi.innerHTML = `Connesso come ${session.user.email}, ma nessun profilo collegato. Contatta l'amministratore.`;
+      return;
+    }
+
+    editoreProprio = profilo.clienti.editore_proprio;
+    ruoloUtente = profilo.ruolo;
+    chi.textContent = `${session.user.email} · ${profilo.ruolo} · ${profilo.clienti.nome}`;
+
+    const [{ data: manuali, error: eManuali }, { data: framework, error: eFramework }] = await Promise.all([
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia, edizione, anno_pubblicazione, volume, dati').order('autore'),
+      supabaseClient.from('framework').select('id, nome, materia, versione, dati').order('nome'),
+    ]);
+
+    if (eManuali || eFramework) {
+      document.getElementById('stato').style.display = 'block';
+      document.getElementById('stato').textContent = 'Errore nel caricamento: ' + (eManuali || eFramework).message;
+      return;
+    }
+
+    tuttiManuali = manuali;
+    tuttiFramework = framework;
+    document.getElementById('contenuto').style.display = 'block';
+
+    aggiornaFiltroMaterie();
+    renderManualiRaggruppati(manuali);
+    renderFrameworkRaggruppati(framework);
+
+    document.getElementById('ricerca').addEventListener('input', applicaFiltri);
+    document.getElementById('materiaFiltro').addEventListener('change', applicaFiltri);
+
+    if (ruoloUtente === 'gestore') {
+      document.getElementById('formManualiBox').style.display = 'block';
+      document.getElementById('formFrameworkBox').style.display = 'block';
+      document.getElementById('mSalva').addEventListener('click', salvaManuale);
+      document.getElementById('mAnnulla').addEventListener('click', resetFormManuali);
+      document.getElementById('fSalva').addEventListener('click', salvaFramework);
+      document.getElementById('fAnnulla').addEventListener('click', resetFormFramework);
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>

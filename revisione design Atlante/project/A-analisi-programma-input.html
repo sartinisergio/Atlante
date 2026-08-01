@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>A · Analisi programma (input) — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-analisi);
+    --v-soft: var(--voce-analisi-soft);
+    --v-ink: var(--voce-analisi-ink);
+    --voce-corrente-soft: var(--voce-analisi-soft);
+    --voce-corrente-ink: var(--voce-analisi-ink);
+  }
+
+  main.a-main { max-width: 1520px; }
+
+  /* Stepper (riuso stile Analisi) */
+  .stepper {
+    display: flex; align-items: center; gap: 0;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 10px 14px; margin-bottom: 24px;
+    box-shadow: var(--sh-1);
+  }
+  .step { display: flex; align-items: center; gap: 10px; padding: 6px 14px; flex: 1; }
+  .step .n {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--paper-warm); color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex: none;
+    font-family: var(--font-serif);
+  }
+  .step .l { line-height: 1.2; }
+  .step .l strong { display: block; font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .step .l span { font-size: 11px; color: var(--ink-muted); }
+  .step.done .n { background: var(--v); color: #fff; }
+  .step.done .l strong { color: var(--v-ink); }
+  .step.on .n { background: var(--v-ink); color: #fff; box-shadow: 0 0 0 4px var(--v-soft); }
+  .step.on .l strong { color: var(--v-ink); }
+  .step.idle .l strong { color: var(--ink-muted); }
+  .step-sep { width: 32px; height: 1px; background: var(--line); flex: none; }
+
+  .split { display: grid; grid-template-columns: 460px 1fr; gap: 32px; align-items: flex-start; }
+
+  /* Form card */
+  .form-col { position: sticky; top: 20px; }
+  .form-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden;
+  }
+  .fc-head { background: var(--paper-warm); border-bottom: 1px solid var(--line); padding: 14px 18px; }
+  .fc-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0; letter-spacing: -0.01em; }
+  .fc-head p { font-size: 12px; color: var(--ink-muted); margin: 3px 0 0; }
+
+  .fc-body { padding: 4px 18px 16px; }
+
+  /* Sezione del form: numerata come lo stepper */
+  .fc-section {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .fc-section:last-child { border-bottom: none; }
+  .fc-section-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .fc-section-head .n {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--paper-warm); color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex: none;
+    font-family: var(--font-serif);
+  }
+  .fc-section.done .n { background: var(--ok); color: #fff; }
+  .fc-section.done .n::before { content: '✓'; }
+  .fc-section.done .n .num-hidden { display: none; }
+  .fc-section.on .n { background: var(--v); color: #fff; }
+  .fc-section-head h4 { font-family: var(--font-serif); font-weight: 500; font-size: 14px; margin: 0; letter-spacing: -0.005em; }
+  .fc-section-head .status-hint {
+    margin-left: auto; font-size: 11.5px; color: var(--ink-muted); font-family: var(--font-serif); font-style: italic;
+  }
+  .fc-section.done .status-hint { color: var(--ok); }
+  .fc-section.on .status-hint { color: var(--v); }
+
+  .campo { margin-bottom: 12px; }
+  .campo:last-child { margin-bottom: 0; }
+  .campo label { display: block; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 5px; }
+  .campo .aiuto { font-size: 11.5px; color: var(--ink-muted); margin: 5px 0 0; line-height: 1.4; }
+  .campo .aiuto a { color: var(--v); text-decoration: none; font-weight: 500; }
+
+  .field {
+    width: 100%; padding: 9px 11px;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 7px; font-size: 13.5px; color: var(--ink);
+    font-family: inherit;
+  }
+  .field:focus { outline: none; border-color: var(--v); background: var(--surface); }
+  .field.placeholder { color: var(--ink-faint); }
+  .field:disabled { opacity: 0.55; cursor: not-allowed; background: var(--surface-2); }
+  textarea.field { min-height: 130px; resize: vertical; font-family: var(--font-sans); line-height: 1.5; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Slot manuale non selezionato (vuoto) */
+  .book-slot {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 12px;
+    background: var(--paper); border: 1px dashed var(--line);
+    border-radius: 7px; cursor: pointer;
+    color: var(--ink-muted); font-size: 13px;
+  }
+  .book-slot:hover { border-color: var(--v); background: var(--surface); color: var(--ink); }
+  .book-slot .ghost-cover {
+    width: 28px; height: 36px; flex: none;
+    background: repeating-linear-gradient(45deg, var(--paper-warm), var(--paper-warm) 3px, var(--surface-2) 3px, var(--surface-2) 6px);
+    border: 1px dashed var(--line); border-radius: 3px;
+  }
+  .book-slot.disabled { opacity: 0.55; cursor: not-allowed; }
+  .book-slot .caret { margin-left: auto; color: var(--ink-faint); }
+
+  /* Upload drop */
+  .upload-drop {
+    border: 1.5px dashed var(--line); border-radius: 8px;
+    padding: 26px 16px; text-align: center;
+    background: var(--paper); font-size: 13px; color: var(--ink-muted);
+    cursor: pointer; line-height: 1.5;
+  }
+  .upload-drop:hover { border-color: var(--v); background: var(--surface); }
+  .upload-drop .ic {
+    font-family: var(--font-serif); font-size: 26px; font-style: italic; color: var(--v);
+    display: block; margin-bottom: 6px; line-height: 1;
+  }
+  .upload-drop b { color: var(--v); font-weight: 600; }
+  .upload-drop .or {
+    display: block; font-size: 11.5px; margin-top: 8px; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+  }
+
+  .radio-row { display: flex; gap: 8px; }
+  .radio-btn {
+    flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 7px;
+    background: var(--paper); cursor: pointer; font-size: 12.5px;
+    display: flex; flex-direction: column; gap: 2px;
+    text-align: left;
+  }
+  .radio-btn.on { border-color: var(--v); background: var(--v-soft); }
+  .radio-btn strong { color: var(--ink); font-weight: 600; }
+  .radio-btn.on strong { color: var(--v-ink); }
+  .radio-btn span { font-size: 10.5px; color: var(--ink-muted); }
+
+  /* Footer del form */
+  .fc-foot {
+    padding: 14px 18px;
+    background: var(--paper-warm); border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .btn-primary.disabled {
+    background: var(--paper-warm); color: var(--ink-faint);
+    cursor: not-allowed; border-color: var(--line);
+  }
+  .cost-hint { font-size: 11px; color: var(--ink-muted); margin-left: auto; }
+  .cost-hint b { color: var(--ink); font-family: var(--font-mono); }
+  .fc-foot .req-mancanti {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11.5px; color: var(--warn);
+    margin-left: auto;
+    font-family: var(--font-serif); font-style: italic;
+  }
+  .fc-foot .req-mancanti::before { content: '!'; background: var(--warn-soft); color: var(--warn); width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-family: var(--font-sans); font-style: normal; }
+
+  /* -------- COLONNA DESTRA: empty state guidato -------- */
+  .empty-hero {
+    background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 60%);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 40px 44px 36px;
+    box-shadow: var(--sh-1);
+    position: relative;
+    overflow: hidden;
+  }
+  .empty-hero::before {
+    content: '';
+    position: absolute; right: -60px; top: -60px;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, var(--v-soft), transparent 70%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .empty-hero .kicker {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--v); letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+  .empty-hero h2 {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 32px; letter-spacing: -0.02em;
+    margin: 0 0 14px; color: var(--ink);
+    line-height: 1.1;
+    max-width: 620px;
+  }
+  .empty-hero h2 em { color: var(--v); font-style: italic; }
+  .empty-hero .lead {
+    font-size: 15px; color: var(--ink-2); line-height: 1.55;
+    max-width: 600px; margin: 0 0 30px;
+  }
+
+  /* Cosa otterrai — anteprima */
+  .cosa-otterrai {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin-bottom: 30px;
+    max-width: 720px;
+  }
+  .co-item {
+    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .co-item .n {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--v); font-size: 15px; font-weight: 500;
+    flex: none; padding-top: 1px;
+  }
+  .co-item h5 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 13.5px; margin: 0 0 3px; letter-spacing: -0.005em;
+  }
+  .co-item p {
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.5; margin: 0;
+  }
+
+  /* Timing */
+  .timing {
+    display: flex; gap: 24px; padding: 14px 18px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: 8px; margin-bottom: 26px;
+    max-width: 720px;
+  }
+  .timing .cell { flex: 1; }
+  .timing .cell .l {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--ink-muted); font-weight: 600; margin-bottom: 4px;
+  }
+  .timing .cell .v {
+    font-family: var(--font-serif); font-size: 20px; color: var(--ink);
+    font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .timing .cell .v small { font-family: var(--font-sans); font-size: 12px; color: var(--ink-muted); margin-left: 4px; }
+
+  /* Riprendi da bozza / analisi precedente */
+  .riprendi {
+    padding: 14px 18px;
+    background: var(--v-soft); border-radius: 8px;
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 13px; color: var(--v-ink); line-height: 1.5;
+    max-width: 720px;
+  }
+  .riprendi .ic {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 20px; color: var(--v); flex: none; line-height: 1;
+    margin-top: 2px;
+  }
+  .riprendi a { color: var(--v-ink); font-weight: 600; text-decoration: none; }
+  .riprendi a:hover { text-decoration: underline; }
+
+  /* Note laterale del promotore */
+  .side-note {
+    max-width: 720px; margin-top: 30px;
+    padding-top: 18px; border-top: 1px solid var(--line-soft);
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--ink-muted); line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb"><a href="A-home.html">Atlante</a><span class="sep">›</span><a href="#">Zanichelli</a><span class="sep">›</span><span>Analisi di un programma</span></div>
+
+  <h1 class="page">Analisi di un programma<em>.</em></h1>
+  <p class="subtitle">Carica il programma di un singolo insegnamento; il framework di valutazione e il manuale adottato sono i punti di riferimento. Il risultato è un rapporto qualitativo pronto per il colloquio col docente, mai un punteggio.</p>
+
+  <!-- STEPPER: solo passo 1 attivo -->
+  <nav class="stepper" aria-label="Fasi dell'analisi">
+    <div class="step on"><div class="n">1</div><div class="l"><strong>Contesto</strong><span>Framework · classe</span></div></div>
+    <div class="step-sep"></div>
+    <div class="step idle"><div class="n">2</div><div class="l"><strong>Manuali</strong><span>Adottato · alternativi</span></div></div>
+    <div class="step-sep"></div>
+    <div class="step idle"><div class="n">3</div><div class="l"><strong>Programma</strong><span>PDF o testo</span></div></div>
+    <div class="step-sep"></div>
+    <div class="step idle"><div class="n">4</div><div class="l"><strong>Risultato</strong><span>Non ancora generato</span></div></div>
+  </nav>
+
+  <div class="split">
+
+    <!-- ==================== FORM ==================== -->
+    <div class="form-col">
+      <div class="form-card">
+        <div class="fc-head">
+          <h3>Nuova analisi</h3>
+          <p>Compila i 4 passi qui sotto. Puoi anche riprendere una bozza salvata.</p>
+        </div>
+        <div class="fc-body">
+
+          <!-- 1. Contesto -->
+          <div class="fc-section on">
+            <div class="fc-section-head">
+              <div class="n">1</div>
+              <h4>Contesto</h4>
+              <span class="status-hint">stai compilando</span>
+            </div>
+            <div class="campo">
+              <label>Framework di valutazione *</label>
+              <select class="field placeholder">
+                <option>— scegli il framework —</option>
+                <option>Farmacologia — MAP Farmacologia 2024 v.2</option>
+                <option>Biochimica — Framework Zanichelli 2024</option>
+                <option>Chimica organica — MAP Chimica 2023</option>
+              </select>
+              <div class="aiuto">Non trovi il framework? <a href="A-catalogo.html">Aggiungilo al catalogo →</a></div>
+            </div>
+            <div class="row2">
+              <div class="campo">
+                <label>Classe di laurea</label>
+                <select class="field" disabled><option>seleziona prima il framework</option></select>
+              </div>
+              <div class="campo">
+                <label>CFU · Ore</label>
+                <input class="field" placeholder="es. 9 · 72" />
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Manuali -->
+          <div class="fc-section idle">
+            <div class="fc-section-head">
+              <div class="n">2</div>
+              <h4>Manuale adottato e bibliografia</h4>
+              <span class="status-hint">disponibile dopo il framework</span>
+            </div>
+            <div class="campo">
+              <label>Manuale adottato *</label>
+              <div class="book-slot disabled">
+                <span class="ghost-cover"></span>
+                <span>Scegli un manuale a catalogo…</span>
+                <span class="caret">▾</span>
+              </div>
+            </div>
+            <div class="campo">
+              <label>Alternativi in bibliografia (facoltativo)</label>
+              <div class="book-slot disabled">
+                <span class="ghost-cover"></span>
+                <span>Aggiungi manuali di riferimento…</span>
+                <span class="caret">＋</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Programma -->
+          <div class="fc-section idle">
+            <div class="fc-section-head">
+              <div class="n">3</div>
+              <h4>Programma didattico</h4>
+              <span class="status-hint">carica o incolla</span>
+            </div>
+            <div class="campo">
+              <div class="upload-drop">
+                <span class="ic">↓</span>
+                Trascina qui il PDF del programma<br>
+                <b>oppure sfoglia</b>
+                <span class="or">— o incolla il testo qui sotto —</span>
+              </div>
+            </div>
+            <div class="campo">
+              <textarea class="field placeholder" placeholder="Incolla il testo del programma: obiettivi formativi, moduli, metodologia didattica, valutazione, bibliografia consigliata…"></textarea>
+            </div>
+          </div>
+
+          <!-- 4. Opzioni -->
+          <div class="fc-section idle">
+            <div class="fc-section-head">
+              <div class="n">4</div>
+              <h4>Opzioni di analisi</h4>
+            </div>
+            <div class="campo">
+              <label>Tipo di analisi</label>
+              <div class="radio-row">
+                <div class="radio-btn on"><strong>Base</strong><span>4 dimensioni + moduli</span></div>
+                <div class="radio-btn"><strong>Avanzata</strong><span>+ profilo docente, colloquio</span></div>
+              </div>
+              <div class="aiuto">L'avanzata comporta più chiamate all'AI e costa qualche centesimo in più.</div>
+            </div>
+            <div class="row2">
+              <div class="campo">
+                <label>Modello AI</label>
+                <select class="field"><option>gpt-4o-mini (consigliato)</option><option>gpt-4o (più capace)</option></select>
+              </div>
+              <div class="campo">
+                <label>Chiave API</label>
+                <input type="password" class="field placeholder" placeholder="sk-…" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fc-foot">
+          <button class="btn btn-primary disabled">Analizza</button>
+          <span class="req-mancanti">3 campi obbligatori da compilare</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== EMPTY STATE COLONNA DESTRA ==================== -->
+    <div>
+      <div class="empty-hero">
+        <div class="kicker">§ Cosa aspettarsi</div>
+        <h2>Un rapporto <em>qualitativo</em> pronto per il colloquio col docente.</h2>
+        <p class="lead">Atlante analizza il programma su più dimensioni e confronta la copertura dei manuali disponibili. I giudizi sono sempre qualitativi — mai un punteggio numerico o un manuale "vincitore" imposto. Il consiglio finale tiene conto del peso che il programma stesso assegna a ciascun argomento.</p>
+
+        <div class="cosa-otterrai">
+          <div class="co-item">
+            <span class="n">§I</span>
+            <div>
+              <h5>Sintesi in 3 righe</h5>
+              <p>Il primo paragrafo che il promotore legge, sta in piedi da solo.</p>
+            </div>
+          </div>
+          <div class="co-item">
+            <span class="n">§II</span>
+            <div>
+              <h5>Quadro del programma</h5>
+              <p>Tipologia, complessità, allineamento con la classe di laurea.</p>
+            </div>
+          </div>
+          <div class="co-item">
+            <span class="n">§III</span>
+            <div>
+              <h5>Profilo pedagogico del docente</h5>
+              <p>Come insegna e cosa gli sta più a cuore, con evidenze citate dal programma.</p>
+            </div>
+          </div>
+          <div class="co-item">
+            <span class="n">§IV</span>
+            <div>
+              <h5>Giudizi qualitativi</h5>
+              <p>Quattro dimensioni valutate con etichette qualitative, non numeri.</p>
+            </div>
+          </div>
+          <div class="co-item">
+            <span class="n">§V</span>
+            <div>
+              <h5>Copertura dei moduli</h5>
+              <p>Heatmap: il programma vs ciascun manuale, modulo per modulo.</p>
+            </div>
+          </div>
+          <div class="co-item">
+            <span class="n">§VI</span>
+            <div>
+              <h5>Opportunità commerciale</h5>
+              <p>Se hai un editore proprio, il consiglio motivato basato sui gap.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timing">
+          <div class="cell">
+            <div class="l">Tempo stimato</div>
+            <div class="v">30–45 <small>secondi</small></div>
+          </div>
+          <div class="cell">
+            <div class="l">Costo AI (mini)</div>
+            <div class="v">~ 0,05 <small>$ per analisi</small></div>
+          </div>
+          <div class="cell">
+            <div class="l">Costo AI (avanzata)</div>
+            <div class="v">~ 0,12 <small>$ per analisi</small></div>
+          </div>
+        </div>
+
+        <div class="riprendi">
+          <span class="ic">✎</span>
+          <div>
+            <strong>Riprendi da dove avevi lasciato.</strong><br>
+            Hai <strong>2 bozze salvate</strong> — <a href="#">Farmacologia clinica · Torino</a> ·
+            <a href="#">Biochimica strutturale · Bologna</a> — e <strong>64 analisi complete</strong> nell'<a href="#">archivio</a>.
+          </div>
+        </div>
+
+        <p class="side-note">Se il framework o il manuale che ti servono non sono a catalogo, aggiungili prima in <a href="A-catalogo.html" style="color: var(--v); font-weight: 500; font-style: normal;">Catalogo</a>. Puoi generare l'indice di un manuale nuovo dal PDF con MATRIX Framework Builder e incollare qui il JSON.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="shell.js" data-attiva="analisi"></script>
+</body>
+</html>

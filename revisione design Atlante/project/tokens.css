@@ -1,0 +1,95 @@
+/* ============================================================
+   Atlante · Design tokens condivisi per i mockup A e C
+   ============================================================ */
+
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ---- Neutri "carta" ---- */
+  --paper:        #f7f3ec;
+  --paper-warm:   #efe8d9;
+  --paper-deep:   #e7dfcd;
+  --surface:      #ffffff;
+  --surface-2:    #f2ecdf;
+
+  --ink:          #1c1a17;
+  --ink-2:        #35312a;
+  --ink-muted:    #6b6455;
+  --ink-faint:    #948b78;
+  --line:         #d8cfb8;
+  --line-soft:    #e6dec9;
+
+  /* ---- Voci (versione raffinata: più desaturata, più editoriale) ---- */
+  --voce-offerta:        #b8862a;  /* ocra manoscritto */
+  --voce-offerta-soft:   #efe0b8;
+  --voce-offerta-ink:    #6b4c0f;
+
+  --voce-confronto:      #5a7f5a;  /* verde muschio */
+  --voce-confronto-soft: #d9e3d3;
+  --voce-confronto-ink:  #2f4a2f;
+
+  --voce-analisi:        #446a8a;  /* blu carta geografica */
+  --voce-analisi-soft:   #d5dfe8;
+  --voce-analisi-ink:    #21384c;
+
+  --voce-piano:          #7a4e8a;  /* prugna */
+  --voce-piano-soft:     #e3d5e8;
+  --voce-piano-ink:      #422152;
+
+  --voce-utilita:        #a8552a;  /* terracotta */
+  --voce-utilita-soft:   #ecd8c7;
+  --voce-utilita-ink:    #6b2f14;
+
+  /* ---- Stati semantici ---- */
+  --ok:           #4f7a2f;
+  --ok-soft:      #dbe6c6;
+  --warn:         #a5771a;
+  --warn-soft:    #f0e2ba;
+  --err:          #9c3b30;
+  --err-soft:     #f0d4cf;
+  --info:         #446a8a;
+  --info-soft:    #d5dfe8;
+
+  /* ---- Tipografia ---- */
+  --font-serif:  'Fraunces', 'Newsreader', Georgia, serif;
+  --font-sans:   'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, monospace;
+
+  /* ---- Spaziature ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* ---- Raggi ---- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 20px;
+
+  /* ---- Ombre "editoriali" (basse, calde) ---- */
+  --sh-1: 0 1px 2px rgba(28, 26, 23, 0.05);
+  --sh-2: 0 2px 8px rgba(28, 26, 23, 0.06), 0 1px 2px rgba(28, 26, 23, 0.04);
+  --sh-3: 0 8px 24px rgba(28, 26, 23, 0.08), 0 2px 6px rgba(28, 26, 23, 0.04);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ripristino base */
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; color: inherit; }

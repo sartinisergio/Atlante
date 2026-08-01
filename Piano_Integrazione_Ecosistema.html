@@ -1,0 +1,473 @@
+<title>Piano di integrazione — Ecosistema promotore editoriale</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important; transition:none !important; animation:none !important;} }
+
+  .wrap{max-width:900px; margin:0 auto; padding:44px 24px 80px;}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 10px;
+  }
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(22px,3.4vw,30px); letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;}
+  .lede{font-size:16px; color:var(--ink-muted); max-width:66ch; margin:0 0 6px;}
+  .meta-row{display:flex; gap:16px; flex-wrap:wrap; margin-top:18px; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);}
+
+  h2{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink); margin:0 0 14px;}
+  h3{font-family:var(--sans); font-weight:700; font-size:17px; margin:0 0 8px;}
+  p{margin:0 0 13px; max-width:68ch;}
+  ul,ol{margin:0 0 14px; padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{font-weight:700;}
+  code{font-family:var(--mono); font-size:.9em; background:var(--surface-2); padding:.15em .4em; border-radius:4px; border:1px solid var(--line);}
+
+  section{margin:0 0 46px;}
+  .divider{border:none; border-top:1px solid var(--line); margin:0 0 46px;}
+
+  /* ---- diagram panel ---- */
+  .diagram-panel{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);
+    padding:20px 20px 8px; margin:20px 0 0;
+  }
+  .diagram-caption{font-family:var(--mono); font-size:11px; color:var(--ink-faint); text-align:center; padding:14px 0 4px;}
+
+  .flowgrid{display:flex; flex-direction:column; align-items:stretch; gap:0;}
+  .flow-row{display:flex; gap:16px; justify-content:center; align-items:stretch;}
+  .flow-row.single{justify-content:center;}
+  .flow-node{
+    flex:1 1 0; max-width:260px; background:var(--accent-tint); border:1px solid var(--accent);
+    border-radius:8px; padding:12px 16px; font-family:var(--mono); font-weight:700; font-size:13px;
+    color:var(--accent-strong); text-align:center;
+  }
+  .flow-node span{display:block; font-family:var(--sans); font-weight:400; font-size:12.5px; color:var(--ink-muted); margin-top:4px;}
+  .flow-node.wide{max-width:420px; margin:0 auto;}
+  .flow-node.dashed{background:var(--amber-tint); border:1px dashed var(--amber); color:var(--amber);}
+  .flow-arrows{display:flex; gap:16px; justify-content:center;}
+  .flow-arrow{
+    flex:1 1 0; max-width:260px; text-align:center; font-family:var(--mono); color:var(--ink-faint);
+    font-size:15px; padding:6px 0;
+  }
+  .flow-arrow span{display:block; font-family:var(--sans); font-size:10.5px; letter-spacing:.03em; text-transform:uppercase; margin-top:1px;}
+  .flow-arrow.dashed{color:var(--amber);}
+
+  /* ---- callouts ---- */
+  .callout{display:flex; gap:11px; padding:13px 15px; border-radius:8px; margin:16px 0; font-size:14px;}
+  .callout .ic{flex:none; font-family:var(--mono); font-weight:700; font-size:11px; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .callout p{margin:0; max-width:none;}
+  .callout--decision{background:var(--amber-tint); color:var(--ink);}
+  .callout--decision .ic{background:var(--amber); color:var(--surface);}
+  .callout--risk{background:var(--brick-tint); color:var(--ink);}
+  .callout--risk .ic{background:var(--brick); color:var(--surface);}
+  .callout--note{background:var(--accent-tint); color:var(--ink);}
+  .callout--note .ic{background:var(--accent); color:var(--surface);}
+
+  /* ---- collapsible sections (details/summary) ---- */
+  details{background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); margin-bottom:16px;}
+  details > summary{cursor:pointer; list-style:none; padding:16px 22px; display:flex; align-items:center; gap:10px; user-select:none;}
+  details > summary::-webkit-details-marker{display:none;}
+  details > summary::before{content:"▸"; font-family:var(--mono); color:var(--accent); flex:none; transition:transform .15s ease; font-size:13px;}
+  details[open] > summary::before{transform:rotate(90deg);}
+  details > summary:hover{color:var(--accent-strong);}
+  details.topsection > summary{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink);}
+  details .details-body{padding:0 22px 22px;}
+  details .details-body > *:first-child{margin-top:0;}
+
+  /* ---- phase cards (now <details class="phase">) ---- */
+  details.phase > summary{padding:20px 26px 16px; flex-wrap:wrap;}
+  .phase-tag{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:3px 9px; white-space:nowrap;}
+  .phase-tag.parallel{color:var(--amber); background:var(--amber-tint);}
+  .phase-title{font-family:var(--sans); font-weight:700; font-size:19px;}
+  .phase-goal{color:var(--ink-muted); font-size:14.5px; margin:0 0 16px; max-width:64ch;}
+  .phase-badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+  .badge{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:20px; padding:2px 9px;}
+  details.phase .details-body{padding:0 26px 24px;}
+
+  .actionlist{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px;}
+  .actionlist li{
+    display:flex; gap:10px; align-items:flex-start; font-size:14px; margin:0;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:9px 11px;
+  }
+  .actionlist li::before{content:"□"; font-family:var(--mono); color:var(--accent); flex:none; font-size:13px; line-height:1.5;}
+
+  .decision-box{
+    margin-top:16px; border:1px dashed var(--amber); background:var(--amber-tint); border-radius:8px; padding:13px 15px;
+  }
+  .decision-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+  .decision-box p{margin:0; font-size:14px; color:var(--ink);}
+
+  /* ---- table ---- */
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:8px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  footer{max-width:900px; margin:0 auto; padding:0 24px 60px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .stato-badge{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:5px; padding:2px 8px; white-space:nowrap; display:inline-block;}
+  .stato-badge.fatta{background:var(--green-tint); color:var(--green);}
+  .stato-badge.da-fare{background:var(--amber-tint); color:var(--amber);}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Piano di sviluppo/revisione — bozza di lavoro</p>
+  <h1>Da sei applicazioni separate a un servizio integrato con accesso unico</h1>
+  <p class="lede">MyUniversity, MAP, MATRIX Intelligence, MATRIX Intelligence Plus, MATRIX Framework Builder e Zanichelli Core oggi sono sei progetti indipendenti, ciascuno con la propria autenticazione (o nessuna), la propria fonte dati e il proprio dominio Netlify. Questo documento propone un percorso per arrivare a un unico punto d'accesso — non come infrastruttura interna di un datore di lavoro, ma come prodotto/servizio autonomo, sviluppato interamente dopo la pensione, da offrire a editori universitari a partire da Zanichelli come primo cliente.</p>
+  <div class="meta-row">
+    <span>6 applicazioni analizzate</span>
+    <span>·</span>
+    <span>5 fasi tecniche + 1 fase di strategia commerciale</span>
+    <span>·</span>
+    <span>26 luglio 2026 — rev. 7</span>
+  </div>
+
+  <div class="table-wrap" style="margin:22px 0 0;">
+    <table>
+      <thead><tr><th>Fase di Atlante</th><th>Stato</th><th>Di cosa si tratta</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Fase 1</strong><br />Dominio e identità</td>
+          <td><span class="stato-badge fatta">Fatta</span></td>
+          <td>Login unico e ruoli condivisi tra le funzioni di Atlante, al posto dei sistemi di accesso diversi (o assenti) delle sei app esistenti.</td>
+        </tr>
+        <tr>
+          <td><strong>Fase 2</strong><br />Dato condiviso</td>
+          <td><span class="stato-badge fatta">Fatta</span></td>
+          <td>Un solo catalogo manuali/framework, importato una tantum dalle app esistenti, al posto delle due copie separate e disallineate di MAP e MATRIX.</td>
+        </tr>
+        <tr>
+          <td><strong>Fase 3</strong><br />Punto di accesso unico</td>
+          <td><span class="stato-badge fatta">5 di 5 voci fatte</span></td>
+          <td>Le cinque funzioni del menu principale (confronto manuali, analisi di un programma, piano di promozione, utilità, offerta formativa) ricostruite dentro Atlante, ciascuna con un riferimento tra le app esistenti.</td>
+        </tr>
+        <tr>
+          <td><strong>Fase 4</strong><br />Consolidamento tecnico</td>
+          <td><span class="stato-badge fatta">Backlog principale chiuso</span></td>
+          <td>RLS verificate (nessun buco reale), chiave OpenAI uniformata in <code>sessionStorage</code>, modulo JS condiviso estratto. Resta solo backlog minore (vedi Fase 4).</td>
+        </tr>
+        <tr>
+          <td><strong>Strategia commerciale</strong><br />filone MyUniversity</td>
+          <td><span class="stato-badge da-fare">In riflessione</span></td>
+          <td>Decidere se e come vendere l'accesso a MyUniversity come prodotto a sé — a tier dentro Atlante, o come vendita standalone fuori dall'editoria.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:12.5px; color:var(--ink-faint); margin:18px 0 8px;">Il resto del documento — motivazioni, cronologia, dettaglio di ogni fase — è organizzato in blocchi apribili singolarmente qui sotto.</p>
+
+  <details class="topsection">
+    <summary>Storico delle revisioni</summary>
+    <div class="details-body">
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Rev. 7</strong> (26 luglio 2026) — nessun cambio di fase: sessione di bug-fixing sull'interfaccia ridisegnata il 25 luglio (dettaglio tecnico nel Riepilogo di progetto), non architetturale. Quattro bug corretti — Offerta formativa ("Chiudi tutti" nella vista Ateneo, mai funzionante), Catalogo (apertura di default del primo gruppo), Confronto/Analisi di un programma (titolo dell'elaborazione con tag HTML visibili invece che interpretati, bozza dell'Analisi che ora salva anche il risultato completo, non solo i parametri, così "Riprendi" non rilancia più da zero tutte le chiamate AI) — più un intervento di contrasto colore (WCAG) esteso a tutte le pagine. La cartella di progetto è stata unificata: <code>Atlante_new</code> (dove viveva il redesign) è ora semplicemente <code>Atlante</code>, sostituendo la vecchia copia ferma al 25 luglio. Nessun repository git dedicato, per scelta di Sergio: l'applicazione resta solo sul suo PC.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Rev. 6</strong> (25 luglio 2026) — la Fase 3 è ora <strong>completa a 5 voci su 5</strong>: aggiunta "Offerta formativa" (base MyUniversity-web 2.0), con un gate di accesso reale davanti ai dati (bucket Supabase Storage privato, Edge Function che verifica l'entitlement del cliente e genera URL firmati, mai più CSV statici pubblici) e una cache locale nel browser per non ricaricare ~100MB di dati ogni volta che si torna sulla pagina nella stessa sessione. Testata end-to-end con Zanichelli come primo cliente attivato. La Fase 4 (Consolidamento tecnico) ha chiuso i suoi due punti a priorità massima: <strong>verifica RLS completata</strong> (nessun buco di sicurezza reale trovato — solo due assenze volute, il catalogo condiviso senza scoping per cliente e <code>profili</code> senza insert/delete, entrambe senza rischio oggi) e <strong>chiave OpenAI uniformata in <code>sessionStorage</code></strong> su tutte e tre le pagine che chiamano OpenAI direttamente dal browser. Estratto anche il modulo JS condiviso (funzioni duplicate identiche in tre pagine, nessuna divergenza di comportamento). Resta aperto solo il backlog minore (vedi Fase 4) e, fuori da questo piano tecnico, un redesign completo dell'interfaccia (palette per voce di menu, nuova home) di cui non c'è traccia in questo documento perché è una questione di prodotto/UX, non di architettura.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Rev. 5</strong> (24 luglio 2026) — la Fase 3 è ora completa: <strong>4 di 4 voci di menu funzionanti</strong>. La voce 3 (Piano di promozione, base MATRIX Intelligence Plus) è stata costruita, testata e corretta su più giri — deviazione principale dal piano originale: il "monitoraggio disciplinare" non è una funzione separata ma una modalità della campagna (volume singolo | intero catalogo materia). Il percorso B dell'ingresso (Excel MyUniversity + scraping + classificazione) resta <strong>deliberatamente rimandato</strong>, non solo descritto come opzione: richiede prima una decisione tecnica (scraping lato client, bloccato da CORS su domini di atenei terzi, vs proxy server) che non è ancora stata presa. La voce 4 (Utilità) resta ancorata a MATRIX Framework Builder come strumento <strong>esterno e invariato</strong>: deciso esplicitamente di non costruire supporto per "modificare" un framework/manuale già a catalogo (solo inserimento nuovo, via incolla-JSON), per non complicare un'area già funzionante — aggiunto solo un link diretto allo strumento dal catalogo. La Fase 4 (Consolidamento tecnico) ha ora un contenuto concreto, non solo intenzioni generiche: una revisione tecnica esterna (<code>Revisione critica.docx</code>) ha verificato le tre pagine principali e trovato una superficie di sicurezza da chiudere (RLS da verificare, chiave OpenAI in <code>localStorage</code> su due pagine) e debito architetturale reale (funzioni duplicate con divergenze silenti già confermate tra le pagine). Aperto in parallelo, non ancora deciso: un filone di riflessione su come monetizzare MyUniversity come asset a sé (vedi Strategia commerciale).</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Rev. 4</strong> — Fase 1 e Fase 2 completate; nella Fase 3, le voci 1 (Analisi comparativa di manuali) e 2 (Analisi di un programma) sono ora funzionanti. La voce 2 ha richiesto uno studio approfondito della logica di MATRIX Intelligence e alcune scelte deliberatamente diverse dall'originale: mai un punteggio numerico mostrato (solo giudizi qualitativi su moduli/dimensioni, con ogni confronto tra manuali calcolato in JS, mai lasciato a una nuova generazione AI che potrebbe contraddire dati già stabiliti), e soprattutto — dato che non esiste un syllabus nazionale condiviso per gli insegnamenti universitari e l'autonomia del docente nella scelta dei contenuti è ampia — la chiusura del report non forza più un singolo manuale "consigliato": incrocia i gap del manuale adottato con il peso che il programma stesso attribuisce a ciascun modulo, e propone un manuale diverso a seconda di cosa emerge nel colloquio con il docente, invece di un verdetto unico deciso in anticipo.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Rev. 2</strong> — la prima versione trattava la questione come un dilemma "resta un progetto personale o diventa infrastruttura Zanichelli", nell'ipotesi di un rapporto di dipendenza. Non è così: il lavoro è stato sviluppato interamente dopo la pensione, quindi è a tutti gli effetti tuo — non c'è un datore di lavoro da cui aspettare un riconoscimento, c'è un prodotto da vendere o dare in licenza a un cliente, di cui Zanichelli è il candidato naturale come primo.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="topsection">
+    <summary>Perché non basta "collegare" le app così come sono</summary>
+    <div class="details-body">
+      <p>Un accesso unico richiede tre ingredienti che oggi mancano tutti e tre: <strong>un'identità condivisa</strong> (oggi sono 3-4 sistemi di login diversi: password finta in MyUniversity, Firebase Auth in MAP, Supabase Auth — probabilmente due progetti distinti — in MATRIX e MATRIX Plus), <strong>un dominio comune</strong> (oggi ogni app vive su un sottodominio Netlify scelto a caso, e i nomi cambiano persino da un documento all'altro: <code>myuniversity-20</code>, <code>myuniversity-web</code>, <code>myuniversity-v2</code>), e <strong>un dato condiviso</strong> (MAP e MATRIX mantengono ciascuna la propria libreria manuali/framework, con inevitabili doppioni e disallineamenti).</p>
+      <p>Zanichelli Core, così com'è, non risolve questo: è una pagina che apre link a siti scollegati in nuove schede. Il vero lavoro non è "costruire il portale" — è costruire le fondamenta sotto, che oggi non esistono. E se l'obiettivo è offrire questo come servizio a più di un editore in futuro, le fondamenta vanno pensate da subito per ospitare più di un cliente (vedi nota multi-tenant in Fase 1).</p>
+    </div>
+  </details>
+
+  <details class="topsection">
+    <summary>Due strade possibili</summary>
+    <div class="details-body">
+      <div class="table-wrap" style="margin-top:0;">
+        <table>
+          <thead><tr><th>Approccio</th><th>Cosa comporta</th><th>Rischio</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Big bang</strong></td>
+              <td>Riscrivere le 4 app tecniche da zero su un'unica piattaforma nuova</td>
+              <td>Alto — mesi di lavoro senza nuove funzionalità visibili, un solo sviluppatore, rischio concreto di abbandono a metà</td>
+            </tr>
+            <tr>
+              <td><strong>Federata</strong></td>
+              <td>Le app esistenti vengono modificate per condividere identità/dominio/dato tra loro</td>
+              <td>Scartata — richiederebbe intervenire sul codice delle app esistenti, cosa che non vuoi fare</td>
+            </tr>
+            <tr>
+              <td><strong>Nuova costruzione incrementale</strong> (scelta)</td>
+              <td>Le 6 app esistenti restano esattamente come sono, invariate e in funzione. Si costruisce un'applicazione nuova, un pezzo alla volta, usando le app esistenti solo come <strong>fonte di lettura</strong>: schema dati, logica, ed export dei loro dati già pubblici (Firestore di MAP, JSON di MATRIX su GitHub, output di Framework Builder)</td>
+              <td>Basso — nessun rischio di rompere ciò che già funziona; le vecchie app restano disponibili come riserva finché la nuova non le supera in autonomia</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Il piano che segue assume la strada "nuova costruzione incrementale": <strong>nessuna fase prevede di modificare il codice delle sei app esistenti</strong>. Dove il piano precedente parlava di "collegare" o "sostituire il processo di" un'app esistente, va inteso come: costruire quella funzione da capo nella nuova applicazione, usando l'app esistente solo come riferimento.</p>
+    </div>
+  </details>
+
+  <details class="topsection">
+    <summary>Mappa delle fasi</summary>
+    <div class="details-body">
+      <div class="diagram-panel" style="margin-top:0;">
+        <div class="flowgrid">
+          <div class="flow-row">
+            <div class="flow-node dashed">Fase 0 — facoltativa<br /><span>Messa in sicurezza delle app esistenti (non blocca il resto)</span></div>
+          </div>
+          <div class="flow-row">
+            <div class="flow-node dashed">Strategia commerciale<br /><span>parallela, non tecnica</span></div>
+          </div>
+          <div class="flow-arrows">
+            <div class="flow-arrow dashed" style="max-width:none;">┄┄▶<span>orienta</span></div>
+          </div>
+          <div class="flow-row">
+            <div class="flow-node"><strong>Qui si inizia</strong><br /><span>Fase 1 — Dominio e identità</span></div>
+            <div class="flow-node">Fase 2<br /><span>Dato condiviso<br />(letto dalle app esistenti, sola lettura)</span></div>
+          </div>
+          <div class="flow-row">
+            <div class="flow-arrow">↓</div>
+            <div class="flow-arrow">↓</div>
+          </div>
+          <div class="flow-row single">
+            <div class="flow-node wide">Fase 3<br /><span>Punto di accesso unico — funzioni ricostruite nella nuova app</span></div>
+          </div>
+          <div class="flow-row single"><div class="flow-arrow">↓</div></div>
+          <div class="flow-row single">
+            <div class="flow-node wide">Fase 4<br /><span>Consolidamento tecnico</span></div>
+          </div>
+        </div>
+        <p class="diagram-caption">Fase 0 è indipendente (riguarda solo le vecchie app, se restano in uso); il progetto nuovo comincia dalla Fase 1, orientata dalla strategia commerciale</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">Fase 0</span><span class="phase-title">Messa in sicurezza delle app esistenti</span></summary>
+    <div class="details-body">
+      <p class="phase-goal"><strong>Fuori dal perimetro del nuovo progetto</strong> — non serve farla per iniziare a costruire la nuova applicazione, che non dipende dal codice delle app esistenti. Resta consigliata per conto proprio, solo se e finché continui a far girare questi strumenti così come sono oggi.</p>
+      <div class="phase-badges"><span class="badge">sforzo: basso</span><span class="badge">non blocca il nuovo progetto</span><span class="badge">facoltativa</span></div>
+      <ul class="actionlist">
+        <li>MATRIX Intelligence Plus — verificare le policy RLS sulla tabella <code>profili</code>: il workflow di keep-alive scrive usando solo la chiave anonima, segno che potrebbero permettere scritture pubbliche non volute</li>
+        <li>MAP — ruotare la chiave Google già segnalata come esposta dall'alert di sicurezza GitHub</li>
+        <li>MyUniversity — mettere al sicuro (backup) le cartelle escluse da git: <code>bussolauni</code>, <code>verifica url_ins</code>, <code>sorgenti</code> — oggi esistono solo su un PC. Utile comunque farlo, perché è proprio questo materiale (schema dati, script di normalizzazione) che serve come riferimento di lettura per la nuova applicazione</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag parallel">Parallela</span><span class="phase-title">Strategia commerciale</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Non tecnica, ma orienta come viene disegnata la Fase 1: il prodotto è tuo (sviluppato interamente dopo la pensione), la domanda non è più "chi deve riconoscerlo" ma "come lo vendi".</p>
+      <div class="decision-box">
+        <div class="dtitle">Due modelli, non alternativi ma in sequenza</div>
+        <p><strong>Vendita una tantum</strong> — cedi il sistema a un editore con un pagamento unico e ne esci: nessuna responsabilità di manutenzione futura, ma oggi il prezzo che otterresti sarebbe basso, perché lo stato del codice (chiavi esposte, zero test, logiche di matching mantenute a mano) è esattamente ciò che un ufficio IT/legale usa in due diligence per negoziare al ribasso — e dopo la cessione qualcuno dovrebbe comunque curare i dati manualmente, cosa che oggi fai solo tu.</p>
+        <p><strong>Servizio a pagamento</strong> — lo ospiti tu e lo offri come abbonamento/consulenza: richiede un'infrastruttura, ma è un ostacolo più piccolo di quanto sembri. Un dominio costa 10-15 €/anno, Supabase e Netlify hanno piani gratuiti o da poche decine di euro al mese per il volume di un cliente pilota — non serve capitale, serve solo impostarlo (è esattamente l'oggetto delle Fasi 1-3 sotto).</p>
+        <p><strong>La mia raccomandazione</strong>: percorri prima la strada del servizio, con Zanichelli come primo cliente pagante. Un sistema che sta già generando ricavi con un cliente reale vale, in una eventuale trattativa di vendita futura, molto più di uno che esiste solo come codice — hai numeri, referenze, un prodotto che ha già retto alla prova d'uso. Le due strade non si escludono: la seconda costruisce il valore per rendere possibile la prima, se poi la vorrai comunque percorrere.</p>
+      </div>
+      <ul class="actionlist">
+        <li>Aggiornare il linguaggio delle presentazioni esistenti (es. il riferimento al "riconoscimento non formale" in <code>zanichelli-core-presentazione-2.html</code>): non sei più un dipendente che chiede un riconoscimento interno, sei un fornitore esterno con una proposta commerciale — vale la pena riscrivere quelle slide prima di mostrarle a Zanichelli</li>
+        <li>Chiarire il nome/brand con cui ti presenti: "Zanichelli Core" implica proprietà Zanichelli, mentre il prodotto è tuo — il brand "UNI-Map · Atlante Editoriale" che hai già costruito (con tariffario) è coerente con la posizione reale, "Zanichelli Core" rischia di confondere la trattativa fin dal nome</li>
+        <li>Formalizzare la P.IVA (oggi "da completare" sul sito UNI-Map) prima di fatturare qualunque servizio</li>
+        <li>Preparare un contratto di servizio minimo per il cliente pilota (cosa è incluso, SLA informale, cosa succede ai dati se il rapporto finisce)</li>
+      </ul>
+      <div class="decision-box">
+        <div class="dtitle">Filone aperto (24 luglio 2026): MyUniversity come asset a sé</div>
+        <p>MyUniversity (oltre 200.000 insegnamenti censiti, 5500+ corsi di laurea) ha un valore commerciale indipendente da Atlante, con due mercati distinti: <strong>dentro Atlante</strong> (tier a scelta — solo MyUniversity, solo la suite di promozione, o entrambi, a prezzi diversi) e <strong>standalone</strong> (vendita diretta ad aziende di formazione/orientamento, senza legame con l'editoria). Fatto tecnico verificato che condiziona qualunque scelta: la versione in uso oggi ha solo una password fissa in chiaro che protegge l'esecuzione della pagina, non i file dati (CSV per ateneo, serviti come file statici pubblici raggiungibili a URL diretto) — nessuno dei due mercati è vendibile finché resta così. Quattro opzioni valutate, dal più leggero al più pesante: nessuna modifica/solo contratto → gate leggero (token + link firmato davanti ai file, motore di ricerca invariato, raccomandato come primo passo) → backend vero con RLS per-riga (solo quando un cliente reale lo richiede) → fronte pubblico freemium (scelta di marketing, non alternativa tecnica). Sergio si sta prendendo del tempo per decidere quale mercato/livello affrontare per primo — nessuna scelta ancora presa, nessun codice toccato.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">Fase 1</span><span class="phase-title">Dominio e identità condivisi</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Le fondamenta tecniche di un accesso unico: senza un dominio comune non si può condividere una sessione di login tra le app. Questa volta è un investimento tuo da fornitore, non un budget da negoziare con un datore di lavoro — ed è un investimento piccolo (dominio 10-15 €/anno, hosting/database sui piani gratuiti o da poche decine di euro al mese per un primo cliente).</p>
+      <div class="phase-badges"><span class="badge">sforzo: medio</span><span class="badge">dipende da: Fase 0</span></div>
+      <ul class="actionlist">
+        <li>Registrare un dominio proprio — coerente col brand con cui ti presenti ai clienti (vedi Strategia commerciale) — e mettere ogni app su un suo sottodominio, al posto degli attuali <code>*.netlify.app</code> sparsi e incoerenti tra i documenti</li>
+        <li>Scegliere un unico provider di identità. <strong>Supabase Auth</strong> è il candidato naturale: già usato da MATRIX e MATRIX Plus, quindi due migrazioni su quattro sono già fatte</li>
+        <li>Migrare l'autenticazione di MAP da Firebase Auth a Supabase Auth (o, in alternativa, capovolgere la scelta e portare tutto su Firebase — è la decisione più impattante di questa fase, va presa una volta sola)</li>
+        <li>Sostituire la password finta di MyUniversity con un vero login contro lo stesso provider</li>
+        <li>Definire un modello di ruoli comune (promotore / gestore) applicato lato server (RLS), non solo nascosto nell'interfaccia com'è oggi in MATRIX Plus</li>
+        <li>Progettare da subito il modello di accesso per <strong>più clienti separati</strong> (ogni editore vede solo i propri dati/utenti), anche se all'inizio userai il sistema con Zanichelli soltanto — aggiungerlo ora costa una tabella <code>cliente_id</code> in più negli schemi dati; aggiungerlo dopo, quando ci sarà un secondo editore, richiede una migrazione dolorosa dei dati già in uso</li>
+        <li>Nella configurazione di ogni cliente, un campo "editore proprio" (es. <code>Zanichelli</code>): è il dato che permette di calcolare, per quel cliente, quali manuali del catalogo condiviso sono "propri" e quali "competitor" — vedi il dettaglio in Fase 2</li>
+        <li>Chiudere la registrazione libera: inviti o restrizione ai domini email dei clienti attivi, invece di "il primo che si registra diventa amministratore"</li>
+      </ul>
+      <div class="decision-box">
+        <div class="dtitle">Decisione da prendere</div>
+        <p>Firebase (MAP) o Supabase (MATRIX/MATRIX Plus) come identità e dato di riferimento? Consiglio Supabase — copre già metà app, ed è Postgres puro, più adatto sia alle query incrociate framework × manuali × programmi della Fase 2 sia alla separazione dati per cliente vista sopra — ma è una scelta che vale la pena confermare, non un dettaglio.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">Fase 2</span><span class="phase-title">Dato condiviso — il vero collo di bottiglia</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Più impattante della Fase 1 sul lavoro quotidiano: oggi la libreria manuali e i framework di valutazione esistono in due copie separate, mantenute a mano, quasi certamente disallineate. Qui si importano <strong>una tantum, in sola lettura</strong> — nessuna delle app esistenti viene toccata, modificata o richiamata dal nuovo sistema.</p>
+      <div class="phase-badges"><span class="badge">sforzo: alto</span><span class="badge">dipende da: Fase 1</span><span class="badge">nessuna modifica alle app esistenti</span></div>
+      <ul class="actionlist">
+        <li>Esportare (lettura, non scrittura) il catalogo manuali di MAP da Firestore — è già leggibile dalla console Firebase o via una chiamata read-only, senza toccare l'app — e i JSON già pubblici di MATRIX su GitHub (~85 manuali); importarli nel nuovo database, con deduplica manuale dei doppioni prevedibili</li>
+        <li>Stessa cosa per i framework di valutazione: ~50 in MAP, ~21 in MATRIX</li>
+        <li>Per i nuovi framework/indici manuale: continuare a usare MATRIX Framework Builder esattamente com'è oggi (resta intoccato) per generarli, poi importare a mano i JSON che produce nel nuovo database — un passaggio manuale in più nel breve termine, che si può automatizzare in futuro senza dover modificare il builder stesso (basta un piccolo script di importazione lato nuovo database, non un intervento sul builder)</li>
+        <li>In fase di importazione, correggere una volta sola la discrepanza di schema che il builder produce oggi (i campi <code>coverage_type</code> e <code>version</code> non sono nel JSON esportato) direttamente nello script di importazione, non nel builder</li>
+      </ul>
+      <div class="decision-box">
+        <div class="dtitle">Un campo dello schema va ripensato, non solo importato: <code>type</code></div>
+        <p>Oggi il JSON manuali di MATRIX ha un campo <code>type</code> che vale il nome dell'editore se il manuale è pubblicato da chi usa l'app, <code>competitor</code> altrimenti — un valore statico, scritto una volta, che presuppone un solo editore-utente (Zanichelli). In un catalogo condiviso tra più clienti non funziona più: lo stesso manuale è "proprio" per l'editore che lo pubblica e "competitor" per tutti gli altri, contemporaneamente. In importazione va quindi separato in due cose: un campo oggettivo <code>publisher</code> (il vero editore del manuale, uguale per tutti, es. "Pearson") salvato una volta sola sul manuale condiviso, e un confronto calcolato al volo — mai salvato — tra <code>publisher</code> e l'"editore proprio" configurato dal cliente che ha fatto login (impostato in Fase 1). Il vecchio campo <code>type</code> dei JSON esistenti diventa quindi la fonte per popolare <code>publisher</code> in importazione, non un campo da copiare così com'è.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">Fase 3</span><span class="phase-title">Punto di accesso unico</span></summary>
+    <div class="details-body">
+      <div class="phase-badges"><span class="badge">dipende da: Fase 1, Fase 2</span><span class="stato-badge fatta">5 di 5 voci fatte</span></div>
+      <p class="phase-goal">Solo ora ha senso costruire l'hub — con identità e dato condivisi già pronti sotto, non prima. Qui la nuova applicazione comincia ad avere funzioni proprie, <strong>ricostruite da capo</strong> prendendo a riferimento la logica delle app esistenti (mai il loro codice, mai richiamandole direttamente). Il menu principale ha cinque voci, decise:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Voce di menu</th><th>Stato</th><th>Base di riferimento (solo lettura)</th><th>Cosa fa</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Analisi comparativa di manuali</strong></td>
+              <td><span class="stato-badge fatta">Fatta</span></td>
+              <td>MAP</td>
+              <td>Uno o più manuali <strong>a confronto affiancato</strong> sugli stessi criteri del framework — funzionalità nuova, MAP oggi genera solo report singoli in sequenza, non un vero affiancamento</td>
+            </tr>
+            <tr>
+              <td><strong>2. Analisi di un programma</strong></td>
+              <td><span class="stato-badge fatta">Fatta</span></td>
+              <td>MATRIX Intelligence (base)</td>
+              <td>Analisi approfondita di un singolo programma vs manuale/i adottato/i, con una guida al colloquio condizionale (non un singolo manuale imposto) calibrata sul peso reale di ogni gap per quel programma specifico</td>
+            </tr>
+            <tr>
+              <td><strong>3. Piano di promozione</strong></td>
+              <td><span class="stato-badge fatta">Fatta</span></td>
+              <td>MATRIX Intelligence Plus <em>+ monitoraggio disciplinare</em></td>
+              <td>Calibrato su più programmi reali. Il "monitoraggio disciplinare" non è una funzione separata ma una modalità della campagna (volume singolo | intero catalogo materia). Testata e corretta su più giri (auto-raccomandazione di manuali già adottati, tono email per scenario, placeholder non compilati); percorso d'ingresso B (Excel MyUniversity) deliberatamente rimandato — vedi sotto</td>
+            </tr>
+            <tr>
+              <td><strong>4. Utilità</strong></td>
+              <td><span class="stato-badge fatta">Fatta</span></td>
+              <td>MATRIX Framework Builder</td>
+              <td>Procedure di supporto: inserimento nel database condiviso di nuovi framework e nuovi manuali (solo inserimento, per scelta — vedi sotto). Sede naturale anche per l'amministrazione utenti/ruoli (Fase 1) e per la configurazione "editore proprio" (Fase 2)</td>
+            </tr>
+            <tr>
+              <td><strong>5. Offerta formativa</strong></td>
+              <td><span class="stato-badge fatta">Fatta</span></td>
+              <td>MyUniversity-web 2.0</td>
+              <td>Ricerca insegnamenti/lauree e vista ateneo su tutto il panorama universitario italiano (200.000+ insegnamenti). A differenza delle altre voci non c'è alcuna IA: motore DuckDB-WASM invariato, ma con un gate di accesso reale al posto dei CSV statici pubblici — vedi il box dedicato sotto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="decision-box">
+        <div class="dtitle">Voce 3 — due percorsi di ingresso, B deliberatamente rimandato</div>
+        <p><strong>A) Raccolta propria — costruito e in uso.</strong> L'utente carica direttamente i PDF dei programmi da analizzare, come fa oggi MATRIX Intelligence Plus.</p>
+        <p><strong>B) File Excel da MyUniversity — rimandato per decisione esplicita, non ancora affrontato.</strong> L'idea resta la stessa: applicare lo stesso meccanismo già costruito e testato in agente_editoriale (scraping dei link, classificazione <code>ok</code>/<code>sospetto</code>/<code>vuoto</code>, revisione manuale dei casi problematici). Il motivo del rimando: lo scraping dei link-programma tocca decine di domini di atenei terzi, e il browser da solo non può farlo per via del CORS — serve prima decidere se costruire un piccolo proxy server (candidato naturale: una Supabase Edge Function, stessa infrastruttura già in uso, nessun server a parte da gestire) prima di scrivere qualunque altro codice per questo percorso. Il pattern "rilevamento qualità + completamento manuale" resta comunque abbastanza generico da valere la pena portarlo nella libreria condivisa della Fase 4 quando (e se) verrà ripreso.</p>
+      </div>
+      <div class="decision-box">
+        <div class="dtitle">Voce 4 — Framework Builder resta esterno, per scelta</div>
+        <p>Il workflow pesante di creazione di un framework da zero (multi-PDF, tabella di frequenza statistica per materia/classe di laurea, soglie di classificazione) resta in <strong>MATRIX Framework Builder così com'è</strong>, mai ricostruito dentro la nuova applicazione: è un lavoro raro (censimento di una materia nuova) e pesante da riscrivere, per un caso d'uso poco frequente. Deciso anche di <strong>non</strong> costruire il supporto per correggere/aggiornare un framework o un manuale già presente nel catalogo condiviso — oggi il modulo "incolla JSON" della voce Utilità serve solo per inserimenti nuovi, e resta così. L'unico intervento fatto: un link diretto a Framework Builder ben visibile nella voce Utilità, prima raggiungibile solo dal desktop di Sergio.</p>
+      </div>
+      <div class="decision-box">
+        <div class="dtitle">Voce 5 — il gate di accesso, non il motore di ricerca, è il vero lavoro nuovo</div>
+        <p>MyUniversity-web 2.0 oggi protegge solo l'esecuzione della pagina (una password fissa in chiaro), non i file dati: i CSV per ateneo restano statici e pubblici, raggiungibili a URL diretto. Il motore di ricerca (DuckDB-WASM, query SQL nel browser, zero costo server) è stato portato <strong>identico</strong>: stesso sistema di filtri, cascata SSD→classe, ricerca testo libero/docente, sistema "delta" di correzioni locali. L'unica cosa costruita da zero è il gate davanti ai dati: bucket Supabase Storage privato (copia dei CSV) + una Edge Function che verifica JWT ed entitlement del cliente (nuovo campo <code>clienti.offerta_formativa_inclusa</code>) prima di generare URL firmati a scadenza breve. Aggiunta durante i test una cache locale nel browser (Cache Storage API, validità 6 ore) per non dover riscaricare ~100MB ogni volta che si torna sulla pagina nella stessa sessione di lavoro — il parsing CSV→tabelle resta comunque da rifare a ogni apertura (l'istanza del motore non sopravvive alla navigazione tra pagine): una persistenza vera del database via OPFS resterebbe un miglioramento possibile, non ancora fatto.</p>
+      </div>
+      <ul class="actionlist">
+        <li>Un solo login (schermata iniziale della nuova applicazione, nome/brand da definire in Strategia commerciale) che mostra il menu a 4 voci sopra, filtrato in base al ruolo e al cliente</li>
+        <li>Prima funzione da ricostruire nella nuova app: la voce 4 (Utilità) sul catalogo manuali/framework pronto dalla Fase 2 — sblocca tutte le altre tre, che dipendono dallo stesso dato condiviso</li>
+        <li>Le sei app esistenti restano fuori da questo perimetro: continuano a esistere e a funzionare come sono, indipendentemente dalla nuova applicazione, finché non deciderai (se vorrai) di ritirarle una volta che la nuova le avrà superate in autonomia</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">Fase 4</span><span class="phase-title">Consolidamento tecnico</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Nella nuova applicazione, scrivere una volta sola ciò che nelle app esistenti è duplicato quattro volte — senza toccare le app esistenti, semplicemente non ripetendo lì i loro stessi errori. Una revisione tecnica esterna (<code>Revisione critica.docx</code>, 24 luglio 2026) aveva verificato il codice reale e trovato problemi concreti, in ordine di priorità; i due più urgenti sono stati chiusi il 25 luglio 2026.</p>
+      <div class="phase-badges"><span class="badge">sforzo: medio</span><span class="badge">dipende da: Fase 3 (o parallela, a piacere)</span><span class="stato-badge fatta">backlog principale chiuso</span></div>
+      <ul class="actionlist">
+        <li>✅ <strong>RLS verificate su Supabase</strong> (25 luglio 2026) — controllate tutte le policy select/insert/update/delete di tutte le tabelle business. Nessun buco di sicurezza reale: le tabelle per-cliente sono correttamente filtrate su <code>cliente_corrente()</code>. Le uniche assenze (framework/manuali senza delete/scoping, profili senza insert/delete) sono volute o senza rischio oggi, annotate per il futuro.</li>
+        <li>✅ <strong>Chiave OpenAI fuori da <code>localStorage</code></strong> (25 luglio 2026) — <code>analisi-programma.html</code> e <code>confronto.html</code> ora usano <code>sessionStorage</code> come già faceva <code>piano-promozione.html</code>. Restano su OpenAI chiamato direttamente dal browser (non dietro Edge Function): valutare in futuro se serve, oggi non prioritario.</li>
+        <li>✅ <strong>Modulo JS condiviso estratto</strong> (25 luglio 2026, <code>js/atlante-shared.js</code>) — <code>escapeHtml</code>/<code>estraiIndiceManuale</code> (risultate identiche byte-per-byte nelle tre pagine, nessuna divergenza reale trovata) e la scala <code>GIUDIZI</code>. <code>checkSubjectMatch</code>/<code>levenshteinSimilarity</code> non erano in realtà duplicate (solo <code>piano-promozione.html</code> le usa) — lasciate dove sono.</li>
+        <li>🟠 <strong>Uniformare <code>temperature: 0</code></strong> su tutte le chiamate di giudizio ripetibile — <code>confronto.html</code> è ancora a <code>0.2</code> mentre le altre due pagine sono già a <code>0</code>, un'incoerenza che può far cambiare conteggi/sintesi tra un'esecuzione e l'altra dello stesso confronto. Non ancora fatto.</li>
+        <li>Costruire un unico modulo per "chiamata LLM sicura + parsing JSON robusto delle risposte" (timeout/retry inclusi, oggi assenti)</li>
+        <li>Stesso trattamento per il pattern "rilevamento qualità (ok/sospetto/vuoto) + completamento manuale" di agente_editoriale, quando (e se) l'opzione 3B verrà ripresa</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="topsection">
+    <summary>Da dove iniziare, concretamente</summary>
+    <div class="details-body">
+      <p>La Fase 0 non fa parte di questo percorso — riguarda solo le vecchie app, se e finché restano in uso per conto loro. Fase 1 (dominio e identità), Fase 2 (dato condiviso) e Fase 3 (tutte e 5 le voci di menu) sono ora completate; la Fase 4 ha chiuso i due punti a priorità massima. Restano quattro filoni aperti, indipendenti tra loro:</p>
+      <ul>
+        <li><strong>Presentazione per potenziali clienti</strong>: era stata messa in sospeso apposta in attesa che "Offerta formativa" smettesse di essere "in arrivo" — ora che è integrata e testata, è probabilmente il filone con il rapporto sforzo/beneficio migliore da riprendere (resta comunque da affrontare il resto del feedback già raccolto: CTA, provenienza, costo/tempi).</li>
+        <li><strong>Fase 4, backlog minore residuo</strong>: <code>temperature: 0</code> uniforme in <code>confronto.html</code>, event delegation al posto degli <code>onclick</code> inline, e il resto della lista minore (vedi Fase 4) — nessuno bloccante.</li>
+        <li><strong>Casi limite di test sulla voce 3</strong> (Piano di promozione): regressione email per gli scenari non ancora riverificati dopo l'ultimo refactor, modalità <code>volume_singolo</code> in entrambe le fasi, "Ricalcola tutto da zero" — casi limite da controllare nell'uso reale, non bloccanti.</li>
+        <li><strong>Filone MyUniversity</strong> (vedi Strategia commerciale): decisione ancora da prendere su quale mercato/livello tecnico affrontare per primo.</li>
+      </ul>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p>Questo documento non stima tempi in settimane/mesi: dipende da quanto tempo puoi dedicarci. Le etichette "sforzo" per fase sono relative tra loro, non assolute.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Da verificare con un legale, non con me</strong>: anche se il lavoro è stato sviluppato interamente dopo la pensione, prima di proporlo commercialmente a Zanichelli vale la pena una verifica formale che il tuo accordo di pensionamento/eventuali clausole di non concorrenza non pongano limiti a un'attività di consulenza rivolta al tuo ex datore di lavoro.</p>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<footer>Bozza di lavoro — da rivedere insieme prima di iniziare qualunque fase</footer>

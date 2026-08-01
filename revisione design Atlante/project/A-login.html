@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — accesso</title>
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root {
+    --v: var(--voce-analisi);
+    --v-soft: var(--voce-analisi-soft);
+    --v-ink: var(--voce-analisi-ink);
+  }
+  html { background: var(--paper); }
+  body {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    background: var(--paper);
+  }
+
+  /* -------- LATO SINISTRO: pannello "editoriale" -------- */
+  .brand-side {
+    background:
+      radial-gradient(circle at 25% 30%, rgba(184,134,42,0.10), transparent 50%),
+      radial-gradient(circle at 78% 82%, rgba(68,106,138,0.10), transparent 50%),
+      var(--paper-warm);
+    padding: 46px 56px;
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-side .top {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 60px;
+  }
+  .brand-side .logo {
+    font-family: var(--font-serif); font-size: 30px; font-weight: 500;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .brand-side .logo em { font-style: italic; color: var(--v); font-weight: 400; }
+  .brand-side .badge {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--ink-muted);
+    border: 1px solid var(--line); padding: 3px 8px; border-radius: 4px;
+  }
+
+  .claim {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 44px; line-height: 1.1;
+    letter-spacing: -0.02em; color: var(--ink);
+    max-width: 480px; margin-bottom: 22px;
+  }
+  .claim em { font-style: italic; color: var(--v); }
+  .sub {
+    font-size: 15px; color: var(--ink-2); line-height: 1.6;
+    max-width: 460px; margin-bottom: 42px;
+  }
+
+  /* Voci come "scaffale" */
+  .scaffale { margin: 20px 0 30px; }
+  .voci-title {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--ink-muted);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .voci-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .voci-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .voce-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 30px; padding: 7px 14px 7px 10px;
+    font-size: 13px; color: var(--ink-2);
+  }
+  .voce-pill .d { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+
+  /* Footer del lato sinistro */
+  .brand-side .footer {
+    margin-top: auto;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--ink-muted); font-size: 12.5px;
+  }
+  .brand-side .footer .rt { color: var(--ink); font-style: normal; font-weight: 500; }
+
+  /* -------- LATO DESTRO: form -------- */
+  .login-side {
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+    background: var(--paper);
+  }
+  .login-card {
+    width: 100%; max-width: 400px;
+  }
+  .login-card .kicker {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; color: var(--v); margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .login-card h1 {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 32px; letter-spacing: -0.02em;
+    margin: 0 0 8px; color: var(--ink);
+  }
+  .login-card h1 em { font-style: italic; color: var(--v); }
+  .login-card p.intro {
+    font-size: 13.5px; color: var(--ink-muted);
+    line-height: 1.55; margin: 0 0 28px;
+    max-width: 340px;
+  }
+
+  form { display: flex; flex-direction: column; gap: 14px; }
+  form label {
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--ink-faint);
+  }
+  form input[type=email] {
+    padding: 11px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    font-size: 14.5px; color: var(--ink);
+    font-family: var(--font-sans);
+    transition: border-color .12s, background .12s;
+  }
+  form input[type=email]:focus {
+    outline: none; border-color: var(--v);
+    background: color-mix(in srgb, var(--v-soft) 25%, var(--surface));
+  }
+  .btn-login {
+    padding: 12px 18px;
+    background: var(--v); color: #fff;
+    border: none; border-radius: 7px;
+    font-size: 14.5px; font-weight: 600; font-family: inherit;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .12s;
+  }
+  .btn-login:hover { background: var(--v-ink); }
+  .btn-login::before {
+    content: '✉'; font-size: 15px; opacity: 0.8;
+  }
+
+  .stato {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: var(--v-soft);
+    border-radius: 7px;
+    font-size: 13px; color: var(--v-ink);
+    line-height: 1.5;
+  }
+  .stato strong { font-family: var(--font-serif); font-weight: 500; }
+
+  .helper-tiny {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .helper-tiny a { color: var(--v); text-decoration: none; font-weight: 500; }
+
+  @media (max-width: 900px) {
+    body { grid-template-columns: 1fr; }
+    .brand-side { padding: 30px; }
+    .claim { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LATO SINISTRO -->
+<aside class="brand-side">
+  <div class="top">
+    <span class="logo">Atlante<em>.</em></span>
+    <span class="badge">v2</span>
+  </div>
+
+  <h2 class="claim">Il tuo ecosistema editoriale, in un <em>unico posto</em>.</h2>
+  <p class="sub">Manuali, framework di valutazione, programmi didattici e offerta formativa universitaria — un solo dato condiviso invece di copie sparse e disallineate.</p>
+
+  <div class="scaffale">
+    <div class="voci-title">Cinque aree, un solo strumento</div>
+    <div class="voci-row">
+      <span class="voce-pill" style="--c: var(--voce-offerta)"><span class="d"></span>Offerta formativa</span>
+      <span class="voce-pill" style="--c: var(--voce-confronto)"><span class="d"></span>Confronto manuali</span>
+      <span class="voce-pill" style="--c: var(--voce-analisi)"><span class="d"></span>Analisi programma</span>
+      <span class="voce-pill" style="--c: var(--voce-piano)"><span class="d"></span>Piano di promozione</span>
+      <span class="voce-pill" style="--c: var(--voce-utilita)"><span class="d"></span>Catalogo</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Uno strumento per promotori editoriali universitari.</span>
+    <span class="rt">Atlante v2 · 2026</span>
+  </div>
+</aside>
+
+<!-- LATO DESTRO: form -->
+<div class="login-side">
+  <div class="login-card">
+    <div class="kicker">Accesso</div>
+    <h1>Ben tornato<em>.</em></h1>
+    <p class="intro">Login con link via email — nessuna password da ricordare. Riceverai un link su cui cliccare per entrare in Atlante.</p>
+
+    <form>
+      <label for="email">La tua email</label>
+      <input id="email" type="email" placeholder="tuo.nome@editore.it" value="sartinisergio@gmail.com" />
+
+      <button type="button" class="btn-login">Inviami il link di accesso</button>
+    </form>
+
+    <div class="stato">
+      <strong>Controlla la tua posta.</strong><br>
+      Ti abbiamo inviato un link su <em>sartinisergio@gmail.com</em>. Cliccalo entro un'ora per entrare.
+    </div>
+
+    <div class="helper-tiny">
+      Il tuo profilo è collegato al cliente <strong style="color: var(--ink);">Zanichelli</strong>. Se lavori per un altro editore o non hai ancora un profilo, <a href="#">scrivi all'amministratore ↗</a>.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

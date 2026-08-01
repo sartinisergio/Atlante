@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — piano di promozione</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<style>
+  :root {
+    --v: var(--voce-piano);
+    --v-soft: var(--voce-piano-soft);
+    --v-ink: var(--voce-piano-ink);
+    --voce-corrente-soft: var(--voce-piano-soft);
+    --voce-corrente-ink: var(--voce-piano-ink);
+  }
+
+  /* ---------- Pipeline: sostituisce le 4 tab ---------- */
+  .pipeline {
+    display: flex; align-items: stretch; gap: 0;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    padding: 8px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .pipe-step {
+    flex: 1; min-width: 180px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: var(--r-md);
+    text-decoration: none; color: inherit; cursor: pointer;
+    background: none; border: none; font-family: inherit; text-align: left;
+    transition: background .12s;
+  }
+  .pipe-step:hover { background: var(--paper-warm); }
+  .pipe-step .num {
+    width: 24px; height: 24px; border-radius: 50%; flex: none;
+    background: var(--paper-warm); color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-size: 11px; font-weight: 700;
+  }
+  .pipe-step .lab { flex: 1; line-height: 1.2; min-width: 0; }
+  .pipe-step .lab strong { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .pipe-step .lab span { font-size: 11px; color: var(--ink-muted); }
+  .pipe-step .badge-c {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 500;
+    color: var(--ink-muted); background: var(--paper-warm);
+    padding: 2px 8px; border-radius: 20px; flex: none;
+  }
+  /* "done" = questo stadio ha contenuto, non "completato": sono quattro viste
+     sempre disponibili, non un flusso lineare per singolo oggetto */
+  .pipe-step.done .num { background: var(--ok-soft); color: var(--ok); }
+  .pipe-step.on { background: var(--v-soft); }
+  .pipe-step.on .num { background: var(--v); color: #fff; }
+  .pipe-step.on .lab strong, .pipe-step.on .lab span { color: var(--v-ink); }
+  .pipe-step.on .badge-c { background: var(--surface); color: var(--v-ink); }
+
+  .sez { display: none; }
+  .sez.attiva { display: block; }
+
+  .sec-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .sec-head h2 {
+    font-family: var(--font-serif); font-weight: 400; font-size: 22px;
+    letter-spacing: -0.01em; margin: 0;
+  }
+  .sec-head h2 em { font-style: italic; color: var(--v); }
+  .sec-head .meta { font-size: 12.5px; color: var(--ink-muted); margin: 3px 0 0; }
+  .sec-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---------- Coda di caricamento ---------- */
+  .coda { margin-top: 14px; }
+  .coda-riga {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); margin-bottom: 6px; background: var(--surface);
+    font-size: 13px;
+  }
+  .coda-riga .nome { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .coda-riga .peso { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-muted); margin: 0; }
+
+  /* ---------- Staging ---------- */
+  .staging-card, .db-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    padding: 16px 18px; margin-bottom: 12px; position: relative;
+  }
+  .staging-card::before {
+    content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 3px; background: var(--v); border-radius: 0 3px 3px 0;
+  }
+  .staging-head strong { font-family: var(--font-serif); font-size: 16px; font-weight: 500; }
+  .staging-head span { font-size: 12.5px; color: var(--ink-muted); }
+  .semafori { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .staging-azioni { display: flex; gap: 6px; flex-wrap: wrap; }
+  .staging-vuoto { padding: 30px; text-align: center; color: var(--ink-muted); font-size: 13px; font-style: italic; }
+
+  .db-card .riga-top { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .db-card .info { flex: 1; min-width: 240px; }
+  .db-card .info strong { font-family: var(--font-serif); font-size: 15.5px; font-weight: 500; }
+  .db-card .info span { display: block; font-size: 12.5px; color: var(--ink-muted); margin-top: 2px; }
+
+  /* scenario dell'editore proprio rispetto al manuale adottato dal docente */
+  .scenario {
+    display: inline-block; padding: 2px 8px; border-radius: var(--r-sm);
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; white-space: nowrap;
+  }
+  .sc-princ { background: var(--ok-soft); color: var(--ok); }
+  .sc-alt   { background: var(--warn-soft); color: var(--warn); }
+  .sc-ass   { background: var(--err-soft); color: var(--err); }
+  .sc-nd    { background: var(--surface-2); color: var(--ink-muted); }
+
+  .rilevanza {
+    display: inline-block; padding: 2px 8px; border-radius: var(--r-sm);
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .r-alta  { background: var(--err-soft); color: var(--err); }
+  .r-media { background: var(--warn-soft); color: var(--warn); }
+  .r-bassa { background: var(--surface-2); color: var(--ink-muted); }
+
+  .stato-campagna {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .sc-bozza      { background: var(--surface-2); color: var(--ink-muted); }
+  .sc-attiva     { background: var(--v-soft); color: var(--v-ink); }
+  .sc-completata { background: var(--ok-soft); color: var(--ok); }
+
+  /* ---------- Elenco campagne ---------- */
+  .campagne-list { display: flex; flex-direction: column; gap: 12px; }
+  .campagna {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1); overflow: hidden;
+  }
+  .campagna.open { border-color: var(--v); }
+  .top-c {
+    display: flex; align-items: center; gap: 20px;
+    padding: 16px 20px; flex-wrap: wrap;
+  }
+  .top-c > div:first-child { flex: 1; min-width: 240px; }
+  .titolo-c { font-family: var(--font-serif); font-weight: 500; font-size: 17px; margin: 0 0 3px; letter-spacing: -0.01em; }
+  .sub-c { font-size: 12px; color: var(--ink-muted); }
+  .sub-c .sep { margin: 0 6px; color: var(--ink-faint); }
+  .metric { text-align: right; flex: none; }
+  .metric .v { font-family: var(--font-serif); font-size: 21px; font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
+  .metric .v.warn { color: var(--warn); }
+  .metric .v.ok { color: var(--ok); }
+  .metric .l { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-top: 3px; }
+  .body-c { padding: 0 20px 16px; border-top: 1px solid var(--line-soft); }
+  .row-info { display: grid; grid-template-columns: 190px 1fr; gap: 10px; margin: 0; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .row-info:last-child { border-bottom: none; }
+  .row-info dt { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); font-weight: 600; padding-top: 2px; }
+  .row-info dd { margin: 0; font-size: 13px; color: var(--ink); }
+
+  /* ---------- Tabella dei docenti target ---------- */
+  .target-table-wrap {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden; margin-top: 20px;
+  }
+  .target-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .target-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 17px; margin: 0 0 3px; letter-spacing: -0.01em; }
+  .target-head h3 em { font-style: italic; color: var(--v); }
+  .target-head p { font-size: 12px; color: var(--ink-muted); margin: 0; }
+  .target-head .contatori { font-size: 12px; color: var(--ink-muted); }
+
+  table.target { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  table.target thead th {
+    text-align: left; padding: 10px 16px;
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); background: var(--paper-warm);
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  table.target tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  table.target tbody tr.riga-target:hover { background: color-mix(in srgb, var(--v-soft) 25%, transparent); }
+  table.target tbody tr.aperta { background: color-mix(in srgb, var(--v-soft) 30%, transparent); }
+  table.target td.right { text-align: right; }
+  table.target td .doc { font-weight: 500; color: var(--ink); }
+  table.target td .sub { font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+  table.target td .sub b { color: var(--err); font-weight: 600; }
+
+  /* ---------- Drawer motivazione + email ---------- */
+  .drawer-motiv {
+    background: var(--surface); border: 1px solid var(--v);
+    border-radius: var(--r-lg); box-shadow: var(--sh-2);
+    margin: 12px 20px; overflow: hidden;
+  }
+  .drawer-motiv-head {
+    padding: 14px 20px;
+    background: color-mix(in srgb, var(--v-soft) 60%, var(--surface));
+    border-bottom: 1px solid var(--v-soft);
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  }
+  .drawer-motiv-head h4 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15px;
+    margin: 0; letter-spacing: -0.005em; color: var(--v-ink);
+    text-transform: none;
+  }
+  .drawer-motiv-head h4 em { font-style: italic; }
+  .drawer-motiv .body { padding: 20px 24px; }
+  .drawer-motiv .body h5 {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--v-ink); font-weight: 700; margin: 0 0 8px;
+  }
+  .drawer-motiv .body h5:not(:first-child) { margin-top: 20px; }
+  .drawer-motiv .body p { font-family: var(--font-serif); font-size: 14px; line-height: 1.6; color: var(--ink-2); margin: 0 0 8px; }
+  .drawer-motiv .body ul { font-size: 13px; line-height: 1.55; margin: 0; padding-left: 18px; }
+  .drawer-motiv .body .pesi { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+  .drawer-motiv .body .pesi .p {
+    font-size: 11.5px; padding: 2px 8px; border-radius: var(--r-sm);
+    background: var(--v-soft); color: var(--v-ink); font-weight: 500;
+  }
+  .opzione-catalogo {
+    border: 1px solid var(--line-soft); border-radius: var(--r-md);
+    padding: 12px 14px; margin: 8px 0; background: var(--paper);
+  }
+  .opzione-catalogo strong { font-family: var(--font-serif); font-size: 14px; font-weight: 500; }
+  .email-box {
+    background: var(--paper); border: 1px solid var(--line-soft);
+    border-radius: 7px; padding: 14px 16px; margin-top: 6px;
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--ink-2); line-height: 1.6; white-space: pre-wrap;
+  }
+  .email-box[contenteditable="true"] { background: var(--surface); border-color: var(--v); outline: none; }
+  .email-oggetto {
+    width: 100%; padding: 8px 10px; margin-bottom: 8px;
+    background: var(--paper); border: 1px solid var(--line-soft); border-radius: 7px;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink);
+  }
+  .email-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+  /* ---------- Modali costruite in JS dentro #overlayModale ----------
+     Verifica, Modifica, Modifica manuali citati e Modifica campagna sono generate
+     come stringhe HTML: invece di riscriverle tutte (e rischiare di perdere pezzi
+     di logica), qui i loro nomi di classe storici vengono ridefiniti nel linguaggio
+     di shell.css. Le classi sono queste quattro: .modale, .modale-azioni,
+     .riepilogo-riga, .lista-manuali-citati. */
+  #overlayModale .modale {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-3);
+    max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto;
+    padding: 22px 24px;
+  }
+  #overlayModale .modale h3 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 18px;
+    letter-spacing: -0.01em; margin: 0 0 4px;
+  }
+  #overlayModale .modale > p:first-of-type { margin-top: 0; }
+  .riepilogo-riga {
+    display: grid; grid-template-columns: 120px 1fr; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px;
+  }
+  .riepilogo-riga:last-of-type { border-bottom: none; }
+  .riepilogo-riga b {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); font-weight: 600; padding-top: 2px;
+  }
+  .lista-manuali-citati { margin: 6px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+  .lista-manuali-citati em { color: var(--ink-muted); font-size: 11.5px; }
+  .modale-azioni {
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .modale-azioni button {
+    padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+    background: var(--v); color: #fff;
+  }
+  .modale-azioni button:hover:not(:disabled) { background: var(--v-ink); }
+  .modale-azioni button.secondario { background: transparent; color: var(--ink); border-color: var(--line); font-size: 13px; padding: 8px 16px; }
+  .modale-azioni button.secondario:hover { background: var(--paper-warm); color: var(--ink); }
+  #overlayModale .campo label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 5px;
+  }
+  #overlayModale .campo input, #overlayModale .campo select, #overlayModale .campo textarea,
+  #overlayModale .mm-riga select, #overlayModale .mm-riga input {
+    width: 100%; padding: 8px 10px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 7px;
+    font-size: 13px; color: var(--ink); font-family: inherit;
+  }
+  #overlayModale .campo textarea { min-height: 90px; resize: vertical; }
+  #overlayModale .campo input:focus, #overlayModale .campo select:focus,
+  #overlayModale .campo textarea:focus, #overlayModale .mm-riga select:focus,
+  #overlayModale .mm-riga input:focus { outline: none; border-color: var(--v); background: var(--surface); }
+  .aiuto { font-size: 11.5px; color: var(--ink-muted); line-height: 1.45; margin: 5px 0 0; }
+  .aiuto a { color: var(--v); font-weight: 500; }
+
+  .campo-modale { margin-bottom: 14px; }
+  .campo-modale label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 5px;
+  }
+  .campo-modale input, .campo-modale select, .campo-modale textarea {
+    width: 100%; padding: 8px 10px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 7px;
+    font-size: 13px; color: var(--ink); font-family: inherit;
+  }
+  .campo-modale textarea { min-height: 90px; resize: vertical; }
+  .campo-modale input:focus, .campo-modale select:focus, .campo-modale textarea:focus {
+    outline: none; border-color: var(--v); background: var(--surface);
+  }
+  .secondario {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 4px 9px;
+    font-size: 11.5px; color: var(--ink-2); cursor: pointer; font-family: inherit;
+  }
+  .secondario:hover:not(:disabled) { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+  .secondario:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  @media (max-width: 900px) {
+    .row-info { grid-template-columns: 1fr; }
+    .top-c { gap: 12px; }
+    .metric { text-align: left; }
+  }
+</style>
+</head>
+<body class="a-shell">
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb">
+    <a href="home.html">Atlante</a><span class="sep">›</span>
+    <span id="crumb-cliente">—</span><span class="sep">›</span>
+    <span>Piano di promozione</span>
+  </div>
+
+  <h1 class="page">Piano di promozione<em>.</em></h1>
+  <p class="subtitle">Pipeline dei programmi didattici: dai PDF caricati oggi alle email di promozione
+    mirate. Ogni programma attraversa quattro stadi — carica, staging, database, campagne — e resta
+    poi a disposizione di tutte le campagne successive.</p>
+
+  <div id="stato-iniziale" class="vuoto">Caricamento…</div>
+
+  <div id="contenuto" hidden>
+
+    <nav class="pipeline" aria-label="Pipeline dei programmi">
+      <button type="button" class="pipe-step on" id="btnTabCarica" data-tab="carica">
+        <span class="num">1</span>
+        <span class="lab"><strong>Carica</strong><span>PDF dei programmi</span></span>
+        <span class="badge-c" id="countCarica">—</span>
+      </button>
+      <button type="button" class="pipe-step" id="btnTabStaging" data-tab="staging">
+        <span class="num">2</span>
+        <span class="lab"><strong>Staging</strong><span>Da verificare</span></span>
+        <span class="badge-c" id="countStaging">0</span>
+      </button>
+      <button type="button" class="pipe-step" id="btnTabDatabase" data-tab="database">
+        <span class="num">3</span>
+        <span class="lab"><strong>Database</strong><span>Confermati</span></span>
+        <span class="badge-c" id="countDatabase">—</span>
+      </button>
+      <button type="button" class="pipe-step" id="btnTabCampagne" data-tab="campagne">
+        <span class="num">4</span>
+        <span class="lab"><strong>Campagne</strong><span>Target ed email</span></span>
+        <span class="badge-c" id="countCampagne">—</span>
+      </button>
+    </nav>
+
+    <!-- ==================== 1. CARICA ==================== -->
+    <section class="sez attiva" id="tabCarica">
+      <div class="sec-head">
+        <div>
+          <h2>Carica <em>programmi</em></h2>
+          <p class="meta">Ogni PDF viene estratto, pre-classificato con l'AI e messo in staging.</p>
+        </div>
+      </div>
+
+      <div class="helper">
+        <span class="ic">i</span>
+        <div>Un programma caricato qui <strong>non entra subito nel piano</strong>: passa prima da
+          Staging, dove verifichi i dati che l'AI ha estratto. Solo quando i tre controlli sono verdi
+          puoi promuoverlo al Database, da cui le campagne pescano i loro target.</div>
+      </div>
+
+      <div class="form-card" style="max-width:720px">
+        <div class="fc-body">
+          <div class="campo">
+            <label class="upload-drop" id="dropProgrammi" for="fileInput">
+              <span class="ic">↓</span>
+              Trascina qui i PDF dei programmi, oppure <b>sfoglia</b>
+              <input type="file" id="fileInput" accept=".pdf" multiple />
+              <span class="or">— puoi caricarne più d'uno alla volta —</span>
+            </label>
+            <div id="coda" class="coda" style="display:none"></div>
+          </div>
+          <div class="campo">
+            <label for="modello">Modello</label>
+            <select class="field" id="modello">
+              <option value="gpt-4o-mini">gpt-4o-mini (consigliato)</option>
+              <option value="gpt-4o">gpt-4o (più capace)</option>
+            </select>
+          </div>
+          <p class="aiuto" id="saldoCrediti"></p>
+        </div>
+        <div class="fc-foot">
+          <button type="button" class="btn btn-primary" id="avvia" disabled>Elabora e carica in staging</button>
+          <span class="cost-hint" id="msgCarica"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. STAGING ==================== -->
+    <section class="sez" id="tabStaging">
+      <div class="sec-head">
+        <div>
+          <h2>Staging — <em>da verificare</em></h2>
+          <p class="meta">Un programma passa a “confermato” solo quando tutti e tre i controlli sono verdi.</p>
+        </div>
+      </div>
+      <div id="listaStaging"></div>
+    </section>
+
+    <!-- ==================== 3. DATABASE ==================== -->
+    <section class="sez" id="tabDatabase">
+      <div class="sec-head">
+        <div>
+          <h2>Database dei <em>programmi confermati</em></h2>
+          <p class="meta">La base che le campagne interrogano per il targeting.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="search" id="dbCerca" placeholder="Cerca docente, ateneo, materia, corso…" aria-label="Cerca nel database programmi" />
+        </div>
+        <label class="pill-filter">
+          <span class="lab">Materia:</span>
+          <select id="dbFiltroMateria"><option value="">Tutte</option></select>
+        </label>
+        <label class="pill-filter">
+          <span class="lab">Editore proprio:</span>
+          <select id="dbFiltroScenario">
+            <option value="">Tutti</option>
+            <option value="principale">Principale</option>
+            <option value="alternativo">Alternativo</option>
+            <option value="assente">Assente</option>
+          </select>
+        </label>
+        <span class="cost-hint" id="dbConteggio"></span>
+      </div>
+
+      <div id="listaDatabase"></div>
+    </section>
+
+    <!-- ==================== 4. CAMPAGNE ==================== -->
+    <section class="sez" id="tabCampagne">
+      <div id="campagneListaBox">
+        <div class="sec-head">
+          <div>
+            <h2>Le tue <em>campagne</em></h2>
+            <p class="meta">Ogni campagna genera un elenco di docenti target con motivazione ed email personalizzata.</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="btnNuovaCampagna">＋ Nuova campagna</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="search" id="campCerca" placeholder="Cerca campagna…" aria-label="Cerca campagna" />
+          </div>
+          <label class="pill-filter">
+            <span class="lab">Materia:</span>
+            <select id="campFiltroMateria"><option value="">Tutte</option></select>
+          </label>
+          <label class="pill-filter">
+            <span class="lab">Stato:</span>
+            <select id="campFiltroStato">
+              <option value="">Tutti</option>
+              <option value="bozza">Bozza</option>
+              <option value="attiva">Attiva</option>
+              <option value="completata">Completata</option>
+            </select>
+          </label>
+          <label class="pill-filter">
+            <span class="lab">Modalità:</span>
+            <select id="campFiltroModalita">
+              <option value="">Tutte</option>
+              <option value="volume_singolo">Volume singolo</option>
+              <option value="catalogo_materia">Catalogo materia</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="listaCampagne" class="campagne-list"></div>
+
+        <!-- form nuova campagna, nascosto finché non serve -->
+        <div id="boxNuovaCampagna" class="form-card" style="max-width:760px;margin-top:24px" hidden>
+          <div class="fc-head">
+            <h3>Nuova campagna</h3>
+            <p>Verso i programmi già confermati che trattano la materia scelta.</p>
+          </div>
+          <div class="fc-body">
+            <div class="campo">
+              <label>Modalità</label>
+              <div class="radio-row">
+                <label class="radio-btn"><input type="radio" name="cModalita" value="volume_singolo" checked /><strong>Volume singolo</strong><span>Un titolo da promuovere</span></label>
+                <label class="radio-btn"><input type="radio" name="cModalita" value="catalogo_materia" /><strong>Catalogo materia</strong><span>Fino a 5 manuali propri</span></label>
+              </div>
+            </div>
+            <div class="campo"><label for="cMateria">Materia *</label><input class="field" type="text" id="cMateria" placeholder="es. Chimica organica" /></div>
+
+            <div id="boxVolumeSingolo">
+              <div class="campo"><label for="cTitolo">Titolo del volume da promuovere</label><input class="field" type="text" id="cTitolo" /></div>
+              <div class="row2">
+                <div class="campo"><label for="cAutore">Autore</label><input class="field" type="text" id="cAutore" /></div>
+                <div class="campo"><label for="cEditore">Editore</label><input class="field" type="text" id="cEditore" /></div>
+              </div>
+              <div class="campo">
+                <label for="cIndice">Indice del volume (opzionale)</label>
+                <textarea class="field" id="cIndice"></textarea>
+                <div class="aiuto">Senza indice la campagna resta in <strong>pre-valutazione</strong>: il volume non esiste ancora come testo da confrontare, e le email restano bloccate.</div>
+              </div>
+            </div>
+
+            <div id="boxCatalogoMateria" style="display:none">
+              <div class="campo">
+                <label>Manuali propri da mettere in campo</label>
+                <div id="elencoVolumiCatalogo" class="lista-manuali"><div class="vuoto">Scrivi prima la materia qui sopra.</div></div>
+                <div class="aiuto">Fino a 5: per ogni docente la campagna confronterà quale di questi risolve meglio i gap del manuale che adotta oggi.</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-foot">
+            <button type="button" class="btn btn-primary" id="btnCreaCampagna">Crea campagna</button>
+            <button type="button" class="btn btn-ghost" id="btnAnnullaCampagna">Annulla</button>
+            <span class="cost-hint" id="msgCampagna"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="campagnaDettaglioBox" style="display:none"></div>
+    </section>
+
+  </div>
+</main>
+
+<div id="overlayModale" class="modal-overlay"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script src="js/shell.js" data-attiva="piano"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const AI_PROXY_URL = `${SUPABASE_URL}/functions/v1/ai-proxy`;
+  let sessioneAttuale = null; // { session, profilo } da avviaSessione, serve il token per ai-proxy
+
+  const RELAZIONI = [
+    ['nessuna', 'Nessuna relazione particolare'],
+    ['autore', 'Autore del manuale adottato'],
+    ['coautore', 'Coautore del manuale adottato'],
+    ['curatore', 'Curatore del manuale adottato'],
+    ['traduttore', 'Traduttore del manuale adottato'],
+    ['collega_ateneo', 'Collega di ateneo dell\'autore'],
+    ['collega_dipartimento', 'Collega di dipartimento dell\'autore'],
+  ];
+
+  let userId = null, clienteId = null, editoreProprio = null;
+  let avvisiTaglio = []; // testi troncati nell'operazione in corso (vedi taglia() in atlante-shared.js)
+  let tuttiManuali = [], tuttiFramework = [];
+  let fileQueue = []; // [{file, stato, errore}]
+  let stagingList = [];
+
+  // ---- Levenshtein — stesso principio di matching gia' usato altrove in Atlante
+  // (analisi-programma.html/confronto.html) e in MATRIX Intelligence Plus ----
+  function levenshteinSimilarity(a, b) {
+    if (!a.length || !b.length) return 0;
+    const m = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + cost);
+    }
+    return 1 - m[a.length][b.length] / Math.max(a.length, b.length);
+  }
+
+  // ---- confronto materie flessibile, portato da MATRIX Intelligence Plus (checkSubjectMatch) ----
+  const SINONIMI_MATERIA = [
+    ['chimica generale', 'chimica generale e inorganica', 'chimica di base'],
+    ['chimica organica', 'chimica organica e bioorganica'],
+    ['fisica', 'fisica generale', 'fisica 1', 'fisica 2'],
+    ['economia', 'economia politica', 'economia di base'],
+    ['istologia', 'istologia e embriologia'],
+    ['biologia', 'biologia cellulare', 'biologia generale'],
+    ['psicologia', 'psicologia generale'],
+  ];
+  function checkSubjectMatch(materia1, materia2) {
+    if (!materia1 || !materia2) return false;
+    const m1 = materia1.toLowerCase().trim(), m2 = materia2.toLowerCase().trim();
+    if (m1 === m2 || m1.includes(m2) || m2.includes(m1)) return true;
+    if (levenshteinSimilarity(m1, m2) > 0.75) return true;
+    return SINONIMI_MATERIA.some(gruppo => {
+      const m1Match = gruppo.some(s => m1.includes(s) || s.includes(m1));
+      const m2Match = gruppo.some(s => m2.includes(s) || s.includes(m2));
+      return m1Match && m2Match;
+    });
+  }
+
+  // ---- sanifica testo estratto da PDF prima di scriverlo su Postgres (null byte e
+  // caratteri di controllo non sono accettati) — porta di sanitizeExtractedText ----
+  function sanitizeExtractedText(text) {
+    if (!text) return '';
+    return text
+      .replace(/\x00/g, '')
+      .replace(/[\x01-\x08\x0B\x0C\x0E-\x1F]/g, '')
+      .replace(/[\x80-\x9F]/g, '')
+      .replace(/[\uD800-\uDFFF]/g, '')
+      .replace(/﻿/g, '')
+      .replace(/[￰-￿]/g, '')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  async function estraiTestoPdf(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let testo = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      testo += content.items.map(it => it.str).join(' ') + '\n\n';
+    }
+    return sanitizeExtractedText(testo);
+  }
+
+  // ---- prompt di pre-classificazione, adattato da getPreClassificationPrompt (MATRIX Plus):
+  // l'editore di riferimento e' quello del cliente connesso, mai "Zanichelli" fisso ----
+  function costruisciPromptPreClassificazione(editoreProprio) {
+    return `Sei un esperto analista di programmi universitari italiani.
+Analizza il seguente programma di un insegnamento universitario ed estrai le informazioni richieste in formato JSON.
+
+REGOLE:
+1. Estrai SOLO informazioni esplicitamente presenti o chiaramente inferibili dal testo. Se un dato manca, lascia stringa vuota: non inventare docente, ateneo o corso.
+2. Per i manuali citati, riporta ESATTAMENTE come appaiono nel programma: titolo, autore, editore.
+3. L'EDITORE e' fondamentale: riportalo sempre se indicato.
+4. Assegna il ruolo "principale" al primo manuale o a quello indicato come testo di riferimento/adottato; "alternativo" a tutti gli altri (letture consigliate, complementari, approfondimenti). Se nel programma è elencato UN SOLO manuale in tutta la sezione bibliografia/testi (anche se la sezione si chiama genericamente "testi consigliati" e non usa la parola "adottato"), assegnalo comunque "principale": con un solo testo indicato, è quello di fatto adottato per il corso.
+5. Inferisci la disciplina accademica dal contesto (nome corso, argomenti, facolta').
+6. Estrai 5-10 parole chiave dei temi principali del corso.
+7. Per scenario_editore: verifica se l'EDITORE dei manuali citati e' "${editoreProprio}". Non basarti solo sul cognome dell'autore.
+   - "principale": il manuale principale e' edito da ${editoreProprio}
+   - "alternativo": solo un manuale alternativo e' edito da ${editoreProprio}
+   - "assente": nessun manuale e' edito da ${editoreProprio}
+
+RISPONDI SOLO con un JSON con questa forma esatta:
+{
+  "docente_nome": "", "docente_email": "", "ateneo": "", "corso_laurea": "", "classe_laurea": "",
+  "materia_inferita": "",
+  "manuali_citati": [{"titolo":"","autore":"","editore":"","ruolo":"principale|alternativo"}],
+  "temi_principali": ["",""],
+  "scenario_editore": "principale|alternativo|assente"
+}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function preClassifica(testo, modello) {
+    const res = await fetch(AI_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessioneAttuale.session.access_token}` },
+      body: JSON.stringify({
+        voce: 'piano',
+        unita: 'preclassifica',
+        model: modello,
+        temperature: 0,
+        max_tokens: 1200,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: costruisciPromptPreClassificazione(editoreProprio) },
+          { role: 'user', content: taglia(testo, 100000, avvisiTaglio, 'testo del programma') },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      if (res.status === 402) throw new Error('Crediti esauriti per questo cliente — contatta l\'amministratore per rinnovare il piano.');
+      const msgErr = typeof e.error === 'string' ? e.error : e.error?.message;
+      throw new Error(msgErr || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    await aggiornaSaldoCrediti();
+    return JSON.parse(data.choices[0].message.content);
+  }
+
+  // ---- validazione JS dello scenario, MAI fidarsi solo della IA — porta di
+  // validateZanichelliScenario (MATRIX Plus), generalizzata su editoreProprio a runtime
+  // e sul catalogo condiviso Atlante invece di un catalogo Zanichelli sincronizzato a parte ----
+  const ALTRI_EDITORI_NOTI = ['pearson', 'edises', 'edi-ses', 'mcgraw', 'utet', 'piccin',
+    'elsevier', 'springer', 'edra', 'wiley', 'adelphi', 'hoepli', 'mondadori', 'il mulino',
+    'egea', 'giappichelli', 'giuffrè', 'cacucci', 'laterza', 'carocci', 'franco angeli',
+    'cortina', 'minerva', 'società editrice', 'esculapio', 'patron', 'bononia', 'clueb',
+    'aracne', 'ledizioni', 'vita e pensiero', 'edi-ermes', 'edi ermes', 'ediermes', 'idelson', 'gnocchi'];
+
+  function validaScenario(classification) {
+    const manuali = classification.manuali_citati || [];
+    if (manuali.length === 0) return 'assente';
+    const editoreProprioLower = (editoreProprio || '').toLowerCase().trim();
+    const catalogoProprio = tuttiManuali.filter(m => (m.publisher || '').toLowerCase().trim() === editoreProprioLower);
+
+    const conFlag = manuali.map(m => {
+      const editore = (m.editore || '').toLowerCase().trim();
+      const autore = (m.autore || '').toLowerCase().trim();
+      const titolo = (m.titolo || '').toLowerCase().trim();
+      if (editoreProprioLower && editore.includes(editoreProprioLower)) return { ...m, _match: true };
+      if (ALTRI_EDITORI_NOTI.some(e => editore.includes(e))) return { ...m, _match: false };
+      if (!editore || editore === 'non specificato' || editore === 'n/a' || editore === 'null') {
+        const match = catalogoProprio.some(c => {
+          const cAutore = (c.autore || '').toLowerCase(), cTitolo = (c.titolo || '').toLowerCase();
+          const autoreParts = cAutore.split(/[,\s]+/).filter(p => p.length > 2);
+          const autoreMatch = autoreParts.some(p => autore.includes(p));
+          const titoloMatch = cTitolo.split(/\s+/).filter(w => w.length > 3).some(w => titolo.includes(w));
+          return autoreMatch && titoloMatch;
+        });
+        return { ...m, _match: match };
+      }
+      return { ...m, _match: false };
+    });
+    const principale = conFlag.find(m => m.ruolo === 'principale');
+    if (principale && principale._match) return 'principale';
+    if (conFlag.some(m => m.ruolo === 'alternativo' && m._match)) return 'alternativo';
+    return 'assente';
+  }
+
+  // ---- re-invoca la pre-classificazione su un programma gia' salvato, senza dover
+  // ricaricare il PDF — utile per colmare un campo aggiunto dopo il primo caricamento
+  // (es. temi_principali) o per correggere una classificazione poco riuscita ----
+  async function rigeneraClassificazione(programmaId, alTermine) {
+    const modello = document.getElementById('modello').value;
+    const { data: p, error: e1 } = await supabaseClient.from('programmi').select('testo_programma').eq('id', programmaId).single();
+    if (e1 || !p) { alert('Errore: ' + (e1 ? e1.message : 'programma non trovato')); return; }
+    try {
+      const classification = await preClassifica(p.testo_programma, modello);
+      const scenario = validaScenario(classification);
+      const { error } = await supabaseClient.from('programmi').update({
+        docente_nome: classification.docente_nome || null,
+        docente_email: classification.docente_email || null,
+        ateneo: classification.ateneo || null,
+        corso_laurea: classification.corso_laurea || null,
+        classe_laurea: classification.classe_laurea || null,
+        materia_inferita: classification.materia_inferita || null,
+        manuali_citati: classification.manuali_citati || [],
+        temi_principali: classification.temi_principali || [],
+        scenario_editore_proprio: scenario,
+        dati_verificati: false, // stessa regola di ogni correzione dei dati estratti: va riverificato
+      }).eq('id', programmaId);
+      if (error) throw new Error(error.message);
+      if (alTermine) await alTermine();
+    } catch (e) {
+      alert('Errore: ' + e.message);
+    }
+  }
+
+  // ---- correzione manuale dell'INTERO elenco dei manuali citati (principale + alternativi)
+  // — indipendente da stato staging/confermato, utile quando l'estrazione automatica
+  // sbaglia un ruolo, manca un titolo, o manca del tutto un alternativo (es. sezione
+  // "testi consigliati" con un solo libro classificato "alternativo", o un alternativo
+  // proprio non estratto). Decisione presa con Sergio il 23 luglio 2026: prima correggeva
+  // solo il principale, ma gli alternativi contano — specialmente se uno e' un tuo titolo
+  // (opportunita' di upgrade) o se coprono argomenti che altrimenti sembrano lacune ----
+  let _mmContesto = null; // { programmaId, alTermine, materia }
+  let _mmRighe = []; // stato locale del form: [{ruolo, manuale_id|null, titolo, autore, editore}]
+
+  function mmRigaHtml(r, idx) {
+    const candidati = _mmContesto.materia ? tuttiManuali.filter(m => checkSubjectMatch(m.materia, _mmContesto.materia)) : [];
+    const selValue = r.manuale_id ? r.manuale_id : (r.titolo ? '__altro__' : '');
+    return `
+      <div class="mm-riga" style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="mmRuolo" data-idx="${idx}" style="width:130px">
+            <option value="principale" ${r.ruolo === 'principale' ? 'selected' : ''}>Principale</option>
+            <option value="alternativo" ${r.ruolo === 'alternativo' ? 'selected' : ''}>Alternativo</option>
+          </select>
+          <select class="mmManualeSel" data-idx="${idx}" style="flex:1;min-width:220px;width:auto">
+            <option value="">— nessuno —</option>
+            ${candidati.map(m => `<option value="${m.id}" ${selValue === m.id ? 'selected' : ''}>${escapeHtml(m.autore || 'autore n/d')} — ${escapeHtml(m.titolo)}</option>`).join('')}
+            <option value="__altro__" ${selValue === '__altro__' ? 'selected' : ''}>Non a catalogo</option>
+          </select>
+          <button type="button" class="secondario mmRimuovi" data-idx="${idx}" style="width:auto">✕</button>
+        </div>
+        <div class="mmAltroBox" style="display:${selValue === '__altro__' ? 'grid' : 'none'};grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <input type="text" class="mmAltroTitolo" data-idx="${idx}" placeholder="Titolo" value="${escapeHtml(r.titolo || '')}" />
+          <input type="text" class="mmAltroAutore" data-idx="${idx}" placeholder="Autore" value="${escapeHtml(r.autore || '')}" />
+          <input type="text" class="mmAltroEditore" data-idx="${idx}" placeholder="Editore" value="${escapeHtml(r.editore || '')}" />
+        </div>
+      </div>`;
+  }
+
+  function mmRenderRighe() {
+    document.getElementById('mmManualiContainer').innerHTML = _mmRighe.map((r, idx) => mmRigaHtml(r, idx)).join('');
+  }
+
+  function mmOnChange(e) {
+    const idx = Number(e.target.dataset.idx);
+    if (Number.isNaN(idx)) return;
+    if (e.target.classList.contains('mmRuolo')) {
+      _mmRighe[idx].ruolo = e.target.value;
+    } else if (e.target.classList.contains('mmManualeSel')) {
+      const v = e.target.value, ruoloCorrente = _mmRighe[idx].ruolo;
+      if (v === '__altro__') _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: null, titolo: _mmRighe[idx].titolo || '', autore: _mmRighe[idx].autore || '', editore: _mmRighe[idx].editore || '' };
+      else if (v === '') _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: null, titolo: '', autore: '', editore: '' };
+      else {
+        const cat = tuttiManuali.find(m => m.id === v);
+        _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: v, titolo: cat.titolo, autore: cat.autore, editore: cat.publisher };
+      }
+      mmRenderRighe();
+    } else if (e.target.classList.contains('mmAltroTitolo')) _mmRighe[idx].titolo = e.target.value;
+    else if (e.target.classList.contains('mmAltroAutore')) _mmRighe[idx].autore = e.target.value;
+    else if (e.target.classList.contains('mmAltroEditore')) _mmRighe[idx].editore = e.target.value;
+  }
+
+  function mmOnClick(e) {
+    if (e.target.classList.contains('mmRimuovi')) {
+      const idx = Number(e.target.dataset.idx);
+      _mmRighe.splice(idx, 1);
+      if (_mmRighe.length === 0) _mmRighe.push({ ruolo: 'principale', manuale_id: null, titolo: '', autore: '', editore: '' });
+      mmRenderRighe();
+    }
+  }
+
+  async function apriModificaManualeAdottato(programmaId, alTermine) {
+    const { data: p, error } = await supabaseClient.from('programmi').select('manuali_citati, relazione_docente_manuale, materia_inferita').eq('id', programmaId).single();
+    if (error || !p) { alert('Errore: ' + (error ? error.message : 'programma non trovato')); return; }
+    _mmContesto = { programmaId, alTermine, materia: p.materia_inferita };
+    _mmRighe = (p.manuali_citati && p.manuali_citati.length)
+      ? p.manuali_citati.map(m => ({ ruolo: m.ruolo === 'principale' ? 'principale' : 'alternativo', manuale_id: null, titolo: m.titolo || '', autore: m.autore || '', editore: m.editore || '' }))
+      : [{ ruolo: 'principale', manuale_id: null, titolo: '', autore: '', editore: '' }];
+    // prova a ricollegare ogni riga gia' esistente al catalogo, cosi' il dropdown parte
+    // gia' agganciato invece che su "non a catalogo" — l'utente puo' comunque cambiarlo
+    for (const r of _mmRighe) {
+      if (!r.titolo) continue;
+      const match = trovaManualeAdottatoInCatalogo(r.titolo, r.autore, p.materia_inferita);
+      if (match) r.manuale_id = match.id;
+    }
+
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Manuali citati nel programma</h3>
+        <p class="aiuto">Corregge l'intero elenco — principale e alternativi. Gli alternativi contano: se uno è un tuo titolo, l'analisi lo tratta come opportunità di upgrade invece che un candidato qualunque.</p>
+        <div id="mmManualiContainer"></div>
+        <button type="button" class="secondario" id="mmAggiungi">+ Aggiungi manuale</button>
+        <div class="campo" style="margin-top:16px">
+          <label>Relazione del docente con il manuale principale</label>
+          <select id="mmRelazione">
+            ${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModificaManualeAdottato()">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').classList.add('aperto');
+    mmRenderRighe();
+    document.getElementById('mmAggiungi').addEventListener('click', () => {
+      _mmRighe.push({ ruolo: 'alternativo', manuale_id: null, titolo: '', autore: '', editore: '' });
+      mmRenderRighe();
+    });
+    document.getElementById('mmManualiContainer').addEventListener('change', mmOnChange);
+    document.getElementById('mmManualiContainer').addEventListener('input', mmOnChange);
+    document.getElementById('mmManualiContainer').addEventListener('click', mmOnClick);
+  }
+
+  async function salvaModificaManualeAdottato() {
+    const { programmaId, alTermine } = _mmContesto;
+    const manualiValidi = _mmRighe.filter(r => r.titolo && r.titolo.trim());
+    if (manualiValidi.length === 0) { alert('Inserisci almeno un manuale (o usa "Elimina" se il programma non ne cita nessuno).'); return; }
+    const nuoviManuali = manualiValidi.map(r => ({ ruolo: r.ruolo, titolo: r.titolo.trim(), autore: (r.autore || '').trim() || null, editore: (r.editore || '').trim() || null }));
+    const scenario = validaScenario({ manuali_citati: nuoviManuali });
+    const relazione = document.getElementById('mmRelazione').value;
+    const principaleRiga = manualiValidi.find(r => r.ruolo === 'principale');
+    const manualCatalogId = principaleRiga ? principaleRiga.manuale_id || null : null;
+    const { error } = await supabaseClient.from('programmi').update({
+      manuali_citati: nuoviManuali,
+      manual_catalog_id: manualCatalogId,
+      manual_catalog_stato: manualCatalogId ? 'confermato' : (principaleRiga ? 'NOT_IN_CATALOG' : null),
+      relazione_docente_manuale: relazione,
+      scenario_editore_proprio: scenario,
+      dati_verificati: false,
+      valutazione_manuale_adottato: null, // l'elenco e' cambiato: la valutazione cache non e' piu' valida
+    }).eq('id', programmaId);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    if (alTermine) await alTermine();
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ================= TAB =================
+  const SEZIONI = { carica: 'tabCarica', staging: 'tabStaging', database: 'tabDatabase', campagne: 'tabCampagne' };
+
+  function mostraTab(nome) {
+    for (const [chiave, id] of Object.entries(SEZIONI)) {
+      document.getElementById(id).classList.toggle('attiva', chiave === nome);
+      const bottone = document.getElementById('btnTab' + id.slice(3));
+      bottone.classList.toggle('on', chiave === nome);
+    }
+    if (nome === 'campagne' && campagneList.length === 0) caricaCampagne();
+    if (nome === 'database') caricaDatabase();
+  }
+  window.mostraTab = mostraTab;
+
+  // "done" = lo stadio ha contenuto. Non è un flusso lineare: sono quattro viste
+  // sempre disponibili, e il pallino verde dice solo "qui c'è qualcosa".
+  function aggiornaContatoriPipeline() {
+    const set = (id, valore, pieno) => {
+      document.getElementById(id).textContent = valore == null ? '—' : formattaNumero(valore);
+      const step = document.getElementById(id.replace('count', 'btnTab'));
+      step.classList.toggle('done', Boolean(pieno));
+    };
+    set('countStaging', stagingList.length, stagingList.length);
+    set('countDatabase', databaseList.length, databaseList.length);
+    set('countCampagne', campagneList.length, campagneList.length);
+    const totale = stagingList.length + databaseList.length;
+    set('countCarica', totale, totale);
+  }
+
+  // ================= DATABASE PROGRAMMI CONFERMATI =================
+  let databaseList = [];
+
+  async function caricaDatabase() {
+    const { data, error } = await supabaseClient.from('programmi')
+      .select('*').eq('cliente_id', clienteId).eq('stato', 'confermato').order('docente_nome');
+    if (error) { console.error(error); return; }
+    databaseList = data || [];
+    aggiornaContatoriPipeline();
+    const selMateria = document.getElementById('dbFiltroMateria');
+    const materieAttuali = [...new Set(databaseList.map(p => p.materia_inferita).filter(Boolean))].sort();
+    const selezionata = selMateria.value;
+    selMateria.innerHTML = '<option value="">Tutte</option>' + materieAttuali.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+    selMateria.value = materieAttuali.includes(selezionata) ? selezionata : '';
+    renderDatabase();
+  }
+
+  // ---- vista compatta principale + alternativi (espandibile), riusata in Database e
+  // Campagna: prima mostravamo solo il principale, e uno scenario "editore proprio
+  // alternativo" restava senza spiegazione visibile — segnalato da Sergio ----
+  let _idAltCounter = 0;
+  function renderManualiCitatiCompatto(programma) {
+    const manuali = programma.manuali_citati || [];
+    const principale = manuali.find(m => m.ruolo === 'principale');
+    const alternativi = manuali.filter(m => m.ruolo !== 'principale');
+    const relazioneLabel = (RELAZIONI.find(([v]) => v === programma.relazione_docente_manuale) || [])[1];
+    const relazioneNota = (programma.relazione_docente_manuale && programma.relazione_docente_manuale !== 'nessuna')
+      ? `<br/><b style="color:var(--err);font-size:11.5px">⚠ ${escapeHtml(relazioneLabel || programma.relazione_docente_manuale)}</b>` : '';
+    const principaleHtml = principale
+      ? `${escapeHtml(principale.titolo)}<br/><span style="color:var(--ink-muted);font-size:12px">${escapeHtml(principale.autore || 'autore n/d')}${principale.editore ? ' · ' + escapeHtml(principale.editore) : ''}</span>`
+      : `<span style="color:var(--ink-muted)">non specificato nel testo</span>`;
+    let altHtml = '';
+    if (alternativi.length) {
+      const idUniq = 'mmalt' + (_idAltCounter++);
+      altHtml = `<br/><a href="#" onclick="document.getElementById('${idUniq}').style.display='block';this.style.display='none';return false;" style="font-size:11.5px">+ ${alternativi.length} alternativ${alternativi.length === 1 ? 'o' : 'i'}</a>
+        <div id="${idUniq}" style="display:none;font-size:12px;color:var(--ink-muted);margin-top:4px">${alternativi.map(a => `${escapeHtml(a.titolo)} (${escapeHtml(a.autore || 'autore n/d')})`).join('<br/>')}</div>`;
+    }
+    return principaleHtml + relazioneNota + altHtml;
+  }
+
+  function renderDatabase() {
+    const cerca = document.getElementById('dbCerca').value.trim().toLowerCase();
+    const materia = document.getElementById('dbFiltroMateria').value;
+    const scenario = document.getElementById('dbFiltroScenario').value;
+    const filtrati = databaseList.filter(p => {
+      if (materia && p.materia_inferita !== materia) return false;
+      if (scenario && p.scenario_editore_proprio !== scenario) return false;
+      if (cerca) {
+        const campo = [p.docente_nome, p.ateneo, p.materia_inferita, p.corso_laurea].filter(Boolean).join(' ').toLowerCase();
+        if (!campo.includes(cerca)) return false;
+      }
+      return true;
+    });
+    document.getElementById('dbConteggio').textContent = `${filtrati.length} di ${databaseList.length} programmi`;
+    const box = document.getElementById('listaDatabase');
+    if (filtrati.length === 0) { box.innerHTML = '<p class="staging-vuoto">Nessun programma trovato con questi filtri.</p>'; return; }
+    box.innerHTML = filtrati.map(p => {
+      const emailBadge = p.docente_email
+        ? `<span style="font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;white-space:nowrap;background:var(--ok-soft);color:var(--ok)">✓ ${escapeHtml(p.docente_email)}</span>`
+        : `<span style="font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;white-space:nowrap;background:var(--surface-2);color:var(--ink-muted)">email non disponibile</span>`;
+      return `<div class="db-card">
+        <div class="riga-top">
+          <div class="info">
+            <strong>${escapeHtml(p.docente_nome || '(n/d)')}</strong> — ${escapeHtml(p.ateneo || 'ateneo n/d')}
+            <span>${escapeHtml(p.materia_inferita || 'materia n/d')}${p.corso_laurea ? ' · ' + escapeHtml(p.corso_laurea) : ''}${p.classe_laurea ? ' (' + escapeHtml(p.classe_laurea) + ')' : ''}</span>
+            <span>Manuale adottato: ${renderManualiCitatiCompatto(p)}</span>
+            <span style="margin-top:4px;display:inline-block">${emailBadge}</span>
+          </div>
+          ${badgeScenario(p.scenario_editore_proprio)}
+        </div>
+        <div class="staging-azioni" style="margin-top:10px">
+          <button class="secondario" onclick="apriModificaContatto('${p.id}')">✎ Email docente</button>
+          <button class="secondario" onclick="apriModificaManualeAdottato('${p.id}', caricaDatabase)">Modifica manuali citati</button>
+          <button class="secondario" onclick="rigeneraClassificazione('${p.id}', caricaDatabase)">Rigenera classificazione</button>
+          <button class="secondario" onclick="rimettiInStaging('${p.id}')">Rimetti in staging</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function rimettiInStaging(id) {
+    if (!confirm('Rimettere questo programma in staging? Non sarà più usato dalle campagne finché non lo ripromuovi.')) return;
+    const { error } = await supabaseClient.from('programmi').update({ stato: 'staging' }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaDatabase();
+  }
+
+  document.getElementById('dbCerca').addEventListener('input', renderDatabase);
+  document.getElementById('dbFiltroMateria').addEventListener('change', renderDatabase);
+  document.getElementById('dbFiltroScenario').addEventListener('change', renderDatabase);
+
+  // ================= CODA UPLOAD =================
+  function renderCoda() {
+    const box = document.getElementById('coda');
+    if (fileQueue.length === 0) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    const classe = { ok: 's-pres', errore: 's-ass' };
+    box.innerHTML = fileQueue.map((q, i) => `
+      <div class="coda-riga">
+        <span class="nome">${escapeHtml(q.file.name)}</span>
+        <span class="peso">${(q.file.size / 1024).toFixed(0)} KB</span>
+        <span class="status ${classe[q.stato] || 's-idle'}">${escapeHtml(q.messaggio || q.stato)}</span>
+        ${q.stato === 'in attesa' ? `<button type="button" class="m-btn" onclick="rimuoviDaCoda(${i})">✕</button>` : ''}
+      </div>`).join('');
+  }
+
+  function rimuoviDaCoda(i) { fileQueue.splice(i, 1); renderCoda(); aggiornaBottoneAvvia(); }
+
+  function aggiornaBottoneAvvia() {
+    document.getElementById('avvia').disabled = !fileQueue.some(q => q.stato === 'in attesa');
+  }
+
+  function accodaFile(elenco) {
+    const nuovi = Array.from(elenco).filter(f =>
+      f.name.toLowerCase().endsWith('.pdf') &&
+      !fileQueue.some(q => q.file.name === f.name && q.file.size === f.size));
+    nuovi.forEach(file => fileQueue.push({ file, stato: 'in attesa', messaggio: 'in attesa' }));
+    renderCoda();
+    aggiornaBottoneAvvia();
+  }
+
+  document.getElementById('fileInput').addEventListener('change', (e) => {
+    accodaFile(e.target.files);
+    e.target.value = '';
+  });
+
+  const dropProgrammi = document.getElementById('dropProgrammi');
+  for (const evento of ['dragenter', 'dragover']) {
+    dropProgrammi.addEventListener(evento, (e) => { e.preventDefault(); dropProgrammi.classList.add('sopra'); });
+  }
+  for (const evento of ['dragleave', 'drop']) {
+    dropProgrammi.addEventListener(evento, (e) => { e.preventDefault(); dropProgrammi.classList.remove('sopra'); });
+  }
+  dropProgrammi.addEventListener('drop', (e) => accodaFile(e.dataTransfer.files));
+  const modelloSelect = document.getElementById('modello');
+  const modelloSalvato = leggiModelloOpenAI();
+  if (modelloSalvato) modelloSelect.value = modelloSalvato;
+  modelloSelect.addEventListener('change', () => salvaModelloOpenAI(modelloSelect.value));
+
+  document.getElementById('avvia').addEventListener('click', elaboraCoda);
+
+  async function elaboraCoda() {
+    const modello = document.getElementById('modello').value;
+    const msg = document.getElementById('msgCarica');
+    document.getElementById('avvia').disabled = true;
+    msg.className = '';
+    avvisiTaglio = [];
+
+    let okCount = 0, erroreCount = 0;
+    for (let i = 0; i < fileQueue.length; i++) {
+      const q = fileQueue[i];
+      if (q.stato !== 'in attesa') continue;
+      try {
+        q.stato = 'in corso'; q.messaggio = 'estrazione testo...'; renderCoda();
+        const testo = await estraiTestoPdf(q.file);
+        if (testo.length < 200) throw new Error('testo troppo corto: PDF forse scansionato senza livello testo');
+
+        q.messaggio = 'pre-classificazione IA...'; renderCoda();
+        const classification = await preClassifica(testo, modello);
+        const scenario = validaScenario(classification);
+
+        const { error } = await supabaseClient.from('programmi').insert({
+          cliente_id: clienteId,
+          creato_da: userId,
+          provenienza: 'pdf',
+          docente_nome: classification.docente_nome || null,
+          docente_email: classification.docente_email || null,
+          ateneo: classification.ateneo || null,
+          corso_laurea: classification.corso_laurea || null,
+          classe_laurea: classification.classe_laurea || null,
+          materia_inferita: classification.materia_inferita || null,
+          manuali_citati: classification.manuali_citati || [],
+          temi_principali: classification.temi_principali || [],
+          scenario_editore_proprio: scenario,
+          testo_programma: testo,
+          stato: 'staging',
+          dati_verificati: false,
+        });
+        if (error) throw new Error(error.message);
+
+        q.stato = 'ok'; q.messaggio = 'caricato in staging'; okCount++;
+      } catch (e) {
+        q.stato = 'errore'; q.messaggio = e.message; erroreCount++;
+      }
+      renderCoda();
+      await sleep(300); // cortesia verso l'API, stesso principio del BATCH_DELAY_MS originale
+    }
+
+    const notaTaglio = avvisiTaglio.length ? ` Attenzione: ${[...new Set(avvisiTaglio)].length} testo/i troppo lungo/hi, analizzato/i solo in parte.` : '';
+    msg.textContent = `Completato: ${okCount} caricati in staging, ${erroreCount} con errore.${notaTaglio}`;
+    if (erroreCount > 0 || notaTaglio) msg.className = 'errore';
+    aggiornaBottoneAvvia();
+    await caricaStaging();
+    if (okCount > 0) mostraTab('staging');
+  }
+
+  // ================= STAGING =================
+  async function caricaStaging() {
+    const { data, error } = await supabaseClient.from('programmi')
+      .select('*').eq('cliente_id', clienteId).eq('stato', 'staging').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    stagingList = data || [];
+    aggiornaContatoriPipeline();
+    renderStaging();
+  }
+
+  function trovaSemafori(programma) {
+    const verificato = !!programma.dati_verificati;
+    const frameworkOk = tuttiFramework.some(f => checkSubjectMatch(f.materia, programma.materia_inferita));
+    const catalogoOk = tuttiManuali.some(m => checkSubjectMatch(m.materia, programma.materia_inferita));
+    return { verificato, frameworkOk, catalogoOk, tuttiVerdi: verificato && frameworkOk && catalogoOk };
+  }
+
+  function renderStaging() {
+    const box = document.getElementById('listaStaging');
+    if (stagingList.length === 0) {
+      box.innerHTML = '<p class="staging-vuoto">Nessun programma in staging.</p>';
+      return;
+    }
+    box.innerHTML = stagingList.map(p => {
+      const s = trovaSemafori(p);
+      return `
+      <div class="staging-card">
+        <div class="staging-head">
+          <strong>${escapeHtml(p.docente_nome || '(docente non identificato)')}</strong> — ${escapeHtml(p.ateneo || '(ateneo non identificato)')}<br/>
+          <span>${escapeHtml(p.materia_inferita || '(materia non identificata)')}${p.corso_laurea ? ' · ' + escapeHtml(p.corso_laurea) : ''}${p.classe_laurea ? ' (' + escapeHtml(p.classe_laurea) + ')' : ''}</span>
+        </div>
+        <div class="semafori">
+          <span class="status ${s.verificato ? 's-pres' : 's-ass'}">Dati verificati</span>
+          <span class="status ${s.frameworkOk ? 's-pres' : 's-ass'}">Framework materia</span>
+          <span class="status ${s.catalogoOk ? 's-pres' : 's-ass'}">Catalogo materia</span>
+        </div>
+        <div class="staging-azioni">
+          <button class="secondario" onclick="apriVerifica('${p.id}')">Verifica</button>
+          <button class="secondario" onclick="apriModifica('${p.id}')">Modifica</button>
+          <button class="secondario" onclick="apriModificaManualeAdottato('${p.id}', caricaStaging)">Modifica manuali citati</button>
+          <button ${s.tuttiVerdi ? '' : 'disabled'} onclick="promuovi('${p.id}')">Promuovi al piano</button>
+          <button class="secondario" onclick="rigeneraClassificazione('${p.id}', caricaStaging)">Rigenera classificazione</button>
+          <button class="secondario" onclick="eliminaStaging('${p.id}')">Elimina</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function chiudiModale() {
+    const o = document.getElementById('overlayModale');
+    o.classList.remove('aperto');
+    o.innerHTML = '';
+  }
+  window.chiudiModale = chiudiModale;
+  document.getElementById('overlayModale').addEventListener('click', (e) => {
+    if (e.target.id === 'overlayModale') chiudiModale();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudiModale(); });
+
+  // scenario dell'editore proprio rispetto a ciò che il docente adotta oggi
+  const SCENARIO_CLASSE = { principale: 'sc-princ', alternativo: 'sc-alt', assente: 'sc-ass' };
+  function badgeScenario(s) {
+    const etichette = { principale: 'principale', alternativo: 'alternativo', assente: 'assente' };
+    return `<span class="scenario ${SCENARIO_CLASSE[s] || 'sc-nd'}" title="Ruolo dell'editore proprio nella bibliografia del docente">${escapeHtml(etichette[s] || 'n/d')}</span>`;
+  }
+
+  function apriVerifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    if (!p) return;
+    const manualiHtml = (p.manuali_citati || []).length
+      ? `<ul class="lista-manuali-citati">${p.manuali_citati.map(m => `<li>${escapeHtml(m.titolo)} — ${escapeHtml(m.autore || 'autore n/d')}${m.editore ? ' (' + escapeHtml(m.editore) + ')' : ''} · <em>${escapeHtml(m.ruolo)}</em></li>`).join('')}</ul>`
+      : '<p class="aiuto">Nessun manuale citato estratto.</p>';
+    const scenarioLabel = { principale: 'Editore proprio — manuale principale', alternativo: 'Editore proprio — solo alternativo', assente: 'Editore proprio assente' }[p.scenario_editore_proprio] || 'n/d';
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Verifica dati estratti</h3>
+        <div class="riepilogo-riga"><b>Docente</b><span>${escapeHtml(p.docente_nome || 'n/d')} ${p.docente_email ? '· ' + escapeHtml(p.docente_email) : ''}</span></div>
+        <div class="riepilogo-riga"><b>Ateneo</b><span>${escapeHtml(p.ateneo || 'n/d')}</span></div>
+        <div class="riepilogo-riga"><b>Corso</b><span>${escapeHtml(p.corso_laurea || 'n/d')} ${p.classe_laurea ? '(' + escapeHtml(p.classe_laurea) + ')' : ''}</span></div>
+        <div class="riepilogo-riga"><b>Materia</b><span>${escapeHtml(p.materia_inferita || 'n/d')}</span></div>
+        <div class="riepilogo-riga"><b>Scenario</b><span>${escapeHtml(scenarioLabel)}</span></div>
+        <p class="aiuto" style="margin-top:10px">Manuali citati nel programma:</p>
+        ${manualiHtml}
+        <div class="campo">
+          <label>Relazione del docente con il manuale adottato</label>
+          <select id="selRelazione">
+            ${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}
+          </select>
+          <p class="aiuto">Condiziona i prompt del piano di promozione: se il docente è legato al manuale adottato, non verranno proposte sostituzioni dirette.</p>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="confermaVerifica('${p.id}')">Conferma verifica</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').classList.add('aperto');
+  }
+
+  async function confermaVerifica(id) {
+    const relazione = document.getElementById('selRelazione').value;
+    const { error } = await supabaseClient.from('programmi').update({ dati_verificati: true, relazione_docente_manuale: relazione }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await caricaStaging();
+  }
+
+  // ---- materie note al catalogo condiviso (manuali + framework): usate per popolare il
+  // dropdown materia, cosi' una correzione manuale non puo' piu' introdurre varianti
+  // diverse della stessa materia (bug reale trovato: "Economia"/"Economia Politica"/
+  // "Economia politica" coesistevano come tre valori distinti) ----
+  function materieCanoniche() {
+    return [...new Set([...tuttiManuali.map(m => m.materia), ...tuttiFramework.map(f => f.materia)].filter(Boolean))].sort();
+  }
+
+  function popolaSelectMateriaModifica(materiaAttuale) {
+    const sel = document.getElementById('mMateriaSel');
+    const box = document.getElementById('mMateriaAltro');
+    const canoniche = materieCanoniche();
+    const matchEsatto = canoniche.includes(materiaAttuale);
+    sel.innerHTML = '<option value="">— seleziona —</option>' +
+      canoniche.map(m => `<option value="${escapeHtml(m)}" ${materiaAttuale === m ? 'selected' : ''}>${escapeHtml(m)}</option>`).join('') +
+      `<option value="__altro__" ${!matchEsatto && materiaAttuale ? 'selected' : ''}>Altro (specifica)</option>`;
+    box.style.display = (!matchEsatto && materiaAttuale) ? 'block' : 'none';
+    document.getElementById('mMateriaAltro').value = (!matchEsatto && materiaAttuale) ? materiaAttuale : '';
+  }
+
+  function materiaCorrenteModifica() {
+    const sel = document.getElementById('mMateriaSel').value;
+    return sel === '__altro__' ? document.getElementById('mMateriaAltro').value.trim() : sel;
+  }
+
+  function popolaSelectManualeModifica(manualeCatalogId, manualePrincipale) {
+    const materia = materiaCorrenteModifica();
+    const sel = document.getElementById('mManualeSel');
+    const candidati = materia ? tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia)) : [];
+    sel.innerHTML = '<option value="">— nessuno —</option>' +
+      candidati.map(m => `<option value="${m.id}" ${manualeCatalogId === m.id ? 'selected' : ''}>${escapeHtml(m.autore || 'autore n/d')} — ${escapeHtml(m.titolo)}</option>`).join('') +
+      `<option value="__altro__" ${(!manualeCatalogId && manualePrincipale) ? 'selected' : ''}>Non a catalogo (specifica a mano)</option>`;
+    if (candidati.length === 0) sel.insertAdjacentHTML('afterbegin', `<option value="" disabled>${materia ? 'Nessun manuale in catalogo per questa materia' : 'Seleziona prima la materia'}</option>`);
+    aggiornaBoxManualeAltro(manualePrincipale, !manualeCatalogId && !!manualePrincipale);
+  }
+
+  function aggiornaBoxManualeAltro(manualePrincipale, mostraAltro) {
+    const box = document.getElementById('mManualeAltroBox');
+    const isAltro = mostraAltro !== undefined ? mostraAltro : document.getElementById('mManualeSel').value === '__altro__';
+    box.style.display = isAltro ? 'block' : 'none';
+    if (manualePrincipale) {
+      document.getElementById('mManualeTitolo').value = manualePrincipale.titolo || '';
+      document.getElementById('mManualeAutore').value = manualePrincipale.autore || '';
+      document.getElementById('mManualeEditore').value = manualePrincipale.editore || '';
+    }
+  }
+
+  function apriModifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    if (!p) return;
+    const manualePrincipale = (p.manuali_citati || []).find(m => m.ruolo === 'principale');
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Modifica dati programma</h3>
+        <div class="campo"><label>Docente</label><input type="text" id="mDocente" value="${escapeHtml(p.docente_nome || '')}" /></div>
+        <div class="campo"><label>Email docente</label><input type="email" id="mEmail" value="${escapeHtml(p.docente_email || '')}" /></div>
+        <div class="campo"><label>Ateneo</label><input type="text" id="mAteneo" value="${escapeHtml(p.ateneo || '')}" /></div>
+        <div class="campo"><label>Corso di laurea</label><input type="text" id="mCorso" value="${escapeHtml(p.corso_laurea || '')}" /></div>
+        <div class="campo"><label>Classe di laurea</label><input type="text" id="mClasse" value="${escapeHtml(p.classe_laurea || '')}" /></div>
+        <div class="campo">
+          <label>Materia</label>
+          <select id="mMateriaSel"></select>
+          <input id="mMateriaAltro" type="text" placeholder="Nome della materia" style="display:none;margin-top:6px" />
+        </div>
+        <hr />
+        <div class="campo">
+          <label>Manuale adottato (principale)</label>
+          <select id="mManualeSel"></select>
+        </div>
+        <div id="mManualeAltroBox" style="display:none">
+          <div class="campo"><label>Titolo</label><input type="text" id="mManualeTitolo" /></div>
+          <div class="campo"><label>Autore</label><input type="text" id="mManualeAutore" /></div>
+          <div class="campo"><label>Editore</label><input type="text" id="mManualeEditore" /></div>
+        </div>
+        <div class="campo">
+          <label>Relazione del docente con questo manuale</label>
+          <select id="mRelazione">${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
+        </div>
+        <p class="aiuto">Salvare una correzione manuale azzera la verifica: andrà riconfermata da "Verifica".</p>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModifica('${p.id}')">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').classList.add('aperto');
+    popolaSelectMateriaModifica(p.materia_inferita || '');
+    popolaSelectManualeModifica(p.manual_catalog_id || null, manualePrincipale);
+    document.getElementById('mMateriaSel').addEventListener('change', (e) => {
+      document.getElementById('mMateriaAltro').style.display = e.target.value === '__altro__' ? 'block' : 'none';
+      popolaSelectManualeModifica(null, manualePrincipale);
+    });
+    document.getElementById('mMateriaAltro').addEventListener('input', () => popolaSelectManualeModifica(null, manualePrincipale));
+    document.getElementById('mManualeSel').addEventListener('change', () => aggiornaBoxManualeAltro(manualePrincipale));
+  }
+
+  async function salvaModifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    const altri = (p.manuali_citati || []).filter(m => m.ruolo !== 'principale');
+    const manualeSel = document.getElementById('mManualeSel').value;
+
+    let manualCatalogId = null, manualCatalogStato = null, nuovoManualePrincipale = null;
+    if (manualeSel && manualeSel !== '__altro__') {
+      const catalogo = tuttiManuali.find(m => m.id === manualeSel);
+      manualCatalogId = manualeSel;
+      manualCatalogStato = 'confermato';
+      nuovoManualePrincipale = catalogo ? { ruolo: 'principale', titolo: catalogo.titolo, autore: catalogo.autore, editore: catalogo.publisher } : null;
+    } else if (manualeSel === '__altro__') {
+      const titolo = document.getElementById('mManualeTitolo').value.trim();
+      if (titolo) {
+        nuovoManualePrincipale = {
+          ruolo: 'principale', titolo,
+          autore: document.getElementById('mManualeAutore').value.trim() || null,
+          editore: document.getElementById('mManualeEditore').value.trim() || null,
+        };
+        manualCatalogStato = 'NOT_IN_CATALOG';
+      }
+    }
+    const nuoviManuali = nuovoManualePrincipale ? [nuovoManualePrincipale, ...altri] : altri;
+    const scenario = validaScenario({ manuali_citati: nuoviManuali });
+
+    const patch = {
+      docente_nome: document.getElementById('mDocente').value.trim() || null,
+      docente_email: document.getElementById('mEmail').value.trim() || null,
+      ateneo: document.getElementById('mAteneo').value.trim() || null,
+      corso_laurea: document.getElementById('mCorso').value.trim() || null,
+      classe_laurea: document.getElementById('mClasse').value.trim() || null,
+      materia_inferita: materiaCorrenteModifica() || null,
+      manuali_citati: nuoviManuali,
+      manual_catalog_id: manualCatalogId,
+      manual_catalog_stato: manualCatalogStato,
+      relazione_docente_manuale: document.getElementById('mRelazione').value,
+      scenario_editore_proprio: scenario,
+      dati_verificati: false, // ogni correzione manuale va riverificata, stesso principio di staging.js
+    };
+    const { error } = await supabaseClient.from('programmi').update(patch).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await caricaStaging();
+  }
+
+  // ---- correzione rapida di nome/email del docente su un programma già confermato in
+  // Database — deliberatamente separata da apriModifica/salvaModifica (Staging): quella
+  // tocca manuali/materia e resetta dati_verificati, qui serve solo poter aggiungere o
+  // correggere il contatto senza rimandare tutto in staging. Segnalato da Sergio il 30
+  // luglio 2026: l'email serve proprio in questa vista, è la base che le campagne
+  // interrogano per il targeting ----
+  function apriModificaContatto(id) {
+    const p = databaseList.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Contatto <em>docente</em></h3>
+        <p class="aiuto">${escapeHtml(p.docente_nome || '(docente non identificato)')} — ${escapeHtml(p.ateneo || 'ateneo n/d')}</p>
+        <div class="campo"><label>Docente</label><input type="text" id="cDocente" value="${escapeHtml(p.docente_nome || '')}" /></div>
+        <div class="campo"><label>Email docente</label><input type="email" id="cEmail" value="${escapeHtml(p.docente_email || '')}" /></div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaContatto('${id}')">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').classList.add('aperto');
+  }
+
+  async function salvaContatto(id) {
+    const patch = {
+      docente_nome: document.getElementById('cDocente').value.trim() || null,
+      docente_email: document.getElementById('cEmail').value.trim() || null,
+    };
+    const { error } = await supabaseClient.from('programmi').update(patch).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await caricaDatabase();
+  }
+
+  async function promuovi(id) {
+    const { error } = await supabaseClient.from('programmi').update({ stato: 'confermato' }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaStaging();
+  }
+
+  async function eliminaStaging(id) {
+    if (!confirm('Eliminare questo programma dallo staging? L\'operazione non è reversibile.')) return;
+    const { error } = await supabaseClient.from('programmi').delete().eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaStaging();
+  }
+
+  // ================= CAMPAGNE =================
+  let campagneList = [];
+  let campagnaApertaId = null;
+  let targetListAperta = [];
+
+  // ---- estrazione tollerante moduli framework da dati.raw, stessa logica di analisi-programma.html ----
+  function estraiModuliFramework(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const moduli = raw.syllabus_modules || (raw.content && raw.content.framework && raw.content.framework.syllabus_modules) || raw.modules;
+    if (!Array.isArray(moduli) || moduli.length === 0) return null;
+    return moduli.map(m => ({ nome: m.name || m.nome || '(senza nome)', contenuti: m.core_contents || m.contenuti || '' }));
+  }
+
+  // ---- cerca il manuale adottato (citato nel programma, solo testo) nel catalogo condiviso —
+  // stessa cascata euristica di MATRIX Intelligence Plus (findManualInCatalog): titolo+autore
+  // esatto, poi parziale, poi solo titolo, poi Levenshtein con bonus se l'autore combacia.
+  // Serve a recuperare l'indice REALE del manuale adottato, non solo il suo titolo: senza
+  // indice il modello non ha modo di valutare se il volume proposto è comparabile per
+  // livello di approfondimento, non solo per temi in comune ----
+  function trovaManualeAdottatoInCatalogo(titoloCercato, autoreCercato, materia) {
+    if (!titoloCercato) return null;
+    const candidati = tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia));
+    const titNorm = titoloCercato.toLowerCase().trim();
+    const autNorm = (autoreCercato || '').toLowerCase().trim();
+    // tutte le parole significative dell'autore, non solo la prima: il formato estratto dal
+    // programma puo' essere "Cognome, Cognome" o "Nome Cognome, Nome Cognome" a seconda di
+    // come l'ha scritto la pre-classificazione — mai assumere un ordine fisso (bug reale
+    // trovato: "Daron Acemoglu" veniva ridotto a "daron", che il catalogo (indicizzato come
+    // solo "Acemoglu") non trova mai)
+    const paroleAutore = autNorm.split(/[,;&\s]+/).filter(w => w.length > 2);
+    const autoreMatch = (m) => !!(m.autore && paroleAutore.some(p => m.autore.toLowerCase().includes(p)));
+
+    let trovato = candidati.find(m => m.titolo && m.titolo.toLowerCase().trim() === titNorm && (paroleAutore.length === 0 || autoreMatch(m)));
+    if (trovato) return trovato;
+
+    trovato = candidati.find(m => {
+      if (!m.titolo) return false;
+      const t = m.titolo.toLowerCase().trim();
+      return (t.includes(titNorm) || titNorm.includes(t)) && (paroleAutore.length === 0 || autoreMatch(m));
+    });
+    if (trovato) return trovato;
+
+    // fallback solo titolo, tentato comunque anche se l'autore non ha dato corrispondenza
+    // sopra — un titolo (di solito piu' distintivo di un nome) e' un indizio migliore di niente
+    trovato = candidati.find(m => m.titolo && m.titolo.toLowerCase().trim() === titNorm);
+    if (trovato) return trovato;
+    trovato = candidati.find(m => m.titolo && (m.titolo.toLowerCase().trim().includes(titNorm) || titNorm.includes(m.titolo.toLowerCase().trim())));
+    if (trovato) return trovato;
+
+    let migliore = null, punteggioMigliore = 0;
+    for (const m of candidati) {
+      if (!m.titolo) continue;
+      let sim = levenshteinSimilarity(titNorm, m.titolo.toLowerCase().trim());
+      if (autoreMatch(m)) sim += 0.15;
+      if (sim >= 0.65 && sim > punteggioMigliore) { punteggioMigliore = sim; migliore = m; }
+    }
+    return migliore;
+  }
+
+  async function chiamaOpenAIJson(prompt, modello, maxTokens) {
+    const res = await fetch(AI_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessioneAttuale.session.access_token}` },
+      body: JSON.stringify({
+        voce: 'piano', unita: 'generazione',
+        model: modello, temperature: 0, max_tokens: maxTokens || 1200,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: 'Sei un assistente esperto di editoria universitaria italiana. Rispondi sempre e solo con JSON valido, mai testo fuori dal JSON.' },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      if (res.status === 402) throw new Error('Crediti esauriti per questo cliente — contatta l\'amministratore per rinnovare il piano.');
+      const msgErr = typeof e.error === 'string' ? e.error : e.error?.message;
+      throw new Error(msgErr || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    await aggiornaSaldoCrediti();
+    return JSON.parse(data.choices[0].message.content);
+  }
+
+  function leggiModelloScelto() {
+    return { modello: document.getElementById('modello').value };
+  }
+
+  let conteggiCampagna = {};
+
+  async function caricaCampagne() {
+    const { data, error } = await supabaseClient.from('campagne')
+      .select('*').eq('cliente_id', clienteId).order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    campagneList = data || [];
+
+    // una sola query per tutte le campagne: quanti target e quante email pronte
+    conteggiCampagna = {};
+    if (campagneList.length) {
+      const { data: righe } = await supabaseClient.from('campagna_target')
+        .select('campagna_id, email_corpo')
+        .in('campagna_id', campagneList.map(c => c.id));
+      for (const c of campagneList) conteggiCampagna[c.id] = { target: 0, email: 0 };
+      for (const r of righe || []) {
+        const k = conteggiCampagna[r.campagna_id];
+        if (!k) continue;
+        k.target++;
+        if (r.email_corpo) k.email++;
+      }
+    }
+
+    // il filtro materia si popola dalle campagne esistenti
+    const sel = document.getElementById('campFiltroMateria');
+    const attuale = sel.value;
+    const materie = [...new Set(campagneList.map(c => c.materia).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it'));
+    sel.innerHTML = '<option value="">Tutte</option>' + materie.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+    sel.value = attuale;
+
+    aggiornaContatoriPipeline();
+    renderListaCampagne();
+  }
+
+  function renderListaCampagne() {
+    const box = document.getElementById('listaCampagne');
+    const cerca = (document.getElementById('campCerca').value || '').trim().toLowerCase();
+    const fMateria = document.getElementById('campFiltroMateria').value;
+    const fStato = document.getElementById('campFiltroStato').value;
+    const fModalita = document.getElementById('campFiltroModalita').value;
+
+    // Il DB ammette solo stato = bozza | completata. "Attiva" non è un terzo valore:
+    // è una campagna già pronta a partire (fase completa) ma non ancora chiusa.
+    // Vedi HANDOFF.md §9.5.
+    const statoVisibile = c => c.stato === 'completata' ? 'completata'
+      : (c.fase === 'completa' ? 'attiva' : 'bozza');
+
+    const filtrate = campagneList.filter(c => {
+      if (fMateria && c.materia !== fMateria) return false;
+      if (fStato && statoVisibile(c) !== fStato) return false;
+      if (fModalita && c.modalita !== fModalita) return false;
+      if (cerca) {
+        const campo = [c.libro_titolo, c.materia, c.libro_autore, c.libro_editore].filter(Boolean).join(' ').toLowerCase();
+        if (!campo.includes(cerca)) return false;
+      }
+      return true;
+    });
+
+    if (campagneList.length === 0) {
+      box.innerHTML = `<div class="empty">
+        <h4>Nessuna campagna</h4>
+        <p>Una campagna sceglie i docenti target fra i programmi confermati e genera, per ciascuno,
+          una motivazione e un'email. Creane una con <strong>＋ Nuova campagna</strong>.</p></div>`;
+      return;
+    }
+    if (filtrate.length === 0) {
+      box.innerHTML = `<div class="empty"><h4>Nessun risultato</h4><p>Nessuna campagna corrisponde ai filtri impostati.</p></div>`;
+      return;
+    }
+
+    box.innerHTML = filtrate.map(c => {
+      const st = statoVisibile(c);
+      const conteggi = conteggiCampagna[c.id];
+      const titolo = c.modalita === 'catalogo_materia'
+        ? `Catalogo ${escapeHtml(c.materia)} — ${(c.volumi_selezionati || []).length} manuali`
+        : escapeHtml(c.libro_titolo || c.materia);
+      // "Programmi in scope" richiederebbe di rieseguire il criterio di selezione a ogni
+      // render: mostriamo solo ciò che è già in tabella. Vedi HANDOFF.md §9.5.
+      const metriche = conteggi ? `
+        <div class="metric"><div class="v">${formattaNumero(conteggi.target)}</div><div class="l">Docenti target</div></div>
+        <div class="metric"><div class="v ${conteggi.email === conteggi.target && conteggi.target ? 'ok' : 'warn'}">${formattaNumero(conteggi.email)}</div><div class="l">Email pronte</div></div>`
+        : '<div class="metric"><div class="v">—</div><div class="l">Target</div></div>';
+      return `<div class="campagna">
+        <div class="top-c">
+          <div>
+            <h3 class="titolo-c">${titolo}</h3>
+            <div class="sub-c">
+              ${c.modalita === 'catalogo_materia' ? 'Catalogo materia' : 'Volume singolo'}
+              <span class="sep">·</span> materia <strong>${escapeHtml(c.materia)}</strong>
+              ${c.libro_autore ? `<span class="sep">·</span> ${escapeHtml(c.libro_autore)}` : ''}
+              ${c.libro_editore ? `<span class="sep">·</span> ${escapeHtml(c.libro_editore)}` : ''}
+              <span class="sep">·</span> creata ${escapeHtml(tempoRelativo(c.created_at))}
+              ${(c.modalita === 'volume_singolo' && !c.libro_indice) ? '<span class="sep">·</span> <em>senza indice: pre-valutazione</em>' : ''}
+            </div>
+          </div>
+          ${metriche}
+          <span class="stato-campagna sc-${st}">${st}</span>
+          <button type="button" class="btn btn-ghost" onclick="apriCampagna('${c.id}')">Apri →</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function modalitaCampagnaScelta() {
+    return document.querySelector('input[name="cModalita"]:checked').value;
+  }
+
+  document.querySelectorAll('input[name="cModalita"]').forEach(r => r.addEventListener('change', () => {
+    const catalogo = modalitaCampagnaScelta() === 'catalogo_materia';
+    document.getElementById('boxVolumeSingolo').style.display = catalogo ? 'none' : 'block';
+    document.getElementById('boxCatalogoMateria').style.display = catalogo ? 'block' : 'none';
+    if (catalogo) renderElencoVolumiCatalogo();
+  }));
+
+  // ---- checkbox dei manuali propri per la materia scritta, max 5 (stesso limite di
+  // MATRIX Intelligence Plus per il monitoraggio disciplinare, qui e' una modalita'
+  // della campagna invece di una funzione a parte) ----
+  function renderElencoVolumiCatalogo() {
+    const materia = document.getElementById('cMateria').value.trim();
+    const box = document.getElementById('elencoVolumiCatalogo');
+    if (!materia) { box.innerHTML = '<p style="color:var(--ink-muted);font-size:13px">Scrivi prima la materia sopra.</p>'; return; }
+    const candidati = tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia) && (m.publisher || '').toLowerCase().trim() === (editoreProprio || '').toLowerCase().trim());
+    if (candidati.length === 0) { box.innerHTML = `<p style="color:var(--ink-muted);font-size:13px">Nessun manuale proprio a catalogo per "${escapeHtml(materia)}".</p>`; return; }
+    box.innerHTML = candidati.map(m => `
+      <div class="riga-manuale">
+        <input type="checkbox" class="ccVolumeCheck" data-id="${m.id}" data-titolo="${escapeHtml(m.titolo)}" data-autore="${escapeHtml(m.autore || '')}" data-editore="${escapeHtml(m.publisher || '')}" />
+        <span class="principale">${escapeHtml(m.autore || 'autore n/d')} <small>${escapeHtml(m.titolo)}</small></span>
+      </div>`).join('');
+    document.querySelectorAll('.ccVolumeCheck').forEach(cb => cb.addEventListener('change', () => {
+      const selezionati = document.querySelectorAll('.ccVolumeCheck:checked');
+      if (selezionati.length > 5) { cb.checked = false; alert('Massimo 5 manuali per campagna.'); }
+    }));
+  }
+  document.getElementById('cMateria').addEventListener('input', () => {
+    if (modalitaCampagnaScelta() === 'catalogo_materia') renderElencoVolumiCatalogo();
+  });
+
+  document.getElementById('btnCreaCampagna').addEventListener('click', async () => {
+    const materia = document.getElementById('cMateria').value.trim();
+    const msg = document.getElementById('msgCampagna');
+    const modalita = modalitaCampagnaScelta();
+    if (!materia) { msg.textContent = 'La materia è obbligatoria.'; return; }
+
+    let payload = { cliente_id: clienteId, creato_da: userId, modalita, materia };
+    if (modalita === 'volume_singolo') {
+      const libro_titolo = document.getElementById('cTitolo').value.trim();
+      if (!libro_titolo) { msg.textContent = 'Il titolo del volume è obbligatorio.'; return; }
+      payload = {
+        ...payload, libro_titolo,
+        libro_autore: document.getElementById('cAutore').value.trim() || null,
+        libro_editore: document.getElementById('cEditore').value.trim() || null,
+        libro_indice: document.getElementById('cIndice').value.trim() || null,
+      };
+    } else {
+      const volumi = [...document.querySelectorAll('.ccVolumeCheck:checked')].map(cb => ({
+        manuale_id: cb.dataset.id, titolo: cb.dataset.titolo, autore: cb.dataset.autore || null, editore: cb.dataset.editore || null,
+      }));
+      if (volumi.length === 0) { msg.textContent = 'Seleziona almeno un manuale del catalogo.'; return; }
+      payload = { ...payload, volumi_selezionati: volumi };
+    }
+
+    const { data, error } = await supabaseClient.from('campagne').insert(payload).select().single();
+    if (error) { msg.textContent = 'Errore: ' + error.message; return; }
+    msg.textContent = '';
+    ['cMateria', 'cTitolo', 'cAutore', 'cEditore', 'cIndice'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('boxNuovaCampagna').hidden = true;
+    await caricaCampagne();
+    apriCampagna(data.id);
+  });
+
+  async function apriCampagna(id) {
+    campagnaApertaId = id;
+    const { data: campagna, error } = await supabaseClient.from('campagne').select('*').eq('id', id).single();
+    if (error) { alert('Errore: ' + error.message); return; }
+    campagneList = campagneList.map(c => c.id === id ? campagna : c);
+
+    const { data: targets } = await supabaseClient.from('campagna_target')
+      .select('*, programmi(*)').eq('campagna_id', id);
+    targetListAperta = targets || [];
+
+    document.getElementById('campagneListaBox').style.display = 'none';
+    document.getElementById('campagnaDettaglioBox').style.display = 'block';
+    renderDettaglioCampagna(campagna);
+  }
+
+  function chiudiCampagna() {
+    campagnaApertaId = null;
+    document.getElementById('campagneListaBox').style.display = 'block';
+    document.getElementById('campagnaDettaglioBox').style.display = 'none';
+  }
+
+  // ---- converte un JSON di indice manuale in testo leggibile — stessa logica tollerante
+  // di estraiIndiceManuale (analisi-programma.html/confronto.html): accetta sia il formato
+  // "raw" grezzo (index_chapters/chapters_summary/temi_chiave) sia una riga completa del
+  // catalogo condiviso ({dati:{raw:{...}}}), cosi' funziona sia con un export MATRIX sia
+  // con una riga esportata da Atlante stesso ----
+  function testoDaIndiceJson(obj) {
+    const raw = (obj && obj.dati && obj.dati.raw) ? obj.dati.raw : (obj || {});
+    if (Array.isArray(raw.index_chapters) && raw.index_chapters.length > 0) {
+      return raw.index_chapters.map(c => {
+        const sezioni = Array.isArray(c.sections) ? c.sections.map(s => s.title).filter(Boolean).join('; ') : '';
+        return `Cap. ${c.number != null ? c.number : ''}: ${c.title || ''}${sezioni ? ' — ' + sezioni : ''}`;
+      }).join('\n').trim();
+    }
+    if (typeof raw.chapters_summary === 'string' && raw.chapters_summary.trim()) return raw.chapters_summary.trim();
+    if (Array.isArray(raw.temi_chiave) && raw.temi_chiave.length > 0) return raw.temi_chiave.join('\n');
+    if (Array.isArray(raw) && raw.every(x => typeof x === 'string')) return raw.join('\n');
+    return null;
+  }
+
+  function apriModificaCampagna(id) {
+    const c = campagneList.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Modifica campagna</h3>
+        <div class="campo"><label>Titolo del volume</label><input type="text" id="ccTitolo" value="${escapeHtml(c.libro_titolo)}" /></div>
+        <div class="campo"><label>Autore</label><input type="text" id="ccAutore" value="${escapeHtml(c.libro_autore || '')}" /></div>
+        <div class="campo"><label>Editore</label><input type="text" id="ccEditore" value="${escapeHtml(c.libro_editore || '')}" /></div>
+        <div class="campo" style="max-width:none">
+          <label>Indice del volume</label>
+          <div class="upload"><input type="file" id="ccIndiceFile" accept=".pdf,.txt,.json" /></div>
+          <div id="ccIndiceMsg" style="font-size:12.5px;color:var(--ink-muted);margin-bottom:6px"></div>
+          <textarea id="ccIndice" style="width:100%;min-height:200px;font-family:inherit;padding:8px;font-size:14px;box-sizing:border-box">${escapeHtml(c.libro_indice || '')}</textarea>
+          <p class="aiuto">Carica il PDF dell'indice/sommario (o incolla il testo a mano). Dopo aver salvato, clicca "Rigenera target" per far entrare la campagna in fase "completa" e sbloccare la generazione delle email.</p>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModificaCampagna('${c.id}')">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').classList.add('aperto');
+    document.getElementById('ccIndiceFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const msg = document.getElementById('ccIndiceMsg');
+      msg.textContent = 'Estrazione testo in corso...';
+      try {
+        const nome = file.name.toLowerCase();
+        let testo;
+        if (nome.endsWith('.pdf')) {
+          testo = await estraiTestoPdf(file);
+        } else if (nome.endsWith('.json')) {
+          const parsed = JSON.parse(await file.text());
+          testo = testoDaIndiceJson(parsed);
+          if (!testo) throw new Error('JSON riconosciuto ma senza un campo indice noto (index_chapters/chapters_summary/temi_chiave). Incolla il testo a mano.');
+        } else {
+          testo = await file.text();
+        }
+        document.getElementById('ccIndice').value = testo;
+        msg.textContent = `Estratti ${testo.length} caratteri da "${file.name}".`;
+      } catch (err) {
+        msg.textContent = 'Errore estrazione: ' + err.message;
+      }
+    });
+  }
+
+  async function salvaModificaCampagna(id) {
+    const c = campagneList.find(x => x.id === id);
+    const nuovoIndice = document.getElementById('ccIndice').value.trim();
+    const patch = {
+      libro_titolo: document.getElementById('ccTitolo').value.trim(),
+      libro_autore: document.getElementById('ccAutore').value.trim() || null,
+      libro_editore: document.getElementById('ccEditore').value.trim() || null,
+      libro_indice: nuovoIndice || null,
+    };
+    // se l'indice cambia, i temi estratti in precedenza non sono piu' validi:
+    // vanno ri-estratti alla prossima "Rigenera target", mai tenere temi vecchi
+    // agganciati a un indice diverso
+    if (nuovoIndice !== (c.libro_indice || '')) patch.libro_temi = null;
+    const { error } = await supabaseClient.from('campagne').update(patch).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await apriCampagna(id);
+  }
+
+  const RILEVANZA_ORDINE = { alta: 0, media: 1, bassa: 2 };
+
+  function renderDettaglioCampagna(c) {
+    const box = document.getElementById('campagnaDettaglioBox');
+    const ordinati = [...targetListAperta].sort((a, b) => (RILEVANZA_ORDINE[a.rilevanza] ?? 3) - (RILEVANZA_ORDINE[b.rilevanza] ?? 3));
+
+    const conteggi = { alta: 0, media: 0, bassa: 0 };
+    for (const t of ordinati) if (conteggi[t.rilevanza] !== undefined) conteggi[t.rilevanza]++;
+
+    const righeTarget = ordinati.map(t => {
+      const p = t.programmi;
+      const emailPronta = Boolean(t.email_corpo);
+      const analisiPronta = Boolean(t.opzioni_catalogo);
+      const principale = (p.manuali_citati || []).find(m => m.ruolo === 'principale');
+      const relazione = p.relazione_docente_manuale && p.relazione_docente_manuale !== 'nessuna';
+      return `<tr class="riga-target" data-target="${t.id}">
+        <td>
+          <div class="doc">${escapeHtml(p.docente_nome || '(docente non identificato)')}</div>
+          <div class="sub">${escapeHtml(p.ateneo || 'ateneo n/d')}</div>
+          <div class="sub" style="margin-top:3px">${p.docente_email
+            ? `<span style="font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600;white-space:nowrap;background:var(--ok-soft);color:var(--ok)">✓ ${escapeHtml(p.docente_email)}</span>`
+            : `<span style="font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600;white-space:nowrap;background:var(--surface-2);color:var(--ink-muted)">email non disponibile</span>`}</div>
+        </td>
+        <td>
+          <div class="doc">${escapeHtml(p.materia_inferita || 'materia n/d')}</div>
+          <div class="sub">${escapeHtml(p.corso_laurea || 'corso n/d')}${p.classe_laurea ? ' · ' + escapeHtml(p.classe_laurea) : ''}</div>
+        </td>
+        <td>
+          ${principale ? escapeHtml(principale.titolo) : '<span class="muted">non specificato</span>'}
+          ${relazione ? '<div class="sub"><b>⚠ docente legato al testo</b></div>' : ''}
+        </td>
+        <td>${badgeScenario(p.scenario_editore_proprio)}</td>
+        <td>
+          ${t.rilevanza ? `<span class="rilevanza r-${t.rilevanza}">${escapeHtml(t.rilevanza)}</span>` : '<span class="muted">—</span>'}
+          <div class="sub">overlap ${escapeHtml(t.overlap_giudizio || 'n/d')} · framework ${escapeHtml(t.framework_giudizio || 'n/d')}</div>
+        </td>
+        <td>
+          ${emailPronta ? '<span class="stato-campagna sc-completata" style="font-size:10px">pronta</span>'
+                        : (analisiPronta ? '<span class="stato-campagna sc-bozza" style="font-size:10px">da generare</span>'
+                                         : '<span class="muted">—</span>')}
+        </td>
+        <td class="right">
+          <button type="button" class="m-btn ${analisiPronta ? 'primary' : ''}" data-apri="${t.id}">▸ apri</button>
+        </td>
+      </tr>
+      <tr class="riga-drawer" id="drawer-${t.id}" hidden><td colspan="7" style="padding:0;background:var(--paper)"></td></tr>`;
+    }).join('');
+
+    const titoloCampagna = c.modalita === 'catalogo_materia'
+      ? `Catalogo ${escapeHtml(c.materia)} — ${(c.volumi_selezionati || []).length} manuali`
+      : escapeHtml(c.libro_titolo);
+    const statoVisibile = c.stato === 'completata' ? 'completata' : (c.fase === 'completa' ? 'attiva' : 'bozza');
+
+    box.innerHTML = `
+      <button type="button" class="btn btn-quiet" onclick="chiudiCampagna()">← Tutte le campagne</button>
+
+      <div class="sec-head" style="margin-top:16px">
+        <div>
+          <h2>${titoloCampagna} <span class="stato-campagna sc-${statoVisibile}">${statoVisibile}</span></h2>
+          <p class="meta">${escapeHtml(c.materia)}${c.libro_autore ? ' · ' + escapeHtml(c.libro_autore) : ''}${c.libro_editore ? ' · ' + escapeHtml(c.libro_editore) : ''}</p>
+        </div>
+        <div class="actions">
+          ${c.modalita === 'volume_singolo' ? `<button type="button" class="btn btn-ghost" onclick="apriModificaCampagna('${c.id}')">Modifica campagna / indice</button>` : ''}
+          <button type="button" class="btn btn-primary" id="btnGeneraTarget">${targetListAperta.length ? 'Rigenera target' : 'Genera target'}</button>
+        </div>
+      </div>
+
+      <div class="campagna open" style="margin-bottom:16px">
+        <div class="body-c" style="border-top:none;padding-top:14px">
+          <dl class="row-info"><dt>Manuale promosso</dt><dd>${c.modalita === 'catalogo_materia'
+            ? escapeHtml((c.volumi_selezionati || []).map(v => v.titolo).join(', ') || 'nessuno')
+            : escapeHtml([c.libro_titolo, c.libro_autore, c.libro_editore].filter(Boolean).join(' · '))}</dd></dl>
+          <dl class="row-info"><dt>Criterio di selezione</dt><dd>Programmi confermati sulla stessa materia, ordinati per
+            rilevanza: sovrapposizione tematica fra il programma e il volume, più la copertura dei moduli del framework
+            di materia. Il calcolo è in <code>calcolaRilevanzaTarget()</code>, non è generato dall'AI.</dd></dl>
+          ${(c.modalita === 'volume_singolo' && !c.libro_indice)
+            ? `<dl class="row-info"><dt>Fase</dt><dd><em>Pre-valutazione: senza indice il volume non esiste ancora come
+                testo da confrontare, quindi le email restano bloccate.</em></dd></dl>` : ''}
+        </div>
+      </div>
+
+      <div id="msgTarget" style="font-size:13px;margin-bottom:12px"></div>
+
+      ${targetListAperta.length ? `
+      <div class="target-table-wrap">
+        <div class="target-head">
+          <div>
+            <h3>Docenti target · <em>${escapeHtml(c.materia)}</em></h3>
+            <p>${targetListAperta.length} docenti selezionati automaticamente. Espandi una riga per motivazione ed email.</p>
+          </div>
+          <div class="contatori">Rilevanza:
+            <b style="color:var(--err)">${conteggi.alta} alta</b> ·
+            <b style="color:var(--warn)">${conteggi.media} media</b> ·
+            <b>${conteggi.bassa} bassa</b>
+          </div>
+        </div>
+        <div class="table-scroll"><table class="target">
+          <thead><tr>
+            <th style="width:19%">Docente &amp; ateneo</th>
+            <th style="width:19%">Insegnamento</th>
+            <th style="width:17%">Manuale adottato</th>
+            <th style="width:10%">Editore proprio</th>
+            <th style="width:16%">Rilevanza</th>
+            <th style="width:10%">Email</th>
+            <th class="right" style="width:9%">Azioni</th>
+          </tr></thead>
+          <tbody>${righeTarget}</tbody>
+        </table></div>
+      </div>` : `<div class="empty">
+        <h4>Nessun target generato</h4>
+        <p>Premi <strong>Genera target</strong> per selezionare i docenti dei programmi confermati che
+          trattano ${escapeHtml(c.materia)}.</p></div>`}
+    `;
+
+    document.getElementById('btnGeneraTarget').addEventListener('click', () => generaTarget(c.id));
+    box.querySelectorAll('[data-apri]').forEach(b => b.addEventListener('click', () => alternaDrawer(b.dataset.apri, c)));
+  }
+
+  // ---- drawer per riga: motivazione + email insieme, non più uno che sovrascrive l'altro ----
+  function alternaDrawer(targetId, c) {
+    const riga = document.getElementById('drawer-' + targetId);
+    if (!riga) return;
+    const bottone = document.querySelector(`[data-apri="${targetId}"]`);
+    if (!riga.hidden) {
+      riga.hidden = true;
+      riga.previousElementSibling.classList.remove('aperta');
+      bottone.textContent = '▸ apri';
+      return;
+    }
+    riga.querySelector('td').innerHTML = renderDrawer(targetId, c);
+    riga.hidden = false;
+    riga.previousElementSibling.classList.add('aperta');
+    bottone.textContent = '▾ chiudi';
+  }
+  window.alternaDrawer = alternaDrawer;
+
+  function aggiornaDrawer(targetId) {
+    const riga = document.getElementById('drawer-' + targetId);
+    if (!riga || riga.hidden) return;
+    riga.querySelector('td').innerHTML = renderDrawer(targetId, campagneList.find(x => x.id === campagnaApertaId));
+  }
+
+  // ---- link mailto: per aprire l'email già pronta nel client di posta predefinito
+  // dell'utente (Outlook desktop, o Gmail se impostato come gestore mailto del browser) —
+  // apre una bozza compilata, l'invio resta sempre una scelta manuale dell'utente. Niente
+  // OAuth/API di provider specifici (Gmail API, Microsoft Graph): richiederebbe ad Atlante
+  // il permesso di scrivere nella casella di posta dell'utente, stesso principio già
+  // applicato alla chiave OpenAI — il rischio non giustifica il risparmio. I link mailto:
+  // hanno un limite pratico di lunghezza (~2000 caratteri, cross-browser/OS): oltre quella
+  // soglia il corpo viene omesso e resta solo oggetto+destinatario, con "Copia negli
+  // appunti" come riserva per il testo — deciso con Sergio il 31 luglio 2026.
+  function costruisciMailto(email, oggetto, corpo) {
+    if (!email) return null;
+    const base = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto || '')}`;
+    const conCorpo = `${base}&body=${encodeURIComponent(corpo || '')}`;
+    return conCorpo.length <= 1900 ? { href: conCorpo, corpoIncluso: true } : { href: base, corpoIncluso: false };
+  }
+
+  function renderDrawer(targetId, c) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    if (!t) return '';
+    const p = t.programmi;
+    const vp = p.valutazione_programma, vm = p.valutazione_manuale_adottato;
+    const emailBloccata = !(c && (c.modalita === 'catalogo_materia' || c.fase === 'completa'));
+    const datiNonVerificati = !p.dati_verificati;
+
+    // Se il docente è autore/curatore/traduttore del manuale adottato, una proposta di
+    // sostituzione è controproducente: l'avviso viene prima di tutto il resto.
+    const relazioneLabel = (RELAZIONI.find(([v]) => v === p.relazione_docente_manuale) || [])[1];
+    const alertRelazione = (p.relazione_docente_manuale && p.relazione_docente_manuale !== 'nessuna')
+      ? `<div class="helper errore"><span class="ic">!</span><div><strong>Attenzione:</strong>
+          ${escapeHtml(relazioneLabel || p.relazione_docente_manuale)}. Non proporre una sostituzione
+          diretta, al massimo un affiancamento.</div></div>`
+      : '';
+
+    const moduliVp = (vp && vp.moduli || []).map(m =>
+      `<span class="p">${escapeHtml(m.modulo)} — ${escapeHtml(m.stato)}, peso ${escapeHtml(m.peso)}</span>`).join('');
+    const gapVm = (vm && vm.gap || []).map(g => `<li><strong>${escapeHtml(g.modulo)}</strong>: ${escapeHtml(g.nota)}</li>`).join('');
+    const puntiVm = (vm && vm.punti_forza || []).map(pf => `<li>${escapeHtml(pf)}</li>`).join('');
+    const opzioniGenerate = Array.isArray(t.opzioni_catalogo);
+    const opzioni = (t.opzioni_catalogo || []).map(o => `
+      <div class="opzione-catalogo">
+        <strong>${escapeHtml(o.titolo)}</strong>${o.autore ? ` <span class="muted">— ${escapeHtml(o.autore)}</span>` : ''}
+        ${o.copertura_gap ? `<span class="rilevanza r-${o.copertura_gap === 'alta' ? 'alta' : o.copertura_gap === 'media' ? 'media' : 'bassa'}" style="margin-left:6px">copertura gap: ${escapeHtml(o.copertura_gap)}</span>` : ''}
+        <p style="font-family:var(--font-sans);font-size:13px;margin:6px 0 0">${escapeHtml(o.sintesi || '')}</p>
+        ${(o.vantaggi || []).length ? `<ul style="margin:6px 0 0">${o.vantaggi.map(v => `<li>${escapeHtml(v)}</li>`).join('')}</ul>` : ''}
+      </div>`).join('');
+
+    const mailto = t.email_corpo ? costruisciMailto(p.docente_email, t.email_oggetto, t.email_corpo) : null;
+    const emailHtml = t.email_corpo ? `
+      <h5>Email suggerita</h5>
+      <input class="email-oggetto" id="oggetto-${t.id}" value="${escapeHtml(t.email_oggetto || '')}" aria-label="Oggetto dell'email" />
+      <div class="email-box" id="corpo-${t.id}">${escapeHtml(t.email_corpo)}</div>
+      ${mailto && !mailto.corpoIncluso ? `<p class="aiuto">Il testo è troppo lungo per essere precompilato nel client di posta: si apre con destinatario e oggetto già pronti — incolla il corpo con "Copia negli appunti" qui sotto.</p>` : ''}
+      <div class="email-actions">
+        <button type="button" class="m-btn" onclick="generaEmailTarget('${t.id}')">Rigenera</button>
+        <button type="button" class="m-btn" data-modifica-email="${t.id}">Modifica</button>
+        ${mailto
+          ? `<a class="m-btn primary" style="display:inline-flex;align-items:center;text-decoration:none" href="${escapeHtml(mailto.href)}">✉ Apri in client di posta</a>`
+          : `<span class="aiuto" style="align-self:center">Email docente non disponibile — aggiungila da Database.</span>`}
+        <button type="button" class="m-btn" data-copia-email="${t.id}">✓ Copia negli appunti</button>
+      </div>`
+      : `<h5>Email suggerita</h5>
+         <p class="aiuto">${emailBloccata
+            ? 'Serve almeno l’indice del volume: senza contenuti concreti da offrire, un’email di contatto è prematura.'
+            : 'Non ancora generata.'}</p>`;
+
+    return `<div class="drawer-motiv">
+      <div class="drawer-motiv-head">
+        <h4>Motivazione della proposta a <em>${escapeHtml(p.docente_nome || 'questo docente')}</em></h4>
+        <button type="button" class="m-btn" onclick="alternaDrawer('${t.id}')">× chiudi</button>
+      </div>
+      <div class="body">
+        ${alertRelazione}
+        ${datiNonVerificati ? `<div class="helper attesa"><span class="ic">!</span><div>I dati di questo programma
+          non sono ancora stati verificati in staging: l'email li scriverebbe per esteso. Controllali prima di inviarla.</div></div>` : ''}
+
+        <h5>1 · Il programma</h5>
+        <p>${escapeHtml(vp ? vp.sintesi : 'Non ancora valutato.')}</p>
+        ${moduliVp ? `<div class="pesi">${moduliVp}</div>` : ''}
+
+        <h5>2 · Il manuale adottato oggi</h5>
+        <p>${escapeHtml(vm ? vm.sintesi : 'Non ancora valutato.')}</p>
+        ${gapVm ? `<h5 style="margin-top:12px">Gap rispetto a questo programma</h5><ul>${gapVm}</ul>` : ''}
+        ${puntiVm ? `<h5 style="margin-top:12px">Punti di forza</h5><ul>${puntiVm}</ul>` : ''}
+        ${(vm && vm.opportunita_upgrade) ? `<div class="helper ok" style="margin-top:10px"><span class="ic">★</span><div><strong>Opportunità di upgrade:</strong> ${escapeHtml(vm.opportunita_upgrade)}</div></div>` : ''}
+
+        <h5>3 · Opzioni di catalogo per una possibile sostituzione</h5>
+        ${opzioniGenerate
+          ? (opzioni || '<p class="aiuto">Nessuna opzione indipendente: il docente cita già, come principale o alternativo, tutti i manuali propri disponibili per questa materia.</p>')
+          : '<p class="aiuto">Non ancora generate.</p>'}
+
+        ${emailHtml}
+
+        <h5 style="margin-top:20px">Altre azioni</h5>
+        <div class="email-actions" style="justify-content:flex-start">
+          <button type="button" class="m-btn" onclick="generaMotivazioneTarget('${t.id}')">${opzioniGenerate ? 'Rigenera analisi' : 'Genera analisi'}</button>
+          ${(p.valutazione_programma || p.valutazione_manuale_adottato)
+            ? `<button type="button" class="m-btn" title="Ricalcola anche le parti 1 e 2, di solito riusate dalla cache — utile dopo un aggiornamento della logica di analisi, non solo dopo una correzione dati" onclick="generaMotivazioneTarget('${t.id}', true)">Ricalcola tutto da zero</button>` : ''}
+          <button type="button" class="m-btn" ${(opzioniGenerate && !emailBloccata) ? '' : 'disabled'}
+            title="${emailBloccata ? 'Serve almeno l’indice del volume' : ''}"
+            onclick="generaEmailTarget('${t.id}')">${t.email_corpo ? 'Rigenera email' : 'Genera email'}</button>
+          <button type="button" class="m-btn" onclick="apriModificaManualeAdottato('${p.id}', () => apriCampagna(campagnaApertaId))">Correggi manuali citati</button>
+          ${(!p.temi_principali || p.temi_principali.length === 0)
+            ? `<button type="button" class="m-btn" onclick="rigeneraClassificazione('${p.id}', () => apriCampagna(campagnaApertaId))">Rigenera classificazione</button>` : ''}
+        </div>
+        <p class="aiuto" style="margin-top:12px"><em>Analisi sintetica per la campagna. Per un'analisi
+          approfondita di questo specifico programma usa la sezione
+          <a href="analisi-programma.html">Analisi di un programma</a>.</em></p>
+      </div>
+    </div>`;
+  }
+
+  // modifica dell'email prima dell'invio, e copia negli appunti
+  document.addEventListener('click', async (e) => {
+    const mod = e.target.closest('[data-modifica-email]');
+    if (mod) {
+      const corpo = document.getElementById('corpo-' + mod.dataset.modificaEmail);
+      const editabile = corpo.getAttribute('contenteditable') === 'true';
+      corpo.setAttribute('contenteditable', String(!editabile));
+      mod.textContent = editabile ? 'Modifica' : '✓ Fine modifica';
+      if (!editabile) corpo.focus();
+      return;
+    }
+    const cop = e.target.closest('[data-copia-email]');
+    if (cop) {
+      const id = cop.dataset.copiaEmail;
+      const oggetto = document.getElementById('oggetto-' + id).value;
+      const corpo = document.getElementById('corpo-' + id).innerText;
+      try {
+        await navigator.clipboard.writeText(`Oggetto: ${oggetto}\n\n${corpo}`);
+        cop.textContent = '✓ Copiata';
+        setTimeout(() => { cop.textContent = '✓ Copia negli appunti'; }, 2000);
+      } catch {
+        cop.textContent = 'Copia non riuscita';
+      }
+    }
+  });
+
+  // ---- estrazione temi dall'indice — stesso prompt di MATRIX Intelligence Plus ----
+  async function estraiTemiLibro(indice, modello) {
+    const res = await chiamaOpenAIJson(
+      `Estrai 10-15 temi/argomenti chiave dal seguente indice di un libro accademico.\n\nINDICE:\n${taglia(indice, 100000, avvisiTaglio, 'indice del volume')}\n\nRispondi con JSON: {"temi": ["tema1", "tema2", ...]}`,
+      modello, 500
+    );
+    return Array.isArray(res.temi) ? res.temi : [];
+  }
+
+  // ---- targeting: rilevanza/overlap/framework SOLO calcolo JS, mai IA (decisione presa,
+  // vedi Piano_Sviluppo_Piano_Promozione.html §2) — bande qualitative, mai un numero mostrato ----
+  function calcolaRilevanzaTarget(campagna, programma, framework) {
+    const scenario = programma.scenario_editore_proprio;
+    let rilevanza = scenario === 'assente' ? 'alta' : scenario === 'alternativo' ? 'media' : 'bassa';
+
+    const bookThemes = (campagna.libro_temi || []).map(t => String(t).toLowerCase().trim()).filter(Boolean);
+    const progThemes = (programma.temi_principali || []).map(t => String(t).toLowerCase().trim()).filter(Boolean);
+    let overlapGiudizio = null;
+    if (bookThemes.length && progThemes.length) {
+      const coperti = bookThemes.filter(bt => progThemes.some(pt => pt.includes(bt) || bt.includes(pt) || levenshteinSimilarity(pt, bt) > 0.65)).length;
+      const overlapPct = coperti / bookThemes.length;
+      overlapGiudizio = overlapPct >= 0.5 ? 'alto' : overlapPct >= 0.2 ? 'medio' : 'basso';
+    }
+
+    let framGiudizio = null;
+    const moduli = framework ? estraiModuliFramework(framework) : null;
+    if (moduli && moduli.length && progThemes.length) {
+      const coperti = moduli.filter(m => {
+        const testoModulo = (m.nome + ' ' + (m.contenuti || '')).toLowerCase();
+        return progThemes.some(pt => testoModulo.includes(pt) || levenshteinSimilarity(pt, m.nome.toLowerCase()) > 0.65);
+      }).length;
+      const framScore = coperti / moduli.length;
+      framGiudizio = framScore >= 0.4 ? 'alto' : framScore >= 0.15 ? 'medio' : 'basso';
+    }
+
+    if (overlapGiudizio === 'alto' || framGiudizio === 'alto') {
+      if (rilevanza === 'bassa') rilevanza = 'media';
+      else if (rilevanza === 'media') rilevanza = 'alta';
+    }
+    return { rilevanza, overlapGiudizio, framGiudizio };
+  }
+
+  async function generaTarget(campagnaId) {
+    const campagna = campagneList.find(c => c.id === campagnaId);
+    const msg = document.getElementById('msgTarget');
+    msg.className = ''; msg.innerHTML = '<span class="spinner"></span>Generazione target...';
+    avvisiTaglio = [];
+    try {
+      // fase (pre_valutazione/completa) ha senso solo per volume_singolo, dove il volume
+      // puo' non esistere ancora come indice reale — un catalogo_materia lavora sempre su
+      // manuali gia' pubblicati e catalogati, quindi non ha bisogno di questo concetto
+      let fase = null, stato = 'completata';
+      if (campagna.modalita === 'volume_singolo') {
+        let libroTemi = campagna.libro_temi || [];
+        const hasIndice = (campagna.libro_indice || '').trim().length > 20;
+        if (hasIndice && libroTemi.length === 0) {
+          const { modello } = leggiModelloScelto();
+          libroTemi = await estraiTemiLibro(campagna.libro_indice, modello);
+          await supabaseClient.from('campagne').update({ libro_temi: libroTemi }).eq('id', campagnaId);
+          campagna.libro_temi = libroTemi;
+        }
+        fase = (libroTemi.length > 0 || hasIndice) ? 'completa' : 'pre_valutazione';
+        stato = (fase === 'completa' && libroTemi.length > 0) ? 'completata' : 'bozza';
+      }
+
+      const { data: programmiConfermati } = await supabaseClient.from('programmi')
+        .select('*').eq('cliente_id', clienteId).eq('stato', 'confermato');
+      const matched = (programmiConfermati || []).filter(p => checkSubjectMatch(campagna.materia, p.materia_inferita));
+      const framework = tuttiFramework.find(f => checkSubjectMatch(f.materia, campagna.materia));
+      let frameworkCompleto = null;
+      if (framework) {
+        const { data } = await supabaseClient.from('framework').select('id, nome, materia, dati').eq('id', framework.id).single();
+        frameworkCompleto = data;
+      }
+
+      // sincronizza invece di cancellare-e-ricreare: un target su cui e' gia' stata generata
+      // motivazione/email non va perso solo perche' si rigenera il targeting (es. dopo aver
+      // aggiunto l'indice) — si aggiornano solo rilevanza/overlap/framework, mai i campi IA
+      // gia' prodotti; si tocca insert/delete solo per programmi che sono entrati/usciti
+      // dal match materia
+      const { data: esistenti } = await supabaseClient.from('campagna_target').select('id, programma_id').eq('campagna_id', campagnaId);
+      const esistentiMap = new Map((esistenti || []).map(r => [r.programma_id, r.id]));
+      const matchedIds = new Set(matched.map(p => p.id));
+
+      const daRimuovere = (esistenti || []).filter(r => !matchedIds.has(r.programma_id)).map(r => r.id);
+      if (daRimuovere.length) await supabaseClient.from('campagna_target').delete().in('id', daRimuovere);
+
+      for (const p of matched) {
+        const { rilevanza, overlapGiudizio, framGiudizio } = calcolaRilevanzaTarget(campagna, p, frameworkCompleto);
+        const riga = { rilevanza, overlap_giudizio: overlapGiudizio, framework_giudizio: framGiudizio };
+        const idEsistente = esistentiMap.get(p.id);
+        if (idEsistente) await supabaseClient.from('campagna_target').update(riga).eq('id', idEsistente);
+        else await supabaseClient.from('campagna_target').insert({ campagna_id: campagnaId, programma_id: p.id, ...riga });
+      }
+
+      const { error: eFaseStato } = await supabaseClient.from('campagne').update({ fase, stato }).eq('id', campagnaId);
+      if (eFaseStato) throw new Error('Salvataggio fase/stato: ' + eFaseStato.message);
+
+      const unici = [...new Set(avvisiTaglio)];
+      msg.textContent = `${matched.length} programma/i trovato/i per questa materia.` + (unici.length ? ` Attenzione: troncati per lunghezza — ${unici.join('; ')}.` : '');
+      if (unici.length) msg.className = 'errore';
+      await apriCampagna(campagnaId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  // ---- l'apertura dell'email cambia se il docente ha una relazione di AUTORIALITA' col
+  // manuale adottato (autore/coautore/curatore/traduttore) — si riconosce il ruolo
+  // esplicitamente invece di ignorarlo, ma senza più sopprimere la menzione di un limite
+  // reale: è l'utente a decidere, caso per caso, se e come inviare l'email, non deve essere
+  // il testo generato a chiudersi la porta da solo. "Collega di ateneo/dipartimento" non è
+  // una relazione di autorialità (il docente non ha scritto il libro), resta nel ramo
+  // "non autore" ma con una nota di cautela in più sul tono. Corretto con Sergio il 31
+  // luglio 2026: la regola precedente ("mai una sostituzione, solo affiancamento")
+  // produceva email che si autolimitavano, contraddicendo l'obiettivo reale del contatto —
+  // arrivare a una sostituzione, non fermarsi a un affiancamento — verificato scrivendo a
+  // mano due email di esempio prima di cambiare il prompt vero. ----
+  const RELAZIONI_AUTORIALI = ['autore', 'coautore', 'curatore', 'traduttore'];
+  function bloccoAperturaEmail(relazione) {
+    if (RELAZIONI_AUTORIALI.includes(relazione)) {
+      // relazione è già la parola breve giusta da incastonare nella frase ("autore",
+      // "coautore", ...) — le etichette di RELAZIONI includono già "del manuale adottato",
+      // usarle qui duplicherebbe la frase
+      return `⚠️ Il docente è ${relazione} del manuale adottato. Apri l'email riconoscendo esplicitamente questo ruolo, adattando ai dati reali (non copiarla identica): "La contatto in riferimento al suo corso di [materia] per il corso di laurea in [corso di laurea]. Naturalmente sono consapevole che Lei è ${relazione} del manuale adottato, ma ho notato che..." — poi prosegui nominando con chiarezza il limite concreto individuato (vedi sotto). Mantieni un tono rispettoso del suo ruolo, ma non evitare di nominare il limite: il testo non deve autolimitarsi proponendo solo un "affiancamento" se un'opportunità di sostituzione è reale — decide l'utente, in fase di invio, se e come usarlo.`;
+    }
+    const notaCollega = (relazione === 'collega_ateneo' || relazione === 'collega_dipartimento')
+      ? ' Nota: il docente è collega (di ateneo/dipartimento) dell\'autore del manuale adottato — non ne è lui l\'autore, ma mantieni comunque un tono misurato nel nominare eventuali limiti.'
+      : '';
+    return `Il docente non ha relazioni di autorialità col manuale adottato. Apri l'email così, adattandola ai dati reali (non copiarla identica): "Ho letto con attenzione il suo programma di [materia] per il corso di laurea in [corso di laurea] e il manuale che adotta attualmente [manuale]." Non nominare l'ateneo nell'apertura.${notaCollega}`;
+  }
+
+  // ---- framework completo (con dati/moduli) per una materia, con cache locale per non
+  // rifare la stessa query ad ogni target della stessa campagna ----
+  const _frameworkCompletoCache = new Map();
+  async function fetchFrameworkPerMateria(materia) {
+    if (_frameworkCompletoCache.has(materia)) return _frameworkCompletoCache.get(materia);
+    const f = tuttiFramework.find(fr => checkSubjectMatch(fr.materia, materia));
+    let risultato = null;
+    if (f) {
+      const { data } = await supabaseClient.from('framework').select('id, nome, materia, dati').eq('id', f.id).single();
+      risultato = data;
+    }
+    _frameworkCompletoCache.set(materia, risultato);
+    return risultato;
+  }
+
+  // ---- risale a TUTTI i manuali citati (principale + alternativi) e, dove possibile, al
+  // loro indice reale nel catalogo condiviso — priorita' a manual_catalog_id se gia'
+  // impostato (collegamento diretto per il principale, niente da indovinare), altrimenti
+  // fallback sulla cascata euristica trovaManualeAdottatoInCatalogo. Segnala anche se un
+  // alternativo e' un tuo titolo (editore proprio): e' un'opportunita' di upgrade diversa
+  // da un candidato qualunque — decisione presa con Sergio il 23 luglio 2026, prima si
+  // guardava solo il principale, ignorando sia gli alternativi che potevano gia' coprire
+  // un "gap" apparente, sia l'opportunita' di upgrade se uno era gia' un tuo libro ----
+  async function raccogliManualiConIndici(programma, materia) {
+    const risultati = [];
+    for (const m of (programma.manuali_citati || [])) {
+      if (!m.titolo) continue;
+      let catalogoId = (m.ruolo === 'principale') ? (programma.manual_catalog_id || null) : null;
+      if (!catalogoId) {
+        const candidato = trovaManualeAdottatoInCatalogo(m.titolo, m.autore, materia);
+        catalogoId = candidato ? candidato.id : null;
+      }
+      let indice = null, editoreProprioMatch = false;
+      if (catalogoId) {
+        const { data } = await supabaseClient.from('manuali').select('publisher, dati').eq('id', catalogoId).single();
+        if (data) {
+          indice = estraiIndiceManuale({ dati: data.dati });
+          editoreProprioMatch = (data.publisher || '').toLowerCase().trim() === (editoreProprio || '').toLowerCase().trim();
+        }
+      }
+      risultati.push({ ruolo: m.ruolo, titolo: m.titolo, autore: m.autore, editore: m.editore, indice, editoreProprio: editoreProprioMatch });
+    }
+    return risultati;
+  }
+
+  // ================= MOTIVAZIONE A 3 PARTI =================
+  // Parte 1 e 2 sono proprieta' del programma (docente + manuale adottato), non della
+  // campagna: calcolate una volta e salvate su programmi, riusate da qualunque campagna
+  // tocchi lo stesso docente in futuro. Solo la parte 3 (opzioni di catalogo) e' specifica
+  // di ogni campagna. Decisione presa con Sergio il 23 luglio 2026.
+
+  // ---- PARTE 1 (cache su programmi.valutazione_programma) ----
+  function costruisciPromptValutazioneProgramma(programma, moduli) {
+    const moduliTesto = moduli && moduli.length
+      ? moduli.map((m, i) => `${i + 1}. ${m.nome}${m.contenuti ? ' — ' + m.contenuti : ''}`).join('\n') : null;
+    return `Sei un analista editoriale che valuta un programma universitario in modo sintetico, per una campagna di promozione — non un'analisi approfondita (se serve un'analisi approfondita di questo specifico programma, l'utente può usare la sezione "Analisi di un programma").
+
+PROGRAMMA:
+${taglia(programma.testo_programma, 100000, avvisiTaglio, 'testo del programma')}
+${moduliTesto ? `
+
+MODULI DEL FRAMEWORK DISCIPLINARE DI QUESTA MATERIA:
+${moduliTesto}
+Per ciascuno valuta se il programma lo tratta (stato: presente|parziale|assente) e quanto peso ha per questo corso specifico (peso: alto|medio|basso) — se lo stato e' assente il peso non puo' essere alto ne' medio.` : ''}
+
+Scrivi anche una sintesi di 2-3 frasi su tipologia e taglio del corso, e il livello (base/intermedio/avanzato).
+
+Non inventare contenuti non presenti nel programma.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"sintesi":"", "tipologia":"", "livello":"base|intermedio|avanzato"${moduliTesto ? `, "moduli":[{"modulo":"<nome esatto>","stato":"presente|parziale|assente","peso":"alto|medio|basso"}]` : ''}}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function assicuraValutazioneProgramma(programma, modello) {
+    if (programma.valutazione_programma) return programma.valutazione_programma;
+    const framework = await fetchFrameworkPerMateria(programma.materia_inferita);
+    const moduli = framework ? estraiModuliFramework(framework) : null;
+    const risultato = await chiamaOpenAIJson(costruisciPromptValutazioneProgramma(programma, moduli), modello, 1200);
+    await supabaseClient.from('programmi').update({ valutazione_programma: risultato }).eq('id', programma.id);
+    programma.valutazione_programma = risultato;
+    return risultato;
+  }
+
+  // ---- PARTE 2 (cache su programmi.valutazione_manuale_adottato) — valuta l'INSIEME dei
+  // testi assegnati (principale + alternativi), non solo il principale isolato: un modulo
+  // e' un gap vero solo se nessuno dei testi gia' assegnati lo copre, altrimenti si rischia
+  // di segnalare come lacuna qualcosa che il docente ha gia' risolto con una lettura
+  // complementare. Se un alternativo e' un tuo titolo, e' un'opportunita' di upgrade da
+  // evidenziare, non un candidato di catalogo qualunque ----
+  function costruisciPromptValutazioneManualeAdottato(programma, valutazioneProgramma, manualiConIndici) {
+    const moduliContesto = (valutazioneProgramma.moduli || []).length
+      ? `\n\nMODULI DEL FRAMEWORK E LORO PESO PER QUESTO PROGRAMMA (già calcolato, non ridiscutere):\n${valutazioneProgramma.moduli.map(m => `- ${m.modulo}: il programma lo tratta come "${m.stato}", peso ${m.peso}`).join('\n')}` : '';
+    const testoManuali = manualiConIndici.map((m, i) => `${i + 1}. [${m.ruolo}]${m.editoreProprio ? ' [TUO TITOLO]' : ''} "${m.titolo}" (${m.autore || 'autore n/d'})\n${m.indice ? 'INDICE:\n' + taglia(m.indice, 100000, avvisiTaglio, `indice di ${m.titolo}`) : '(indice non disponibile)'}`).join('\n\n');
+    const haUpgrade = manualiConIndici.some(m => m.ruolo !== 'principale' && m.editoreProprio);
+    return `Sei un analista editoriale che valuta l'insieme dei testi assegnati dal docente per questo programma — non solo il principale: anche le letture alternative/complementari contano, perché possono già coprire argomenti che altrimenti sembrerebbero lacune.
+
+PROGRAMMA (per contesto):
+${taglia(programma.testo_programma, 100000, avvisiTaglio, 'testo del programma')}
+${moduliContesto}
+
+TESTI ASSEGNATI DAL DOCENTE (principale + alternativi):
+${testoManuali}
+
+Valuta la copertura COMPLESSIVA (principale + tutti gli alternativi insieme) rispetto ai moduli sopra elencati: un modulo è un gap vero solo se NESSUNO dei testi assegnati lo copre bene, non solo se manca dal principale.
+${haUpgrade ? `\n⚠️ Il docente assegna già un tuo titolo come lettura alternativa/complementare (contrassegnato [TUO TITOLO] sopra): se è una buona base per questo programma, evidenzialo esplicitamente come opportunità di UPGRADE a testo principale nel campo "opportunita_upgrade" — non trattarlo come un candidato di catalogo qualunque.` : ''}
+
+Poi:
+- gap: SOLO i moduli di peso alto o medio non coperti bene da NESSUNO dei testi assegnati — ordina per importanza, mai un modulo di peso basso
+- punti_forza: 2-3 aspetti positivi dell'insieme dei testi già assegnati (se un alternativo tuo è già una buona base, dillo qui)
+- opportunita_upgrade: una frase se un alternativo è un tuo titolo e vale la pena proporlo come principale, altrimenti null
+- sintesi: 2-3 frasi
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"moduli":[{"modulo":"<nome esatto>","stato":"presente|parziale|assente"}], "gap":[{"modulo":"<nome esatto>","nota":""}], "punti_forza":[""], "opportunita_upgrade":null, "sintesi":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function assicuraValutazioneManualeAdottato(programma, valutazioneProgramma, materia, modello) {
+    if (programma.valutazione_manuale_adottato) return programma.valutazione_manuale_adottato;
+    const manualiConIndici = await raccogliManualiConIndici(programma, materia);
+    if (manualiConIndici.length === 0) {
+      // niente da mettere in cache: non e' un risultato IA, solo l'assenza di un titolo noto
+      return { moduli: [], gap: [], punti_forza: [], opportunita_upgrade: null, sintesi: 'Nessun manuale risulta citato nel testo del programma: non è possibile valutarlo.' };
+    }
+    const risultato = await chiamaOpenAIJson(costruisciPromptValutazioneManualeAdottato(programma, valutazioneProgramma, manualiConIndici), modello, 1400);
+    await supabaseClient.from('programmi').update({ valutazione_manuale_adottato: risultato }).eq('id', programma.id);
+    programma.valutazione_manuale_adottato = risultato;
+    return risultato;
+  }
+
+  // ---- PARTE 3 (specifica della campagna — 1 candidato per volume_singolo, fino a 5 per
+  // catalogo_materia, valutati in UN'UNICA chiamata: decisione presa per contenere il costo) ----
+  function costruisciPromptOpzioniCatalogo(valutazioneManuale, candidati) {
+    const candidatiTesto = candidati.map((c, i) => `${i + 1}. "${c.titolo}"${c.autore ? ' (' + c.autore + ')' : ''}\nINDICE:\n${c.indice ? taglia(c.indice, 100000, avvisiTaglio, `indice di ${c.titolo}`) : 'non disponibile'}`).join('\n\n');
+    return `Sei un consulente editoriale. Questa è la valutazione già fatta dell'insieme dei testi assegnati dal docente rispetto a questo programma (non ridiscuterla, usala come riferimento):
+
+SINTESI DELLA VALUTAZIONE: ${valutazioneManuale.sintesi || ''}
+GAP STRUTTURATI (solo sui moduli del framework disciplinare — può essere vuoto anche se la sintesi sopra segnala problemi reali: in quel caso fidati della sintesi, non della lista): ${JSON.stringify(valutazioneManuale.gap || [])}
+PUNTI DI FORZA GIÀ PRESENTI (da non perdere in un eventuale cambio): ${JSON.stringify(valutazioneManuale.punti_forza || [])}
+${valutazioneManuale.opportunita_upgrade ? `\n⚠️ OPPORTUNITÀ DI UPGRADE GIÀ IDENTIFICATA: ${valutazioneManuale.opportunita_upgrade}\nSe uno dei candidati sotto corrisponde a questo titolo già assegnato come lettura alternativa, evidenzialo come prima scelta con questa motivazione — non trattarlo come un candidato qualunque tra gli altri.` : ''}
+
+CANDIDATI DISPONIBILI:
+${candidatiTesto}
+
+Per ciascun candidato, valuta quanto risolve SPECIFICAMENTE i problemi indicati sopra (nella sintesi e/o nei gap strutturati) — copertura_gap: alta|media|bassa.
+Poi scrivi 2-3 vantaggi concreti per QUESTO programma — ma un docente non sceglie un manuale per la copertura dei contenuti in sé, sceglie l'utilità che gliene deriva (a lui e ai suoi studenti): non scrivere mai "affronta l'argomento X" da solo, traduci sempre il contenuto nel beneficio pratico che produce — per il docente (es. meno tempo speso a integrare materiale mancante, lezioni più solide su un argomento su cui gli studenti faticano) e/o per gli studenti (es. preparazione più solida su un argomento d'esame, materiale più chiaro su un tema difficile). Il contenuto tecnico resta il fondamento del vantaggio — va sempre citato, mai inventato — ma non va mai lasciato come semplice elenco di argomenti coperti. Se il manuale attuale non ha problemi significativi, dillo onestamente per ogni candidato (copertura_gap: bassa, vantaggi minimi o vuoti) — ma non ignorare un problema reale descritto nella sintesi solo perché non compare nei gap strutturati.
+
+Rispondi SOLO con un oggetto JSON, con i candidati ORDINATI dal migliore al peggiore:
+{"opzioni":[{"titolo":"<nome esatto tra quelli sopra>","copertura_gap":"alta|media|bassa","vantaggi":["",""],"sintesi":""}]}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function normalizzaTitoloAutore(titolo, autore) {
+    return `${(titolo || '').toLowerCase().trim()}|${(autore || '').toLowerCase().trim()}`;
+  }
+
+  async function candidatiPerCampagna(campagna, programma) {
+    let candidati;
+    if (campagna.modalita === 'catalogo_materia') {
+      candidati = [];
+      for (const v of (campagna.volumi_selezionati || [])) {
+        const { data } = await supabaseClient.from('manuali').select('dati').eq('id', v.manuale_id).single();
+        candidati.push({ manuale_id: v.manuale_id, titolo: v.titolo, autore: v.autore, indice: data ? estraiIndiceManuale({ dati: data.dati }) : null });
+      }
+    } else {
+      candidati = [{ titolo: campagna.libro_titolo, autore: campagna.libro_autore, indice: campagna.libro_indice }];
+    }
+    // esclude i candidati che coincidono con un manuale gia' citato dal docente per QUESTO
+    // programma (principale o alternativo): proporre di sostituire un libro con se stesso non
+    // ha senso — bug trovato da Sergio su una campagna catalogo_materia con tutto il catalogo
+    // proprio disponibile per la materia selezionato, che includeva anche il manuale gia' adottato
+    const citati = (programma.manuali_citati || []).map(m => normalizzaTitoloAutore(m.titolo, m.autore));
+    return candidati.filter(c => {
+      if (c.manuale_id && programma.manual_catalog_id && c.manuale_id === programma.manual_catalog_id) return false;
+      return !citati.includes(normalizzaTitoloAutore(c.titolo, c.autore));
+    });
+  }
+
+  // ---- svuota la cache di parte 1+2 (valutazione_programma, valutazione_manuale_adottato)
+  // — serve quando si vuole un ricalcolo completo, non solo delle opzioni di catalogo
+  // (es. dopo un aggiornamento della logica di analisi, non solo dopo una correzione dati:
+  // quella invalida gia' la cache da sola in salvaModificaManualeAdottato) ----
+  async function invalidaCacheValutazioni(programma) {
+    programma.valutazione_programma = null;
+    programma.valutazione_manuale_adottato = null;
+    await supabaseClient.from('programmi').update({ valutazione_programma: null, valutazione_manuale_adottato: null }).eq('id', programma.id);
+  }
+
+  async function generaMotivazioneTarget(targetId, forzaRicalcoloCompleto) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    const campagna = campagneList.find(c => c.id === campagnaApertaId);
+    const { modello } = leggiModelloScelto();
+    const msg = document.getElementById('msgTarget');
+    msg.className = '';
+    avvisiTaglio = [];
+    try {
+      const programma = t.programmi;
+      if (forzaRicalcoloCompleto) await invalidaCacheValutazioni(programma);
+
+      msg.innerHTML = '<span class="spinner"></span>1/3 — valutazione del programma...';
+      const valutazioneProgramma = await assicuraValutazioneProgramma(programma, modello);
+
+      msg.innerHTML = '<span class="spinner"></span>2/3 — valutazione del manuale adottato...';
+      const valutazioneManuale = await assicuraValutazioneManualeAdottato(programma, valutazioneProgramma, campagna.materia, modello);
+
+      msg.innerHTML = '<span class="spinner"></span>3/3 — confronto con le opzioni di catalogo...';
+      const candidati = await candidatiPerCampagna(campagna, programma);
+      let opzioniCatalogo;
+      if (candidati.length === 0) {
+        // tutti i candidati di questa campagna sono gia' citati dal docente (principale o
+        // alternativo) per questo programma: nessuna opzione indipendente da proporre
+        opzioniCatalogo = [];
+      } else if (!valutazioneManuale.moduli.length && !valutazioneManuale.gap.length && !valutazioneManuale.punti_forza.length && !valutazioneManuale.opportunita_upgrade) {
+        // solo qui non ha senso chiamare l'IA: il manuale adottato non e' nemmeno
+        // identificabile (nessun titolo nel testo), quindi non c'e' niente da confrontare —
+        // MAI saltare la chiamata solo perche' "gap" e' vuoto: puo' essere vuoto anche
+        // quando il manuale ha problemi reali che la sintesi descrive ma i moduli del
+        // framework non catturano (bug trovato da Sergio: analisi contraddittoria, "lacune
+        // significative" nella sintesi ma "nessun gap da risolvere" per ogni opzione)
+        opzioniCatalogo = candidati.map(c => ({ titolo: c.titolo, autore: c.autore || null, copertura_gap: null, vantaggi: [], sintesi: 'Manuale adottato non verificabile: nessun gap da confrontare.' }));
+      } else {
+        const risultato = await chiamaOpenAIJson(costruisciPromptOpzioniCatalogo(valutazioneManuale, candidati), modello, 1500);
+        // l'autore non viene richiesto all'IA (basta che riconosca il titolo esatto tra i
+        // candidati forniti): lo si recupera qui dalla lista candidati gia' nota, invece di
+        // fidarsi che l'IA lo ripeta identico — molti manuali hanno titoli quasi identici e
+        // senza autore in tabella l'utente non può distinguerli (segnalato da Sergio)
+        opzioniCatalogo = (Array.isArray(risultato.opzioni) ? risultato.opzioni : []).map(o => {
+          const candidato = candidati.find(c => c.titolo.toLowerCase().trim() === (o.titolo || '').toLowerCase().trim());
+          return { ...o, autore: candidato ? candidato.autore || null : null };
+        });
+      }
+
+      const { error } = await supabaseClient.from('campagna_target').update({ opzioni_catalogo: opzioniCatalogo }).eq('id', targetId);
+      if (error) throw new Error(error.message);
+      const unici = [...new Set(avvisiTaglio)];
+      msg.textContent = unici.length
+        ? `Analisi generata. Attenzione: troncati per lunghezza — ${unici.join('; ')}.`
+        : 'Analisi generata.';
+      if (unici.length) msg.className = 'errore';
+      await apriCampagna(campagnaApertaId);
+      mostraMotivazione(targetId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  // La motivazione e l'email non hanno più un box condiviso sotto la tabella (dove
+  // l'una sovrascriveva l'altra): vivono insieme nel drawer della riga. Queste due
+  // funzioni restano come punto di aggancio per il codice che le chiamava.
+  function mostraMotivazione(targetId) { aggiornaDrawer(targetId); }
+  window.mostraMotivazione = mostraMotivazione;
+
+  // ogni scenario ha sia il tono (usato subito nel prompt) sia l'obiettivo di fondo del
+  // contatto: prima il paragrafo "obiettivo" era unico per tutti gli scenari e parlava
+  // sempre di "proporsi come interlocutori per una soluzione" ai gap — corretto per lo
+  // scenario 'alternativo' (upgrade), ma per 'principale' produceva mail che sembravano un
+  // invito a cambiare libro invece di un check-in di fidelizzazione (bug trovato da Sergio)
+  function bloccoScenarioEmail(scenario) {
+    if (scenario === 'principale') return {
+      tono: 'Il docente adotta già un manuale dell\'editore proprio: scrivi una mail di AGGIORNAMENTO/FIDELIZZAZIONE, presentando il volume come novità di catalogo, tono collaborativo.',
+      obiettivo: 'L\'obiettivo primario è verificare la soddisfazione del docente per il testo che adotta già (nostro) e mantenere il rapporto — MAI un invito a cambiarlo, mai un\'accusa sulle scelte fatte finora. Un gap concreto, se emerge, va accennato con leggerezza come spunto facoltativo, presentando l\'eventuale alternativa come un titolo complementare o di aggiornamento da valutare con calma, non come una sostituzione necessaria. Se non ci sono gap significativi (copertura_gap "bassa" o assente), l\'email deve essere quasi interamente di check-in/fidelizzazione, senza proporre alcuna alternativa.',
+      // esempio validato da Sergio (correzione a mano dell'output IA originale, che sbagliava
+      // il tono nonostante l'istruzione "obiettivo" sopra): un esempio concreto ancora il tono
+      // in modo piu' affidabile di sola descrizione astratta — stesso principio gia' seguito
+      // altrove nel progetto (vedi feedback_iterazione_atlante_confronto)
+      esempio: `Gentile Prof. [NOME],
+
+spero che il testo di [AUTORE E TITOLO DEL MANUALE ADOTTATO] che sta attualmente adottando sia soddisfacente per le esigenze del suo insegnamento per la laurea in [CORSO DI LAUREA]. Approfitto per informarla che abbiamo recentemente pubblicato un nuovo volume, "[TITOLO NUOVO VOLUME]" di [AUTORE], che affronta in modo dettagliato temi come [TEMI RILEVANTI], colmando alcune potenziali lacune del volume di [AUTORE DEL VOLUME ADOTTATO].
+
+Condivido con lei un'anteprima del volume, disponibile qui: [LINK_ANTEPRIMA], in modo che possa farsi un'idea dei contenuti e naturalmente resto a sua disposizione per un confronto sulle sue impressioni riguardo al manuale adottato.`,
+    };
+    if (scenario === 'alternativo') return {
+      tono: 'Il docente ha un manuale dell\'editore proprio solo come alternativo: scrivi una mail di PROPOSTA DI UPGRADE a testo principale.',
+      obiettivo: 'L\'obiettivo è far capire al destinatario che abbiamo letto con attenzione il suo programma, valutato il manuale che adotta, e ci proponiamo come interlocutori per una possibile soluzione — non un\'offerta generica. Se la copertura_gap della migliore opzione è "bassa" o non ci sono gap significativi, NON forzare un\'opportunità che non c\'è: scrivi un\'email più esplorativa/di ascolto invece di una proposta diretta.',
+    };
+    return {
+      tono: 'Il docente non adotta alcun manuale dell\'editore proprio: scrivi una mail di PRIMO CONTATTO/CONQUISTA, apertura a una conversazione, non un\'offerta diretta.',
+      obiettivo: 'L\'obiettivo è far capire al destinatario che il suo programma è stato letto con attenzione e proporsi come interlocutori per un possibile confronto futuro — non un\'offerta diretta. Se la copertura_gap della migliore opzione è "bassa" o non ci sono gap significativi, scrivi un\'email esplorativa, di apertura al dialogo, senza forzare alcuna proposta concreta.',
+    };
+  }
+
+  async function generaEmailTarget(targetId) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    const campagna = campagneList.find(c => c.id === campagnaApertaId);
+    const { modello } = leggiModelloScelto();
+    const msg = document.getElementById('msgTarget');
+    if (!t.opzioni_catalogo) { msg.className = 'errore'; msg.textContent = 'Genera prima l\'analisi.'; return; }
+    msg.className = ''; msg.innerHTML = '<span class="spinner"></span>Generazione email...';
+    try {
+      const vm = t.programmi.valutazione_manuale_adottato;
+      const blocco = bloccoScenarioEmail(t.programmi.scenario_editore_proprio);
+      const manualePrincipaleCitato = (t.programmi.manuali_citati || []).find(m => m.ruolo === 'principale');
+      const prompt = `Sei un copywriter editoriale che scrive email per un promotore universitario.
+
+DESTINATARIO: ${t.programmi.docente_nome || 'Docente'} — corso di ${t.programmi.materia_inferita || 'materia n/d'} per il corso di laurea in ${t.programmi.corso_laurea || 'corso n/d'} (${t.programmi.ateneo || 'ateneo n/d'})
+${blocco.tono}
+
+APERTURA: ${bloccoAperturaEmail(t.programmi.relazione_docente_manuale)}
+
+TONO: diretto e rispettoso, MAI burocratico. Evita formule come "mi permetto di contattarLa", "ho avuto modo di esaminare con attenzione", "colgo l'occasione per" o qualunque apertura che giri intorno al punto invece di andarci dritta.
+
+ANALISI GIA' FATTA (usala per costruire UN argomento concreto, non un elenco — traduci sempre il contenuto tecnico nel beneficio pratico che ne deriva per il docente o per gli studenti, mai il solo argomento coperto lasciato lì):
+- Manuale adottato (dato reale: usalo per sostituire ogni riferimento al libro attuale, non lasciarlo come placeholder tra parentesi): ${manualePrincipaleCitato ? `"${manualePrincipaleCitato.titolo}"${manualePrincipaleCitato.autore ? ' di ' + manualePrincipaleCitato.autore : ''}` : 'non specificato nel programma — non nominarlo per titolo, riferiscilo genericamente come "il testo che adotta"'}
+- Gap del manuale attuale rispetto a questo programma: ${JSON.stringify((vm && vm.gap) || [])}
+- Opzioni di catalogo che meglio li risolverebbero (già ordinate dalla migliore): ${JSON.stringify((t.opzioni_catalogo || []).slice(0, 2))}
+
+Non esiste un syllabus nazionale condiviso per gli insegnamenti universitari: un argomento assente o poco approfondito nel manuale adottato non è necessariamente un errore, può essere una scelta didattica consapevole del docente. Per questo il limite va nominato con chiarezza (mai in modo vago o generico — cita l'argomento specifico), ma mai come un'accusa o una correzione: presentalo come un'osservazione, un'opportunità da valutare.
+
+${blocco.obiettivo}
+${blocco.esempio ? `\nESEMPIO DI TONO E STRUTTURA DA IMITARE (adatta ai dati reali del destinatario, non copiare i placeholder così come sono):\n"""\n${blocco.esempio}\n"""` : ''}
+
+Un docente che valuta un manuale pesa tre rischi diversi, non solo uno: di PRESTAZIONI (i contenuti coprono davvero il programma? — è l'unico che l'analisi sopra copre), SOCIALE (che ne pensano gli studenti e i colleghi se lo adotta?) e di IMMAGINE DI SÉ (che effetto ha sulla propria reputazione professionale?). Oltre ai contenuti, l'email deve rassicurare — con misura, in una frase, mai come argomento centrale — anche sugli altri due: fai leva sulla serietà/tradizione dell'editore o sulla cura con cui è stato pensato il volume, MAI su numeri, adozioni in altri atenei o riconoscimenti specifici che non ti sono stati forniti sopra — se non hai un dato reale da citare, ometti il riferimento invece di inventarlo.
+
+Lascia SOLO il placeholder [LINK_ANTEPRIMA] non compilato (lo completerà il promotore a mano). Ogni altro dato di cui disponi sopra (corso di laurea, manuale adottato, nome del docente) va scritto per esteso nel testo — mai lasciato come segnaposto tra parentesi quadre. Se un dato non è disponibile, riformula la frase per non doverlo nominare, non inventarlo e non lasciare il placeholder.
+Massimo 150 parole nel corpo.
+
+Rispondi SOLO con un oggetto JSON: {"oggetto":"", "corpo":""}
+Nessun testo fuori dal JSON.`;
+      const risultato = await chiamaOpenAIJson(prompt, modello, 700);
+      const { error } = await supabaseClient.from('campagna_target')
+        .update({ email_oggetto: risultato.oggetto, email_corpo: risultato.corpo }).eq('id', targetId);
+      if (error) throw new Error(error.message);
+      msg.textContent = 'Email generata.';
+      await apriCampagna(campagnaApertaId);
+      mostraEmail(targetId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  function mostraEmail(targetId) { aggiornaDrawer(targetId); }
+  window.mostraEmail = mostraEmail;
+
+  // ================= AVVIO =================
+  async function aggiornaSaldoCrediti() {
+    const el = document.getElementById('saldoCrediti');
+    if (!el || !sessioneAttuale) return;
+    const { data } = await supabaseClient.from('clienti').select('crediti_residui').eq('id', sessioneAttuale.profilo.cliente_id).maybeSingle();
+    if (data) el.textContent = `Crediti residui del tuo cliente: ${data.crediti_residui}`;
+  }
+
+  async function main() {
+    const statoIniziale = document.getElementById('stato-iniziale');
+    const sessione = await avviaSessione(supabaseClient, { redirect: false });
+    if (!sessione) { statoIniziale.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>'; return; }
+    if (!sessione.profilo) { statoIniziale.innerHTML = bloccoSenzaProfilo(sessione.session.user.email); return; }
+
+    popolaSidebar(sessione, supabaseClient);
+    sessioneAttuale = sessione;
+    userId = sessione.session.user.id;
+    clienteId = sessione.profilo.cliente_id;
+    editoreProprio = sessione.profilo.clienti.editore_proprio;
+
+    if (!sessione.profilo.clienti.piano_promozione_incluso) {
+      statoIniziale.innerHTML = `<div class="empty">
+        <h4>Voce non inclusa nel tuo piano</h4>
+        <p>Il tuo abbonamento non include "Piano di promozione". Contatta l'amministratore per estendere l'accesso.</p>
+      </div>`;
+      return;
+    }
+
+    const [{ data: manuali }, { data: framework }] = await Promise.all([
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia'),
+      supabaseClient.from('framework').select('id, nome, materia'),
+    ]);
+    tuttiManuali = manuali || [];
+    tuttiFramework = framework || [];
+
+    statoIniziale.hidden = true;
+    document.getElementById('contenuto').hidden = false;
+    aggiornaSaldoCrediti();
+
+    // pipeline cliccabile
+    document.querySelectorAll('.pipe-step[data-tab]').forEach(b =>
+      b.addEventListener('click', () => mostraTab(b.dataset.tab)));
+
+    // form "nuova campagna": chiuso finché non serve
+    const boxNuova = document.getElementById('boxNuovaCampagna');
+    document.getElementById('btnNuovaCampagna').addEventListener('click', () => {
+      boxNuova.hidden = false;
+      boxNuova.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document.getElementById('cMateria').focus();
+    });
+    document.getElementById('btnAnnullaCampagna').addEventListener('click', () => { boxNuova.hidden = true; });
+
+    for (const id of ['campCerca', 'campFiltroMateria', 'campFiltroStato', 'campFiltroModalita']) {
+      document.getElementById(id).addEventListener('input', renderListaCampagne);
+      document.getElementById(id).addEventListener('change', renderListaCampagne);
+    }
+
+    await caricaStaging();
+    await caricaDatabase();
+    await caricaCampagne();
+    aggiornaContatoriPipeline();
+  }
+
+  main();
+</script>
+</body>
+</html>

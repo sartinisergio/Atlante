@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — utenti</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+    --voce-corrente-soft: var(--voce-utilita-soft);
+    --voce-corrente-ink: var(--voce-utilita-ink);
+  }
+
+  .invita-box {
+    padding: 18px 22px; margin-bottom: 24px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  }
+  .invita-box h3 { margin: 0 0 12px; font-size: 15px; }
+  .invita-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .invita-row .campo { margin-bottom: 0; min-width: 220px; flex: 1; }
+  .invita-row .campo.ruolo { min-width: 140px; flex: none; }
+  .invita-msg { margin-top: 12px; }
+
+  table.data td .nome { font-weight: 500; color: var(--ink); }
+  table.data td .email { color: var(--ink-muted); font-size: 12px; }
+</style>
+</head>
+<body class="a-shell">
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb">
+    <a href="home.html">Atlante</a><span class="sep">›</span>
+    <span id="crumb-cliente">—</span><span class="sep">›</span>
+    <span>Utenti</span>
+  </div>
+
+  <h1 class="page">Utenti<em>.</em></h1>
+  <p class="subtitle">Chi ha accesso ad Atlante per il tuo cliente. Invita un collega via email,
+    assegna il ruolo di gestore o promotore, rimuovi chi non deve più avere accesso — l'interruzione
+    è immediata anche se quella persona è già collegata.</p>
+
+  <div id="stato-iniziale" class="vuoto">Caricamento…</div>
+
+  <div id="contenuto" hidden>
+
+    <div class="invita-box">
+      <h3>Invita un collega</h3>
+      <div class="invita-row">
+        <div class="campo">
+          <label for="invEmail">Email</label>
+          <input class="field" id="invEmail" type="email" placeholder="collega@editore.it" />
+        </div>
+        <div class="campo ruolo">
+          <label for="invRuolo">Ruolo</label>
+          <select class="field" id="invRuolo">
+            <option value="promotore" selected>promotore</option>
+            <option value="gestore">gestore</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnInvita">＋ Invita</button>
+      </div>
+      <div class="invita-msg" id="invMsg"></div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th style="width:14%">Ruolo</th>
+            <th style="width:14%">Stato</th>
+            <th class="right" style="width:18%">Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabella"></tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:32px">Consumo crediti per persona</h3>
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Persona</th>
+            <th style="width:16%">Crediti consumati</th>
+            <th style="width:16%">Chiamate</th>
+            <th>Ripartizione per voce</th>
+          </tr>
+        </thead>
+        <tbody id="corpoConsumo"></tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script src="js/shell.js" data-attiva="utenti"></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/invita-utente`;
+
+  let mioId = null;
+  let profili = [];
+
+  const STATO_CLASSE = { attivo: 's-pres', pending: 's-parz', rimosso: 's-ass' };
+  const STATO_LABEL = { attivo: 'attivo', pending: 'in attesa', rimosso: 'rimosso' };
+
+  function badgeStatoProfilo(stato) {
+    const classe = STATO_CLASSE[stato] || 's-idle';
+    return `<span class="status ${classe}">${STATO_LABEL[stato] || stato}</span>`;
+  }
+
+  function badgeRuolo(ruolo) {
+    return `<span class="badge ${ruolo === 'gestore' ? 'b-proprio' : 'b-competitor'}">${ruolo}</span>`;
+  }
+
+  function nomeVisualizzato(p) {
+    return p.nome_completo || (p.email ? p.email.split('@')[0] : '—');
+  }
+
+  function rigaHtml(p) {
+    const rimosso = p.stato === 'rimosso';
+    const azioni = rimosso
+      ? `<span style="color:var(--ink-muted); font-size:12px">rimosso il ${new Date(p.rimosso_il).toLocaleDateString('it-IT')}</span>`
+      : `<div class="row-actions">
+          <button type="button" class="m-btn" data-ruolo="${p.ruolo === 'gestore' ? 'promotore' : 'gestore'}" data-id="${p.id}">
+            ${p.ruolo === 'gestore' ? 'Rendi promotore' : 'Rendi gestore'}
+          </button>
+          <button type="button" class="m-btn pericolo" data-rimuovi="${p.id}">Rimuovi</button>
+        </div>`;
+    return `<tr>
+      <td><span class="nome">${escapeHtml(nomeVisualizzato(p))}</span><br><span class="email">${escapeHtml(p.email || '—')}</span></td>
+      <td>${badgeRuolo(p.ruolo)}</td>
+      <td>${badgeStatoProfilo(p.stato)}</td>
+      <td class="right">${azioni}</td>
+    </tr>`;
+  }
+
+  function renderTabella() {
+    document.getElementById('corpoTabella').innerHTML = profili.map(rigaHtml).join('');
+  }
+
+  async function ricaricaProfili() {
+    const { data, error } = await supabaseClient
+      .from('profili')
+      .select('id, nome_completo, email, ruolo, stato, rimosso_il, created_at')
+      .order('created_at');
+    if (error) {
+      document.getElementById('invMsg').innerHTML =
+        `<div class="helper errore"><span class="ic">!</span><div>Errore nel caricamento dell'elenco: ${escapeHtml(error.message)}</div></div>`;
+      return;
+    }
+    profili = data || [];
+    renderTabella();
+  }
+
+  async function invita() {
+    const emailInput = document.getElementById('invEmail');
+    const ruoloSelect = document.getElementById('invRuolo');
+    const msg = document.getElementById('invMsg');
+    const btn = document.getElementById('btnInvita');
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    btn.disabled = true;
+    msg.innerHTML = '';
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      const resp = await fetch(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          ruolo: ruoloSelect.value,
+          // Relativo alla pagina corrente, non all'origin: funziona sia se Atlante gira
+          // sulla radice del server (es. scripts/dev-server.mjs) sia sotto una sottocartella
+          // (es. Live Server aperto sulla radice del repo, /app/utenti.html).
+          redirectTo: new URL('login.html', window.location.href).href,
+        }),
+      });
+      const body = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        msg.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>${escapeHtml(body.error || 'Invito non riuscito.')}</div></div>`;
+        return;
+      }
+      msg.innerHTML = `<div class="helper ok"><span class="ic">✓</span><div>Invito inviato a <strong>${escapeHtml(email)}</strong>.</div></div>`;
+      emailInput.value = '';
+      ruoloSelect.value = 'promotore';
+      await ricaricaProfili();
+    } catch (err) {
+      msg.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>Errore di rete: ${escapeHtml(err.message)}</div></div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function cambiaRuolo(id, nuovoRuolo) {
+    const { error } = await supabaseClient.from('profili').update({ ruolo: nuovoRuolo }).eq('id', id);
+    if (error) {
+      document.getElementById('invMsg').innerHTML =
+        `<div class="helper errore"><span class="ic">!</span><div>Errore: ${escapeHtml(error.message)}</div></div>`;
+      return;
+    }
+    await ricaricaProfili();
+  }
+
+  async function rimuovi(id) {
+    const persona = profili.find(p => p.id === id);
+    if (!confirm(`Rimuovere l'accesso di ${persona ? nomeVisualizzato(persona) : 'questa persona'}? Potrai sempre ricostruire lo storico, ma l'accesso si interrompe subito.`)) return;
+    const { error } = await supabaseClient
+      .from('profili')
+      .update({ stato: 'rimosso', rimosso_il: new Date().toISOString() })
+      .eq('id', id);
+    if (error) {
+      document.getElementById('invMsg').innerHTML =
+        `<div class="helper errore"><span class="ic">!</span><div>Errore: ${escapeHtml(error.message)}</div></div>`;
+      return;
+    }
+    await ricaricaProfili();
+  }
+
+  document.getElementById('corpoTabella').addEventListener('click', (e) => {
+    const ruoloBtn = e.target.closest('[data-ruolo]');
+    if (ruoloBtn) { cambiaRuolo(ruoloBtn.dataset.id, ruoloBtn.dataset.ruolo); return; }
+    const rimuoviBtn = e.target.closest('[data-rimuovi]');
+    if (rimuoviBtn) { rimuovi(rimuoviBtn.dataset.rimuovi); }
+  });
+
+  document.getElementById('btnInvita').addEventListener('click', invita);
+
+  const NOME_VOCE = { confronto: 'Confronto manuali', analisi: 'Analisi di un programma', piano: 'Piano di promozione' };
+
+  async function caricaConsumo() {
+    const corpo = document.getElementById('corpoConsumo');
+    const { data, error } = await supabaseClient.from('consumo_log').select('profilo_id, voce, crediti');
+    if (error) {
+      corpo.innerHTML = `<tr><td colspan="4">Errore nel caricamento del consumo: ${escapeHtml(error.message)}</td></tr>`;
+      return;
+    }
+    if (!data || data.length === 0) {
+      corpo.innerHTML = `<tr><td colspan="4"><span class="empty-hint" style="color:var(--ink-muted)">Nessun consumo registrato finora.</span></td></tr>`;
+      return;
+    }
+
+    const perPersona = {}; // profilo_id -> { crediti, chiamate, perVoce: { voce: crediti } }
+    for (const riga of data) {
+      const id = riga.profilo_id || 'sconosciuto';
+      if (!perPersona[id]) perPersona[id] = { crediti: 0, chiamate: 0, perVoce: {} };
+      perPersona[id].crediti += riga.crediti;
+      perPersona[id].chiamate += 1;
+      perPersona[id].perVoce[riga.voce] = (perPersona[id].perVoce[riga.voce] || 0) + riga.crediti;
+    }
+
+    const righe = Object.keys(perPersona)
+      .sort((a, b) => perPersona[b].crediti - perPersona[a].crediti)
+      .map(id => {
+        const p = profili.find(x => x.id === id);
+        const nome = p ? nomeVisualizzato(p) : 'Profilo rimosso';
+        const info = perPersona[id];
+        const ripartizione = Object.keys(info.perVoce)
+          .map(v => `${NOME_VOCE[v] || v}: ${info.perVoce[v]}`)
+          .join(' · ');
+        return `<tr>
+          <td>${escapeHtml(nome)}</td>
+          <td>${info.crediti}</td>
+          <td>${info.chiamate}</td>
+          <td><span style="color:var(--ink-muted); font-size:12.5px">${escapeHtml(ripartizione)}</span></td>
+        </tr>`;
+      });
+    corpo.innerHTML = righe.join('');
+  }
+
+  async function main() {
+    const statoIniziale = document.getElementById('stato-iniziale');
+    const sessione = await avviaSessione(supabaseClient, { redirect: false });
+    if (!sessione) { statoIniziale.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>'; return; }
+    if (!sessione.profilo) { statoIniziale.innerHTML = bloccoSenzaProfilo(sessione.session.user.email); return; }
+
+    popolaSidebar(sessione, supabaseClient);
+    mioId = sessione.session.user.id;
+
+    if (sessione.profilo.ruolo !== 'gestore') {
+      statoIniziale.innerHTML = `<div class="empty">
+        <h4>Pannello riservato al gestore</h4>
+        <p>Solo chi ha ruolo di gestore può invitare, promuovere o rimuovere un collega. Se ti serve
+        un accesso di questo tipo, chiedi al gestore del tuo cliente.</p>
+      </div>`;
+      return;
+    }
+
+    await ricaricaProfili();
+    statoIniziale.hidden = true;
+    document.getElementById('contenuto').hidden = false;
+    caricaConsumo();
+  }
+
+  main();
+</script>
+</body>
+</html>

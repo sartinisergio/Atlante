@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>A · Offerta formativa — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-offerta);
+    --v-soft: var(--voce-offerta-soft);
+    --v-ink: var(--voce-offerta-ink);
+    --voce-corrente-soft: var(--voce-offerta-soft);
+    --voce-corrente-ink: var(--voce-offerta-ink);
+  }
+
+  /* Tab segmented */
+  .tabs {
+    display: inline-flex; gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px; margin-bottom: 20px;
+  }
+  .tabs button {
+    border: none; background: transparent; padding: 8px 16px;
+    font-size: 13px; font-weight: 500; color: var(--ink-muted); cursor: pointer;
+    border-radius: 7px; display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.on { background: var(--v); color: #fff; }
+  .tabs button .n { font-size: 11px; opacity: 0.7; }
+  .tabs button.on .n { opacity: 0.9; }
+
+  /* Filter card */
+  .filter-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 18px 20px; margin-bottom: 16px;
+    box-shadow: var(--sh-1);
+  }
+  .filter-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .filter-head h2 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 15px; margin: 0; letter-spacing: -0.01em;
+  }
+  .filter-head .aux { font-size: 12px; color: var(--ink-muted); }
+  .filter-head .aux a { color: var(--v); text-decoration: none; margin-left: 12px; font-weight: 500; }
+
+  .filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .filter-grid label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint); margin-bottom: 4px;
+  }
+  .field.multi {
+    min-height: 34px;
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--v-soft); color: var(--v-ink);
+    padding: 2px 6px 2px 8px; border-radius: 4px;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .chip button { border: none; background: transparent; color: var(--v-ink); cursor: pointer; font-size: 12px; padding: 0 2px; opacity: 0.6; }
+  .chip button:hover { opacity: 1; }
+
+  .filter-more {
+    margin-top: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .filter-more .link {
+    font-size: 12px; color: var(--v); cursor: pointer; font-weight: 500;
+    background: none; border: none; font-family: inherit;
+  }
+  .filter-more .check {
+    font-size: 12.5px; color: var(--ink-muted);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .filter-actions {
+    margin-top: 14px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding-top: 14px; border-top: 1px solid var(--line-soft);
+  }
+
+  /* Saved search pill */
+  .saved {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 8px 5px 12px;
+    background: var(--paper-warm); border: 1px solid var(--line);
+    border-radius: 20px; font-size: 12px; color: var(--ink); cursor: pointer;
+  }
+  .saved .lab { color: var(--ink-muted); font-size: 11px; }
+  .saved .name { font-weight: 600; }
+  .saved .caret { color: var(--ink-faint); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 18px 4px 12px; gap: 16px; flex-wrap: wrap;
+  }
+  .stats-row .count {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 22px; color: var(--ink); letter-spacing: -0.01em;
+  }
+  .stats-row .count b { color: var(--v); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .stats-row .count small { font-size: 13px; color: var(--ink-muted); font-family: var(--font-sans); margin-left: 8px; }
+  .stats-row .actions { display: flex; gap: 6px; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-1);
+  }
+  table.data {
+    width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px;
+  }
+  table.data thead th {
+    text-align: left; padding: 12px 14px;
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+  }
+  table.data tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top; color: var(--ink);
+  }
+  table.data tbody tr:last-child td { border-bottom: none; }
+  table.data tbody tr { transition: background .1s; }
+  table.data tbody tr:hover { background: color-mix(in srgb, var(--v-soft) 40%, transparent); }
+  table.data tbody tr:hover .row-actions { opacity: 1; }
+  table.data td .doc { color: var(--ink); font-weight: 500; }
+  table.data td .sub { color: var(--ink-muted); font-size: 12px; margin-top: 1px; }
+  table.data td.right { text-align: right; }
+  table.data td .cfu {
+    font-family: var(--font-mono); font-weight: 500;
+    font-size: 12px; color: var(--ink-2);
+  }
+
+  .row-actions {
+    opacity: 0; transition: opacity .1s;
+    display: flex; gap: 4px; justify-content: flex-end;
+  }
+  .row-actions button {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 3px 8px;
+    font-size: 11px; color: var(--ink-2); cursor: pointer;
+    font-family: inherit;
+  }
+  .row-actions button:hover { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+
+  .tfoot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: var(--paper-warm);
+    border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-muted);
+  }
+  .tfoot .pager { display: flex; gap: 4px; }
+  .tfoot .pager button {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 3px 8px; font-size: 11.5px;
+    color: var(--ink-2); cursor: pointer; min-width: 26px;
+    font-family: inherit;
+  }
+  .tfoot .pager button.on { background: var(--v); color: #fff; border-color: var(--v); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb"><a href="A-home.html">Atlante</a><span class="sep">›</span><a href="#">Zanichelli</a><span class="sep">›</span><span>Offerta formativa</span></div>
+
+  <h1 class="page">Offerta formativa<em>.</em></h1>
+  <p class="subtitle">Ricerca tra <strong>223.481</strong> insegnamenti e <strong>4.702</strong> corsi di laurea di tutti gli atenei italiani. I filtri si combinano fra loro; puoi salvare la combinazione come una ricerca personale.</p>
+
+  <div class="tabs" role="tablist">
+    <button class="on" role="tab">Insegnamenti <span class="n">223.481</span></button>
+    <button role="tab">Lauree <span class="n">4.702</span></button>
+    <button role="tab">Vista ateneo <span class="n">98</span></button>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-head">
+      <h2>Filtri</h2>
+      <div class="aux">
+        <span class="saved">
+          <span class="lab">Ricerca salvata ·</span>
+          <span class="name">Farmacologia Nord-Ovest</span>
+          <span class="caret">▾</span>
+        </span>
+        <a href="#">Salva combinazione</a>
+      </div>
+    </div>
+
+    <div class="filter-grid">
+      <div>
+        <label>Ateneo</label>
+        <div class="field multi">
+          <span class="chip">Torino <button>×</button></span>
+          <span class="chip">Milano Statale <button>×</button></span>
+          <span style="color: var(--ink-faint); font-size: 12px;">+ aggiungi</span>
+        </div>
+      </div>
+      <div>
+        <label>Tipologia</label>
+        <div class="field multi">
+          <span class="chip">Magistrale c.u. <button>×</button></span>
+          <span style="color: var(--ink-faint); font-size: 12px;">+ aggiungi</span>
+        </div>
+      </div>
+      <div>
+        <label>Classe di laurea</label>
+        <select class="field"><option>LM-13 Farmacia e Farmacia industriale</option></select>
+      </div>
+      <div>
+        <label>SSD (nuovo)</label>
+        <select class="field"><option>Tutte</option></select>
+      </div>
+      <div>
+        <label>Anno di corso</label>
+        <select class="field"><option>3° e 4° anno</option></select>
+      </div>
+      <div>
+        <label>Insegnamento (testo)</label>
+        <input class="field" placeholder="es. Farmacologia clinica…" />
+      </div>
+      <div>
+        <label>Docente (testo)</label>
+        <input class="field" placeholder="es. Rossi…" />
+      </div>
+      <div>
+        <label>Lingua</label>
+        <select class="field"><option>Tutte</option></select>
+      </div>
+    </div>
+
+    <div class="filter-more">
+      <button class="link">+ Altri filtri (regione, zona)</button>
+      <label class="check"><input type="checkbox" /> Mostra insegnamenti disattivati</label>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn btn-primary">Cerca</button>
+      <button class="btn btn-ghost">↺ Reset</button>
+      <button class="btn btn-quiet">Export Excel</button>
+      <button class="btn btn-quiet">Raggruppa per denominazione</button>
+    </div>
+  </div>
+
+  <div class="helper">
+    <span class="ic">i</span>
+    <div>Le correzioni che fai su un insegnamento (modifica, disattiva, aggiunta) restano nel tuo browser. Condividile con i colleghi da <a href="#">Export delta</a> in alto a destra.</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="count"><b>127</b> insegnamenti trovati <small>su 223.481 totali · 34 atenei · 3 classi di laurea</small></div>
+    <div class="actions">
+      <button class="btn btn-ghost">＋ Nuovo insegnamento</button>
+      <button class="btn btn-ghost">Vista ateneo →</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data" aria-label="Insegnamenti filtrati">
+      <thead>
+        <tr>
+          <th style="width: 30%">Insegnamento</th>
+          <th style="width: 22%">Docente</th>
+          <th>Ateneo · Corso</th>
+          <th style="width: 8%">Anno</th>
+          <th style="width: 6%; text-align:right">CFU</th>
+          <th style="width: 14%; text-align:right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="doc">Farmacologia clinica</span><div class="sub">BIO/14 nuovo · Italiano</div></td>
+          <td>Bianchi M.<div class="sub">M.Bianchi@unito.it</div></td>
+          <td>Torino<div class="sub"><span class="badge b-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+          <td>4°</td>
+          <td class="right"><span class="cfu">9</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia e Farmacoterapia</span><div class="sub">BIO/14 · Italiano · Semestre I</div></td>
+          <td>Rossi G.<div class="sub">g.rossi@unimi.it</div></td>
+          <td>Milano Statale<div class="sub"><span class="badge b-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+          <td>3°</td>
+          <td class="right"><span class="cfu">10</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia generale e molecolare</span><div class="sub">BIO/14 · Italiano</div></td>
+          <td>Verdi P.<div class="sub">p.verdi@unige.it</div></td>
+          <td>Genova<div class="sub"><span class="badge b-cu">Mag c.u.</span> CTF LM-13</div></td>
+          <td>3°</td>
+          <td class="right"><span class="cfu">8</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia speciale</span><div class="sub">BIO/14 · Italiano · Semestre II</div></td>
+          <td>Colombo A.<div class="sub">a.colombo@unipv.it</div></td>
+          <td>Pavia<div class="sub"><span class="badge b-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+          <td>4°</td>
+          <td class="right"><span class="cfu">6</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia I</span><div class="sub">BIO/14 · Italiano</div></td>
+          <td>Ferrari S.<div class="sub">s.ferrari@unibo.it</div></td>
+          <td>Bologna<div class="sub"><span class="badge b-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+          <td>3°</td>
+          <td class="right"><span class="cfu">7</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia II</span><div class="sub">BIO/14 · Italiano</div></td>
+          <td>Ferrari S.<div class="sub">s.ferrari@unibo.it</div></td>
+          <td>Bologna<div class="sub"><span class="badge b-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+          <td>4°</td>
+          <td class="right"><span class="cfu">7</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Chemioterapia</span><div class="sub">BIO/14 · Italiano · opzionale</div></td>
+          <td>Marchetti F.<div class="sub">f.marchetti@unipd.it</div></td>
+          <td>Padova<div class="sub"><span class="badge b-mag">Mag</span> Biotecnologie mediche LM-9</div></td>
+          <td>2°</td>
+          <td class="right"><span class="cfu">4</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia cellulare</span><div class="sub">BIO/14 · Inglese · Semestre I</div></td>
+          <td>Greco L.<div class="sub">l.greco@unifi.it</div></td>
+          <td>Firenze<div class="sub"><span class="badge b-mag">Mag</span> Biotecnologie mediche LM-9</div></td>
+          <td>1°</td>
+          <td class="right"><span class="cfu">6</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td><span class="doc">Farmacologia clinica e Tossicologia</span><div class="sub">BIO/14 + MED/09 · Italiano</div></td>
+          <td>De Luca R.<div class="sub">r.deluca@unina.it</div></td>
+          <td>Napoli Federico II<div class="sub"><span class="badge b-cu">Mag c.u.</span> Medicina LM-41</div></td>
+          <td>4°</td>
+          <td class="right"><span class="cfu">8</span></td>
+          <td class="right"><div class="row-actions"><button>Piano</button><button>✎</button><button>⋯</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tfoot">
+      <span>Mostrati 1–9 di 127 · aggiornato 3 giorni fa</span>
+      <div class="pager">
+        <button>‹</button>
+        <button class="on">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>…</button>
+        <button>15</button>
+        <button>›</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="shell.js" data-attiva="offerta"></script>
+</body>
+</html>

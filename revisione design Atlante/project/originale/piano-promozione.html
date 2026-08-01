@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — piano di promozione</title>
+<link rel="stylesheet" href="css/atlante-theme.css" />
+<style>
+  html { background: color-mix(in srgb, var(--paper) 80%, var(--voce-piano-tint) 20%); }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 40px auto; padding: 0 20px; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, var(--voce-piano-tint) 20%); }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 21px; margin-bottom: 4px; }
+  #chi { font-size: 13px; color: var(--ink-muted); margin-bottom: 8px; }
+  #chi a { color: var(--voce-piano); }
+  nav { font-size: 13px; margin-bottom: 24px; }
+  nav a { color: var(--voce-piano); }
+  h2 { font-size: 15px; margin: 30px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  select, input[type=text], input[type=password], input[type=email] { padding: 8px; font-size: 14px; width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .campo { margin: 16px 0; max-width: 480px; }
+  .riga2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 700px; }
+  .db-card { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
+  .db-card .riga-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+  .db-card .info span { display: block; font-size: 12.5px; color: var(--ink-muted); margin-top: 2px; }
+  .radio-riga { display: flex; gap: 20px; font-size: 14px; }
+  .radio-riga label { display: flex; align-items: center; gap: 6px; font-weight: normal; }
+  .elenco-manuali { border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px; }
+  .riga-manuale { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .riga-manuale:last-child { border-bottom: none; }
+  .riga-manuale .principale { flex: 1; }
+  .riga-manuale .principale small { color: var(--ink-muted); }
+  .campo label { display: block; font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; }
+  .aiuto { font-size: 13px; color: var(--ink-muted); }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+  .tab-btn { padding: 8px 16px; font-size: 14px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px 8px 0 0; cursor: pointer; color: var(--ink-muted); }
+  .tab-btn.active { background: var(--surface); border-bottom-color: var(--surface); color: var(--ink); font-weight: 600; }
+
+  .upload { margin-bottom: 12px; }
+  .coda { border: 1px solid var(--line); border-radius: 8px; margin: 10px 0; }
+  .coda-riga { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .coda-riga:last-child { border-bottom: none; }
+  .coda-riga .nome { flex: 1; }
+  .coda-riga .stato-file { font-size: 12px; color: var(--ink-muted); white-space: nowrap; }
+  .coda-riga .stato-file.ok { color: #2f6b4f; }
+  .coda-riga .stato-file.errore { color: #9c3b30; }
+  .coda-riga button.rimuovi { border: none; background: none; color: #9c3b30; cursor: pointer; font-size: 13px; }
+
+  button { padding: 9px 16px; font-size: 14px; cursor: pointer; background: var(--voce-piano); color: #fff; border: none; border-radius: 6px; }
+  button:hover { background: var(--voce-piano-strong); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.secondario { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+  button.secondario:hover { background: var(--voce-piano-tint); }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--line); border-top-color: var(--voce-piano); border-radius: 50%; animation: spin .8s linear infinite; margin-right: 6px; vertical-align: -2px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #msgCarica { font-size: 13px; margin-top: 10px; }
+  #msgCarica.errore { color: #9c3b30; }
+
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--voce-piano-tint); color: var(--voce-piano-strong); }
+
+  .staging-card { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .staging-head strong { font-size: 14.5px; }
+  .staging-head span { font-size: 13px; color: var(--ink-muted); }
+  .semafori { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+  .semaforo { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 600; }
+  .semaforo.verde { background: #dcece3; color: #2f6b4f; }
+  .semaforo.rosso { background: #f1dbd7; color: #9c3b30; }
+  .staging-azioni { display: flex; gap: 8px; }
+  .staging-azioni button.secondario { background: var(--surface-2); border: 1px solid var(--line); }
+  .staging-vuoto { color: var(--ink-muted); font-size: 14px; padding: 20px 0; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(27,36,48,.35); display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+  .modale { background: var(--surface); border-radius: 10px; padding: 24px 28px; max-width: 640px; width: 100%; }
+  .modale h3 { margin: 0 0 14px; font-size: 16px; }
+  .modale .campo { max-width: none; margin: 12px 0; }
+  .modale-azioni { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+  .lista-manuali-citati { font-size: 13.5px; margin: 4px 0 0; padding-left: 18px; }
+  .riepilogo-riga { display: grid; grid-template-columns: 140px 1fr; gap: 4px 10px; font-size: 13.5px; margin-bottom: 4px; }
+  .riepilogo-riga b { color: var(--ink-muted); font-weight: 600; }
+
+  #stato { padding: 12px; border-radius: 6px; background: #f3e6cc; margin: 20px 0; }
+
+  .campagna-card { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .campagna-card .info strong { font-size: 14.5px; }
+  .campagna-card .info span { font-size: 13px; color: var(--ink-muted); display: block; margin-top: 2px; }
+  .stato-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .stato-badge.bozza { background: #f3e6cc; color: #8a6417; }
+  .stato-badge.completata { background: #dcece3; color: #2f6b4f; }
+  .fase-badge { font-size: 10.5px; padding: 2px 7px; border-radius: 8px; background: var(--surface-2); color: var(--ink-muted); margin-left: 6px; }
+
+  .rilevanza-badge, .scenario-badge, .giudizio-badge-b { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .rilevanza-alta { background: #f1dbd7; color: #9c3b30; }
+  .rilevanza-media { background: #f3e6cc; color: #8a6417; }
+  .rilevanza-bassa { background: var(--surface-2); color: var(--ink-muted); }
+  .scenario-badge { background: var(--voce-piano-tint); color: var(--voce-piano-strong); }
+  .giudizio-badge-b.alto { background: #dcece3; color: #2f6b4f; }
+  .giudizio-badge-b.medio { background: #f3e6cc; color: #8a6417; }
+  .giudizio-badge-b.basso { background: var(--surface-2); color: var(--ink-muted); }
+
+  table.target { width: 100%; border-collapse: collapse; font-size: 13px; margin: 14px 0; }
+  table.target th, table.target td { text-align: left; padding: 8px 10px; border: 1px solid var(--line); vertical-align: top; }
+  table.target th { background: var(--surface-2); font-size: 11.5px; }
+  table.target td.azioni { white-space: nowrap; }
+  table.target td.azioni button { font-size: 12px; padding: 5px 8px; margin-right: 4px; }
+
+  .motiv-box { background: #f5faf6; border: 1px solid #cfe0d0; border-radius: 8px; padding: 14px 18px; margin: 10px 0; }
+  .motiv-box p { margin: 0 0 8px; font-size: 13.5px; }
+  .motiv-box .peso-riga { font-size: 12.5px; color: var(--ink-muted); margin: 2px 0; }
+  .email-box { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; margin: 10px 0; }
+  .email-box textarea { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 13.5px; padding: 8px; }
+</style>
+</head>
+<body>
+
+<h1>Atlante — piano di promozione</h1>
+<div id="chi">Caricamento...</div>
+<nav><a href="home.html">← Menu</a></nav>
+
+<details class="come-funziona" style="--voce-corrente: var(--voce-piano)">
+  <summary>❓ Come funziona questa sezione</summary>
+  <p>Carica i PDF dei programmi di più docenti insieme (tab 1): un'analisi automatica li classifica ok/sospetto/vuoto — correggi solo quelli sospetti in Staging (tab 2), poi confermali: passano al Database programmi (tab 3), dove restano disponibili anche per campagne future. Da lì crea una Campagna (tab 4) su un singolo volume o su tutto il catalogo di una materia, per generare motivazioni ed email mirate per ciascun docente target.</p>
+</details>
+
+<div id="contenuto" style="display:none">
+
+  <div class="tabs">
+    <button class="tab-btn active" id="btnTabCarica" onclick="mostraTab('carica')">1. Carica programmi</button>
+    <button class="tab-btn" id="btnTabStaging" onclick="mostraTab('staging')">2. Staging <span id="countStaging" class="badge" style="display:none">0</span></button>
+    <button class="tab-btn" id="btnTabDatabase" onclick="mostraTab('database')">3. Database programmi</button>
+    <button class="tab-btn" id="btnTabCampagne" onclick="mostraTab('campagne')">4. Campagne</button>
+  </div>
+
+  <section id="tabCarica">
+    <h2>Carica programmi (PDF)</h2>
+    <p class="aiuto">Ogni PDF caricato qui viene estratto, pre-classificato con IA e salvato in staging — non finisce subito nel piano di promozione: va prima verificato nella scheda "Staging".</p>
+    <div class="upload">
+      <input type="file" id="fileInput" accept=".pdf" multiple />
+    </div>
+    <div id="coda" class="coda" style="display:none"></div>
+
+    <div class="campo">
+      <label>Chiave API OpenAI (usata solo dal tuo browser, non viene salvata su Atlante)</label>
+      <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" />
+    </div>
+    <div class="campo">
+      <label>Modello</label>
+      <select id="modello">
+        <option value="gpt-4o-mini">gpt-4o-mini (consigliato)</option>
+        <option value="gpt-4o">gpt-4o (più capace, più lento e costoso)</option>
+      </select>
+    </div>
+
+    <button id="avvia" disabled>Elabora e carica in staging</button>
+    <div id="msgCarica"></div>
+  </section>
+
+  <section id="tabStaging" style="display:none">
+    <h2>Staging — da verificare prima di promuovere</h2>
+    <p class="aiuto">Un programma passa da qui a "confermato" solo quando tutti e tre i controlli sono verdi.</p>
+    <div id="listaStaging"></div>
+  </section>
+
+  <section id="tabDatabase" style="display:none">
+    <h2>Database programmi confermati</h2>
+    <p class="aiuto">Tutti i programmi già promossi dallo staging — questa è la base che le campagne interrogano per il targeting.</p>
+    <div class="riga2" style="margin-bottom:12px">
+      <div class="campo" style="margin:0"><label>Cerca (docente, ateneo, materia, corso)</label><input type="text" id="dbCerca" placeholder="es. Sanchez, Torino, Economia..." /></div>
+      <div class="campo" style="margin:0">
+        <label>Materia</label>
+        <select id="dbFiltroMateria"><option value="">Tutte</option></select>
+      </div>
+    </div>
+    <div class="riga2" style="margin-bottom:12px">
+      <div class="campo" style="margin:0">
+        <label>Scenario editore proprio</label>
+        <select id="dbFiltroScenario">
+          <option value="">Tutti</option>
+          <option value="principale">Principale</option>
+          <option value="alternativo">Alternativo</option>
+          <option value="assente">Assente</option>
+        </select>
+      </div>
+      <div class="campo" style="margin:0"><label>&nbsp;</label><div id="dbConteggio" class="aiuto" style="margin:8px 0 0"></div></div>
+    </div>
+    <div id="listaDatabase"></div>
+  </section>
+
+  <section id="tabCampagne" style="display:none">
+    <div id="campagneListaBox">
+      <h2>Campagne</h2>
+      <p class="aiuto">Verso i programmi già confermati che trattano la materia scelta — su un singolo volume, o sull'intera offerta di catalogo per quella materia.</p>
+      <div id="listaCampagne"></div>
+
+      <h2>Nuova campagna</h2>
+      <div class="campo">
+        <label>Modalità</label>
+        <div class="radio-riga">
+          <label><input type="radio" name="cModalita" value="volume_singolo" checked /> Volume singolo</label>
+          <label><input type="radio" name="cModalita" value="catalogo_materia" /> Intero catalogo per la materia</label>
+        </div>
+      </div>
+      <div class="campo"><label>Materia</label><input type="text" id="cMateria" placeholder="es. Chimica Organica" /></div>
+
+      <div id="boxVolumeSingolo">
+        <div class="campo"><label>Titolo del volume da promuovere</label><input type="text" id="cTitolo" /></div>
+        <div class="campo"><label>Autore</label><input type="text" id="cAutore" /></div>
+        <div class="campo"><label>Editore</label><input type="text" id="cEditore" /></div>
+        <div class="campo" style="max-width:none">
+          <label>Indice del volume (opzionale — se assente, la campagna resta in "pre-valutazione": il volume non esiste ancora)</label>
+          <textarea id="cIndice" style="width:100%;min-height:120px;font-family:inherit;padding:8px;font-size:14px;box-sizing:border-box"></textarea>
+        </div>
+      </div>
+
+      <div id="boxCatalogoMateria" style="display:none">
+        <p class="aiuto">Seleziona fino a 5 manuali propri già a catalogo per questa materia: la campagna confronterà, per ogni docente, quale di questi risolve meglio i gap del manuale che adotta oggi.</p>
+        <div id="elencoVolumiCatalogo" class="elenco-manuali"><p style="color:var(--ink-muted);font-size:13px">Scrivi prima la materia sopra.</p></div>
+      </div>
+
+      <button id="btnCreaCampagna">Crea campagna</button>
+      <div id="msgCampagna" style="font-size:13px;margin-top:10px"></div>
+    </div>
+
+    <div id="campagnaDettaglioBox" style="display:none"></div>
+  </section>
+
+</div>
+<div id="stato" style="display:none"></div>
+
+<div id="overlayModale" class="overlay" style="display:none"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const RELAZIONI = [
+    ['nessuna', 'Nessuna relazione particolare'],
+    ['autore', 'Autore del manuale adottato'],
+    ['coautore', 'Coautore del manuale adottato'],
+    ['curatore', 'Curatore del manuale adottato'],
+    ['traduttore', 'Traduttore del manuale adottato'],
+    ['collega_ateneo', 'Collega di ateneo dell\'autore'],
+    ['collega_dipartimento', 'Collega di dipartimento dell\'autore'],
+  ];
+
+  let userId = null, clienteId = null, editoreProprio = null;
+  let tuttiManuali = [], tuttiFramework = [];
+  let fileQueue = []; // [{file, stato, errore}]
+  let stagingList = [];
+
+  // ---- Levenshtein — stesso principio di matching gia' usato altrove in Atlante
+  // (analisi-programma.html/confronto.html) e in MATRIX Intelligence Plus ----
+  function levenshteinSimilarity(a, b) {
+    if (!a.length || !b.length) return 0;
+    const m = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + cost);
+    }
+    return 1 - m[a.length][b.length] / Math.max(a.length, b.length);
+  }
+
+  // ---- confronto materie flessibile, portato da MATRIX Intelligence Plus (checkSubjectMatch) ----
+  const SINONIMI_MATERIA = [
+    ['chimica generale', 'chimica generale e inorganica', 'chimica di base'],
+    ['chimica organica', 'chimica organica e bioorganica'],
+    ['fisica', 'fisica generale', 'fisica 1', 'fisica 2'],
+    ['economia', 'economia politica', 'economia di base'],
+    ['istologia', 'istologia e embriologia'],
+    ['biologia', 'biologia cellulare', 'biologia generale'],
+    ['psicologia', 'psicologia generale'],
+  ];
+  function checkSubjectMatch(materia1, materia2) {
+    if (!materia1 || !materia2) return false;
+    const m1 = materia1.toLowerCase().trim(), m2 = materia2.toLowerCase().trim();
+    if (m1 === m2 || m1.includes(m2) || m2.includes(m1)) return true;
+    if (levenshteinSimilarity(m1, m2) > 0.75) return true;
+    return SINONIMI_MATERIA.some(gruppo => {
+      const m1Match = gruppo.some(s => m1.includes(s) || s.includes(m1));
+      const m2Match = gruppo.some(s => m2.includes(s) || s.includes(m2));
+      return m1Match && m2Match;
+    });
+  }
+
+  // ---- sanifica testo estratto da PDF prima di scriverlo su Postgres (null byte e
+  // caratteri di controllo non sono accettati) — porta di sanitizeExtractedText ----
+  function sanitizeExtractedText(text) {
+    if (!text) return '';
+    return text
+      .replace(/\x00/g, '')
+      .replace(/[\x01-\x08\x0B\x0C\x0E-\x1F]/g, '')
+      .replace(/[\x80-\x9F]/g, '')
+      .replace(/[\uD800-\uDFFF]/g, '')
+      .replace(/﻿/g, '')
+      .replace(/[￰-￿]/g, '')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  async function estraiTestoPdf(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let testo = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      testo += content.items.map(it => it.str).join(' ') + '\n\n';
+    }
+    return sanitizeExtractedText(testo);
+  }
+
+  // ---- prompt di pre-classificazione, adattato da getPreClassificationPrompt (MATRIX Plus):
+  // l'editore di riferimento e' quello del cliente connesso, mai "Zanichelli" fisso ----
+  function costruisciPromptPreClassificazione(editoreProprio) {
+    return `Sei un esperto analista di programmi universitari italiani.
+Analizza il seguente programma di un insegnamento universitario ed estrai le informazioni richieste in formato JSON.
+
+REGOLE:
+1. Estrai SOLO informazioni esplicitamente presenti o chiaramente inferibili dal testo. Se un dato manca, lascia stringa vuota: non inventare docente, ateneo o corso.
+2. Per i manuali citati, riporta ESATTAMENTE come appaiono nel programma: titolo, autore, editore.
+3. L'EDITORE e' fondamentale: riportalo sempre se indicato.
+4. Assegna il ruolo "principale" al primo manuale o a quello indicato come testo di riferimento/adottato; "alternativo" a tutti gli altri (letture consigliate, complementari, approfondimenti). Se nel programma è elencato UN SOLO manuale in tutta la sezione bibliografia/testi (anche se la sezione si chiama genericamente "testi consigliati" e non usa la parola "adottato"), assegnalo comunque "principale": con un solo testo indicato, è quello di fatto adottato per il corso.
+5. Inferisci la disciplina accademica dal contesto (nome corso, argomenti, facolta').
+6. Estrai 5-10 parole chiave dei temi principali del corso.
+7. Per scenario_editore: verifica se l'EDITORE dei manuali citati e' "${editoreProprio}". Non basarti solo sul cognome dell'autore.
+   - "principale": il manuale principale e' edito da ${editoreProprio}
+   - "alternativo": solo un manuale alternativo e' edito da ${editoreProprio}
+   - "assente": nessun manuale e' edito da ${editoreProprio}
+
+RISPONDI SOLO con un JSON con questa forma esatta:
+{
+  "docente_nome": "", "docente_email": "", "ateneo": "", "corso_laurea": "", "classe_laurea": "",
+  "materia_inferita": "",
+  "manuali_citati": [{"titolo":"","autore":"","editore":"","ruolo":"principale|alternativo"}],
+  "temi_principali": ["",""],
+  "scenario_editore": "principale|alternativo|assente"
+}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function preClassifica(testo, apiKey, modello) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: modello,
+        temperature: 0,
+        max_tokens: 1200,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: costruisciPromptPreClassificazione(editoreProprio) },
+          { role: 'user', content: testo.slice(0, 12000) },
+        ],
+      }),
+    });
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
+    const data = await res.json();
+    return JSON.parse(data.choices[0].message.content);
+  }
+
+  // ---- validazione JS dello scenario, MAI fidarsi solo della IA — porta di
+  // validateZanichelliScenario (MATRIX Plus), generalizzata su editoreProprio a runtime
+  // e sul catalogo condiviso Atlante invece di un catalogo Zanichelli sincronizzato a parte ----
+  const ALTRI_EDITORI_NOTI = ['pearson', 'edises', 'edi-ses', 'mcgraw', 'utet', 'piccin',
+    'elsevier', 'springer', 'edra', 'wiley', 'adelphi', 'hoepli', 'mondadori', 'il mulino',
+    'egea', 'giappichelli', 'giuffrè', 'cacucci', 'laterza', 'carocci', 'franco angeli',
+    'cortina', 'minerva', 'società editrice', 'esculapio', 'patron', 'bononia', 'clueb',
+    'aracne', 'ledizioni', 'vita e pensiero', 'edi-ermes', 'edi ermes', 'ediermes', 'idelson', 'gnocchi'];
+
+  function validaScenario(classification) {
+    const manuali = classification.manuali_citati || [];
+    if (manuali.length === 0) return 'assente';
+    const editoreProprioLower = (editoreProprio || '').toLowerCase().trim();
+    const catalogoProprio = tuttiManuali.filter(m => (m.publisher || '').toLowerCase().trim() === editoreProprioLower);
+
+    const conFlag = manuali.map(m => {
+      const editore = (m.editore || '').toLowerCase().trim();
+      const autore = (m.autore || '').toLowerCase().trim();
+      const titolo = (m.titolo || '').toLowerCase().trim();
+      if (editoreProprioLower && editore.includes(editoreProprioLower)) return { ...m, _match: true };
+      if (ALTRI_EDITORI_NOTI.some(e => editore.includes(e))) return { ...m, _match: false };
+      if (!editore || editore === 'non specificato' || editore === 'n/a' || editore === 'null') {
+        const match = catalogoProprio.some(c => {
+          const cAutore = (c.autore || '').toLowerCase(), cTitolo = (c.titolo || '').toLowerCase();
+          const autoreParts = cAutore.split(/[,\s]+/).filter(p => p.length > 2);
+          const autoreMatch = autoreParts.some(p => autore.includes(p));
+          const titoloMatch = cTitolo.split(/\s+/).filter(w => w.length > 3).some(w => titolo.includes(w));
+          return autoreMatch && titoloMatch;
+        });
+        return { ...m, _match: match };
+      }
+      return { ...m, _match: false };
+    });
+    const principale = conFlag.find(m => m.ruolo === 'principale');
+    if (principale && principale._match) return 'principale';
+    if (conFlag.some(m => m.ruolo === 'alternativo' && m._match)) return 'alternativo';
+    return 'assente';
+  }
+
+  // ---- re-invoca la pre-classificazione su un programma gia' salvato, senza dover
+  // ricaricare il PDF — utile per colmare un campo aggiunto dopo il primo caricamento
+  // (es. temi_principali) o per correggere una classificazione poco riuscita ----
+  async function rigeneraClassificazione(programmaId, alTermine) {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const modello = document.getElementById('modello').value;
+    if (!apiKey) { alert('Serve la chiave OpenAI (tab "Carica programmi").'); return; }
+    const { data: p, error: e1 } = await supabaseClient.from('programmi').select('testo_programma').eq('id', programmaId).single();
+    if (e1 || !p) { alert('Errore: ' + (e1 ? e1.message : 'programma non trovato')); return; }
+    try {
+      const classification = await preClassifica(p.testo_programma, apiKey, modello);
+      const scenario = validaScenario(classification);
+      const { error } = await supabaseClient.from('programmi').update({
+        docente_nome: classification.docente_nome || null,
+        docente_email: classification.docente_email || null,
+        ateneo: classification.ateneo || null,
+        corso_laurea: classification.corso_laurea || null,
+        classe_laurea: classification.classe_laurea || null,
+        materia_inferita: classification.materia_inferita || null,
+        manuali_citati: classification.manuali_citati || [],
+        temi_principali: classification.temi_principali || [],
+        scenario_editore_proprio: scenario,
+        dati_verificati: false, // stessa regola di ogni correzione dei dati estratti: va riverificato
+      }).eq('id', programmaId);
+      if (error) throw new Error(error.message);
+      if (alTermine) await alTermine();
+    } catch (e) {
+      alert('Errore: ' + e.message);
+    }
+  }
+
+  // ---- correzione manuale dell'INTERO elenco dei manuali citati (principale + alternativi)
+  // — indipendente da stato staging/confermato, utile quando l'estrazione automatica
+  // sbaglia un ruolo, manca un titolo, o manca del tutto un alternativo (es. sezione
+  // "testi consigliati" con un solo libro classificato "alternativo", o un alternativo
+  // proprio non estratto). Decisione presa con Sergio il 23 luglio 2026: prima correggeva
+  // solo il principale, ma gli alternativi contano — specialmente se uno e' un tuo titolo
+  // (opportunita' di upgrade) o se coprono argomenti che altrimenti sembrano lacune ----
+  let _mmContesto = null; // { programmaId, alTermine, materia }
+  let _mmRighe = []; // stato locale del form: [{ruolo, manuale_id|null, titolo, autore, editore}]
+
+  function mmRigaHtml(r, idx) {
+    const candidati = _mmContesto.materia ? tuttiManuali.filter(m => checkSubjectMatch(m.materia, _mmContesto.materia)) : [];
+    const selValue = r.manuale_id ? r.manuale_id : (r.titolo ? '__altro__' : '');
+    return `
+      <div class="mm-riga" style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="mmRuolo" data-idx="${idx}" style="width:130px">
+            <option value="principale" ${r.ruolo === 'principale' ? 'selected' : ''}>Principale</option>
+            <option value="alternativo" ${r.ruolo === 'alternativo' ? 'selected' : ''}>Alternativo</option>
+          </select>
+          <select class="mmManualeSel" data-idx="${idx}" style="flex:1;min-width:220px;width:auto">
+            <option value="">— nessuno —</option>
+            ${candidati.map(m => `<option value="${m.id}" ${selValue === m.id ? 'selected' : ''}>${escapeHtml(m.autore || 'autore n/d')} — ${escapeHtml(m.titolo)}</option>`).join('')}
+            <option value="__altro__" ${selValue === '__altro__' ? 'selected' : ''}>Non a catalogo</option>
+          </select>
+          <button type="button" class="secondario mmRimuovi" data-idx="${idx}" style="width:auto">✕</button>
+        </div>
+        <div class="mmAltroBox" style="display:${selValue === '__altro__' ? 'grid' : 'none'};grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <input type="text" class="mmAltroTitolo" data-idx="${idx}" placeholder="Titolo" value="${escapeHtml(r.titolo || '')}" />
+          <input type="text" class="mmAltroAutore" data-idx="${idx}" placeholder="Autore" value="${escapeHtml(r.autore || '')}" />
+          <input type="text" class="mmAltroEditore" data-idx="${idx}" placeholder="Editore" value="${escapeHtml(r.editore || '')}" />
+        </div>
+      </div>`;
+  }
+
+  function mmRenderRighe() {
+    document.getElementById('mmManualiContainer').innerHTML = _mmRighe.map((r, idx) => mmRigaHtml(r, idx)).join('');
+  }
+
+  function mmOnChange(e) {
+    const idx = Number(e.target.dataset.idx);
+    if (Number.isNaN(idx)) return;
+    if (e.target.classList.contains('mmRuolo')) {
+      _mmRighe[idx].ruolo = e.target.value;
+    } else if (e.target.classList.contains('mmManualeSel')) {
+      const v = e.target.value, ruoloCorrente = _mmRighe[idx].ruolo;
+      if (v === '__altro__') _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: null, titolo: _mmRighe[idx].titolo || '', autore: _mmRighe[idx].autore || '', editore: _mmRighe[idx].editore || '' };
+      else if (v === '') _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: null, titolo: '', autore: '', editore: '' };
+      else {
+        const cat = tuttiManuali.find(m => m.id === v);
+        _mmRighe[idx] = { ruolo: ruoloCorrente, manuale_id: v, titolo: cat.titolo, autore: cat.autore, editore: cat.publisher };
+      }
+      mmRenderRighe();
+    } else if (e.target.classList.contains('mmAltroTitolo')) _mmRighe[idx].titolo = e.target.value;
+    else if (e.target.classList.contains('mmAltroAutore')) _mmRighe[idx].autore = e.target.value;
+    else if (e.target.classList.contains('mmAltroEditore')) _mmRighe[idx].editore = e.target.value;
+  }
+
+  function mmOnClick(e) {
+    if (e.target.classList.contains('mmRimuovi')) {
+      const idx = Number(e.target.dataset.idx);
+      _mmRighe.splice(idx, 1);
+      if (_mmRighe.length === 0) _mmRighe.push({ ruolo: 'principale', manuale_id: null, titolo: '', autore: '', editore: '' });
+      mmRenderRighe();
+    }
+  }
+
+  async function apriModificaManualeAdottato(programmaId, alTermine) {
+    const { data: p, error } = await supabaseClient.from('programmi').select('manuali_citati, relazione_docente_manuale, materia_inferita').eq('id', programmaId).single();
+    if (error || !p) { alert('Errore: ' + (error ? error.message : 'programma non trovato')); return; }
+    _mmContesto = { programmaId, alTermine, materia: p.materia_inferita };
+    _mmRighe = (p.manuali_citati && p.manuali_citati.length)
+      ? p.manuali_citati.map(m => ({ ruolo: m.ruolo === 'principale' ? 'principale' : 'alternativo', manuale_id: null, titolo: m.titolo || '', autore: m.autore || '', editore: m.editore || '' }))
+      : [{ ruolo: 'principale', manuale_id: null, titolo: '', autore: '', editore: '' }];
+    // prova a ricollegare ogni riga gia' esistente al catalogo, cosi' il dropdown parte
+    // gia' agganciato invece che su "non a catalogo" — l'utente puo' comunque cambiarlo
+    for (const r of _mmRighe) {
+      if (!r.titolo) continue;
+      const match = trovaManualeAdottatoInCatalogo(r.titolo, r.autore, p.materia_inferita);
+      if (match) r.manuale_id = match.id;
+    }
+
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Manuali citati nel programma</h3>
+        <p class="aiuto">Corregge l'intero elenco — principale e alternativi. Gli alternativi contano: se uno è un tuo titolo, l'analisi lo tratta come opportunità di upgrade invece che un candidato qualunque.</p>
+        <div id="mmManualiContainer"></div>
+        <button type="button" class="secondario" id="mmAggiungi">+ Aggiungi manuale</button>
+        <div class="campo" style="margin-top:16px">
+          <label>Relazione del docente con il manuale principale</label>
+          <select id="mmRelazione">
+            ${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModificaManualeAdottato()">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').style.display = 'flex';
+    mmRenderRighe();
+    document.getElementById('mmAggiungi').addEventListener('click', () => {
+      _mmRighe.push({ ruolo: 'alternativo', manuale_id: null, titolo: '', autore: '', editore: '' });
+      mmRenderRighe();
+    });
+    document.getElementById('mmManualiContainer').addEventListener('change', mmOnChange);
+    document.getElementById('mmManualiContainer').addEventListener('input', mmOnChange);
+    document.getElementById('mmManualiContainer').addEventListener('click', mmOnClick);
+  }
+
+  async function salvaModificaManualeAdottato() {
+    const { programmaId, alTermine } = _mmContesto;
+    const manualiValidi = _mmRighe.filter(r => r.titolo && r.titolo.trim());
+    if (manualiValidi.length === 0) { alert('Inserisci almeno un manuale (o usa "Elimina" se il programma non ne cita nessuno).'); return; }
+    const nuoviManuali = manualiValidi.map(r => ({ ruolo: r.ruolo, titolo: r.titolo.trim(), autore: (r.autore || '').trim() || null, editore: (r.editore || '').trim() || null }));
+    const scenario = validaScenario({ manuali_citati: nuoviManuali });
+    const relazione = document.getElementById('mmRelazione').value;
+    const principaleRiga = manualiValidi.find(r => r.ruolo === 'principale');
+    const manualCatalogId = principaleRiga ? principaleRiga.manuale_id || null : null;
+    const { error } = await supabaseClient.from('programmi').update({
+      manuali_citati: nuoviManuali,
+      manual_catalog_id: manualCatalogId,
+      manual_catalog_stato: manualCatalogId ? 'confermato' : (principaleRiga ? 'NOT_IN_CATALOG' : null),
+      relazione_docente_manuale: relazione,
+      scenario_editore_proprio: scenario,
+      dati_verificati: false,
+      valutazione_manuale_adottato: null, // l'elenco e' cambiato: la valutazione cache non e' piu' valida
+    }).eq('id', programmaId);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    if (alTermine) await alTermine();
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ================= TAB =================
+  function mostraTab(nome) {
+    document.getElementById('tabCarica').style.display = nome === 'carica' ? 'block' : 'none';
+    document.getElementById('tabStaging').style.display = nome === 'staging' ? 'block' : 'none';
+    document.getElementById('tabDatabase').style.display = nome === 'database' ? 'block' : 'none';
+    document.getElementById('tabCampagne').style.display = nome === 'campagne' ? 'block' : 'none';
+    document.getElementById('btnTabCarica').classList.toggle('active', nome === 'carica');
+    document.getElementById('btnTabStaging').classList.toggle('active', nome === 'staging');
+    document.getElementById('btnTabDatabase').classList.toggle('active', nome === 'database');
+    document.getElementById('btnTabCampagne').classList.toggle('active', nome === 'campagne');
+    if (nome === 'campagne' && campagneList.length === 0) caricaCampagne();
+    if (nome === 'database') caricaDatabase();
+  }
+
+  // ================= DATABASE PROGRAMMI CONFERMATI =================
+  let databaseList = [];
+
+  async function caricaDatabase() {
+    const { data, error } = await supabaseClient.from('programmi')
+      .select('*').eq('cliente_id', clienteId).eq('stato', 'confermato').order('docente_nome');
+    if (error) { console.error(error); return; }
+    databaseList = data || [];
+    const selMateria = document.getElementById('dbFiltroMateria');
+    const materieAttuali = [...new Set(databaseList.map(p => p.materia_inferita).filter(Boolean))].sort();
+    const selezionata = selMateria.value;
+    selMateria.innerHTML = '<option value="">Tutte</option>' + materieAttuali.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+    selMateria.value = materieAttuali.includes(selezionata) ? selezionata : '';
+    renderDatabase();
+  }
+
+  // ---- vista compatta principale + alternativi (espandibile), riusata in Database e
+  // Campagna: prima mostravamo solo il principale, e uno scenario "editore proprio
+  // alternativo" restava senza spiegazione visibile — segnalato da Sergio ----
+  let _idAltCounter = 0;
+  function renderManualiCitatiCompatto(programma) {
+    const manuali = programma.manuali_citati || [];
+    const principale = manuali.find(m => m.ruolo === 'principale');
+    const alternativi = manuali.filter(m => m.ruolo !== 'principale');
+    const relazioneLabel = (RELAZIONI.find(([v]) => v === programma.relazione_docente_manuale) || [])[1];
+    const relazioneNota = (programma.relazione_docente_manuale && programma.relazione_docente_manuale !== 'nessuna')
+      ? `<br/><span style="color:#9c3b30;font-size:11.5px">⚠ ${escapeHtml(relazioneLabel || programma.relazione_docente_manuale)}</span>` : '';
+    const principaleHtml = principale
+      ? `${escapeHtml(principale.titolo)}<br/><span style="color:var(--ink-muted);font-size:12px">${escapeHtml(principale.autore || 'autore n/d')}${principale.editore ? ' · ' + escapeHtml(principale.editore) : ''}</span>`
+      : `<span style="color:var(--ink-muted)">non specificato nel testo</span>`;
+    let altHtml = '';
+    if (alternativi.length) {
+      const idUniq = 'mmalt' + (_idAltCounter++);
+      altHtml = `<br/><a href="#" onclick="document.getElementById('${idUniq}').style.display='block';this.style.display='none';return false;" style="font-size:11.5px">+ ${alternativi.length} alternativ${alternativi.length === 1 ? 'o' : 'i'}</a>
+        <div id="${idUniq}" style="display:none;font-size:12px;color:var(--ink-muted);margin-top:4px">${alternativi.map(a => `${escapeHtml(a.titolo)} (${escapeHtml(a.autore || 'autore n/d')})`).join('<br/>')}</div>`;
+    }
+    return principaleHtml + relazioneNota + altHtml;
+  }
+
+  function renderDatabase() {
+    const cerca = document.getElementById('dbCerca').value.trim().toLowerCase();
+    const materia = document.getElementById('dbFiltroMateria').value;
+    const scenario = document.getElementById('dbFiltroScenario').value;
+    const filtrati = databaseList.filter(p => {
+      if (materia && p.materia_inferita !== materia) return false;
+      if (scenario && p.scenario_editore_proprio !== scenario) return false;
+      if (cerca) {
+        const campo = [p.docente_nome, p.ateneo, p.materia_inferita, p.corso_laurea].filter(Boolean).join(' ').toLowerCase();
+        if (!campo.includes(cerca)) return false;
+      }
+      return true;
+    });
+    document.getElementById('dbConteggio').textContent = `${filtrati.length} di ${databaseList.length} programmi`;
+    const box = document.getElementById('listaDatabase');
+    if (filtrati.length === 0) { box.innerHTML = '<p class="staging-vuoto">Nessun programma trovato con questi filtri.</p>'; return; }
+    box.innerHTML = filtrati.map(p => {
+      return `<div class="db-card">
+        <div class="riga-top">
+          <div class="info">
+            <strong>${escapeHtml(p.docente_nome || '(n/d)')}</strong> — ${escapeHtml(p.ateneo || 'ateneo n/d')}
+            <span>${escapeHtml(p.materia_inferita || 'materia n/d')}${p.corso_laurea ? ' · ' + escapeHtml(p.corso_laurea) : ''}${p.classe_laurea ? ' (' + escapeHtml(p.classe_laurea) + ')' : ''}</span>
+            <span>Manuale adottato: ${renderManualiCitatiCompatto(p)}</span>
+          </div>
+          <span class="scenario-badge">${escapeHtml({ principale: 'editore proprio principale', alternativo: 'editore proprio alternativo', assente: 'editore proprio assente' }[p.scenario_editore_proprio] || 'n/d')}</span>
+        </div>
+        <div class="staging-azioni" style="margin-top:10px">
+          <button class="secondario" onclick="apriModificaManualeAdottato('${p.id}', caricaDatabase)">Modifica manuali citati</button>
+          <button class="secondario" onclick="rigeneraClassificazione('${p.id}', caricaDatabase)">Rigenera classificazione</button>
+          <button class="secondario" onclick="rimettiInStaging('${p.id}')">Rimetti in staging</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function rimettiInStaging(id) {
+    if (!confirm('Rimettere questo programma in staging? Non sarà più usato dalle campagne finché non lo ripromuovi.')) return;
+    const { error } = await supabaseClient.from('programmi').update({ stato: 'staging' }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaDatabase();
+  }
+
+  document.getElementById('dbCerca').addEventListener('input', renderDatabase);
+  document.getElementById('dbFiltroMateria').addEventListener('change', renderDatabase);
+  document.getElementById('dbFiltroScenario').addEventListener('change', renderDatabase);
+
+  // ================= CODA UPLOAD =================
+  function renderCoda() {
+    const box = document.getElementById('coda');
+    if (fileQueue.length === 0) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = fileQueue.map((q, i) => `
+      <div class="coda-riga">
+        <span class="nome">${escapeHtml(q.file.name)}</span>
+        <span class="stato-file ${q.stato === 'ok' ? 'ok' : q.stato === 'errore' ? 'errore' : ''}">${escapeHtml(q.messaggio || q.stato)}</span>
+        ${q.stato === 'in attesa' ? `<button class="rimuovi" onclick="rimuoviDaCoda(${i})">✕</button>` : ''}
+      </div>`).join('');
+  }
+
+  function rimuoviDaCoda(i) { fileQueue.splice(i, 1); renderCoda(); aggiornaBottoneAvvia(); }
+
+  function aggiornaBottoneAvvia() {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    document.getElementById('avvia').disabled = !(fileQueue.some(q => q.stato === 'in attesa') && apiKey.length > 0);
+  }
+
+  document.getElementById('fileInput').addEventListener('change', (e) => {
+    const nuovi = Array.from(e.target.files).filter(f => !fileQueue.some(q => q.file.name === f.name && q.file.size === f.size));
+    nuovi.forEach(file => fileQueue.push({ file, stato: 'in attesa', messaggio: 'in attesa' }));
+    e.target.value = '';
+    renderCoda();
+    aggiornaBottoneAvvia();
+  });
+  // ---- la chiave resta solo nella scheda del browser (sessionStorage): sopravvive a un
+  // ricaricamento involontario della pagina, ma sparisce chiudendo la scheda/il browser —
+  // mai scritta su disco ne' su Supabase, stessa filosofia del resto di Atlante ----
+  const apiKeyInput = document.getElementById('apiKey');
+  const modelloSelect = document.getElementById('modello');
+  const chiaveSalvata = leggiChiaveOpenAI();
+  if (chiaveSalvata) apiKeyInput.value = chiaveSalvata;
+  const modelloSalvato = leggiModelloOpenAI();
+  if (modelloSalvato) modelloSelect.value = modelloSalvato;
+
+  apiKeyInput.addEventListener('input', () => {
+    salvaChiaveOpenAI(apiKeyInput.value.trim());
+    aggiornaBottoneAvvia();
+  });
+  modelloSelect.addEventListener('change', () => salvaModelloOpenAI(modelloSelect.value));
+
+  document.getElementById('avvia').addEventListener('click', elaboraCoda);
+
+  async function elaboraCoda() {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const modello = document.getElementById('modello').value;
+    const msg = document.getElementById('msgCarica');
+    document.getElementById('avvia').disabled = true;
+    msg.className = '';
+
+    let okCount = 0, erroreCount = 0;
+    for (let i = 0; i < fileQueue.length; i++) {
+      const q = fileQueue[i];
+      if (q.stato !== 'in attesa') continue;
+      try {
+        q.stato = 'in corso'; q.messaggio = 'estrazione testo...'; renderCoda();
+        const testo = await estraiTestoPdf(q.file);
+        if (testo.length < 200) throw new Error('testo troppo corto: PDF forse scansionato senza livello testo');
+
+        q.messaggio = 'pre-classificazione IA...'; renderCoda();
+        const classification = await preClassifica(testo, apiKey, modello);
+        const scenario = validaScenario(classification);
+
+        const { error } = await supabaseClient.from('programmi').insert({
+          cliente_id: clienteId,
+          creato_da: userId,
+          provenienza: 'pdf',
+          docente_nome: classification.docente_nome || null,
+          docente_email: classification.docente_email || null,
+          ateneo: classification.ateneo || null,
+          corso_laurea: classification.corso_laurea || null,
+          classe_laurea: classification.classe_laurea || null,
+          materia_inferita: classification.materia_inferita || null,
+          manuali_citati: classification.manuali_citati || [],
+          temi_principali: classification.temi_principali || [],
+          scenario_editore_proprio: scenario,
+          testo_programma: testo,
+          stato: 'staging',
+          dati_verificati: false,
+        });
+        if (error) throw new Error(error.message);
+
+        q.stato = 'ok'; q.messaggio = 'caricato in staging'; okCount++;
+      } catch (e) {
+        q.stato = 'errore'; q.messaggio = e.message; erroreCount++;
+      }
+      renderCoda();
+      await sleep(300); // cortesia verso l'API, stesso principio del BATCH_DELAY_MS originale
+    }
+
+    msg.textContent = `Completato: ${okCount} caricati in staging, ${erroreCount} con errore.`;
+    if (erroreCount > 0) msg.className = 'errore';
+    aggiornaBottoneAvvia();
+    await caricaStaging();
+    if (okCount > 0) mostraTab('staging');
+  }
+
+  // ================= STAGING =================
+  async function caricaStaging() {
+    const { data, error } = await supabaseClient.from('programmi')
+      .select('*').eq('cliente_id', clienteId).eq('stato', 'staging').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    stagingList = data || [];
+    const badge = document.getElementById('countStaging');
+    if (stagingList.length > 0) { badge.style.display = 'inline-block'; badge.textContent = stagingList.length; }
+    else badge.style.display = 'none';
+    renderStaging();
+  }
+
+  function trovaSemafori(programma) {
+    const verificato = !!programma.dati_verificati;
+    const frameworkOk = tuttiFramework.some(f => checkSubjectMatch(f.materia, programma.materia_inferita));
+    const catalogoOk = tuttiManuali.some(m => checkSubjectMatch(m.materia, programma.materia_inferita));
+    return { verificato, frameworkOk, catalogoOk, tuttiVerdi: verificato && frameworkOk && catalogoOk };
+  }
+
+  function renderStaging() {
+    const box = document.getElementById('listaStaging');
+    if (stagingList.length === 0) {
+      box.innerHTML = '<p class="staging-vuoto">Nessun programma in staging.</p>';
+      return;
+    }
+    box.innerHTML = stagingList.map(p => {
+      const s = trovaSemafori(p);
+      return `
+      <div class="staging-card">
+        <div class="staging-head">
+          <strong>${escapeHtml(p.docente_nome || '(docente non identificato)')}</strong> — ${escapeHtml(p.ateneo || '(ateneo non identificato)')}<br/>
+          <span>${escapeHtml(p.materia_inferita || '(materia non identificata)')}${p.corso_laurea ? ' · ' + escapeHtml(p.corso_laurea) : ''}${p.classe_laurea ? ' (' + escapeHtml(p.classe_laurea) + ')' : ''}</span>
+        </div>
+        <div class="semafori">
+          <span class="semaforo ${s.verificato ? 'verde' : 'rosso'}">${s.verificato ? '✓' : '✕'} Dati verificati</span>
+          <span class="semaforo ${s.frameworkOk ? 'verde' : 'rosso'}">${s.frameworkOk ? '✓' : '✕'} Framework materia</span>
+          <span class="semaforo ${s.catalogoOk ? 'verde' : 'rosso'}">${s.catalogoOk ? '✓' : '✕'} Catalogo materia</span>
+        </div>
+        <div class="staging-azioni">
+          <button class="secondario" onclick="apriVerifica('${p.id}')">Verifica</button>
+          <button class="secondario" onclick="apriModifica('${p.id}')">Modifica</button>
+          <button class="secondario" onclick="apriModificaManualeAdottato('${p.id}', caricaStaging)">Modifica manuali citati</button>
+          <button ${s.tuttiVerdi ? '' : 'disabled'} onclick="promuovi('${p.id}')">Promuovi al piano</button>
+          <button class="secondario" onclick="rigeneraClassificazione('${p.id}', caricaStaging)">Rigenera classificazione</button>
+          <button class="secondario" onclick="eliminaStaging('${p.id}')">Elimina</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function chiudiModale() { document.getElementById('overlayModale').style.display = 'none'; document.getElementById('overlayModale').innerHTML = ''; }
+
+  function apriVerifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    if (!p) return;
+    const manualiHtml = (p.manuali_citati || []).length
+      ? `<ul class="lista-manuali-citati">${p.manuali_citati.map(m => `<li>${escapeHtml(m.titolo)} — ${escapeHtml(m.autore || 'autore n/d')}${m.editore ? ' (' + escapeHtml(m.editore) + ')' : ''} · <em>${escapeHtml(m.ruolo)}</em></li>`).join('')}</ul>`
+      : '<p class="aiuto">Nessun manuale citato estratto.</p>';
+    const scenarioLabel = { principale: 'Editore proprio — manuale principale', alternativo: 'Editore proprio — solo alternativo', assente: 'Editore proprio assente' }[p.scenario_editore_proprio] || 'n/d';
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Verifica dati estratti</h3>
+        <div class="riepilogo-riga"><b>Docente</b><span>${escapeHtml(p.docente_nome || 'n/d')} ${p.docente_email ? '· ' + escapeHtml(p.docente_email) : ''}</span></div>
+        <div class="riepilogo-riga"><b>Ateneo</b><span>${escapeHtml(p.ateneo || 'n/d')}</span></div>
+        <div class="riepilogo-riga"><b>Corso</b><span>${escapeHtml(p.corso_laurea || 'n/d')} ${p.classe_laurea ? '(' + escapeHtml(p.classe_laurea) + ')' : ''}</span></div>
+        <div class="riepilogo-riga"><b>Materia</b><span>${escapeHtml(p.materia_inferita || 'n/d')}</span></div>
+        <div class="riepilogo-riga"><b>Scenario</b><span>${escapeHtml(scenarioLabel)}</span></div>
+        <p class="aiuto" style="margin-top:10px">Manuali citati nel programma:</p>
+        ${manualiHtml}
+        <div class="campo">
+          <label>Relazione del docente con il manuale adottato</label>
+          <select id="selRelazione">
+            ${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}
+          </select>
+          <p class="aiuto">Condiziona i prompt del piano di promozione: se il docente è legato al manuale adottato, non verranno proposte sostituzioni dirette.</p>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="confermaVerifica('${p.id}')">Conferma verifica</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').style.display = 'flex';
+  }
+
+  async function confermaVerifica(id) {
+    const relazione = document.getElementById('selRelazione').value;
+    const { error } = await supabaseClient.from('programmi').update({ dati_verificati: true, relazione_docente_manuale: relazione }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await caricaStaging();
+  }
+
+  // ---- materie note al catalogo condiviso (manuali + framework): usate per popolare il
+  // dropdown materia, cosi' una correzione manuale non puo' piu' introdurre varianti
+  // diverse della stessa materia (bug reale trovato: "Economia"/"Economia Politica"/
+  // "Economia politica" coesistevano come tre valori distinti) ----
+  function materieCanoniche() {
+    return [...new Set([...tuttiManuali.map(m => m.materia), ...tuttiFramework.map(f => f.materia)].filter(Boolean))].sort();
+  }
+
+  function popolaSelectMateriaModifica(materiaAttuale) {
+    const sel = document.getElementById('mMateriaSel');
+    const box = document.getElementById('mMateriaAltro');
+    const canoniche = materieCanoniche();
+    const matchEsatto = canoniche.includes(materiaAttuale);
+    sel.innerHTML = '<option value="">— seleziona —</option>' +
+      canoniche.map(m => `<option value="${escapeHtml(m)}" ${materiaAttuale === m ? 'selected' : ''}>${escapeHtml(m)}</option>`).join('') +
+      `<option value="__altro__" ${!matchEsatto && materiaAttuale ? 'selected' : ''}>Altro (specifica)</option>`;
+    box.style.display = (!matchEsatto && materiaAttuale) ? 'block' : 'none';
+    document.getElementById('mMateriaAltro').value = (!matchEsatto && materiaAttuale) ? materiaAttuale : '';
+  }
+
+  function materiaCorrenteModifica() {
+    const sel = document.getElementById('mMateriaSel').value;
+    return sel === '__altro__' ? document.getElementById('mMateriaAltro').value.trim() : sel;
+  }
+
+  function popolaSelectManualeModifica(manualeCatalogId, manualePrincipale) {
+    const materia = materiaCorrenteModifica();
+    const sel = document.getElementById('mManualeSel');
+    const candidati = materia ? tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia)) : [];
+    sel.innerHTML = '<option value="">— nessuno —</option>' +
+      candidati.map(m => `<option value="${m.id}" ${manualeCatalogId === m.id ? 'selected' : ''}>${escapeHtml(m.autore || 'autore n/d')} — ${escapeHtml(m.titolo)}</option>`).join('') +
+      `<option value="__altro__" ${(!manualeCatalogId && manualePrincipale) ? 'selected' : ''}>Non a catalogo (specifica a mano)</option>`;
+    if (candidati.length === 0) sel.insertAdjacentHTML('afterbegin', `<option value="" disabled>${materia ? 'Nessun manuale in catalogo per questa materia' : 'Seleziona prima la materia'}</option>`);
+    aggiornaBoxManualeAltro(manualePrincipale, !manualeCatalogId && !!manualePrincipale);
+  }
+
+  function aggiornaBoxManualeAltro(manualePrincipale, mostraAltro) {
+    const box = document.getElementById('mManualeAltroBox');
+    const isAltro = mostraAltro !== undefined ? mostraAltro : document.getElementById('mManualeSel').value === '__altro__';
+    box.style.display = isAltro ? 'block' : 'none';
+    if (manualePrincipale) {
+      document.getElementById('mManualeTitolo').value = manualePrincipale.titolo || '';
+      document.getElementById('mManualeAutore').value = manualePrincipale.autore || '';
+      document.getElementById('mManualeEditore').value = manualePrincipale.editore || '';
+    }
+  }
+
+  function apriModifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    if (!p) return;
+    const manualePrincipale = (p.manuali_citati || []).find(m => m.ruolo === 'principale');
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Modifica dati programma</h3>
+        <div class="campo"><label>Docente</label><input type="text" id="mDocente" value="${escapeHtml(p.docente_nome || '')}" /></div>
+        <div class="campo"><label>Email docente</label><input type="email" id="mEmail" value="${escapeHtml(p.docente_email || '')}" /></div>
+        <div class="campo"><label>Ateneo</label><input type="text" id="mAteneo" value="${escapeHtml(p.ateneo || '')}" /></div>
+        <div class="campo"><label>Corso di laurea</label><input type="text" id="mCorso" value="${escapeHtml(p.corso_laurea || '')}" /></div>
+        <div class="campo"><label>Classe di laurea</label><input type="text" id="mClasse" value="${escapeHtml(p.classe_laurea || '')}" /></div>
+        <div class="campo">
+          <label>Materia</label>
+          <select id="mMateriaSel"></select>
+          <input id="mMateriaAltro" type="text" placeholder="Nome della materia" style="display:none;margin-top:6px" />
+        </div>
+        <hr />
+        <div class="campo">
+          <label>Manuale adottato (principale)</label>
+          <select id="mManualeSel"></select>
+        </div>
+        <div id="mManualeAltroBox" style="display:none">
+          <div class="campo"><label>Titolo</label><input type="text" id="mManualeTitolo" /></div>
+          <div class="campo"><label>Autore</label><input type="text" id="mManualeAutore" /></div>
+          <div class="campo"><label>Editore</label><input type="text" id="mManualeEditore" /></div>
+        </div>
+        <div class="campo">
+          <label>Relazione del docente con questo manuale</label>
+          <select id="mRelazione">${RELAZIONI.map(([v, l]) => `<option value="${v}" ${p.relazione_docente_manuale === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
+        </div>
+        <p class="aiuto">Salvare una correzione manuale azzera la verifica: andrà riconfermata da "Verifica".</p>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModifica('${p.id}')">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').style.display = 'flex';
+    popolaSelectMateriaModifica(p.materia_inferita || '');
+    popolaSelectManualeModifica(p.manual_catalog_id || null, manualePrincipale);
+    document.getElementById('mMateriaSel').addEventListener('change', (e) => {
+      document.getElementById('mMateriaAltro').style.display = e.target.value === '__altro__' ? 'block' : 'none';
+      popolaSelectManualeModifica(null, manualePrincipale);
+    });
+    document.getElementById('mMateriaAltro').addEventListener('input', () => popolaSelectManualeModifica(null, manualePrincipale));
+    document.getElementById('mManualeSel').addEventListener('change', () => aggiornaBoxManualeAltro(manualePrincipale));
+  }
+
+  async function salvaModifica(id) {
+    const p = stagingList.find(x => x.id === id);
+    const altri = (p.manuali_citati || []).filter(m => m.ruolo !== 'principale');
+    const manualeSel = document.getElementById('mManualeSel').value;
+
+    let manualCatalogId = null, manualCatalogStato = null, nuovoManualePrincipale = null;
+    if (manualeSel && manualeSel !== '__altro__') {
+      const catalogo = tuttiManuali.find(m => m.id === manualeSel);
+      manualCatalogId = manualeSel;
+      manualCatalogStato = 'confermato';
+      nuovoManualePrincipale = catalogo ? { ruolo: 'principale', titolo: catalogo.titolo, autore: catalogo.autore, editore: catalogo.publisher } : null;
+    } else if (manualeSel === '__altro__') {
+      const titolo = document.getElementById('mManualeTitolo').value.trim();
+      if (titolo) {
+        nuovoManualePrincipale = {
+          ruolo: 'principale', titolo,
+          autore: document.getElementById('mManualeAutore').value.trim() || null,
+          editore: document.getElementById('mManualeEditore').value.trim() || null,
+        };
+        manualCatalogStato = 'NOT_IN_CATALOG';
+      }
+    }
+    const nuoviManuali = nuovoManualePrincipale ? [nuovoManualePrincipale, ...altri] : altri;
+    const scenario = validaScenario({ manuali_citati: nuoviManuali });
+
+    const patch = {
+      docente_nome: document.getElementById('mDocente').value.trim() || null,
+      docente_email: document.getElementById('mEmail').value.trim() || null,
+      ateneo: document.getElementById('mAteneo').value.trim() || null,
+      corso_laurea: document.getElementById('mCorso').value.trim() || null,
+      classe_laurea: document.getElementById('mClasse').value.trim() || null,
+      materia_inferita: materiaCorrenteModifica() || null,
+      manuali_citati: nuoviManuali,
+      manual_catalog_id: manualCatalogId,
+      manual_catalog_stato: manualCatalogStato,
+      relazione_docente_manuale: document.getElementById('mRelazione').value,
+      scenario_editore_proprio: scenario,
+      dati_verificati: false, // ogni correzione manuale va riverificata, stesso principio di staging.js
+    };
+    const { error } = await supabaseClient.from('programmi').update(patch).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await caricaStaging();
+  }
+
+  async function promuovi(id) {
+    const { error } = await supabaseClient.from('programmi').update({ stato: 'confermato' }).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaStaging();
+  }
+
+  async function eliminaStaging(id) {
+    if (!confirm('Eliminare questo programma dallo staging? L\'operazione non è reversibile.')) return;
+    const { error } = await supabaseClient.from('programmi').delete().eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    await caricaStaging();
+  }
+
+  // ================= CAMPAGNE =================
+  let campagneList = [];
+  let campagnaApertaId = null;
+  let targetListAperta = [];
+
+  // ---- estrazione tollerante moduli framework da dati.raw, stessa logica di analisi-programma.html ----
+  function estraiModuliFramework(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const moduli = raw.syllabus_modules || (raw.content && raw.content.framework && raw.content.framework.syllabus_modules) || raw.modules;
+    if (!Array.isArray(moduli) || moduli.length === 0) return null;
+    return moduli.map(m => ({ nome: m.name || m.nome || '(senza nome)', contenuti: m.core_contents || m.contenuti || '' }));
+  }
+
+  // ---- cerca il manuale adottato (citato nel programma, solo testo) nel catalogo condiviso —
+  // stessa cascata euristica di MATRIX Intelligence Plus (findManualInCatalog): titolo+autore
+  // esatto, poi parziale, poi solo titolo, poi Levenshtein con bonus se l'autore combacia.
+  // Serve a recuperare l'indice REALE del manuale adottato, non solo il suo titolo: senza
+  // indice il modello non ha modo di valutare se il volume proposto è comparabile per
+  // livello di approfondimento, non solo per temi in comune ----
+  function trovaManualeAdottatoInCatalogo(titoloCercato, autoreCercato, materia) {
+    if (!titoloCercato) return null;
+    const candidati = tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia));
+    const titNorm = titoloCercato.toLowerCase().trim();
+    const autNorm = (autoreCercato || '').toLowerCase().trim();
+    // tutte le parole significative dell'autore, non solo la prima: il formato estratto dal
+    // programma puo' essere "Cognome, Cognome" o "Nome Cognome, Nome Cognome" a seconda di
+    // come l'ha scritto la pre-classificazione — mai assumere un ordine fisso (bug reale
+    // trovato: "Daron Acemoglu" veniva ridotto a "daron", che il catalogo (indicizzato come
+    // solo "Acemoglu") non trova mai)
+    const paroleAutore = autNorm.split(/[,;&\s]+/).filter(w => w.length > 2);
+    const autoreMatch = (m) => !!(m.autore && paroleAutore.some(p => m.autore.toLowerCase().includes(p)));
+
+    let trovato = candidati.find(m => m.titolo && m.titolo.toLowerCase().trim() === titNorm && (paroleAutore.length === 0 || autoreMatch(m)));
+    if (trovato) return trovato;
+
+    trovato = candidati.find(m => {
+      if (!m.titolo) return false;
+      const t = m.titolo.toLowerCase().trim();
+      return (t.includes(titNorm) || titNorm.includes(t)) && (paroleAutore.length === 0 || autoreMatch(m));
+    });
+    if (trovato) return trovato;
+
+    // fallback solo titolo, tentato comunque anche se l'autore non ha dato corrispondenza
+    // sopra — un titolo (di solito piu' distintivo di un nome) e' un indizio migliore di niente
+    trovato = candidati.find(m => m.titolo && m.titolo.toLowerCase().trim() === titNorm);
+    if (trovato) return trovato;
+    trovato = candidati.find(m => m.titolo && (m.titolo.toLowerCase().trim().includes(titNorm) || titNorm.includes(m.titolo.toLowerCase().trim())));
+    if (trovato) return trovato;
+
+    let migliore = null, punteggioMigliore = 0;
+    for (const m of candidati) {
+      if (!m.titolo) continue;
+      let sim = levenshteinSimilarity(titNorm, m.titolo.toLowerCase().trim());
+      if (autoreMatch(m)) sim += 0.15;
+      if (sim >= 0.65 && sim > punteggioMigliore) { punteggioMigliore = sim; migliore = m; }
+    }
+    return migliore;
+  }
+
+  async function chiamaOpenAIJson(prompt, apiKey, modello, maxTokens) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: modello, temperature: 0, max_tokens: maxTokens || 1200,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: 'Sei un assistente esperto di editoria universitaria italiana. Rispondi sempre e solo con JSON valido, mai testo fuori dal JSON.' },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    });
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
+    const data = await res.json();
+    return JSON.parse(data.choices[0].message.content);
+  }
+
+  function leggiApiKeyModello() {
+    return { apiKey: document.getElementById('apiKey').value.trim(), modello: document.getElementById('modello').value };
+  }
+
+  async function caricaCampagne() {
+    const { data, error } = await supabaseClient.from('campagne')
+      .select('*').eq('cliente_id', clienteId).order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    campagneList = data || [];
+    renderListaCampagne();
+  }
+
+  function renderListaCampagne() {
+    const box = document.getElementById('listaCampagne');
+    if (campagneList.length === 0) { box.innerHTML = '<p class="staging-vuoto">Nessuna campagna ancora creata.</p>'; return; }
+    box.innerHTML = campagneList.map(c => `
+      <div class="campagna-card">
+        <div class="info">
+          <strong>${c.modalita === 'catalogo_materia' ? `Catalogo — ${escapeHtml(c.materia)}` : escapeHtml(c.libro_titolo)}</strong>
+          <span>${escapeHtml(c.materia)}${c.libro_autore ? ' · ' + escapeHtml(c.libro_autore) : ''}${c.modalita === 'catalogo_materia' ? ` · ${(c.volumi_selezionati || []).length} manuali` : ''}</span>
+        </div>
+        <div>
+          <span class="stato-badge ${c.stato}">${c.stato}</span>
+          ${c.fase ? `<span class="fase-badge">${c.fase === 'pre_valutazione' ? 'pre-valutazione' : 'completa'}</span>` : ''}
+          <button class="secondario" onclick="apriCampagna('${c.id}')">Apri</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function modalitaCampagnaScelta() {
+    return document.querySelector('input[name="cModalita"]:checked').value;
+  }
+
+  document.querySelectorAll('input[name="cModalita"]').forEach(r => r.addEventListener('change', () => {
+    const catalogo = modalitaCampagnaScelta() === 'catalogo_materia';
+    document.getElementById('boxVolumeSingolo').style.display = catalogo ? 'none' : 'block';
+    document.getElementById('boxCatalogoMateria').style.display = catalogo ? 'block' : 'none';
+    if (catalogo) renderElencoVolumiCatalogo();
+  }));
+
+  // ---- checkbox dei manuali propri per la materia scritta, max 5 (stesso limite di
+  // MATRIX Intelligence Plus per il monitoraggio disciplinare, qui e' una modalita'
+  // della campagna invece di una funzione a parte) ----
+  function renderElencoVolumiCatalogo() {
+    const materia = document.getElementById('cMateria').value.trim();
+    const box = document.getElementById('elencoVolumiCatalogo');
+    if (!materia) { box.innerHTML = '<p style="color:var(--ink-muted);font-size:13px">Scrivi prima la materia sopra.</p>'; return; }
+    const candidati = tuttiManuali.filter(m => checkSubjectMatch(m.materia, materia) && (m.publisher || '').toLowerCase().trim() === (editoreProprio || '').toLowerCase().trim());
+    if (candidati.length === 0) { box.innerHTML = `<p style="color:var(--ink-muted);font-size:13px">Nessun manuale proprio a catalogo per "${escapeHtml(materia)}".</p>`; return; }
+    box.innerHTML = candidati.map(m => `
+      <div class="riga-manuale">
+        <input type="checkbox" class="ccVolumeCheck" data-id="${m.id}" data-titolo="${escapeHtml(m.titolo)}" data-autore="${escapeHtml(m.autore || '')}" data-editore="${escapeHtml(m.publisher || '')}" />
+        <span class="principale">${escapeHtml(m.autore || 'autore n/d')} <small>${escapeHtml(m.titolo)}</small></span>
+      </div>`).join('');
+    document.querySelectorAll('.ccVolumeCheck').forEach(cb => cb.addEventListener('change', () => {
+      const selezionati = document.querySelectorAll('.ccVolumeCheck:checked');
+      if (selezionati.length > 5) { cb.checked = false; alert('Massimo 5 manuali per campagna.'); }
+    }));
+  }
+  document.getElementById('cMateria').addEventListener('input', () => {
+    if (modalitaCampagnaScelta() === 'catalogo_materia') renderElencoVolumiCatalogo();
+  });
+
+  document.getElementById('btnCreaCampagna').addEventListener('click', async () => {
+    const materia = document.getElementById('cMateria').value.trim();
+    const msg = document.getElementById('msgCampagna');
+    const modalita = modalitaCampagnaScelta();
+    if (!materia) { msg.textContent = 'La materia è obbligatoria.'; return; }
+
+    let payload = { cliente_id: clienteId, creato_da: userId, modalita, materia };
+    if (modalita === 'volume_singolo') {
+      const libro_titolo = document.getElementById('cTitolo').value.trim();
+      if (!libro_titolo) { msg.textContent = 'Il titolo del volume è obbligatorio.'; return; }
+      payload = {
+        ...payload, libro_titolo,
+        libro_autore: document.getElementById('cAutore').value.trim() || null,
+        libro_editore: document.getElementById('cEditore').value.trim() || null,
+        libro_indice: document.getElementById('cIndice').value.trim() || null,
+      };
+    } else {
+      const volumi = [...document.querySelectorAll('.ccVolumeCheck:checked')].map(cb => ({
+        manuale_id: cb.dataset.id, titolo: cb.dataset.titolo, autore: cb.dataset.autore || null, editore: cb.dataset.editore || null,
+      }));
+      if (volumi.length === 0) { msg.textContent = 'Seleziona almeno un manuale del catalogo.'; return; }
+      payload = { ...payload, volumi_selezionati: volumi };
+    }
+
+    const { data, error } = await supabaseClient.from('campagne').insert(payload).select().single();
+    if (error) { msg.textContent = 'Errore: ' + error.message; return; }
+    msg.textContent = '';
+    ['cMateria', 'cTitolo', 'cAutore', 'cEditore', 'cIndice'].forEach(id => document.getElementById(id).value = '');
+    await caricaCampagne();
+    apriCampagna(data.id);
+  });
+
+  async function apriCampagna(id) {
+    campagnaApertaId = id;
+    const { data: campagna, error } = await supabaseClient.from('campagne').select('*').eq('id', id).single();
+    if (error) { alert('Errore: ' + error.message); return; }
+    campagneList = campagneList.map(c => c.id === id ? campagna : c);
+
+    const { data: targets } = await supabaseClient.from('campagna_target')
+      .select('*, programmi(*)').eq('campagna_id', id);
+    targetListAperta = targets || [];
+
+    document.getElementById('campagneListaBox').style.display = 'none';
+    document.getElementById('campagnaDettaglioBox').style.display = 'block';
+    renderDettaglioCampagna(campagna);
+  }
+
+  function chiudiCampagna() {
+    campagnaApertaId = null;
+    document.getElementById('campagneListaBox').style.display = 'block';
+    document.getElementById('campagnaDettaglioBox').style.display = 'none';
+  }
+
+  // ---- converte un JSON di indice manuale in testo leggibile — stessa logica tollerante
+  // di estraiIndiceManuale (analisi-programma.html/confronto.html): accetta sia il formato
+  // "raw" grezzo (index_chapters/chapters_summary/temi_chiave) sia una riga completa del
+  // catalogo condiviso ({dati:{raw:{...}}}), cosi' funziona sia con un export MATRIX sia
+  // con una riga esportata da Atlante stesso ----
+  function testoDaIndiceJson(obj) {
+    const raw = (obj && obj.dati && obj.dati.raw) ? obj.dati.raw : (obj || {});
+    if (Array.isArray(raw.index_chapters) && raw.index_chapters.length > 0) {
+      return raw.index_chapters.map(c => {
+        const sezioni = Array.isArray(c.sections) ? c.sections.map(s => s.title).filter(Boolean).join('; ') : '';
+        return `Cap. ${c.number != null ? c.number : ''}: ${c.title || ''}${sezioni ? ' — ' + sezioni : ''}`;
+      }).join('\n').trim();
+    }
+    if (typeof raw.chapters_summary === 'string' && raw.chapters_summary.trim()) return raw.chapters_summary.trim();
+    if (Array.isArray(raw.temi_chiave) && raw.temi_chiave.length > 0) return raw.temi_chiave.join('\n');
+    if (Array.isArray(raw) && raw.every(x => typeof x === 'string')) return raw.join('\n');
+    return null;
+  }
+
+  function apriModificaCampagna(id) {
+    const c = campagneList.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('overlayModale').innerHTML = `
+      <div class="modale">
+        <h3>Modifica campagna</h3>
+        <div class="campo"><label>Titolo del volume</label><input type="text" id="ccTitolo" value="${escapeHtml(c.libro_titolo)}" /></div>
+        <div class="campo"><label>Autore</label><input type="text" id="ccAutore" value="${escapeHtml(c.libro_autore || '')}" /></div>
+        <div class="campo"><label>Editore</label><input type="text" id="ccEditore" value="${escapeHtml(c.libro_editore || '')}" /></div>
+        <div class="campo" style="max-width:none">
+          <label>Indice del volume</label>
+          <div class="upload"><input type="file" id="ccIndiceFile" accept=".pdf,.txt,.json" /></div>
+          <div id="ccIndiceMsg" style="font-size:12.5px;color:var(--ink-muted);margin-bottom:6px"></div>
+          <textarea id="ccIndice" style="width:100%;min-height:200px;font-family:inherit;padding:8px;font-size:14px;box-sizing:border-box">${escapeHtml(c.libro_indice || '')}</textarea>
+          <p class="aiuto">Carica il PDF dell'indice/sommario (o incolla il testo a mano). Dopo aver salvato, clicca "Rigenera target" per far entrare la campagna in fase "completa" e sbloccare la generazione delle email.</p>
+        </div>
+        <div class="modale-azioni">
+          <button class="secondario" onclick="chiudiModale()">Annulla</button>
+          <button onclick="salvaModificaCampagna('${c.id}')">Salva</button>
+        </div>
+      </div>`;
+    document.getElementById('overlayModale').style.display = 'flex';
+    document.getElementById('ccIndiceFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const msg = document.getElementById('ccIndiceMsg');
+      msg.textContent = 'Estrazione testo in corso...';
+      try {
+        const nome = file.name.toLowerCase();
+        let testo;
+        if (nome.endsWith('.pdf')) {
+          testo = await estraiTestoPdf(file);
+        } else if (nome.endsWith('.json')) {
+          const parsed = JSON.parse(await file.text());
+          testo = testoDaIndiceJson(parsed);
+          if (!testo) throw new Error('JSON riconosciuto ma senza un campo indice noto (index_chapters/chapters_summary/temi_chiave). Incolla il testo a mano.');
+        } else {
+          testo = await file.text();
+        }
+        document.getElementById('ccIndice').value = testo;
+        msg.textContent = `Estratti ${testo.length} caratteri da "${file.name}".`;
+      } catch (err) {
+        msg.textContent = 'Errore estrazione: ' + err.message;
+      }
+    });
+  }
+
+  async function salvaModificaCampagna(id) {
+    const c = campagneList.find(x => x.id === id);
+    const nuovoIndice = document.getElementById('ccIndice').value.trim();
+    const patch = {
+      libro_titolo: document.getElementById('ccTitolo').value.trim(),
+      libro_autore: document.getElementById('ccAutore').value.trim() || null,
+      libro_editore: document.getElementById('ccEditore').value.trim() || null,
+      libro_indice: nuovoIndice || null,
+    };
+    // se l'indice cambia, i temi estratti in precedenza non sono piu' validi:
+    // vanno ri-estratti alla prossima "Rigenera target", mai tenere temi vecchi
+    // agganciati a un indice diverso
+    if (nuovoIndice !== (c.libro_indice || '')) patch.libro_temi = null;
+    const { error } = await supabaseClient.from('campagne').update(patch).eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    chiudiModale();
+    await apriCampagna(id);
+  }
+
+  const RILEVANZA_ORDINE = { alta: 0, media: 1, bassa: 2 };
+
+  function renderDettaglioCampagna(c) {
+    const box = document.getElementById('campagnaDettaglioBox');
+    const ordinati = [...targetListAperta].sort((a, b) => (RILEVANZA_ORDINE[a.rilevanza] ?? 3) - (RILEVANZA_ORDINE[b.rilevanza] ?? 3));
+    const righeTarget = ordinati.map(t => {
+      const p = t.programmi;
+      const manualeCell = renderManualiCitatiCompatto(p)
+        + `<br/><button class="secondario" style="font-size:11px;padding:2px 7px;margin-top:4px" onclick="apriModificaManualeAdottato('${p.id}', () => apriCampagna(campagnaApertaId))">Correggi</button>`;
+      return `<tr>
+        <td>${escapeHtml(p.docente_nome || '(n/d)')}<br/><span style="color:var(--ink-muted);font-size:12px">${escapeHtml(p.ateneo || '')}</span></td>
+        <td>${manualeCell}</td>
+        <td><span class="scenario-badge">${escapeHtml({ principale: 'editore proprio principale', alternativo: 'editore proprio alternativo', assente: 'editore proprio assente' }[p.scenario_editore_proprio] || 'n/d')}</span></td>
+        <td>${t.rilevanza ? `<span class="rilevanza-badge rilevanza-${t.rilevanza}">${t.rilevanza}</span>` : '—'}</td>
+        <td>${t.overlap_giudizio ? `<span class="giudizio-badge-b ${t.overlap_giudizio}">${t.overlap_giudizio}</span>` : '—'}</td>
+        <td>${t.framework_giudizio ? `<span class="giudizio-badge-b ${t.framework_giudizio}">${t.framework_giudizio}</span>` : '—'}</td>
+        <td class="azioni">
+          <button class="secondario" onclick="generaMotivazioneTarget('${t.id}')">${t.opzioni_catalogo ? 'Rigenera analisi' : 'Genera analisi'}</button>
+          ${t.opzioni_catalogo ? `<button class="secondario" onclick="mostraMotivazione('${t.id}')">Vedi analisi</button>` : ''}
+          ${(p.valutazione_programma || p.valutazione_manuale_adottato) ? `<button class="secondario" title="Ricalcola anche le parti 1 e 2 (di solito riusate dalla cache) — utile dopo un aggiornamento della logica di analisi, non solo dopo una correzione dati" onclick="generaMotivazioneTarget('${t.id}', true)">Ricalcola tutto da zero</button>` : ''}
+          <button class="secondario" ${(t.opzioni_catalogo && (c.modalita === 'catalogo_materia' || c.fase === 'completa')) ? '' : 'disabled'} title="${(c.modalita === 'catalogo_materia' || c.fase === 'completa') ? (p.dati_verificati ? '' : 'Attenzione: dati del programma non ancora verificati in staging — l\'email li scrive per esteso, controllali prima di inviarla') : 'Serve almeno l\'indice del volume: senza contenuti concreti da offrire, un\'email di contatto è prematura'}" style="${(t.opzioni_catalogo && (c.modalita === 'catalogo_materia' || c.fase === 'completa') && !p.dati_verificati) ? 'border-color:#9c3b30;color:#9c3b30' : ''}" onclick="generaEmailTarget('${t.id}')">${t.email_corpo ? 'Rigenera email' : 'Genera email'}${(t.opzioni_catalogo && (c.modalita === 'catalogo_materia' || c.fase === 'completa') && !p.dati_verificati) ? ' ⚠️' : ''}</button>
+          ${t.email_corpo ? `<button class="secondario" onclick="mostraEmail('${t.id}')">Vedi email</button>` : ''}
+          ${(!p.temi_principali || p.temi_principali.length === 0) ? `<button class="secondario" onclick="rigeneraClassificazione('${p.id}', () => apriCampagna(campagnaApertaId))">Rigenera classificazione</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+
+    const titoloCampagna = c.modalita === 'catalogo_materia'
+      ? `Catalogo ${escapeHtml(c.materia)} (${(c.volumi_selezionati || []).length} manuali)`
+      : escapeHtml(c.libro_titolo);
+
+    box.innerHTML = `
+      <button class="secondario" onclick="chiudiCampagna()">← Tutte le campagne</button>
+      <h2 style="margin-top:16px">${titoloCampagna} <span class="stato-badge ${c.stato}">${c.stato}</span>${c.fase ? `<span class="fase-badge">${c.fase === 'pre_valutazione' ? 'pre-valutazione' : 'completa'}</span>` : ''}</h2>
+      <p class="aiuto">${escapeHtml(c.materia)}${c.libro_autore ? ' · ' + escapeHtml(c.libro_autore) : ''}${c.libro_editore ? ' · ' + escapeHtml(c.libro_editore) : ''}</p>
+      ${c.modalita === 'catalogo_materia' ? `<p class="aiuto">Manuali in analisi: ${(c.volumi_selezionati || []).map(v => escapeHtml(v.titolo)).join(', ')}</p>` : ''}
+      ${(c.modalita === 'volume_singolo' && !c.libro_indice) ? '<p class="aiuto"><em>Nessun indice fornito: la campagna resta in pre-valutazione (il volume non esiste ancora come testo da confrontare).</em></p>' : ''}
+      <button id="btnGeneraTarget">${targetListAperta.length ? 'Rigenera target' : 'Genera target'}</button>
+      ${c.modalita === 'volume_singolo' ? `<button class="secondario" onclick="apriModificaCampagna('${c.id}')">Modifica campagna / indice</button>` : ''}
+      <div id="msgTarget" style="font-size:13px;margin-top:8px"></div>
+      ${targetListAperta.length ? `
+      <table class="target">
+        <thead><tr><th>Docente</th><th>Manuale adottato</th><th>Scenario</th><th>Rilevanza</th><th>Overlap tematico</th><th>Framework</th><th>Azioni</th></tr></thead>
+        <tbody>${righeTarget}</tbody>
+      </table>` : '<p class="staging-vuoto">Nessun target generato ancora.</p>'}
+      <div id="boxMotivazioneEmail"></div>
+    `;
+    document.getElementById('btnGeneraTarget').addEventListener('click', () => generaTarget(c.id));
+  }
+
+  // ---- estrazione temi dall'indice — stesso prompt di MATRIX Intelligence Plus ----
+  async function estraiTemiLibro(indice, apiKey, modello) {
+    const res = await chiamaOpenAIJson(
+      `Estrai 10-15 temi/argomenti chiave dal seguente indice di un libro accademico.\n\nINDICE:\n${indice.slice(0, 8000)}\n\nRispondi con JSON: {"temi": ["tema1", "tema2", ...]}`,
+      apiKey, modello, 500
+    );
+    return Array.isArray(res.temi) ? res.temi : [];
+  }
+
+  // ---- targeting: rilevanza/overlap/framework SOLO calcolo JS, mai IA (decisione presa,
+  // vedi Piano_Sviluppo_Piano_Promozione.html §2) — bande qualitative, mai un numero mostrato ----
+  function calcolaRilevanzaTarget(campagna, programma, framework) {
+    const scenario = programma.scenario_editore_proprio;
+    let rilevanza = scenario === 'assente' ? 'alta' : scenario === 'alternativo' ? 'media' : 'bassa';
+
+    const bookThemes = (campagna.libro_temi || []).map(t => String(t).toLowerCase().trim()).filter(Boolean);
+    const progThemes = (programma.temi_principali || []).map(t => String(t).toLowerCase().trim()).filter(Boolean);
+    let overlapGiudizio = null;
+    if (bookThemes.length && progThemes.length) {
+      const coperti = bookThemes.filter(bt => progThemes.some(pt => pt.includes(bt) || bt.includes(pt) || levenshteinSimilarity(pt, bt) > 0.65)).length;
+      const overlapPct = coperti / bookThemes.length;
+      overlapGiudizio = overlapPct >= 0.5 ? 'alto' : overlapPct >= 0.2 ? 'medio' : 'basso';
+    }
+
+    let framGiudizio = null;
+    const moduli = framework ? estraiModuliFramework(framework) : null;
+    if (moduli && moduli.length && progThemes.length) {
+      const coperti = moduli.filter(m => {
+        const testoModulo = (m.nome + ' ' + (m.contenuti || '')).toLowerCase();
+        return progThemes.some(pt => testoModulo.includes(pt) || levenshteinSimilarity(pt, m.nome.toLowerCase()) > 0.65);
+      }).length;
+      const framScore = coperti / moduli.length;
+      framGiudizio = framScore >= 0.4 ? 'alto' : framScore >= 0.15 ? 'medio' : 'basso';
+    }
+
+    if (overlapGiudizio === 'alto' || framGiudizio === 'alto') {
+      if (rilevanza === 'bassa') rilevanza = 'media';
+      else if (rilevanza === 'media') rilevanza = 'alta';
+    }
+    return { rilevanza, overlapGiudizio, framGiudizio };
+  }
+
+  async function generaTarget(campagnaId) {
+    const campagna = campagneList.find(c => c.id === campagnaId);
+    const msg = document.getElementById('msgTarget');
+    msg.className = ''; msg.innerHTML = '<span class="spinner"></span>Generazione target...';
+    try {
+      // fase (pre_valutazione/completa) ha senso solo per volume_singolo, dove il volume
+      // puo' non esistere ancora come indice reale — un catalogo_materia lavora sempre su
+      // manuali gia' pubblicati e catalogati, quindi non ha bisogno di questo concetto
+      let fase = null, stato = 'completata';
+      if (campagna.modalita === 'volume_singolo') {
+        let libroTemi = campagna.libro_temi || [];
+        const hasIndice = (campagna.libro_indice || '').trim().length > 20;
+        if (hasIndice && libroTemi.length === 0) {
+          const { apiKey, modello } = leggiApiKeyModello();
+          if (!apiKey) throw new Error('Inserisci la chiave OpenAI nella tab "Carica programmi" per estrarre i temi dall\'indice.');
+          libroTemi = await estraiTemiLibro(campagna.libro_indice, apiKey, modello);
+          await supabaseClient.from('campagne').update({ libro_temi: libroTemi }).eq('id', campagnaId);
+          campagna.libro_temi = libroTemi;
+        }
+        fase = (libroTemi.length > 0 || hasIndice) ? 'completa' : 'pre_valutazione';
+        stato = (fase === 'completa' && libroTemi.length > 0) ? 'completata' : 'bozza';
+      }
+
+      const { data: programmiConfermati } = await supabaseClient.from('programmi')
+        .select('*').eq('cliente_id', clienteId).eq('stato', 'confermato');
+      const matched = (programmiConfermati || []).filter(p => checkSubjectMatch(campagna.materia, p.materia_inferita));
+      const framework = tuttiFramework.find(f => checkSubjectMatch(f.materia, campagna.materia));
+      let frameworkCompleto = null;
+      if (framework) {
+        const { data } = await supabaseClient.from('framework').select('id, nome, materia, dati').eq('id', framework.id).single();
+        frameworkCompleto = data;
+      }
+
+      // sincronizza invece di cancellare-e-ricreare: un target su cui e' gia' stata generata
+      // motivazione/email non va perso solo perche' si rigenera il targeting (es. dopo aver
+      // aggiunto l'indice) — si aggiornano solo rilevanza/overlap/framework, mai i campi IA
+      // gia' prodotti; si tocca insert/delete solo per programmi che sono entrati/usciti
+      // dal match materia
+      const { data: esistenti } = await supabaseClient.from('campagna_target').select('id, programma_id').eq('campagna_id', campagnaId);
+      const esistentiMap = new Map((esistenti || []).map(r => [r.programma_id, r.id]));
+      const matchedIds = new Set(matched.map(p => p.id));
+
+      const daRimuovere = (esistenti || []).filter(r => !matchedIds.has(r.programma_id)).map(r => r.id);
+      if (daRimuovere.length) await supabaseClient.from('campagna_target').delete().in('id', daRimuovere);
+
+      for (const p of matched) {
+        const { rilevanza, overlapGiudizio, framGiudizio } = calcolaRilevanzaTarget(campagna, p, frameworkCompleto);
+        const riga = { rilevanza, overlap_giudizio: overlapGiudizio, framework_giudizio: framGiudizio };
+        const idEsistente = esistentiMap.get(p.id);
+        if (idEsistente) await supabaseClient.from('campagna_target').update(riga).eq('id', idEsistente);
+        else await supabaseClient.from('campagna_target').insert({ campagna_id: campagnaId, programma_id: p.id, ...riga });
+      }
+
+      const { error: eFaseStato } = await supabaseClient.from('campagne').update({ fase, stato }).eq('id', campagnaId);
+      if (eFaseStato) throw new Error('Salvataggio fase/stato: ' + eFaseStato.message);
+
+      msg.textContent = `${matched.length} programma/i trovato/i per questa materia.`;
+      await apriCampagna(campagnaId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  function relazioneBloccoPrompt(relazione) {
+    if (!relazione || relazione === 'nessuna') return '';
+    const label = (RELAZIONI.find(([v]) => v === relazione) || [, relazione])[1];
+    return `\n⚠️ RELAZIONE DOCENTE-MANUALE: il docente è ${label}. NON proporre una sostituzione diretta del manuale adottato: al massimo un volume complementare o un affiancamento, mai una sostituzione.`;
+  }
+
+  // ---- framework completo (con dati/moduli) per una materia, con cache locale per non
+  // rifare la stessa query ad ogni target della stessa campagna ----
+  const _frameworkCompletoCache = new Map();
+  async function fetchFrameworkPerMateria(materia) {
+    if (_frameworkCompletoCache.has(materia)) return _frameworkCompletoCache.get(materia);
+    const f = tuttiFramework.find(fr => checkSubjectMatch(fr.materia, materia));
+    let risultato = null;
+    if (f) {
+      const { data } = await supabaseClient.from('framework').select('id, nome, materia, dati').eq('id', f.id).single();
+      risultato = data;
+    }
+    _frameworkCompletoCache.set(materia, risultato);
+    return risultato;
+  }
+
+  // ---- risale a TUTTI i manuali citati (principale + alternativi) e, dove possibile, al
+  // loro indice reale nel catalogo condiviso — priorita' a manual_catalog_id se gia'
+  // impostato (collegamento diretto per il principale, niente da indovinare), altrimenti
+  // fallback sulla cascata euristica trovaManualeAdottatoInCatalogo. Segnala anche se un
+  // alternativo e' un tuo titolo (editore proprio): e' un'opportunita' di upgrade diversa
+  // da un candidato qualunque — decisione presa con Sergio il 23 luglio 2026, prima si
+  // guardava solo il principale, ignorando sia gli alternativi che potevano gia' coprire
+  // un "gap" apparente, sia l'opportunita' di upgrade se uno era gia' un tuo libro ----
+  async function raccogliManualiConIndici(programma, materia) {
+    const risultati = [];
+    for (const m of (programma.manuali_citati || [])) {
+      if (!m.titolo) continue;
+      let catalogoId = (m.ruolo === 'principale') ? (programma.manual_catalog_id || null) : null;
+      if (!catalogoId) {
+        const candidato = trovaManualeAdottatoInCatalogo(m.titolo, m.autore, materia);
+        catalogoId = candidato ? candidato.id : null;
+      }
+      let indice = null, editoreProprioMatch = false;
+      if (catalogoId) {
+        const { data } = await supabaseClient.from('manuali').select('publisher, dati').eq('id', catalogoId).single();
+        if (data) {
+          indice = estraiIndiceManuale({ dati: data.dati });
+          editoreProprioMatch = (data.publisher || '').toLowerCase().trim() === (editoreProprio || '').toLowerCase().trim();
+        }
+      }
+      risultati.push({ ruolo: m.ruolo, titolo: m.titolo, autore: m.autore, editore: m.editore, indice, editoreProprio: editoreProprioMatch });
+    }
+    return risultati;
+  }
+
+  // ================= MOTIVAZIONE A 3 PARTI =================
+  // Parte 1 e 2 sono proprieta' del programma (docente + manuale adottato), non della
+  // campagna: calcolate una volta e salvate su programmi, riusate da qualunque campagna
+  // tocchi lo stesso docente in futuro. Solo la parte 3 (opzioni di catalogo) e' specifica
+  // di ogni campagna. Decisione presa con Sergio il 23 luglio 2026.
+
+  // ---- PARTE 1 (cache su programmi.valutazione_programma) ----
+  function costruisciPromptValutazioneProgramma(programma, moduli) {
+    const moduliTesto = moduli && moduli.length
+      ? moduli.map((m, i) => `${i + 1}. ${m.nome}${m.contenuti ? ' — ' + m.contenuti : ''}`).join('\n') : null;
+    return `Sei un analista editoriale che valuta un programma universitario in modo sintetico, per una campagna di promozione — non un'analisi approfondita (se serve un'analisi approfondita di questo specifico programma, l'utente può usare la sezione "Analisi di un programma").
+
+PROGRAMMA:
+${programma.testo_programma.slice(0, 8000)}
+${moduliTesto ? `
+
+MODULI DEL FRAMEWORK DISCIPLINARE DI QUESTA MATERIA:
+${moduliTesto}
+Per ciascuno valuta se il programma lo tratta (stato: presente|parziale|assente) e quanto peso ha per questo corso specifico (peso: alto|medio|basso) — se lo stato e' assente il peso non puo' essere alto ne' medio.` : ''}
+
+Scrivi anche una sintesi di 2-3 frasi su tipologia e taglio del corso, e il livello (base/intermedio/avanzato).
+
+Non inventare contenuti non presenti nel programma.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"sintesi":"", "tipologia":"", "livello":"base|intermedio|avanzato"${moduliTesto ? `, "moduli":[{"modulo":"<nome esatto>","stato":"presente|parziale|assente","peso":"alto|medio|basso"}]` : ''}}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function assicuraValutazioneProgramma(programma, apiKey, modello) {
+    if (programma.valutazione_programma) return programma.valutazione_programma;
+    const framework = await fetchFrameworkPerMateria(programma.materia_inferita);
+    const moduli = framework ? estraiModuliFramework(framework) : null;
+    const risultato = await chiamaOpenAIJson(costruisciPromptValutazioneProgramma(programma, moduli), apiKey, modello, 1200);
+    await supabaseClient.from('programmi').update({ valutazione_programma: risultato }).eq('id', programma.id);
+    programma.valutazione_programma = risultato;
+    return risultato;
+  }
+
+  // ---- PARTE 2 (cache su programmi.valutazione_manuale_adottato) — valuta l'INSIEME dei
+  // testi assegnati (principale + alternativi), non solo il principale isolato: un modulo
+  // e' un gap vero solo se nessuno dei testi gia' assegnati lo copre, altrimenti si rischia
+  // di segnalare come lacuna qualcosa che il docente ha gia' risolto con una lettura
+  // complementare. Se un alternativo e' un tuo titolo, e' un'opportunita' di upgrade da
+  // evidenziare, non un candidato di catalogo qualunque ----
+  function costruisciPromptValutazioneManualeAdottato(programma, valutazioneProgramma, manualiConIndici) {
+    const moduliContesto = (valutazioneProgramma.moduli || []).length
+      ? `\n\nMODULI DEL FRAMEWORK E LORO PESO PER QUESTO PROGRAMMA (già calcolato, non ridiscutere):\n${valutazioneProgramma.moduli.map(m => `- ${m.modulo}: il programma lo tratta come "${m.stato}", peso ${m.peso}`).join('\n')}` : '';
+    const testoManuali = manualiConIndici.map((m, i) => `${i + 1}. [${m.ruolo}]${m.editoreProprio ? ' [TUO TITOLO]' : ''} "${m.titolo}" (${m.autore || 'autore n/d'})\n${m.indice ? 'INDICE:\n' + m.indice.slice(0, 3000) : '(indice non disponibile)'}`).join('\n\n');
+    const haUpgrade = manualiConIndici.some(m => m.ruolo !== 'principale' && m.editoreProprio);
+    return `Sei un analista editoriale che valuta l'insieme dei testi assegnati dal docente per questo programma — non solo il principale: anche le letture alternative/complementari contano, perché possono già coprire argomenti che altrimenti sembrerebbero lacune.
+
+PROGRAMMA (per contesto):
+${programma.testo_programma.slice(0, 5000)}
+${moduliContesto}
+
+TESTI ASSEGNATI DAL DOCENTE (principale + alternativi):
+${testoManuali}
+
+Valuta la copertura COMPLESSIVA (principale + tutti gli alternativi insieme) rispetto ai moduli sopra elencati: un modulo è un gap vero solo se NESSUNO dei testi assegnati lo copre bene, non solo se manca dal principale.
+${haUpgrade ? `\n⚠️ Il docente assegna già un tuo titolo come lettura alternativa/complementare (contrassegnato [TUO TITOLO] sopra): se è una buona base per questo programma, evidenzialo esplicitamente come opportunità di UPGRADE a testo principale nel campo "opportunita_upgrade" — non trattarlo come un candidato di catalogo qualunque.` : ''}
+
+Poi:
+- gap: SOLO i moduli di peso alto o medio non coperti bene da NESSUNO dei testi assegnati — ordina per importanza, mai un modulo di peso basso
+- punti_forza: 2-3 aspetti positivi dell'insieme dei testi già assegnati (se un alternativo tuo è già una buona base, dillo qui)
+- opportunita_upgrade: una frase se un alternativo è un tuo titolo e vale la pena proporlo come principale, altrimenti null
+- sintesi: 2-3 frasi
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"moduli":[{"modulo":"<nome esatto>","stato":"presente|parziale|assente"}], "gap":[{"modulo":"<nome esatto>","nota":""}], "punti_forza":[""], "opportunita_upgrade":null, "sintesi":""}
+Nessun testo fuori dal JSON.`;
+  }
+
+  async function assicuraValutazioneManualeAdottato(programma, valutazioneProgramma, materia, apiKey, modello) {
+    if (programma.valutazione_manuale_adottato) return programma.valutazione_manuale_adottato;
+    const manualiConIndici = await raccogliManualiConIndici(programma, materia);
+    if (manualiConIndici.length === 0) {
+      // niente da mettere in cache: non e' un risultato IA, solo l'assenza di un titolo noto
+      return { moduli: [], gap: [], punti_forza: [], opportunita_upgrade: null, sintesi: 'Nessun manuale risulta citato nel testo del programma: non è possibile valutarlo.' };
+    }
+    const risultato = await chiamaOpenAIJson(costruisciPromptValutazioneManualeAdottato(programma, valutazioneProgramma, manualiConIndici), apiKey, modello, 1400);
+    await supabaseClient.from('programmi').update({ valutazione_manuale_adottato: risultato }).eq('id', programma.id);
+    programma.valutazione_manuale_adottato = risultato;
+    return risultato;
+  }
+
+  // ---- PARTE 3 (specifica della campagna — 1 candidato per volume_singolo, fino a 5 per
+  // catalogo_materia, valutati in UN'UNICA chiamata: decisione presa per contenere il costo) ----
+  function costruisciPromptOpzioniCatalogo(valutazioneManuale, candidati) {
+    const candidatiTesto = candidati.map((c, i) => `${i + 1}. "${c.titolo}"${c.autore ? ' (' + c.autore + ')' : ''}\nINDICE:\n${(c.indice || 'non disponibile').slice(0, 3000)}`).join('\n\n');
+    return `Sei un consulente editoriale. Questa è la valutazione già fatta dell'insieme dei testi assegnati dal docente rispetto a questo programma (non ridiscuterla, usala come riferimento):
+
+SINTESI DELLA VALUTAZIONE: ${valutazioneManuale.sintesi || ''}
+GAP STRUTTURATI (solo sui moduli del framework disciplinare — può essere vuoto anche se la sintesi sopra segnala problemi reali: in quel caso fidati della sintesi, non della lista): ${JSON.stringify(valutazioneManuale.gap || [])}
+PUNTI DI FORZA GIÀ PRESENTI (da non perdere in un eventuale cambio): ${JSON.stringify(valutazioneManuale.punti_forza || [])}
+${valutazioneManuale.opportunita_upgrade ? `\n⚠️ OPPORTUNITÀ DI UPGRADE GIÀ IDENTIFICATA: ${valutazioneManuale.opportunita_upgrade}\nSe uno dei candidati sotto corrisponde a questo titolo già assegnato come lettura alternativa, evidenzialo come prima scelta con questa motivazione — non trattarlo come un candidato qualunque tra gli altri.` : ''}
+
+CANDIDATI DISPONIBILI:
+${candidatiTesto}
+
+Per ciascun candidato, valuta quanto risolve SPECIFICAMENTE i problemi indicati sopra (nella sintesi e/o nei gap strutturati) — copertura_gap: alta|media|bassa.
+Poi scrivi 2-3 vantaggi concreti per QUESTO programma — ma un docente non sceglie un manuale per la copertura dei contenuti in sé, sceglie l'utilità che gliene deriva (a lui e ai suoi studenti): non scrivere mai "affronta l'argomento X" da solo, traduci sempre il contenuto nel beneficio pratico che produce — per il docente (es. meno tempo speso a integrare materiale mancante, lezioni più solide su un argomento su cui gli studenti faticano) e/o per gli studenti (es. preparazione più solida su un argomento d'esame, materiale più chiaro su un tema difficile). Il contenuto tecnico resta il fondamento del vantaggio — va sempre citato, mai inventato — ma non va mai lasciato come semplice elenco di argomenti coperti. Se il manuale attuale non ha problemi significativi, dillo onestamente per ogni candidato (copertura_gap: bassa, vantaggi minimi o vuoti) — ma non ignorare un problema reale descritto nella sintesi solo perché non compare nei gap strutturati.
+
+Rispondi SOLO con un oggetto JSON, con i candidati ORDINATI dal migliore al peggiore:
+{"opzioni":[{"titolo":"<nome esatto tra quelli sopra>","copertura_gap":"alta|media|bassa","vantaggi":["",""],"sintesi":""}]}
+Nessun testo fuori dal JSON.`;
+  }
+
+  function normalizzaTitoloAutore(titolo, autore) {
+    return `${(titolo || '').toLowerCase().trim()}|${(autore || '').toLowerCase().trim()}`;
+  }
+
+  async function candidatiPerCampagna(campagna, programma) {
+    let candidati;
+    if (campagna.modalita === 'catalogo_materia') {
+      candidati = [];
+      for (const v of (campagna.volumi_selezionati || [])) {
+        const { data } = await supabaseClient.from('manuali').select('dati').eq('id', v.manuale_id).single();
+        candidati.push({ manuale_id: v.manuale_id, titolo: v.titolo, autore: v.autore, indice: data ? estraiIndiceManuale({ dati: data.dati }) : null });
+      }
+    } else {
+      candidati = [{ titolo: campagna.libro_titolo, autore: campagna.libro_autore, indice: campagna.libro_indice }];
+    }
+    // esclude i candidati che coincidono con un manuale gia' citato dal docente per QUESTO
+    // programma (principale o alternativo): proporre di sostituire un libro con se stesso non
+    // ha senso — bug trovato da Sergio su una campagna catalogo_materia con tutto il catalogo
+    // proprio disponibile per la materia selezionato, che includeva anche il manuale gia' adottato
+    const citati = (programma.manuali_citati || []).map(m => normalizzaTitoloAutore(m.titolo, m.autore));
+    return candidati.filter(c => {
+      if (c.manuale_id && programma.manual_catalog_id && c.manuale_id === programma.manual_catalog_id) return false;
+      return !citati.includes(normalizzaTitoloAutore(c.titolo, c.autore));
+    });
+  }
+
+  // ---- svuota la cache di parte 1+2 (valutazione_programma, valutazione_manuale_adottato)
+  // — serve quando si vuole un ricalcolo completo, non solo delle opzioni di catalogo
+  // (es. dopo un aggiornamento della logica di analisi, non solo dopo una correzione dati:
+  // quella invalida gia' la cache da sola in salvaModificaManualeAdottato) ----
+  async function invalidaCacheValutazioni(programma) {
+    programma.valutazione_programma = null;
+    programma.valutazione_manuale_adottato = null;
+    await supabaseClient.from('programmi').update({ valutazione_programma: null, valutazione_manuale_adottato: null }).eq('id', programma.id);
+  }
+
+  async function generaMotivazioneTarget(targetId, forzaRicalcoloCompleto) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    const campagna = campagneList.find(c => c.id === campagnaApertaId);
+    const { apiKey, modello } = leggiApiKeyModello();
+    const msg = document.getElementById('msgTarget');
+    if (!apiKey) { msg.className = 'errore'; msg.textContent = 'Inserisci la chiave OpenAI nella tab "Carica programmi".'; return; }
+    msg.className = '';
+    try {
+      const programma = t.programmi;
+      if (forzaRicalcoloCompleto) await invalidaCacheValutazioni(programma);
+
+      msg.innerHTML = '<span class="spinner"></span>1/3 — valutazione del programma...';
+      const valutazioneProgramma = await assicuraValutazioneProgramma(programma, apiKey, modello);
+
+      msg.innerHTML = '<span class="spinner"></span>2/3 — valutazione del manuale adottato...';
+      const valutazioneManuale = await assicuraValutazioneManualeAdottato(programma, valutazioneProgramma, campagna.materia, apiKey, modello);
+
+      msg.innerHTML = '<span class="spinner"></span>3/3 — confronto con le opzioni di catalogo...';
+      const candidati = await candidatiPerCampagna(campagna, programma);
+      let opzioniCatalogo;
+      if (candidati.length === 0) {
+        // tutti i candidati di questa campagna sono gia' citati dal docente (principale o
+        // alternativo) per questo programma: nessuna opzione indipendente da proporre
+        opzioniCatalogo = [];
+      } else if (!valutazioneManuale.moduli.length && !valutazioneManuale.gap.length && !valutazioneManuale.punti_forza.length && !valutazioneManuale.opportunita_upgrade) {
+        // solo qui non ha senso chiamare l'IA: il manuale adottato non e' nemmeno
+        // identificabile (nessun titolo nel testo), quindi non c'e' niente da confrontare —
+        // MAI saltare la chiamata solo perche' "gap" e' vuoto: puo' essere vuoto anche
+        // quando il manuale ha problemi reali che la sintesi descrive ma i moduli del
+        // framework non catturano (bug trovato da Sergio: analisi contraddittoria, "lacune
+        // significative" nella sintesi ma "nessun gap da risolvere" per ogni opzione)
+        opzioniCatalogo = candidati.map(c => ({ titolo: c.titolo, autore: c.autore || null, copertura_gap: null, vantaggi: [], sintesi: 'Manuale adottato non verificabile: nessun gap da confrontare.' }));
+      } else {
+        const risultato = await chiamaOpenAIJson(costruisciPromptOpzioniCatalogo(valutazioneManuale, candidati), apiKey, modello, 1500);
+        // l'autore non viene richiesto all'IA (basta che riconosca il titolo esatto tra i
+        // candidati forniti): lo si recupera qui dalla lista candidati gia' nota, invece di
+        // fidarsi che l'IA lo ripeta identico — molti manuali hanno titoli quasi identici e
+        // senza autore in tabella l'utente non può distinguerli (segnalato da Sergio)
+        opzioniCatalogo = (Array.isArray(risultato.opzioni) ? risultato.opzioni : []).map(o => {
+          const candidato = candidati.find(c => c.titolo.toLowerCase().trim() === (o.titolo || '').toLowerCase().trim());
+          return { ...o, autore: candidato ? candidato.autore || null : null };
+        });
+      }
+
+      const { error } = await supabaseClient.from('campagna_target').update({ opzioni_catalogo: opzioniCatalogo }).eq('id', targetId);
+      if (error) throw new Error(error.message);
+      msg.textContent = 'Analisi generata.';
+      await apriCampagna(campagnaApertaId);
+      mostraMotivazione(targetId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  function mostraMotivazione(targetId) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    if (!t) return;
+    const p = t.programmi;
+    const vp = p.valutazione_programma, vm = p.valutazione_manuale_adottato;
+    if (!vp && !vm && !t.opzioni_catalogo) return;
+    const moduliVp = (vp && vp.moduli || []).map(m => `<div class="peso-riga">· ${escapeHtml(m.modulo)} — ${escapeHtml(m.stato)}, peso <strong>${escapeHtml(m.peso)}</strong></div>`).join('');
+    const gapVm = (vm && vm.gap || []).map(g => `<li>${escapeHtml(g.modulo)}: ${escapeHtml(g.nota)}</li>`).join('');
+    const puntiVm = (vm && vm.punti_forza || []).map(pf => `<li>${escapeHtml(pf)}</li>`).join('');
+    const opzioniGenerate = Array.isArray(t.opzioni_catalogo);
+    const opzioni = (t.opzioni_catalogo || []).map(o => `
+      <div style="border:1px solid #cfe0d0;border-radius:6px;padding:10px 14px;margin:8px 0">
+        <strong>${escapeHtml(o.titolo)}</strong>${o.autore ? ` <span style="color:var(--ink-muted);font-weight:normal">— ${escapeHtml(o.autore)}</span>` : ''} ${o.copertura_gap ? `<span class="giudizio-badge-b ${o.copertura_gap === 'alta' ? 'alto' : o.copertura_gap === 'media' ? 'medio' : 'basso'}">copertura gap: ${escapeHtml(o.copertura_gap)}</span>` : ''}
+        <p style="margin:6px 0 0;font-size:13.5px">${escapeHtml(o.sintesi || '')}</p>
+        ${(o.vantaggi || []).length ? `<ul style="margin:6px 0 0">${o.vantaggi.map(v => `<li>${escapeHtml(v)}</li>`).join('')}</ul>` : ''}
+      </div>`).join('');
+
+    const relazioneLabel = (RELAZIONI.find(([v]) => v === p.relazione_docente_manuale) || [])[1];
+    const alertRelazione = (p.relazione_docente_manuale && p.relazione_docente_manuale !== 'nessuna')
+      ? `<div style="background:#f1dbd7;border:1px solid #9c3b30;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-weight:600;color:#9c3b30">⚠️ Attenzione: il docente è ${escapeHtml(relazioneLabel || p.relazione_docente_manuale)} del manuale adottato — non proporre una sostituzione diretta, solo un eventuale affiancamento.</div>`
+      : '';
+
+    document.getElementById('boxMotivazioneEmail').innerHTML = `
+      <div class="motiv-box">
+        ${alertRelazione}
+        <p><b>1. Il programma:</b> ${escapeHtml(vp ? vp.sintesi : 'non ancora valutato')}</p>
+        ${moduliVp ? `<p class="aiuto" style="margin-top:6px">Moduli del framework per questo programma:</p>${moduliVp}` : ''}
+        <p style="margin-top:14px"><b>2. Il manuale adottato:</b> ${escapeHtml(vm ? vm.sintesi : 'non ancora valutato')}</p>
+        ${gapVm ? `<p class="aiuto" style="margin-top:6px">Gap rispetto a questo programma:</p><ul>${gapVm}</ul>` : ''}
+        ${puntiVm ? `<p class="aiuto" style="margin-top:6px">Punti di forza:</p><ul>${puntiVm}</ul>` : ''}
+        ${(vm && vm.opportunita_upgrade) ? `<div style="background:#dcece3;border:1px solid #2f6b4f;border-radius:6px;padding:8px 12px;margin-top:8px;font-size:13.5px"><strong>Opportunità di upgrade:</strong> ${escapeHtml(vm.opportunita_upgrade)}</div>` : ''}
+        <p style="margin-top:14px"><b>3. Opzioni di catalogo per una possibile sostituzione:</b></p>
+        ${opzioniGenerate
+          ? (opzioni || '<p class="aiuto">Nessuna opzione di catalogo indipendente: il docente cita già, come principale o alternativo, tutti i manuali propri disponibili per questa materia.</p>')
+          : '<p class="aiuto">Non ancora generate.</p>'}
+        <p class="aiuto" style="margin-top:12px"><em>Analisi sintetica per la campagna. Per un'analisi approfondita di questo specifico programma, usa la sezione "Analisi di un programma".</em></p>
+      </div>`;
+  }
+
+  // ogni scenario ha sia il tono (usato subito nel prompt) sia l'obiettivo di fondo del
+  // contatto: prima il paragrafo "obiettivo" era unico per tutti gli scenari e parlava
+  // sempre di "proporsi come interlocutori per una soluzione" ai gap — corretto per lo
+  // scenario 'alternativo' (upgrade), ma per 'principale' produceva mail che sembravano un
+  // invito a cambiare libro invece di un check-in di fidelizzazione (bug trovato da Sergio)
+  function bloccoScenarioEmail(scenario) {
+    if (scenario === 'principale') return {
+      tono: 'Il docente adotta già un manuale dell\'editore proprio: scrivi una mail di AGGIORNAMENTO/FIDELIZZAZIONE, presentando il volume come novità di catalogo, tono collaborativo.',
+      obiettivo: 'L\'obiettivo primario è verificare la soddisfazione del docente per il testo che adotta già (nostro) e mantenere il rapporto — MAI un invito a cambiarlo, mai un\'accusa sulle scelte fatte finora. Un gap concreto, se emerge, va accennato con leggerezza come spunto facoltativo, presentando l\'eventuale alternativa come un titolo complementare o di aggiornamento da valutare con calma, non come una sostituzione necessaria. Se non ci sono gap significativi (copertura_gap "bassa" o assente), l\'email deve essere quasi interamente di check-in/fidelizzazione, senza proporre alcuna alternativa.',
+      // esempio validato da Sergio (correzione a mano dell'output IA originale, che sbagliava
+      // il tono nonostante l'istruzione "obiettivo" sopra): un esempio concreto ancora il tono
+      // in modo piu' affidabile di sola descrizione astratta — stesso principio gia' seguito
+      // altrove nel progetto (vedi feedback_iterazione_atlante_confronto)
+      esempio: `Gentile Prof. [NOME],
+
+spero che il testo di [AUTORE E TITOLO DEL MANUALE ADOTTATO] che sta attualmente adottando sia soddisfacente per le esigenze del suo insegnamento per la laurea in [CORSO DI LAUREA]. Approfitto per informarla che abbiamo recentemente pubblicato un nuovo volume, "[TITOLO NUOVO VOLUME]" di [AUTORE], che affronta in modo dettagliato temi come [TEMI RILEVANTI], colmando alcune potenziali lacune del volume di [AUTORE DEL VOLUME ADOTTATO].
+
+Condivido con lei un'anteprima del volume, disponibile qui: [LINK_ANTEPRIMA], in modo che possa farsi un'idea dei contenuti e naturalmente resto a sua disposizione per un confronto sulle sue impressioni riguardo al manuale adottato.`,
+    };
+    if (scenario === 'alternativo') return {
+      tono: 'Il docente ha un manuale dell\'editore proprio solo come alternativo: scrivi una mail di PROPOSTA DI UPGRADE a testo principale.',
+      obiettivo: 'L\'obiettivo è far capire al destinatario che abbiamo letto con attenzione il suo programma, valutato il manuale che adotta, e ci proponiamo come interlocutori per una possibile soluzione — non un\'offerta generica. Se la copertura_gap della migliore opzione è "bassa" o non ci sono gap significativi, NON forzare un\'opportunità che non c\'è: scrivi un\'email più esplorativa/di ascolto invece di una proposta diretta.',
+    };
+    return {
+      tono: 'Il docente non adotta alcun manuale dell\'editore proprio: scrivi una mail di PRIMO CONTATTO/CONQUISTA, apertura a una conversazione, non un\'offerta diretta.',
+      obiettivo: 'L\'obiettivo è far capire al destinatario che il suo programma è stato letto con attenzione e proporsi come interlocutori per un possibile confronto futuro — non un\'offerta diretta. Se la copertura_gap della migliore opzione è "bassa" o non ci sono gap significativi, scrivi un\'email esplorativa, di apertura al dialogo, senza forzare alcuna proposta concreta.',
+    };
+  }
+
+  async function generaEmailTarget(targetId) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    const campagna = campagneList.find(c => c.id === campagnaApertaId);
+    const { apiKey, modello } = leggiApiKeyModello();
+    const msg = document.getElementById('msgTarget');
+    if (!apiKey) { msg.className = 'errore'; msg.textContent = 'Inserisci la chiave OpenAI nella tab "Carica programmi".'; return; }
+    if (!t.opzioni_catalogo) { msg.className = 'errore'; msg.textContent = 'Genera prima l\'analisi.'; return; }
+    msg.className = ''; msg.innerHTML = '<span class="spinner"></span>Generazione email...';
+    try {
+      const vm = t.programmi.valutazione_manuale_adottato;
+      const blocco = bloccoScenarioEmail(t.programmi.scenario_editore_proprio);
+      const manualePrincipaleCitato = (t.programmi.manuali_citati || []).find(m => m.ruolo === 'principale');
+      const prompt = `Sei un copywriter editoriale che scrive email per un promotore universitario.
+
+DESTINATARIO: ${t.programmi.docente_nome || 'Docente'} — ${t.programmi.ateneo || ''}${t.programmi.corso_laurea ? `, corso di laurea in ${t.programmi.corso_laurea}` : ''}
+${blocco.tono}
+${relazioneBloccoPrompt(t.programmi.relazione_docente_manuale)}
+
+ANALISI GIA' FATTA (usala con tatto — mostra che il programma è stato letto con attenzione e il manuale adottato valutato con serietà, mai un'accusa diretta al docente sulle scelte fatte finora):
+- Manuale adottato (dato reale: usalo per sostituire ogni riferimento al libro attuale, non lasciarlo come placeholder tra parentesi): ${manualePrincipaleCitato ? `"${manualePrincipaleCitato.titolo}"${manualePrincipaleCitato.autore ? ' di ' + manualePrincipaleCitato.autore : ''}` : 'non specificato nel programma — non nominarlo per titolo, riferiscilo genericamente come "il testo che adotta"'}
+- Gap del manuale attuale rispetto a questo programma: ${JSON.stringify((vm && vm.gap) || [])}
+- Opzioni di catalogo che meglio li risolverebbero (già ordinate dalla migliore): ${JSON.stringify((t.opzioni_catalogo || []).slice(0, 2))}
+
+${blocco.obiettivo}
+${blocco.esempio ? `\nESEMPIO DI TONO E STRUTTURA DA IMITARE (adatta ai dati reali del destinatario, non copiare i placeholder così come sono):\n"""\n${blocco.esempio}\n"""` : ''}
+
+Un docente che valuta un manuale pesa tre rischi diversi, non solo uno: di PRESTAZIONI (i contenuti coprono davvero il programma? — è l'unico che l'analisi sopra copre), SOCIALE (che ne pensano gli studenti e i colleghi se lo adotta?) e di IMMAGINE DI SÉ (che effetto ha sulla propria reputazione professionale?). Oltre ai contenuti, l'email deve rassicurare — con misura, in una frase, mai come argomento centrale — anche sugli altri due: fai leva sulla serietà/tradizione dell'editore o sulla cura con cui è stato pensato il volume, MAI su numeri, adozioni in altri atenei o riconoscimenti specifici che non ti sono stati forniti sopra — se non hai un dato reale da citare, ometti il riferimento invece di inventarlo.
+
+Lascia SOLO il placeholder [LINK_ANTEPRIMA] non compilato (lo completerà il promotore a mano). Ogni altro dato di cui disponi sopra (corso di laurea, manuale adottato, nome del docente) va scritto per esteso nel testo — mai lasciato come segnaposto tra parentesi quadre. Se un dato non è disponibile, riformula la frase per non doverlo nominare, non inventarlo e non lasciare il placeholder.
+Tono professionale, diretto, mai commerciale/aggressivo. Massimo 150 parole nel corpo.
+
+Rispondi SOLO con un oggetto JSON: {"oggetto":"", "corpo":""}
+Nessun testo fuori dal JSON.`;
+      const risultato = await chiamaOpenAIJson(prompt, apiKey, modello, 700);
+      const { error } = await supabaseClient.from('campagna_target')
+        .update({ email_oggetto: risultato.oggetto, email_corpo: risultato.corpo }).eq('id', targetId);
+      if (error) throw new Error(error.message);
+      msg.textContent = 'Email generata.';
+      await apriCampagna(campagnaApertaId);
+      mostraEmail(targetId);
+    } catch (e) {
+      msg.className = 'errore'; msg.textContent = 'Errore: ' + e.message;
+    }
+  }
+
+  function mostraEmail(targetId) {
+    const t = targetListAperta.find(x => x.id === targetId);
+    if (!t || !t.email_corpo) return;
+    document.getElementById('boxMotivazioneEmail').innerHTML = `
+      <div class="email-box">
+        <div class="campo"><label>Oggetto</label><input type="text" id="emailOggetto" value="${escapeHtml(t.email_oggetto || '')}" /></div>
+        <div class="campo" style="max-width:none"><label>Corpo</label><textarea style="min-height:180px">${escapeHtml(t.email_corpo)}</textarea></div>
+      </div>`;
+  }
+
+  // ================= AVVIO =================
+  async function main() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const chi = document.getElementById('chi');
+    if (!session) { chi.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>'; return; }
+    userId = session.user.id;
+
+    const { data: profilo, error: eProfilo } = await supabaseClient
+      .from('profili').select('ruolo, cliente_id, clienti(nome, editore_proprio)').eq('id', userId).maybeSingle();
+    if (eProfilo || !profilo) { chi.innerHTML = `Connesso come ${session.user.email}, ma nessun profilo collegato. Contatta l'amministratore.`; return; }
+
+    clienteId = profilo.cliente_id;
+    editoreProprio = profilo.clienti.editore_proprio;
+    chi.textContent = `${session.user.email} · ${profilo.ruolo} · ${profilo.clienti.nome}`;
+
+    const [{ data: manuali }, { data: framework }] = await Promise.all([
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia'),
+      supabaseClient.from('framework').select('id, nome, materia'),
+    ]);
+    tuttiManuali = manuali || [];
+    tuttiFramework = framework || [];
+
+    document.getElementById('contenuto').style.display = 'block';
+    await caricaStaging();
+  }
+
+  main();
+</script>
+</body>
+</html>

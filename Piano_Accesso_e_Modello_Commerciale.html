@@ -1,0 +1,805 @@
+<title>Piano — Accesso, ruoli e modello commerciale</title>
+<style>
+  :root{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa;
+    --ink:#1b2430; --ink-muted:#5a6675; --ink-faint:#8993a1;
+    --line:#d7dde3;
+    --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc;
+    --brick:#9c3b30; --brick-tint:#f1dbd7;
+    --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+    --mono: ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14181d; --surface:#1b2027; --surface-2:#20262e;
+      --ink:#e7eaee; --ink-muted:#9aa4b0; --ink-faint:#6c7684;
+      --line:#2c333c;
+      --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+      --amber:#dba85a; --amber-tint:#3a2f1c;
+      --brick:#d98a7d; --brick-tint:#3a2420;
+      --green:#7fbf9f; --green-tint:#1c3128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181d; --surface:#1b2027; --surface-2:#20262e; --ink:#e7eaee; --ink-muted:#9aa4b0;
+    --ink-faint:#6c7684; --line:#2c333c; --accent:#7fb3dd; --accent-strong:#a6cbe8; --accent-tint:#1e2e3c;
+    --amber:#dba85a; --amber-tint:#3a2f1c; --brick:#d98a7d; --brick-tint:#3a2420; --green:#7fbf9f; --green-tint:#1c3128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"]{
+    --paper:#eef1f4; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#1b2430; --ink-muted:#5a6675;
+    --ink-faint:#8993a1; --line:#d7dde3; --accent:#2c5f8a; --accent-strong:#1e4463; --accent-tint:#e1ebf3;
+    --amber:#a8710f; --amber-tint:#f3e6cc; --brick:#9c3b30; --brick-tint:#f1dbd7; --green:#2f6b4f; --green-tint:#dcece3;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 10px 28px -14px rgba(27,36,48,0.22);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important; transition:none !important; animation:none !important;} }
+
+  .wrap{max-width:900px; margin:0 auto; padding:44px 24px 80px;}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 10px;
+  }
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(22px,3.4vw,30px); letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;}
+  .lede{font-size:16px; color:var(--ink-muted); max-width:66ch; margin:0 0 6px;}
+  .meta-row{display:flex; gap:16px; flex-wrap:wrap; margin-top:18px; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);}
+
+  h2{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink); margin:0 0 14px;}
+  h3{font-family:var(--sans); font-weight:700; font-size:17px; margin:0 0 8px;}
+  p{margin:0 0 13px; max-width:68ch;}
+  ul,ol{margin:0 0 14px; padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{font-weight:700;}
+  code{font-family:var(--mono); font-size:.9em; background:var(--surface-2); padding:.15em .4em; border-radius:4px; border:1px solid var(--line);}
+
+  section{margin:0 0 46px;}
+  .divider{border:none; border-top:1px solid var(--line); margin:0 0 46px;}
+
+  .callout{display:flex; gap:11px; padding:13px 15px; border-radius:8px; margin:16px 0; font-size:14px;}
+  .callout .ic{flex:none; font-family:var(--mono); font-weight:700; font-size:11px; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .callout p{margin:0; max-width:none;}
+  .callout--decision{background:var(--amber-tint); color:var(--ink);}
+  .callout--decision .ic{background:var(--amber); color:var(--surface);}
+  .callout--risk{background:var(--brick-tint); color:var(--ink);}
+  .callout--risk .ic{background:var(--brick); color:var(--surface);}
+  .callout--note{background:var(--accent-tint); color:var(--ink);}
+  .callout--note .ic{background:var(--accent); color:var(--surface);}
+
+  details{background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); margin-bottom:16px;}
+  details > summary{cursor:pointer; list-style:none; padding:16px 22px; display:flex; align-items:center; gap:10px; user-select:none;}
+  details > summary::-webkit-details-marker{display:none;}
+  details > summary::before{content:"▸"; font-family:var(--mono); color:var(--accent); flex:none; transition:transform .15s ease; font-size:13px;}
+  details[open] > summary::before{transform:rotate(90deg);}
+  details > summary:hover{color:var(--accent-strong);}
+  details.topsection > summary{font-family:var(--mono); font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink);}
+  details .details-body{padding:0 22px 22px;}
+  details .details-body > *:first-child{margin-top:0;}
+
+  details.phase > summary{padding:20px 26px 16px; flex-wrap:wrap;}
+  .phase-tag{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-tint); border-radius:5px; padding:3px 9px; white-space:nowrap;}
+  .phase-tag.parallel{color:var(--amber); background:var(--amber-tint);}
+  .phase-title{font-family:var(--sans); font-weight:700; font-size:19px;}
+  .phase-goal{color:var(--ink-muted); font-size:14.5px; margin:0 0 16px; max-width:64ch;}
+  .phase-badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+  .badge{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:20px; padding:2px 9px;}
+  details.phase .details-body{padding:0 26px 24px;}
+
+  .actionlist{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px;}
+  .actionlist li{
+    display:flex; gap:10px; align-items:flex-start; font-size:14px; margin:0;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:9px 11px;
+  }
+  .actionlist li::before{content:"□"; font-family:var(--mono); color:var(--accent); flex:none; font-size:13px; line-height:1.5;}
+
+  .decision-box{
+    margin-top:16px; border:1px dashed var(--amber); background:var(--amber-tint); border-radius:8px; padding:13px 15px;
+  }
+  .decision-box .dtitle{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+  .decision-box p{margin:0; font-size:14px; color:var(--ink);}
+
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:8px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  footer{max-width:900px; margin:0 auto; padding:0 24px 60px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .stato-badge{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:5px; padding:2px 8px; white-space:nowrap; display:inline-block;}
+  .stato-badge.fatta{background:var(--green-tint); color:var(--green);}
+  .stato-badge.da-fare{background:var(--amber-tint); color:var(--amber);}
+  .stato-badge.parziale{background:var(--accent-tint); color:var(--accent-strong);}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">B, C, D, A, E implementati e verificati dal vivo — F in sospeso</p>
+  <h1>Accesso, ruoli e modello commerciale</h1>
+  <p class="lede"><strong>Aggiornamento 29 luglio 2026</strong>: i punti B, C, D, A, E di questo piano sono
+    stati costruiti, deployati su Supabase e verificati con dati reali (non solo in locale) — ogni sezione qui
+    sotto riporta ora un riquadro verde "Stato reale" con cosa è davvero attivo e cosa resta escluso. Il punto
+    F (pagamento/abbonamento) resta <strong>deliberatamente in sospeso</strong>: dipende dalla P.IVA di
+    Sergio, prerequisito non tecnico ancora aperto. Il punto G dipende da F, quindi è fermo con esso. Per un
+    percorso interattivo (stesso stile di questo documento, ma con dati reali) vedi
+    <code>Percorso_Reale_Accesso_B_E.html</code> nella stessa cartella.</p>
+  <div class="meta-row">
+    <span>5 di 7 punti implementati</span>
+    <span>·</span>
+    <span>29 luglio 2026 — v7</span>
+  </div>
+
+  <details class="topsection" open>
+    <summary>Quello che esiste già — non ripartire da zero</summary>
+    <div class="details-body">
+      <p>Prima di discutere le soluzioni, vale la pena sapere cosa lo schema attuale già prevede. È stato
+        disegnato fin dalla Fase 1 pensando a più clienti, anche se oggi ne esiste uno solo attivato a mano.</p>
+      <div class="table-wrap" style="margin-top:0">
+        <table>
+          <thead><tr><th>Cosa</th><th>Stato</th><th>Dettaglio</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>clienti</code> + <code>profili</code></td>
+              <td><span class="stato-badge fatta">Esiste</span></td>
+              <td>Un cliente (organizzazione) ha N profili (utenti), ciascuno con <code>ruolo</code>
+                (<code>promotore</code>|<code>gestore</code>). Un utente singolo è già rappresentabile come
+                un cliente con un solo profilo — nessuna modifica di schema necessaria per il caso base.</td>
+            </tr>
+            <tr>
+              <td><code>clienti.editore_proprio</code></td>
+              <td><span class="stato-badge fatta">Esiste</span></td>
+              <td>Calcola proprio/competitor a runtime per quel cliente (<code>manuale_tipo()</code>). Oggi
+                impostato a mano da Sergio in fase di attivazione, nessuna UI di gestione.</td>
+            </tr>
+            <tr>
+              <td><code>clienti.offerta_formativa_inclusa</code></td>
+              <td><span class="stato-badge fatta">Esiste</span></td>
+              <td>Precedente reale di accesso a granularità di sezione: bucket Storage privato + Edge
+                Function che verifica JWT ed entitlement + URL firmati. Oggi copre solo la voce "Offerta
+                formativa", nessuna delle altre quattro.</td>
+            </tr>
+            <tr>
+              <td>Amministrazione utenti/ruoli</td>
+              <td><span class="stato-badge da-fare">Manca</span></td>
+              <td>Nessuna UI per invitare un collega, assegnare/cambiare ruolo, o disattivare un accesso.
+                RLS di <code>profili</code> senza <code>insert</code>/<code>delete</code> — annotato come
+                buco da colmare "se in futuro si costruisce la gestione utenti" (HANDOFF §9.5 /
+                Riepilogo, 25 luglio).</td>
+            </tr>
+            <tr>
+              <td>Contatori d'uso / periodo</td>
+              <td><span class="stato-badge da-fare">Manca</span></td>
+              <td>Nessun concetto di "quante volte", "fino a quando", "prova" o "abbonamento" da nessuna
+                parte nello schema.</td>
+            </tr>
+            <tr>
+              <td>Pagamento</td>
+              <td><span class="stato-badge da-fare">Manca</span></td>
+              <td>Nessun fornitore di pagamenti collegato. Sarebbe la prima componente di backend vero
+                oltre alle Edge Function già in uso.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p>In sintesi: <strong>identità multi-cliente e il pattern di entitlement per-sezione esistono già
+          e funzionano</strong> (Offerta formativa ne è la prova). Quello che manca è generalizzare quel
+          pattern alle altre voci, e costruire sopra un livello di amministrazione, contatori e pagamento
+          che oggi non esiste in nessuna forma.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">A</span><span class="phase-title">Accreditamento — utente singolo vs organizzazione</span><span class="stato-badge fatta">Implementato 29 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Devono coesistere due situazioni: un promotore che si abbona per sé, e una casa
+        editrice che acquista l'accesso per la propria organizzazione commerciale.</p>
+      <div class="phase-badges"><span class="stato-badge parziale">Modello dati già adatto</span></div>
+      <p><strong>Cosa è già coperto:</strong> il modello <code>clienti</code>/<code>profili</code> rappresenta
+        già entrambi i casi senza modifiche — la differenza è solo quanti profili sono agganciati allo
+        stesso <code>cliente_id</code>.</p>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Il flusso di attivazione resta "richiedi accesso" con attivazione manuale tua</strong> —
+          nessuna registrazione self-service da costruire ora. Le altre due domande di questo punto sono
+          già risolte dal punto C: <strong>l'invito di un collega</strong> dentro un <code>cliente_id</code>
+          esistente avviene via email con link di attivazione (non c'è un flusso separato da inventare qui),
+          e <strong>il dominio email non è un confine automatico</strong> dell'organizzazione — ogni persona
+          entra solo per invito esplicito del <code>gestore</code>.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Precisazione (27 luglio 2026)</strong>: l'attivazione resta una tua responsabilità
+          manuale, ma non a colpi di query sul database — <strong>una dashboard admin</strong> che scrive
+          su Supabase per te (crea cliente, primo profilo gestore, imposta i contatori di prova iniziali).
+          Stesso principio del punto B qui sotto: la decisione resta "manuale", cambia solo lo strumento
+          con cui la eserciti.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento 28 luglio 2026</strong>: il pool di prova resta un valore che imposti a mano
+          (punto E) — durante la prova i posti restano illimitati, quindi non ha senso applicarci la stessa
+          formula per-posto del piano a pagamento (si aprirebbe la stessa falla del punto F: invitare gente
+          a costo zero solo per gonfiare il pool). Quello che cambia è il <strong>default suggerito</strong>
+          dalla dashboard al momento dell'attivazione: invece di un'unica costante uguale per un utente
+          singolo e per una rete numerosa, il form propone <code>crediti_prova_suggeriti = crediti_per_posto_prova
+          × posti dichiarati</code> nella richiesta di accesso — un numero indicativo, chiesto al referente
+          o stimato da te al primo contatto. Resta un suggerimento modificabile a mano, non un automatismo:
+          è calcolato una tantum sui posti dichiarati all'attivazione, e non si ricalcola più se il cliente
+          invita altre persone durante la prova.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento 28 luglio 2026 — il roster iniziale nella richiesta stessa</strong>: oltre
+          ai posti dichiarati (un numero indicativo, solo per il default dei crediti di prova), la richiesta
+          di accesso può includere — solo per un'organizzazione che li conosce già — una <strong>lista di
+          email da attivare subito</strong>. Sono due campi distinti e indipendenti: i posti dichiarati
+          restano una stima anche se la lista è più corta (il resto del team arriva più avanti dal pannello
+          utenti, punto C); la lista, quando c'è, è un'azione concreta che tu esegui all'attivazione, non
+          solo un numero.</p>
+        <p><strong>Decisione</strong>: quando la richiesta include una lista di email, l'attivazione
+          (dashboard admin) crea <strong>tutti</strong> i profili in un colpo solo — il referente come primo
+          <code>gestore</code>, ogni altra email come <code>promotore</code> di default (il gestore potrà
+          promuoverli dal pannello utenti in seguito, non serve deciderlo già in questa richiesta) — tutti in
+          stato <em>pending</em>, con l'invito già partito per ciascuno nello stesso momento. È lo stesso
+          identico meccanismo di invito del punto C (Supabase Admin <code>inviteUserByEmail</code>, non un
+          secondo sistema), solo innescato in blocco da te invece che uno alla volta dal gestore. <strong>Il
+          pannello utenti (punto C) resta comunque necessario</strong>: copre tutto ciò che succede dopo quel
+          primo roster — un nuovo assunto più avanti, una promozione, una rimozione — non viene sostituito,
+          solo pre-popolato al momento dell'attivazione.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Un punto di contatto per "richiedi accesso" (form o link mailto) che arriva a
+          <code>sartinisergio@gmail.com</code> — stesso indirizzo usato anche per le richieste di
+          attivazione piano al punto F.</li>
+        <li>Una <strong>dashboard admin</strong> (accessibile solo a te) che, a partire da quella richiesta,
+          crea cliente e profilo/i su Supabase con un form guidato — non più l'editor delle tabelle o query
+          dirette. Se la richiesta include una lista di email, crea <strong>tutti</strong> i profili in un
+          colpo solo (referente <code>gestore</code>, altri <code>promotore</code>, tutti <em>pending</em>) e
+          fa partire tutti gli inviti insieme — stesso meccanismo del punto C, richiamato in batch invece che
+          uno alla volta.</li>
+        <li>Campo "posti dichiarati" nella richiesta di accesso/dashboard, usato solo per calcolare il
+          default suggerito di crediti di prova — non vincolante, non ricalcolato durante la prova.</li>
+        <li>Campo opzionale "lista email da attivare subito" nella richiesta di accesso (una per riga o
+          simile), separato dai posti dichiarati — solo per organizzazioni che conoscono già il proprio
+          roster iniziale.</li>
+      </ul>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Stato reale, 29 luglio 2026</strong>: costruita e verificata dal vivo la
+          <strong>dashboard admin</strong> (<code>app/admin.html</code> + Edge Function
+          <code>admin-crea-cliente</code>) — crea cliente, referente gestore ed eventuale roster in blocco,
+          con inviti automatici, editore proprio scelto da un menu con i publisher reali del catalogo (non
+          testo libero). <strong>Non costruito, deliberatamente</strong>: il punto di contatto pubblico
+          "richiedi accesso" (nessuna domanda reale oggi, si aggiunge quando servirà) e il campo "posti
+          dichiarati"/crediti di prova calcolati (dipendono da un sistema di livelli/abbonamento del punto F,
+          non ancora costruito) — oggi ogni cliente parte con un pool crediti fisso segnaposto.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase">
+    <summary><span class="phase-tag">B</span><span class="phase-title">Chi decide i manuali "propri"</span><span class="stato-badge fatta">Implementato 29 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal"><code>clienti.editore_proprio</code> esiste e funziona; la domanda era chi lo
+        imposta e quando.</p>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Resta manuale.</strong> Continui a impostarlo tu in fase di attivazione cliente — non
+          più a mano sul database, ma dallo stesso campo nella dashboard admin del punto A (un menu a
+          tendina, non un pannello self-service per il cliente). <strong>Resta singolare.</strong> Un
+          cliente ha un solo "editore proprio", nessuna relazione multi-marchio da introdurre ora. Nessuna
+          modifica di schema richiesta: il comportamento resta quello già scelto, cambia solo lo strumento
+          con cui lo eserciti.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Stato reale, 29 luglio 2026</strong>: il campo esiste nel form della dashboard admin
+          (punto A), come menu a tendina popolato dai publisher realmente presenti nel catalogo condiviso —
+          non testo libero, per evitare che un refuso rompa in silenzio il calcolo proprio/competitor.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">C</span><span class="phase-title">Gestore vs utilizzo soltanto</span><span class="stato-badge fatta">Implementato 29 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Un utente (singolo o dentro un'organizzazione) può solo usare l'applicazione, o
+        può anche modificarne il catalogo condiviso?</p>
+      <div class="phase-badges"><span class="stato-badge parziale">Distinzione base già esiste</span></div>
+      <p><strong>Cosa è già coperto:</strong> <code>ruolo</code> è già <code>promotore</code> (usa soltanto)
+        o <code>gestore</code> (può modificare manuali/framework in Catalogo).</p>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Due ruoli bastano</strong> — niente terzo ruolo amministratore-separato-dal-catalogo:
+          <code>gestore</code> resta chi modifica il catalogo <em>e</em> chi amministra gli utenti/l'organizzazione.
+          <strong>Invito via email con link di attivazione</strong> — il <code>gestore</code> inserisce l'email
+          del collega dal pannello utenti, il sistema crea un profilo <em>pending</em> e invia un link per
+          completare la registrazione (niente auto-ingresso per dominio email).</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Precisazione emersa dopo l'introduzione dei livelli di abbonamento (punto E, 27 luglio
+          2026)</strong>: quanti profili un gestore può invitare non era deciso — oggi è illimitato.
+          <strong>Decisione</strong>: durante la <strong>prova resta illimitato</strong> (nessun livello
+          esiste ancora, il pool di crediti condiviso è già un argine naturale); <strong>con un abbonamento
+          attivo, il numero massimo di profili è legato al livello</strong> — proposta indicativa: Base fino
+          a 10, Pro fino a 20, Business illimitato nella pratica. Stessa logica dei crediti: una seconda leva
+          commerciale sul livello, non solo sul consumo. <strong>Aggiornamento 28 luglio 2026</strong>: questo
+          stesso numero di posti ora entra anche nel calcolo dei crediti del piano — vedi punto E.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento 28 luglio 2026 — il tetto va applicato in modo continuo, non solo alla
+          prima sottoscrizione</strong>: con crediti e prezzo ora entrambi legati ai posti attivi (punti E/F),
+          un'organizzazione già abbonata da mesi che invita nuovi colleghi deve incontrare esattamente lo
+          stesso controllo (posti attivi vs tetto del livello corrente) del primo invito — non solo quando
+          il cliente sottoscrive per la prima volta. Non è più solo un limite tecnico: superarlo richiede un
+          upgrade di livello esplicito, che a sua volta cambia sia il prezzo (punto F) sia il credito per
+          posto (punto E).</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento 28 luglio 2026 — meccanismo di attivazione e rimozione</strong>: due
+          dettagli del pannello utenti restavano impliciti, mai decisi esplicitamente.</p>
+        <p><strong>Attivazione via magic link, non password</strong>: il link di invito è esso stesso
+          l'autenticazione (Supabase Auth <code>signInWithOtp</code>) — un clic e il profilo passa da
+          <em>pending</em> ad <em>attivo</em>, senza un form "imposta la tua password" da costruire né un
+          flusso di reset da mantenere. Sessioni lunghe (default Supabase) tengono l'email fuori dai giri
+          per chi usa Atlante regolarmente; il magic link si vede soprattutto al primo accesso o dopo
+          settimane di inattività. Se in futuro servisse una password come opzione aggiuntiva (non in
+          sostituzione), è un'aggiunta a basso rischio — nessuno perde l'accesso esistente nel frattempo.</p>
+        <p><strong>Rimozione di un collega = soft-delete</strong>: un campo (<code>rimosso_il</code> o uno
+          stato dedicato) su <code>profili</code>, mai una riga cancellata — altrimenti si perde per sempre
+          l'attribuzione storica del log di consumo (punto E, <code>profilo_id</code>) e la possibilità di
+          riattivare chi è stato rimosso per errore. L'interruzione dell'accesso è comunque immediata, non
+          legata alla scadenza del JWT: lo stesso controllo server-side già deciso al punto D (Edge Function
+          che verifica JWT + entitlement a ogni chiamata protetta) verifica anche <code>rimosso_il IS
+          NULL</code> — nessuna nuova infrastruttura, un controllo in più nello stesso punto.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Pannello "utenti" per il ruolo <code>gestore</code>: invitare (email → profilo pending → link di
+          attivazione), promuovere/retrocedere tra <code>promotore</code>/<code>gestore</code>, rimuovere un
+          collega.</li>
+        <li>RLS di <code>profili</code> con policy <code>insert</code>/<code>update</code> vere, scoperte da
+          <code>gestore</code> sul proprio <code>cliente_id</code> (oggi assenti per disegno — vedi tabella
+          "Quello che esiste già"). <code>update</code> e non <code>delete</code>: la rimozione di un collega
+          è un soft-delete (scrive <code>rimosso_il</code>), non una riga cancellata.</li>
+        <li>Meccanismo di invito: profilo <em>pending</em> creato dal gestore, poi attivazione via magic
+          link (Supabase Auth <code>signInWithOtp</code>) — l'autenticazione stessa, niente token custom né
+          form di impostazione password da costruire.</li>
+        <li>Controllo del tetto posti al momento dell'invito, basato su <code>abbonamento.livello</code> del
+          cliente — nessun controllo durante la prova (nessun livello attivo). Eseguito a <strong>ogni</strong>
+          invito per tutta la vita del cliente, non solo al primo — stessa funzione, chiamata sempre.</li>
+        <li>Campo <code>rimosso_il</code> (o stato dedicato) su <code>profili</code> per la rimozione
+          soft-delete; il controllo server-side del punto D (JWT + entitlement) verifica anche questo campo,
+          per un'interruzione di accesso immediata senza aspettare la scadenza del JWT.</li>
+      </ul>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Stato reale, 29 luglio 2026</strong>: tutto quanto sopra è costruito e verificato dal
+          vivo — <code>app/utenti.html</code>, Edge Function <code>invita-utente</code>, magic link,
+          soft-delete con <code>rimosso_il</code>. La correzione è più radicale di quanto previsto: non solo
+          <code>profili</code> ha ora policy insert/update reali, ma <code>cliente_corrente()</code> e
+          <code>ruolo_corrente()</code> — usate da <strong>ogni</strong> RLS dell'app, non solo su
+          <code>profili</code> — escludono chi è <code>rimosso</code>, quindi l'interruzione è immediata
+          ovunque, non solo dove esplicitamente controllata. <strong>Non costruito</strong>: il controllo del
+          tetto posti (dipende da <code>abbonamento.livello</code>, punto F, non ancora esistente) e un
+          pulsante "Riattiva" un rimosso per errore (rifinitura rimandata, oggi si fa da SQL Editor).</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">D</span><span class="phase-title">Accesso parziale alle sezioni</span><span class="stato-badge fatta">Implementato 29 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Un cliente deve poter accedere solo a parti dell'applicazione, con la possibilità
+        di estendere l'accesso in seguito.</p>
+      <div class="phase-badges"><span class="stato-badge parziale">Precedente funzionante su 1 voce/5</span></div>
+      <p><strong>Cosa è già coperto:</strong> "Offerta formativa" ha già esattamente questo meccanismo
+        (entitlement booleano + verifica server-side, non solo UI nascosta).</p>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Un campo booleano per voce su <code>clienti</code></strong>, sullo stesso modello di
+          <code>offerta_formativa_inclusa</code> — niente tabella <code>cliente_moduli</code> separata, le
+          combinazioni vendibili restano poche. <strong>Utilità/Catalogo resta sempre incluso</strong> (nessun
+          entitlement, è la base dati condivisa). <strong>Le altre quattro voci sono tutte a pacchetto</strong>:
+          Offerta formativa (già così oggi), Confronto manuali, Analisi di un programma, Piano di promozione.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Tre nuovi campi booleani su <code>clienti</code>: <code>confronto_manuali_incluso</code>,
+          <code>analisi_programma_incluso</code>, <code>piano_promozione_incluso</code> — stesso pattern di
+          <code>offerta_formativa_inclusa</code>.</li>
+        <li>Estendere il meccanismo di verifica server-side (bucket Storage privato + Edge Function che
+          controlla JWT + entitlement) alle tre nuove voci, oggi presente solo per Offerta formativa.</li>
+        <li>Nascondere/mostrare le voci di menu lato client in base all'entitlement, come già fatto per
+          Offerta formativa.</li>
+      </ul>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Stato reale, 29 luglio 2026</strong>: i tre campi esistono e sono attivi. Il meccanismo
+          server-side previsto qui (bucket Storage + Edge Function) si è rivelato <strong>non pertinente</strong>
+          per Confronto manuali e Analisi di un programma — controllando il codice reale, quelle due voci non
+          leggono/scrivono nulla di specifico del cliente su Supabase (solo il catalogo condiviso, sempre
+          leggibile), quindi il gate resta solo lato pagina. Piano di promozione invece scrive su tabelle
+          per-cliente reali: lì un gate server-side vero esiste davvero, sulle RLS di
+          <code>programmi</code>/<code>campagne</code>/<code>campagna_target</code>. Un vero controllo
+          server-side per le prime due diventerà naturale quando il punto E sposterà anche le loro chiamate AI
+          dietro una Edge Function con crediti — è già successo, vedi sotto.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Precisazione dopo l'introduzione dei crediti (punto E, 27 luglio 2026)</strong>: questo
+          entitlement booleano ("puoi accedere a questa voce?") e i crediti ("quanto puoi usarla?") sono due
+          assi indipendenti. L'entitlement qui deciso continua a determinare quali voci il piano include; i
+          crediti, sommati al punto E, determinano quanto se ne può effettivamente consumare — con Utilità
+          sempre gratuita e, una volta abbonati, anche Offerta formativa senza costo in crediti.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">E</span><span class="phase-title">Prova gratuita e piani, a crediti</span><span class="stato-badge fatta">Implementato 29 lug 2026</span></summary>
+    <div class="details-body">
+      <div class="decision-box">
+        <div class="dtitle">Decisione — sostituisce la versione precedente, 27 luglio 2026</div>
+        <p><strong>Perché il cambio</strong>: Atlante usa una chiave API a pagamento per quasi ogni voce, prova
+          compresa. Non ha senso chiedere al cliente di comprarsela a parte mentre sta già provando o pagando
+          un abbonamento — il suo costo va incluso nell'abbonamento stesso, misurato a crediti come fanno i
+          provider LLM, non più come "N usi fissi per voce".</p>
+        <p><strong>Chi consuma crediti</strong>: <code>Utilità</code> resta sempre gratuita, in prova e con
+          abbonamento (nessun costo API, nessun entitlement). <strong>In prova</strong> (nessun abbonamento
+          attivo) le altre <strong>quattro</strong> voci — Offerta formativa compresa — attingono tutte dallo
+          <strong>stesso pool unico di crediti di prova</strong>, senza eccezioni: tiene la prova semplice e
+          uniforme. <strong>Con un abbonamento attivo</strong>, invece, <code>Offerta formativa</code> diventa
+          gratuita esattamente come Utilità (non ha un costo API reale per te) — solo <code>Confronto
+          manuali</code>, <code>Analisi di un programma</code> e <code>Piano di promozione</code> continuano
+          a consumare crediti dal pool del piano.</p>
+        <p><strong>Due assi indipendenti per l'abbonamento</strong>, non uno: <strong>quali voci</strong>
+          (invariato — Solo Offerta formativa / Suite di promozione / Tutto incluso, dal punto D) e
+          <strong>quanti crediti</strong> — <strong>livello di abbonamento</strong>, nuovo: Base / Pro /
+          Business, ciascuno con una dotazione di crediti per periodo. Un cliente sceglie entrambi
+          indipendentemente (es. "Tutto incluso, livello Pro"). <strong>Periodicità</strong> mensile o
+          annuale, invariata.</p>
+        <p><strong>Rinnovo e crediti residui</strong>: i crediti non usati nel periodo <strong>si sommano</strong>
+          alla dotazione del rinnovo invece di azzerarsi, per assorbire un mese di uso intenso dopo uno
+          leggero — ma con un <strong>tetto all'accumulo</strong> (proposta: non oltre il doppio della
+          dotazione periodica) per non esporti al rischio di un cliente a basso utilizzo che poi scarica una
+          riserva enorme tutta insieme, con un costo reale in chiamate API superiore a quanto ha pagato in
+          quel periodo. <strong>Monitoraggio del consumo</strong>: chi usa Atlante deve vedere il proprio
+          saldo crediti corrente, non scoprirlo solo al blocco.</p>
+        <p><strong>Limite superato → blocco secco con upsell visibile</strong> (invariato dalla decisione
+          originale): "hai finito i crediti disponibili, passa a un piano/livello superiore per continuare".
+          <strong>Aggiornamento 28 luglio 2026</strong>: per chi ha già un abbonamento attivo questa non è più
+          l'unica via — vedi punto G, top-up di crediti aggiuntivi acquistabile senza cambiare livello né
+          aspettare il rinnovo.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Revisione dopo aver letto il codice reale (non solo il report), 27 luglio 2026</strong>:
+          <code>report_confronto_api_llm_2026.md</code> descriveva Confronto manuali come "uso minimo" e
+          Analisi di un programma come "testo non lunghissimo" — ma <code>confronto.html</code>,
+          <code>analisi-programma.html</code> e <code>piano-promozione.html</code> raccontano una storia
+          diversa: <strong>nessuna delle tre voci ha un costo fisso per utilizzo</strong>, tutte scalano con
+          quanto l'utente sceglie di analizzare in quella sessione.</p>
+        <ul>
+          <li><strong>Confronto manuali</strong>: una chiamata argomentata per <em>ogni manuale confrontato</em>
+            (fino a 3000 token di output ciascuna) + una per il confronto reciproco — scala con quanti manuali
+            si scelgono.</li>
+          <li><strong>Analisi di un programma</strong>: fino a 10-15 chiamate separate per singola analisi
+            (quadro generale, valutazione per modulo, un confronto per ogni manuale alternativo/proprio
+            valutato, +5 in più in modalità "avanzata") — scala con quanti manuali comparativi e con la
+            modalità scelta.</li>
+          <li><strong>Piano di promozione</strong>: circa 5 chiamate per <em>ogni programma</em> incluso nella
+            campagna — scala con quanti programmi ci sono nella campagna, non con la lunghezza del testo
+            finale.</li>
+        </ul>
+        <p><strong>Decisione</strong>: i crediti si scalano <strong>per unità di lavoro</strong>, non per
+          voce a costo fisso — N crediti per manuale confrontato, N crediti per manuale comparativo valutato
+          (+ extra fisso se modalità avanzata), N crediti per programma incluso in campagna. Un costo fisso
+          per "utilizzo" avrebbe sussidiato chi analizza tanto in una sessione con lo stesso prezzo di chi ne
+          analizza poco.</p>
+        <p><strong>Pool sempre unico e globale, esplicitato</strong>: i crediti restano un solo saldo
+          condiviso da tutte le voci a consumo di quel cliente, <strong>indipendentemente da quale suite ha
+          attivato</strong> — un cliente abbonato a "Solo Piano di promozione" ha comunque l'intera dotazione
+          del suo livello disponibile su quella singola voce, non una frazione riservata. Non è un cambio di
+          comportamento: è già così nell'architettura (un solo saldo su <code>clienti</code>/<code>abbonamenti</code>,
+          mai diviso per voce), ma non era mai stato scritto esplicitamente come decisione.</p>
+        <p><strong>Stima illustrativa</strong> (a partire dai volumi di chiamate reali nel codice e dai prezzi
+          Claude del report, assumendo 1 credito ≈ $0,01 di costo API reale — cambio arbitrario, da fissare
+          tu): Confronto manuali <b>~2 crediti per manuale</b> confrontato + 1 fisso per il confronto
+          reciproco; Analisi di un programma <b>3 crediti fissi</b> (quadro + valutazione moduli) + <b>2
+          crediti per ogni manuale comparativo</b> valutato + <b>8 crediti extra</b> in modalità avanzata;
+          Piano di promozione <b>~20 crediti per programma</b> incluso in campagna. Restano segnaposto, non
+          prezzi: prima di fissarli davvero, vale la pena costruire il log
+          <code>cliente_id, modulo, token_input, token_output, modello, costo_stimato</code> che il report
+          stesso raccomandava, e leggere il consumo reale invece di stimarlo da codice statico.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Precisazioni ancora valide dalla versione precedente</strong>: il pool è <strong>per
+          cliente, non per profilo</strong> (un'organizzazione numerosa condivide lo stesso saldo, altrimenti
+          invitare colleghi moltiplicherebbe i crediti gratuiti) — la dotazione di prova resta un valore che
+          tu imposti manualmente in fase di attivazione (punto A), non una costante fissa nel codice.
+          <strong>Decremento atomico obbligatorio</strong>: verifica e decremento del saldo devono essere
+          un'unica operazione sul database, mai "leggi il numero lato client, poi scrivi -N" — altrimenti due
+          persone in luoghi diversi potrebbero spendere lo stesso credito residuo. <strong>Niente realtime
+          persistente</strong>: il saldo mostrato si rivalida quando la sezione viene aperta/rifocalizzata, il
+          controllo atomico lato server resta comunque l'autorità finale. <strong>Fine prova senza richiesta
+          di piano</strong>: nessun secondo promemoria automatico dopo l'unica email di cortesia, nessuna
+          pulizia dati, nessuna scadenza da gestire — il cliente resta indefinitamente in quello stato.
+          <strong>La scelta di un piano non è vincolata alla fine della prova</strong>: il gestore può
+          richiedere l'attivazione in qualsiasi momento, anche con credito residuo.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento dopo un dubbio sollevato da Sergio, 28 luglio 2026</strong>: il pool a
+          livello era calibrato solo sul nome del piano (Base/Pro/Business), non sul numero di persone che lo
+          usano davvero — un'organizzazione da 2 persone e una da 5 sullo stesso livello Base ricevevano lo
+          stesso pool. Inoltre nessun utente, dentro l'organizzazione, vedeva quanto aveva consumato <em>lui</em>
+          rispetto al saldo condiviso — un terreno fertile per attriti interni tra chi usa Atlante molto e chi
+          lo usa poco.</p>
+        <p><strong>Decisione, in due parti indipendenti</strong>: primo, <strong>la dotazione di crediti per
+          periodo si calcola per posto</strong>, non più come numero fisso del livello — ogni livello fissa
+          un <em>credito per posto attivo</em> (proposta illustrativa: Base 15/posto, Pro 20/posto, Business
+          25/posto — segnaposto come il resto di questa sezione) e il pool del cliente è
+          <code>crediti_per_posto(livello) × posti attivi</code>, con un minimo di un posto anche per un
+          abbonato singolo. Si ricalcola quando un profilo passa da <em>pending</em> ad <em>attivo</em> o
+          viene rimosso, e di nuovo a ogni rinnovo (punto F) sul numero di posti attivi in quel momento, non
+          su quello della sottoscrizione iniziale.</p>
+        <p><strong>Secondo, il pool resta unico e condiviso</strong> — niente wallet separato per persona. Un
+          tetto per-utente rigido creerebbe lo stesso tipo di situazione spiacevole ma di segno opposto: un
+          promotore che lavora di più in un dato periodo (più territorio, più clienti da seguire) sbatterebbe
+          contro un tetto personale mentre un collega meno attivo lascia credito inutilizzato, pur avendo
+          l'organizzazione capacità residua complessiva. Quello che davvero mancava non era la condivisione in
+          sé, ma la <strong>visibilità</strong>: ogni consumo viene ora attribuito al profilo che lo ha
+          generato, così ognuno vede il proprio consumo personale accanto al saldo condiviso
+          dell'organizzazione, e il gestore vede la ripartizione per collega. Un tetto <em>soft</em> per
+          singolo profilo resta possibile come leva opzionale del gestore in un secondo momento (non un
+          default, non un'architettura rigida) se in un caso concreto serve contenere qualcuno.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Colonna <code>crediti_prova</code> su <code>clienti</code> — pool unico (non più quattro
+          contatori separati), impostato da te in fase di attivazione con un default da definire.</li>
+        <li>Colonne <code>crediti_disponibili</code> e <code>crediti_periodo</code> su <code>clienti</code>
+          (o sulla tabella <code>abbonamenti</code>) per il saldo corrente e la dotazione del piano attivo.</li>
+        <li>Un costo-in-crediti <strong>per unità di lavoro</strong>, non per voce fissa: 0 per Utilità
+          sempre, 0 per Offerta formativa solo con abbonamento attivo; per le altre tre, una formula
+          (crediti fissi + crediti × quantità analizzata, es. per manuale confrontato/comparativo o per
+          programma in campagna) — numeri reali dal log di utilizzo, non dalla stima statica di cui sopra.</li>
+        <li>Tabella/enum livelli di abbonamento (Base/Pro/Business) → <code>crediti_per_posto</code>, scelta
+          indipendente dalla suite (punto D) in fase di richiesta piano (punto F). <code>crediti_periodo =
+          crediti_per_posto × posti_attivi</code> (minimo 1), ricalcolato a ogni variazione di posti attivi e
+          a ogni rinnovo — non più un numero fisso per livello. Regola di dettaglio su aumento/diminuzione e
+          assenza di claw-back: vedi punto F, dove il ricalcolo si aggancia allo stesso evento che aggiorna
+          il prezzo su Stripe.</li>
+        <li>Funzione atomica lato server che verifica il saldo e lo decrementa dell'importo corretto in
+          un'unica operazione prima di ogni chiamata AI, blocca a saldo zero; la sezione rivalida il saldo
+          ogni volta che viene aperta/rifocalizzata, senza sottoscrizione realtime persistente.</li>
+        <li>Logica di rinnovo: <code>nuovo_saldo = min(saldo_residuo + dotazione_periodo, dotazione_periodo × 2)</code>
+          — il tetto (2×) è una proposta, da confermare.</li>
+        <li>Il log di utilizzo (<code>cliente_id, modulo, token_input, token_output, modello,
+          costo_stimato</code>) esteso con <code>profilo_id</code>, per attribuire ogni consumo alla persona
+          che lo ha generato.</li>
+        <li>UI di monitoraggio consumo: saldo condiviso dell'organizzazione <strong>e</strong> consumo
+          personale del profilo che guarda, visibili a chi usa Atlante — non solo al momento del blocco.
+          Per il gestore, anche la ripartizione del consumo per collega.</li>
+        <li>(non in v1) Tetto soft di crediti per singolo profilo, impostabile dal gestore, di default
+          disattivato — leva opzionale, non un'architettura a wallet separati.</li>
+        <li>Un flag <code>prova_esaurita_notificata</code> su <code>clienti</code>, scritto nella stessa
+          operazione atomica che azzera il saldo di prova, per garantire che l'email di cortesia parta una
+          volta sola anche con più persone che usano il pool in parallelo.</li>
+        <li>Vista/query interna (anche solo per te, non serve un pannello elaborato in v1) che elenca i
+          clienti con saldo di prova a zero e nessun piano attivo.</li>
+        <li>Campo periodicità (mensile/annuale) + scadenza/rinnovo su <code>clienti</code>, o tabella
+          <code>abbonamenti</code> a parte se un cliente può avere più abbonamenti storici — collega
+          direttamente al punto F.</li>
+      </ul>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Stato reale, 29 luglio 2026 — implementata solo la parte indipendente dal punto F</strong>:
+          pool unico <code>clienti.crediti_residui</code> (non più <code>crediti_prova</code> separato — con F
+          non ancora costruito, oggi non esiste distinzione prova/abbonamento, un solo pool sempre attivo),
+          costo per unità di lavoro reale (Edge Function unica <code>ai-proxy</code>, non 4 function separate),
+          decremento atomico via funzione SQL <code>scala_crediti()</code> (verificato: due chiamate parallele
+          non possono spendere lo stesso credito), blocco secco a saldo zero (risposta 402, verificato dal
+          vivo), log <code>consumo_log</code> con <code>profilo_id</code> per l'attribuzione, monitoraggio
+          minimo (saldo in <code>home.html</code>, consumo per persona in <code>utenti.html</code>).
+          <strong>Non costruito, perché dipende dal punto F</strong>: la distinzione crediti_disponibili/
+          crediti_periodo, i livelli Base/Pro/Business e <code>crediti_per_posto</code>, la logica di rinnovo
+          con rollover, il tetto soft per profilo, il flag <code>prova_esaurita_notificata</code>, la vista
+          "clienti a saldo zero". I numeri di costo per voce sono <strong>segnaposto dichiarati</strong>, da
+          ricalibrare quando <code>consumo_log</code> avrà dati reali da confrontare con la bolletta OpenAI.
+          Bonus non previsto qui: durante i test è emerso e corretto un bug di troncamento testo che falsava i
+          risultati di Confronto/Analisi — vedi <code>Percorso_Reale_Accesso_B_E.html</code>.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">F</span><span class="phase-title">Pagamento e rinnovo</span><span class="stato-badge fatta">Deciso 27 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Modalità di pagamento e se il rinnovo è automatico o richiede un'azione del
+        cliente.</p>
+      <div class="phase-badges"><span class="badge">dipende da: E</span><span class="badge">nuova componente di backend</span></div>
+      <p>Il più esterno dei sei problemi — ha senso deciderlo per ultimo, quando è chiaro cosa si vende (E).
+        Introduce probabilmente la prima vera componente di backend oltre alle Edge Function già in uso
+        (es. Stripe, con webhook verso una Edge Function che aggiorna lo stato di <code>clienti</code>).</p>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Rinnovo automatico</strong> — addebito ricorrente alla scadenza (es. Stripe subscriptions),
+          non un flusso manuale dove il cliente deve tornare a pagare. <strong>Alla scadenza senza rinnovo:
+          accesso sospeso, dati conservati a tempo indefinito</strong> — il cliente torna al livello base
+          (Utilità sempre incluso) ma nulla viene cancellato; può riattivarsi rinnovando in qualsiasi
+          momento, senza job di pulizia periodico da costruire.</p>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">i</span>
+        <p><strong>Precisazione emersa testando la simulazione (27 luglio 2026), rivista il 27 luglio 2026</strong>:
+          chi, dentro l'organizzazione, può avviare l'acquisto di un piano resta deciso — <strong>solo il
+          <code>gestore</code></strong>, stessa logica del punto C; un <code>promotore</code> non vede
+          questa azione. <strong>Ma il flusso cambia</strong>: non più una richiesta che arriva a te e che
+          attivi a mano — <strong>checkout self-service automatico</strong> (es. Stripe Checkout). Il
+          gestore sceglie piano e periodicità, viene reindirizzato al pagamento, e un webhook Stripe attiva
+          l'abbonamento sulla tabella <code>clienti</code> in automatico, senza nessun tuo intervento sul
+          singolo acquisto. Resta manuale solo l'attivazione del <em>cliente stesso</em> (punti A/B, tramite
+          la dashboard admin) — una volta che il cliente esiste ed è attivo, l'acquisto e il rinnovo del
+          piano sono entrambi automatici.</p>
+      </div>
+      <div class="callout callout--risk">
+        <span class="ic">!</span>
+        <p><strong>Prerequisito non tecnico, ancora aperto</strong>: la P.IVA di Sergio (già segnalata "da
+          completare" nel Piano di integrazione) resta necessaria prima di poter incassare qualunque
+          pagamento reale — non è una decisione di design, è un'azione amministrativa da fare a parte.</p>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">!</span>
+        <p><strong>Aggiornamento 28 luglio 2026 — il prezzo deve seguire i posti come già fanno i
+          crediti</strong>: con un prezzo piatto per livello (invariato dal numero di posti) e crediti che
+          invece scalano sui posti attivi (punto E), un'organizzazione numerosa pagherebbe come un utente
+          singolo ricevendo un multiplo dei crediti — un incentivo diretto a gonfiare i posti solo per
+          moltiplicare il pool gratis, esattamente il tipo di situazione spiacevole che i punti E/G volevano
+          evitare.</p>
+        <p><strong>Decisione</strong>: ogni livello fissa, oltre a <code>crediti_per_posto</code>, anche un
+          <code>prezzo_per_posto</code> (proposta illustrativa, mensile: Base €8/posto, Pro €10/posto,
+          Business €12/posto — segnaposto come gli altri numeri di questa sezione). Il prezzo
+          dell'abbonamento è <code>prezzo_per_posto(livello) × posti_attivi</code> (minimo 1), implementato
+          come <strong>Stripe subscription item a quantity-based pricing</strong> (<code>quantity</code> =
+          posti attivi) — il pattern standard per questo esatto problema (lo stesso di Slack/Notion/GitHub),
+          non un prodotto Stripe diverso per ogni numero di posti possibile. Il tetto posti per livello resta
+          un confine di segmentazione commerciale (funzionalità/supporto), non più l'unico argine economico
+          contro i posti gonfiati — quello ora arriva dal prezzo stesso.</p>
+        <p><strong>Ricalcolo legato allo stesso evento, non più solo al rinnovo</strong> (precisa/estende il
+          punto E): quando il numero di posti attivi cambia — un invito accettato o un profilo rimosso —
+          <code>quantity</code> su Stripe si aggiorna nello stesso momento, con il proration automatico di
+          Stripe per il resto del periodo corrente. Il pool crediti segue lo stesso evento, ma in modo
+          asimmetrico: se i posti <strong>aumentano</strong>, il delta di crediti
+          (<code>crediti_per_posto × posti aggiunti</code>) si somma subito a <code>crediti_residui</code> —
+          il cliente sta già pagando quella quota pro-rata, quindi riceve subito anche il credito
+          corrispondente. Se i posti <strong>diminuiscono</strong>, <code>crediti_periodo</code> si abbassa
+          subito (userà quel valore più basso come base per il tetto di rollover al prossimo rinnovo), ma
+          <code>crediti_residui</code> già accumulati <strong>non vengono ridotti retroattivamente</strong> —
+          nessun claw-back di credito già concesso, per non penalizzare un cliente che ha già pagato quella
+          quota. Il ricalcolo al rinnovo (già deciso al punto E) resta comunque una rete di sicurezza, per
+          allineare periodo e tetto anche se un cambio di posti non fosse stato sincronizzato correttamente
+          durante il periodo.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Integrazione Stripe Checkout: dalla schermata "scelta piano" (punto E), il <code>gestore</code>
+          sceglie sia la suite (quali voci) sia il <strong>livello</strong> (Base/Pro/Business, che
+          determina i crediti inclusi) sia la periodicità, poi viene reindirizzato a un checkout ospitato
+          da Stripe con tutto già preselezionato.</li>
+        <li>Un secondo attributo <code>prezzo_per_posto</code> per livello (oltre a
+          <code>crediti_per_posto</code>), usato per creare/aggiornare il subscription item Stripe a
+          quantity-based pricing.</li>
+        <li>Webhook Stripe → Edge Function che, a pagamento confermato, attiva l'abbonamento su
+          <code>clienti</code> (entitlement di-voce, livello, dotazione crediti periodica) — senza
+          intervento manuale; stesso meccanismo gestisce anche il rinnovo ricorrente e il calcolo dei
+          crediti riportati (punto E).</li>
+        <li>Chiamata all'API Stripe (<code>subscription.update</code>, <code>quantity</code>) ogni volta che
+          il numero di posti attivi cambia (invito accettato o profilo rimosso), con il delta di crediti
+          applicato nella stessa operazione atomica — Stripe gestisce da solo il proration di prezzo per il
+          resto del periodo corrente.</li>
+        <li>Sincronizzazione: il numero di "posti attivi" lato Atlante deve restare sempre allineato alla
+          <code>quantity</code> effettiva su Stripe — aggiornare entrambi nella stessa operazione (o
+          webhook di conferma) per evitare disallineamenti.</li>
+        <li>Logica che, alla scadenza senza rinnovo riuscito, riporta gli entitlement di-voce (punto D) a
+          "non incluso" senza toccare nessun altro dato del cliente.</li>
+        <li>La dashboard admin (punti A/B) resta il solo strumento manuale — copre l'attivazione del
+          cliente, non il singolo acquisto di un piano.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="phase" open>
+    <summary><span class="phase-tag">G</span><span class="phase-title">Top-up — crediti aggiuntivi a metà periodo</span><span class="stato-badge fatta">Deciso 28 lug 2026</span></summary>
+    <div class="details-body">
+      <p class="phase-goal">Con un abbonamento attivo, se il saldo crediti del periodo si esaurisce prima del
+        rinnovo, l'unica leva prevista finora era passare a un livello superiore — un cambio di prezzo
+        ricorrente permanente per un problema che può essere puntuale (un mese di picco).</p>
+      <div class="phase-badges"><span class="badge">dipende da: E</span><span class="badge">estende: F</span></div>
+      <div class="decision-box">
+        <div class="dtitle">Decisione</div>
+        <p><strong>Pacchetti di crediti aggiuntivi acquistabili in qualsiasi momento del periodo</strong>,
+          solo con un <strong>abbonamento attivo</strong> — in prova resta valido solo il blocco secco con
+          invito a scegliere un piano (punto E): la prova non introduce un secondo modo di pagare senza
+          abbonarsi, altrimenti l'incentivo a convertire si indebolisce. <strong>Solo il gestore</strong> può
+          acquistare un top-up, stessa regola di chi avvia un acquisto di piano (punto F). <strong>Checkout
+          self-service one-time</strong> (es. Stripe Checkout in modalità pagamento singolo, non abbonamento)
+          — pacchetto a taglia fissa (proposta illustrativa: 50 crediti a un prezzo fisso), ripetibile più
+          volte nello stesso periodo se serve.</p>
+        <p><strong>Effetto immediato e senza contabilità separata</strong>: il webhook Stripe aggiunge i
+          crediti acquistati al saldo residuo corrente, senza toccare la dotazione base del livello
+          (<code>crediti_periodo</code> resta quella del piano). Al rinnovo, i crediti da top-up non
+          consumati seguono le stesse regole di rollover del saldo normale — si sommano, soggetti allo stesso
+          tetto (2× la dotazione periodica) già deciso al punto E: nessuna nuova eccezione da gestire.</p>
+      </div>
+      <p><strong>Cosa resta da costruire</strong> (implementazione, non più decisione):</p>
+      <ul>
+        <li>Un secondo prodotto/prezzo Stripe (one-time, non ricorrente) per il pacchetto di top-up — taglia
+          e prezzo da fissare, insieme ai numeri reali del punto E.</li>
+        <li>Un pulsante "Compra crediti aggiuntivi" visibile al gestore quando il saldo è vicino/uguale a
+          zero e l'abbonamento è attivo — non visibile in prova, non visibile al promotore.</li>
+        <li>Webhook Stripe dedicato (o esteso da quello già previsto al punto F) che aggiorna solo
+          <code>crediti_residui</code>, senza toccare <code>crediti_periodo</code>, gli entitlement di-voce o
+          la data di scadenza.</li>
+        <li>UI di conferma post-acquisto e aggiornamento del saldo mostrato, stessa logica di rivalidazione
+          alla riapertura della sezione già decisa al punto E.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="topsection">
+    <summary>Ordine consigliato</summary>
+    <div class="details-body">
+      <p>C e D sono i due che sbloccano tutto il resto: senza amministrazione utenti e senza entitlement a
+        granularità di sezione, i punti A, E, F restano teorici. B è una decisione tua, non tecnica, chiaribile
+        in breve senza bisogno di una sessione di sviluppo. F ha senso lasciarlo per ultimo, quando E ha già
+        definito cosa si vende. G è un'estensione di F, si costruisce insieme o subito dopo.</p>
+      <div class="table-wrap" style="margin-top:0">
+        <table>
+          <thead><tr><th>Ordine</th><th>Punto</th><th>Perché qui</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>B</td><td>Decisione rapida, non tecnica — chiarisce un vincolo che gli altri punti danno per scontato.</td></tr>
+            <tr><td>2</td><td>C</td><td>Sblocca A (invitare colleghi) e rende possibile qualunque amministrazione futura.</td></tr>
+            <tr><td>3</td><td>D</td><td>Generalizza un pattern già collaudato (Offerta formativa) — prerequisito tecnico di E.</td></tr>
+            <tr><td>4</td><td>A</td><td>Flusso di attivazione, ora che ruoli (C) ed entitlement (D) esistono davvero.</td></tr>
+            <tr><td>5</td><td>E</td><td>Struttura di prova/piani, costruita sopra D.</td></tr>
+            <tr><td>6</td><td>F</td><td>Pagamento — solo quando è chiaro cosa si vende.</td></tr>
+            <tr><td>7</td><td>G</td><td>Top-up crediti — stesso checkout di F, si aggiunge subito dopo senza nuovo prerequisito.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--decision">
+        <span class="ic">✓</span>
+        <p><strong>Per chi riprende questo documento in una nuova sessione — aggiornato 29 luglio 2026</strong>:
+          le sette decisioni (B→G) restano quelle descritte in questo documento, invariate. Quello che è
+          cambiato è lo stato: <strong>B, C, D, A, E sono implementati, deployati su Supabase e verificati con
+          dati reali</strong> — non solo decisi. Ogni sezione riporta ancora "cosa resta da costruire" (il
+          testo originale, lasciato intatto per la cronologia) seguito da un riquadro verde "Stato reale, 29
+          luglio 2026" con cosa è davvero attivo oggi e cosa resta escluso deliberatamente. In sintesi: nessun
+          form pubblico di richiesta accesso, nessuna distinzione prova/abbonamento (un solo pool di crediti
+          sempre attivo), numeri di costo in crediti ancora segnaposto, nessuna vista admin cross-cliente.
+          <strong>F e G restano fermi</strong>, non iniziati: il prerequisito non tecnico ancora aperto è la
+          P.IVA di Sergio, necessaria prima di incassare qualunque pagamento reale. Per vedere il
+          comportamento reale passo-passo invece di leggere solo testo, apri
+          <code>Percorso_Reale_Accesso_B_E.html</code> nella stessa cartella.</p>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<footer>Decisioni chiuse il 27-28 luglio 2026 — B, C, D, A, E implementati e verificati il 29 luglio 2026 — F/G in sospeso, in attesa della P.IVA</footer>

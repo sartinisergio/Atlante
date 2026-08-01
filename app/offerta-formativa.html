@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — Offerta formativa</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/shell.css">
+<style>
+  :root {
+    --v: var(--voce-offerta);
+    --v-soft: var(--voce-offerta-soft);
+    --v-ink: var(--voce-offerta-ink);
+    --voce-corrente-soft: var(--voce-offerta-soft);
+    --voce-corrente-ink: var(--voce-offerta-ink);
+  }
+
+  /* Tab: il JS esistente commuta la classe .attivo su .tab-btn[data-tab],
+     quindi teniamo quei nomi e ci limitiamo a restilizzarli. */
+  .tab-btn {
+    border: none; background: transparent; padding: 8px 16px;
+    font-size: 13px; font-weight: 500; color: var(--ink-muted); cursor: pointer;
+    border-radius: 7px; display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.attivo { background: var(--v); color: #fff; }
+  .tab-btn .n { font-size: 11px; opacity: 0.75; font-family: var(--font-mono); }
+  .tab-content { display: none; }
+  .tab-content.attivo { display: block; }
+
+  /* Barra delle ricerche salvate: pill in alto a destra del riquadro filtri */
+  .ricerche-salvate-bar {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 12px; font-size: 12.5px;
+  }
+  .ricerche-salvate-bar > label {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); font-weight: 600;
+  }
+  .ricerche-salvate-bar select {
+    padding: 6px 10px; background: var(--paper-warm); border: 1px solid var(--line);
+    border-radius: 20px; font-size: 12.5px; color: var(--ink); font-family: inherit; max-width: 260px;
+  }
+  .ricerche-salvate-bar button {
+    background: transparent; border: 1px solid transparent; border-radius: 6px;
+    padding: 5px 9px; font-size: 12px; color: var(--ink-muted); cursor: pointer; font-family: inherit;
+  }
+  .ricerche-salvate-bar button:hover { color: var(--v-ink); background: var(--v-soft); }
+  .ricerche-input-inline { display: none; gap: 6px; align-items: center; }
+  .ricerche-input-inline.attivo { display: flex; }
+  .ricerche-input-inline input {
+    padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+    font-size: 12.5px; font-family: inherit; background: var(--surface);
+  }
+
+  /* Riquadro filtri */
+  .filtri {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    padding: 18px 20px; margin-bottom: 16px;
+  }
+  .filtri h2 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15px;
+    margin: 0 0 12px; letter-spacing: -0.01em;
+  }
+  .filtri-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .filtro-gruppo label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); margin-bottom: 4px;
+  }
+  .filtro-gruppo input[type=text] {
+    width: 100%; padding: 8px 10px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 7px;
+    font-size: 13px; color: var(--ink); font-family: inherit;
+  }
+  .filtro-gruppo input[type=text]:focus { outline: none; border-color: var(--v); background: var(--surface); }
+  .altri-filtri { margin-top: 12px; }
+  .altri-filtri summary {
+    cursor: pointer; font-size: 12px; color: var(--v); font-weight: 500; list-style: none;
+  }
+  .altri-filtri summary::-webkit-details-marker { display: none; }
+  .altri-filtri summary::before { content: '+ '; }
+  .altri-filtri[open] summary::before { content: '– '; }
+  .altri-filtri .filtri-grid { margin-top: 10px; }
+  .filtri-extra {
+    margin-top: 12px; display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--ink-muted);
+  }
+  .btn-row {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-soft);
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .btn-cerca, .btn-reset, .btn-export {
+    padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  }
+  .btn-cerca { background: var(--v); color: #fff; }
+  .btn-cerca:hover { background: var(--v-ink); }
+  .btn-reset { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-reset:hover { background: var(--paper-warm); }
+  .btn-export { background: transparent; color: var(--ink-muted); }
+  .btn-export:hover:not(:disabled) { color: var(--ink); background: var(--paper-warm); }
+  .btn-export:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Choices.js: il suo CSS è caricato prima del nostro, qui lo riportiamo
+     nel linguaggio di .field.multi + .chip. Se aggiorni la versione di
+     Choices.js ricontrolla questi selettori. */
+  .choices { margin-bottom: 0; }
+  .choices__inner {
+    background: var(--paper) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 7px !important;
+    padding: 4px 6px !important;
+    min-height: 36px !important;
+    font-size: 13px !important;
+  }
+  .is-focused .choices__inner, .is-open .choices__inner { border-color: var(--v) !important; background: var(--surface) !important; }
+  .choices__list--multiple .choices__item {
+    background: var(--v-soft) !important;
+    border: none !important;
+    color: var(--v-ink) !important;
+    border-radius: var(--r-sm) !important;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    padding: 2px 8px !important;
+    margin: 2px 3px 2px 0 !important;
+  }
+  .choices__button { border-left-color: rgba(0,0,0,.15) !important; }
+  .choices__list--dropdown, .choices__list[aria-expanded] {
+    border-color: var(--line) !important; border-radius: var(--r-md) !important;
+    box-shadow: var(--sh-2); font-size: 13px;
+  }
+  .choices__list--dropdown .choices__item--selectable.is-highlighted { background: var(--v-soft) !important; }
+  .choices__input { background: transparent !important; font-size: 13px !important; }
+
+  /* Intestazione dei risultati + tabella */
+  .risultati-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin: 18px 4px 12px;
+  }
+  #contatore, #contatore-lauree {
+    font-family: var(--font-serif); font-weight: 400; font-size: 20px;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  #contatore b, #contatore-lauree b { color: var(--v); font-weight: 500; font-variant-numeric: tabular-nums; }
+  #contatore small, #contatore-lauree small { font-size: 13px; color: var(--ink-muted); font-family: var(--font-sans); margin-left: 8px; }
+  #status { font-size: 12px; color: var(--ink-muted); font-family: var(--font-mono); }
+
+  #tabella-container, #tabella-lauree-container {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden;
+  }
+  .loading { padding: 40px 20px; text-align: center; color: var(--ink-muted); font-size: 13px; }
+
+  /* DataTables: teniamo ordinamento e paginazione, restiliamo l'aspetto.
+     Il CSS di DataTables è caricato prima: qui serve specificità maggiore. */
+  #tabella-container table.dataTable,
+  #tabella-lauree-container table.dataTable {
+    width: 100% !important; border-collapse: separate !important; border-spacing: 0;
+    font-size: 13px; margin: 0 !important; border: none;
+  }
+  table.dataTable thead th {
+    text-align: left; padding: 12px 14px !important;
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); background: var(--paper-warm);
+    border-bottom: 1px solid var(--line) !important; white-space: nowrap;
+  }
+  table.dataTable tbody td {
+    padding: 11px 14px !important; border-bottom: 1px solid var(--line-soft);
+    vertical-align: top; color: var(--ink);
+  }
+  table.dataTable tbody tr:hover { background: color-mix(in srgb, var(--v-soft) 35%, transparent); }
+  table.dataTable tbody tr.odd, table.dataTable tbody tr.even { background: transparent; }
+  table.dataTable tbody tr:hover .riga-azioni { opacity: 1; }
+  .riga-azioni { opacity: 0; transition: opacity .1s; display: inline-flex; gap: 4px; }
+  tr:focus-within .riga-azioni { opacity: 1; }
+
+  /* azioni per riga: i nomi di classe sono generati dai render di DataTables,
+     qui vengono ricondotti all'aspetto di .m-btn */
+  .btn-piano, .btn-edit, .btn-disattiva {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 3px 8px; margin-right: 3px;
+    font-size: 11px; color: var(--ink-2); cursor: pointer; font-family: inherit; white-space: nowrap;
+  }
+  .btn-piano:hover, .btn-edit:hover { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+  .btn-disattiva:hover { border-color: var(--err); color: var(--err); background: var(--err-soft); }
+  .link-ins { color: var(--v); text-decoration: none; font-size: 12px; font-weight: 500; }
+  .link-ins:hover { text-decoration: underline; }
+
+  /* tipologia del corso di laurea, resa come badge. Il nome della classe è
+     generato dal dato (badge-triennale, badge-magistrale, …): la regola generica
+     dà la forma, quelle specifiche il colore — e vanno dopo. */
+  [class^="badge-"], [class*=" badge-"] {
+    display: inline-block; padding: 2px 7px; border-radius: var(--r-sm);
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; white-space: nowrap;
+    background: var(--surface-2); color: var(--ink-muted);
+  }
+  .badge-triennale { background: var(--voce-analisi-soft); color: var(--voce-analisi-ink); }
+  .badge-magistrale { background: var(--voce-offerta-soft); color: var(--voce-offerta-ink); }
+  .badge-magistrale_ciclo_unico { background: var(--voce-confronto-soft); color: var(--voce-confronto-ink); }
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_length {
+    padding: 10px 14px; font-size: 12.5px; color: var(--ink-muted);
+  }
+  .dataTables_wrapper .dataTables_filter input,
+  .dataTables_wrapper .dataTables_length select {
+    border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px;
+    background: var(--surface); font-family: inherit; font-size: 12.5px; color: var(--ink);
+  }
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    padding: 10px 14px !important; font-size: 12px; color: var(--ink-muted) !important;
+    background: var(--paper-warm); border-top: 1px solid var(--line);
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: var(--surface) !important; border: 1px solid var(--line) !important;
+    border-radius: 5px !important; padding: 3px 9px !important; margin: 0 2px !important;
+    font-size: 11.5px; color: var(--ink-2) !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--v) !important; border-color: var(--v) !important; color: #fff !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled { opacity: 0.4; }
+
+  /* Vista ateneo ad albero */
+  .vista-ateneo-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin: 18px 4px 12px;
+  }
+  .vista-ateneo-header h2 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 17px;
+    margin: 0; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .albero-container {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1); overflow: hidden;
+  }
+
+  /* Sezione del modale delta */
+  .delta-section { margin-bottom: 22px; }
+  .delta-section:last-child { margin-bottom: 0; }
+  .delta-section h4 {
+    font-family: var(--font-serif); font-weight: 500; font-size: 15px;
+    margin: 0 0 10px; text-transform: none; letter-spacing: normal; color: var(--ink);
+  }
+  #delta-drop-zone {
+    border: 1.5px dashed var(--line); border-radius: var(--r-md);
+    padding: 24px; text-align: center; cursor: pointer; margin-bottom: 12px;
+    font-size: 12.5px; color: var(--ink-muted); background: var(--paper);
+  }
+  #delta-drop-zone:hover { border-color: var(--v); }
+
+  /* Griglia dei form dentro i modali (stessa di shell.css, con le classi che il JS conosce) */
+  .form-gruppo.full { grid-column: 1 / -1; }
+  .form-gruppo label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 4px;
+  }
+  .form-gruppo input, .form-gruppo select, .form-gruppo textarea {
+    width: 100%; padding: 8px 10px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 7px;
+    font-size: 13px; color: var(--ink); font-family: inherit;
+  }
+  .form-gruppo textarea { min-height: 70px; resize: vertical; }
+  .form-gruppo input:focus, .form-gruppo select:focus, .form-gruppo textarea:focus {
+    outline: none; border-color: var(--v); background: var(--surface);
+  }
+  .edit-btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  .edit-btn-row button {
+    padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  }
+
+  @media (max-width: 1200px) { .filtri-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px)  { .filtri-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="a-shell">
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb">
+    <a href="home.html">Atlante</a><span class="sep">›</span>
+    <span id="crumb-cliente">—</span><span class="sep">›</span>
+    <span>Offerta formativa</span>
+  </div>
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <h1 class="page">Offerta formativa<em>.</em></h1>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="badge b-warn" id="header-delta-badge" hidden></span>
+      <span id="header-stats" class="badge b-ok" style="text-transform:none;letter-spacing:normal;font-size:11.5px"></span>
+      <span id="header-anno" style="font-size:12px;color:var(--ink-muted)"></span>
+      <button class="m-btn" id="btn-aggiorna-dati" title="Ricarica i dati dal server invece che dalla cache locale">↻ Aggiorna dati</button>
+    </div>
+  </div>
+  <p class="subtitle">Ricerca fra gli insegnamenti e i corsi di laurea di tutti gli atenei italiani.
+    I filtri si combinano fra loro; puoi salvare la combinazione come ricerca personale e riaprirla
+    quando vuoi.</p>
+
+  <div id="stato-iniziale" class="vuoto">Caricamento…</div>
+  <div id="stato-accesso" style="display:none;"></div>
+
+  <div id="app" style="display:none;">
+
+    <div class="helper">
+      <span class="ic">i</span>
+      <div>La Vista Ateneo mostra la struttura ad albero di un ateneo, ma si appoggia agli stessi dati
+        caricati dalla tab Ricerca insegnamenti. Le correzioni che fai su un insegnamento (modifica,
+        disattiva, aggiunta) restano <strong>nel tuo browser</strong>: condividile con i colleghi da
+        <a href="#" id="link-delta-helper">Export / Import delta</a>.</div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab-btn attivo" data-tab="tab-insegnamenti" role="tab">Insegnamenti <span class="n" id="n-tab-ins"></span></button>
+      <button type="button" class="tab-btn" data-tab="tab-lauree" role="tab">Lauree <span class="n" id="n-tab-lau"></span></button>
+      <button type="button" class="tab-btn" data-tab="tab-ateneo" role="tab">Vista ateneo <span class="n" id="n-tab-atn"></span></button>
+    </div>
+
+    <div class="toolbar" style="margin-bottom:16px">
+      <span style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);font-weight:600">Catalogo</span>
+      <button type="button" class="btn btn-ghost" id="btn-aggiungi-ins">＋ Nuovo insegnamento</button>
+      <button type="button" class="btn btn-ghost" id="btn-aggiungi-corso">＋ Nuovo corso di laurea</button>
+      <button type="button" class="btn btn-quiet" id="btn-delta">↕ Export / Import delta</button>
+    </div>
+
+    <!-- TAB INSEGNAMENTI -->
+    <div class="tab-content attivo" id="tab-insegnamenti">
+      <div class="filtri">
+        <div class="ricerche-salvate-bar">
+          <label>Ricerche salvate</label>
+          <select id="sel-ricerche-ins"><option value="">— nessuna —</option></select>
+          <button type="button" id="btn-carica-ricerca-ins">▶ Carica</button>
+          <button type="button" id="btn-salva-ricerca-ins">＋ Salva combinazione</button>
+          <button type="button" id="btn-rinomina-ricerca-ins">✎ Rinomina</button>
+          <button type="button" id="btn-elimina-ricerca-ins">🗑 Elimina</button>
+          <div class="ricerche-input-inline" id="ricerche-input-ins">
+            <input type="text" id="nome-ricerca-ins" placeholder="Nome ricerca…" maxlength="60">
+            <button type="button" id="btn-conferma-ricerca-ins">✓ Conferma</button>
+            <button type="button" id="btn-annulla-ricerca-ins">✗ Annulla</button>
+          </div>
+        </div>
+
+        <h2>Filtri</h2>
+        <div class="filtri-grid">
+          <div class="filtro-gruppo"><label>Ateneo</label><select id="f-ateneo" multiple></select></div>
+          <div class="filtro-gruppo"><label>Tipologia</label><select id="f-tipologia" multiple></select></div>
+          <div class="filtro-gruppo"><label>Classe di laurea</label><select id="f-classe" multiple></select></div>
+          <div class="filtro-gruppo"><label>SSD (vecchio)</label><select id="f-ssd" multiple></select></div>
+          <div class="filtro-gruppo"><label>SSD (nuovo)</label><select id="f-newssd" multiple></select></div>
+          <div class="filtro-gruppo"><label>Anno di corso</label><select id="f-anno" multiple></select></div>
+          <div class="filtro-gruppo"><label>Insegnamento (testo libero)</label><input type="text" id="f-insegnamento" placeholder="es. Biochimica…"></div>
+          <div class="filtro-gruppo"><label>Docente (testo libero)</label><input type="text" id="f-docente" placeholder="es. Rossi…"></div>
+        </div>
+        <details class="altri-filtri">
+          <summary>Altri filtri: regione, zona, lingua</summary>
+          <div class="filtri-grid">
+            <div class="filtro-gruppo"><label>Regione</label><select id="f-regione" multiple></select></div>
+            <div class="filtro-gruppo"><label>Zona</label><select id="f-zona" multiple></select></div>
+            <div class="filtro-gruppo"><label>Lingua</label><select id="f-lingua" multiple></select></div>
+          </div>
+        </details>
+        <div class="filtri-extra">
+          <input type="checkbox" id="f-mostra-disattivati">
+          <label for="f-mostra-disattivati">Mostra anche insegnamenti disattivati</label>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-cerca" id="btn-cerca">Cerca</button>
+          <button type="button" class="btn-reset" id="btn-reset">↺ Reset</button>
+          <button type="button" class="btn-export" id="btn-export" disabled>↓ Export Excel</button>
+          <button type="button" class="btn-export" id="btn-raggruppa" disabled>Raggruppa per denominazione</button>
+        </div>
+      </div>
+
+      <div class="risultati">
+        <div class="risultati-header">
+          <span id="contatore"></span>
+          <span id="status">Inizializzazione…</span>
+        </div>
+        <div id="tabella-container"><div class="loading">Caricamento dati in corso…</div></div>
+      </div>
+    </div>
+
+    <!-- TAB LAUREE -->
+    <div class="tab-content" id="tab-lauree">
+      <div class="filtri">
+        <div class="ricerche-salvate-bar">
+          <label>Ricerche salvate</label>
+          <select id="sel-ricerche-lau"><option value="">— nessuna —</option></select>
+          <button type="button" id="btn-carica-ricerca-lau">▶ Carica</button>
+          <button type="button" id="btn-salva-ricerca-lau">＋ Salva combinazione</button>
+          <button type="button" id="btn-rinomina-ricerca-lau">✎ Rinomina</button>
+          <button type="button" id="btn-elimina-ricerca-lau">🗑 Elimina</button>
+          <div class="ricerche-input-inline" id="ricerche-input-lau">
+            <input type="text" id="nome-ricerca-lau" placeholder="Nome ricerca…" maxlength="60">
+            <button type="button" id="btn-conferma-ricerca-lau">✓ Conferma</button>
+            <button type="button" id="btn-annulla-ricerca-lau">✗ Annulla</button>
+          </div>
+        </div>
+
+        <h2>Filtri</h2>
+        <div class="filtri-grid">
+          <div class="filtro-gruppo"><label>Ateneo</label><select id="fl-ateneo" multiple></select></div>
+          <div class="filtro-gruppo"><label>Tipologia</label><select id="fl-tipologia" multiple></select></div>
+          <div class="filtro-gruppo"><label>Classe di laurea</label><select id="fl-classe" multiple></select></div>
+          <div class="filtro-gruppo"><label>Nome corso (testo libero)</label><input type="text" id="fl-laurea" placeholder="es. Biotecnologie…"></div>
+        </div>
+        <details class="altri-filtri">
+          <summary>Altri filtri: regione, zona</summary>
+          <div class="filtri-grid">
+            <div class="filtro-gruppo"><label>Regione</label><select id="fl-regione" multiple></select></div>
+            <div class="filtro-gruppo"><label>Zona</label><select id="fl-zona" multiple></select></div>
+          </div>
+        </details>
+        <div class="btn-row">
+          <button type="button" class="btn-cerca" id="btn-cerca-lauree">Cerca</button>
+          <button type="button" class="btn-reset" id="btn-reset-lauree">↺ Reset</button>
+          <button type="button" class="btn-export" id="btn-export-lauree" disabled>↓ Export Excel</button>
+        </div>
+      </div>
+
+      <div class="risultati">
+        <div class="risultati-header"><span id="contatore-lauree"></span></div>
+        <div id="tabella-lauree-container"><div class="loading">Caricamento dati…</div></div>
+      </div>
+    </div>
+
+    <!-- TAB VISTA ATENEO -->
+    <div class="tab-content" id="tab-ateneo">
+      <div class="vista-ateneo-header">
+        <h2>Struttura ad albero per ateneo</h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="search-box" style="max-width:300px">
+            <input type="text" id="filtro-albero" placeholder="Filtra ateneo o corso…">
+          </div>
+          <button type="button" class="btn btn-ghost" id="btn-chiudi-tutti-albero">↺ Chiudi tutti</button>
+        </div>
+      </div>
+      <div class="albero-container" id="albero-container"><div class="loading">Carica prima i dati dalla tab Insegnamenti.</div></div>
+    </div>
+
+    <!-- ==================== MODALE PIANO DI STUDI ==================== -->
+    <div class="modal-overlay" id="modal-piano-overlay">
+      <div class="modal-box larga" role="dialog" aria-modal="true">
+        <header>
+          <div><h3 id="piano-titolo">Piano di studi</h3><p class="sotto" id="piano-sottotitolo"></p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-piano" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body" id="piano-body"></div>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE MODIFICA ==================== -->
+    <div class="modal-overlay" id="modal-edit-overlay">
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Modifica <em>insegnamento</em></h3><p class="sotto" id="edit-sottotitolo"></p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-edit" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div class="form-grid">
+            <div class="form-gruppo full"><label>Insegnamento</label><input type="text" id="edit-insegnamento"></div>
+            <div class="form-gruppo"><label>SSD</label><input type="text" id="edit-ssd"></div>
+            <div class="form-gruppo"><label>New SSD</label><input type="text" id="edit-newssd"></div>
+            <div class="form-gruppo"><label>CFU</label><input type="number" id="edit-cfu" min="1" max="60"></div>
+            <div class="form-gruppo"><label>Anno di corso</label><input type="text" id="edit-anno"></div>
+            <div class="form-gruppo"><label>Semestre</label><input type="text" id="edit-semestre"></div>
+            <div class="form-gruppo"><label>Lingua</label><input type="text" id="edit-lingua"></div>
+            <div class="form-gruppo full"><label>Docente</label><input type="text" id="edit-docente"></div>
+            <div class="form-gruppo full"><label>URL programma</label><input type="url" id="edit-url"></div>
+            <div class="form-gruppo full"><label>Note</label><textarea id="edit-note" placeholder="Note aggiuntive…"></textarea></div>
+          </div>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-annulla-edit">Annulla</button>
+          <button type="button" class="btn btn-quiet" id="btn-reset-edit">↺ Ripristina originale</button>
+          <button type="button" class="btn btn-primary" id="btn-salva-edit">Salva modifica</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE DISATTIVA ==================== -->
+    <div class="modal-overlay" id="modal-disattiva-overlay">
+      <div class="modal-box pericolo" style="max-width:560px" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Disattiva<em>.</em></h3><p class="sotto" id="disattiva-sottotitolo"></p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-disattiva" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div class="tabs" style="display:flex;width:100%;margin-bottom:16px">
+            <button type="button" class="tab-btn attivo" id="dis-tipo-ins" style="flex:1;justify-content:center">Singolo insegnamento</button>
+            <button type="button" class="tab-btn" id="dis-tipo-corso" style="flex:1;justify-content:center">Intero corso</button>
+          </div>
+          <div class="campo">
+            <label for="dis-motivo">Motivo (opzionale)</label>
+            <input class="field" type="text" id="dis-motivo" placeholder="es. Corso non più attivo…">
+          </div>
+          <p class="aiuto">La disattivazione resta nel tuo browser: non modifica il catalogo condiviso.
+            Condividila con i colleghi tramite l'export delta.</p>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-annulla-disattiva">Annulla</button>
+          <button type="button" class="btn btn-quiet" id="btn-riattiva" style="display:none">✓ Riattiva</button>
+          <button type="button" class="btn btn-primary" id="btn-conferma-disattiva">Disattiva</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE AGGIUNGI INSEGNAMENTO ==================== -->
+    <div class="modal-overlay" id="modal-aggiungi-ins-overlay">
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Aggiungi <em>insegnamento</em></h3><p class="sotto">A un corso di laurea già presente nel catalogo</p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-aggiungi-ins" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div class="form-grid">
+            <div class="form-gruppo full"><label>Ateneo *</label><input type="text" id="ai-ateneo" list="ai-ateneo-list" placeholder="Digita per cercare…" autocomplete="off"><datalist id="ai-ateneo-list"></datalist></div>
+            <div class="form-gruppo full"><label>Corso di laurea *</label><input type="text" id="ai-laurea" list="ai-laurea-list" placeholder="Digita per cercare…" autocomplete="off"><datalist id="ai-laurea-list"></datalist></div>
+            <div class="form-gruppo full"><label>Nome insegnamento *</label><input type="text" id="ai-insegnamento" placeholder="es. Biochimica applicata"></div>
+            <div class="form-gruppo"><label>SSD</label><input type="text" id="ai-ssd" placeholder="es. BIO/10"></div>
+            <div class="form-gruppo"><label>New SSD</label><input type="text" id="ai-newssd" placeholder="es. BIOS-01/A"></div>
+            <div class="form-gruppo"><label>CFU</label><input type="number" id="ai-cfu" min="1" max="60" placeholder="6"></div>
+            <div class="form-gruppo"><label>Anno di corso</label><select id="ai-anno"><option value="1">1°</option><option value="2">2°</option><option value="3">3°</option><option value="4">4°</option><option value="5">5°</option><option value="6">6°</option></select></div>
+            <div class="form-gruppo"><label>Semestre</label><input type="text" id="ai-semestre" placeholder="es. 1, 2, Annuale"></div>
+            <div class="form-gruppo"><label>Lingua</label><input type="text" id="ai-lingua" placeholder="es. Italiano"></div>
+            <div class="form-gruppo full"><label>Docente</label><input type="text" id="ai-docente" placeholder="es. Rossi Mario"></div>
+            <div class="form-gruppo full"><label>URL programma</label><input type="url" id="ai-url" placeholder="https://…"></div>
+            <div class="form-gruppo full"><label>Note</label><textarea id="ai-note" placeholder="Note aggiuntive…"></textarea></div>
+          </div>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-annulla-aggiungi-ins">Annulla</button>
+          <button type="button" class="btn btn-primary" id="btn-salva-aggiungi-ins">Aggiungi</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE AGGIUNGI CORSO ==================== -->
+    <div class="modal-overlay" id="modal-aggiungi-corso-overlay">
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Aggiungi <em>corso di laurea</em></h3><p class="sotto">Corso non presente nel catalogo caricato</p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-aggiungi-corso" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div class="form-grid">
+            <div class="form-gruppo full"><label>Ateneo *</label><input type="text" id="ac-ateneo" list="ac-ateneo-list" placeholder="Digita per cercare…" autocomplete="off"><datalist id="ac-ateneo-list"></datalist></div>
+            <div class="form-gruppo full"><label>Nome corso di laurea *</label><input type="text" id="ac-laurea" placeholder="es. Laurea in Biotecnologie industriali"></div>
+            <div class="form-gruppo"><label>Classe di laurea *</label><input type="text" id="ac-classe" placeholder="es. L-2"></div>
+            <div class="form-gruppo"><label>Tipologia *</label><select id="ac-tipologia"><option value="triennale">Triennale</option><option value="magistrale">Magistrale</option><option value="magistrale ciclo unico">Ciclo unico</option></select></div>
+            <div class="form-gruppo"><label>Durata (anni)</label><input type="number" id="ac-durata" min="1" max="6" placeholder="3"></div>
+            <div class="form-gruppo full"><label>Note</label><textarea id="ac-note" placeholder="Note aggiuntive…"></textarea></div>
+          </div>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-annulla-aggiungi-corso">Annulla</button>
+          <button type="button" class="btn btn-primary" id="btn-salva-aggiungi-corso">Aggiungi corso</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE EXPORT / IMPORT DELTA ==================== -->
+    <div class="modal-overlay" id="modal-delta-overlay">
+      <div class="modal-box" style="max-width:600px" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Export / Import <em>delta</em></h3><p class="sotto">Condivisione delle correzioni tra promotori</p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-delta" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div class="delta-section">
+            <h4>Esporta le tue modifiche</h4>
+            <div class="campo">
+              <label for="delta-promotore">Il tuo nome (promotore)</label>
+              <input class="field" type="text" id="delta-promotore" placeholder="es. Mario Rossi — Zona Nord-Est">
+            </div>
+            <div id="delta-stats-export" style="font-size:12.5px;color:var(--ink-muted);margin-bottom:12px;"></div>
+            <button type="button" class="btn btn-primary" style="width:100%;justify-content:center" id="btn-esporta-delta">↓ Scarica file delta JSON</button>
+          </div>
+          <div class="delta-section">
+            <h4>Importa le modifiche di un collega</h4>
+            <div id="delta-drop-zone">Trascina qui il file JSON, oppure <strong>clicca per sfogliare</strong></div>
+            <input type="file" id="delta-file-input" accept=".json" style="display:none;">
+            <div id="delta-import-preview"></div>
+          </div>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-chiudi-delta-btn">Chiudi</button>
+          <button type="button" class="btn btn-primary" id="btn-importa-delta">Importa delta</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE RAGGRUPPA PER DENOMINAZIONE ==================== -->
+    <div class="modal-overlay" id="modal-raggruppa-overlay">
+      <div class="modal-box" style="max-width:700px" role="dialog" aria-modal="true">
+        <header>
+          <div><h3>Raggruppa per <em>denominazione</em></h3><p class="sotto" id="raggruppa-sottotitolo">Seleziona le denominazioni da includere nei risultati</p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-raggruppa" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <span id="raggruppa-contatore" style="font-size:12.5px;color:var(--ink-muted);"></span>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="m-btn" id="raggruppa-sel-tutti">Seleziona tutti</button>
+              <button type="button" class="m-btn" id="raggruppa-desel-tutti">Deseleziona tutti</button>
+            </div>
+          </div>
+          <div class="search-box" style="max-width:none;margin-bottom:12px">
+            <input type="text" id="raggruppa-filtra" placeholder="Filtra denominazioni…">
+          </div>
+          <div id="raggruppa-lista" style="max-height:50vh;overflow-y:auto;border:1px solid var(--line);border-radius:var(--r-md);padding:8px;"></div>
+        </div>
+        <footer>
+          <button type="button" class="btn btn-ghost" id="btn-annulla-raggruppa">Annulla</button>
+          <button type="button" class="btn btn-primary" id="btn-applica-raggruppa">Applica selezione</button>
+        </footer>
+      </div>
+    </div>
+
+  </div><!-- /#app -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script src="js/shell.js" data-attiva="offerta"></script>
+<script type="module">
+import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm';
+
+const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/offerta-formativa-urls`;
+
+// I CSV (~100MB) vengono tenuti nella Cache Storage del browser: senza, ogni volta che l'utente
+// passa a un'altra voce di Atlante e poi torna qui la pagina si ricarica da zero e riscarica tutto.
+// La cache e' tenuta "fresca" per poche ore (non per sempre): abbastanza per non ricaricare durante
+// una sessione di lavoro, ma non cosi' a lungo da mostrare dati vecchi per giorni se il catalogo
+// viene aggiornato. Chiave di cache per singolo file = percorso stabile, non l'URL firmato (che
+// cambia a ogni chiamata alla Edge Function e quindi non sarebbe mai un cache hit).
+const CACHE_NAME = 'atlante-offerta-formativa-v1';
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 ore
+const CACHE_META_URL = 'https://atlante.cache.local/meta';
+
+const LIMITE_RIGHE_INSEGNAMENTI = 5000;
+const LIMITE_RIGHE_LAUREE = 3000;
+
+let db, conn;
+let ultimiRisultati = [];
+let ultimiRisultatiLauree = [];
+let choicesMap = {};
+let choicesMapLauree = {};
+let alberoCostruito = false;
+
+const LS_MODIFICHE = 'atlante_offerta_modifiche_v1';
+const LS_DISATT = 'atlante_offerta_disattivazioni_v1';
+const LS_AGG_INS = 'atlante_offerta_aggiunte_ins_v1';
+const LS_AGG_CRS = 'atlante_offerta_aggiunte_corsi_v1';
+const LS_RICERCHE_INS = 'atlante_offerta_ricerche_ins_v1';
+const LS_RICERCHE_LAU = 'atlante_offerta_ricerche_lau_v1';
+
+let editRecordCorrente = null;
+let disattivaRecordCorrente = null;
+let tipoDisattivazione = 'insegnamento';
+let deltaImportPending = null;
+
+function leggiLS(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch(e) { return fallback; } }
+function salvaLS(key, obj) { localStorage.setItem(key, JSON.stringify(obj)); }
+const leggiModifiche = () => leggiLS(LS_MODIFICHE, {});
+const leggiDisattivazioni = () => leggiLS(LS_DISATT, {});
+const leggiAggiungeIns = () => leggiLS(LS_AGG_INS, []);
+const leggiAggiungeCorsi = () => leggiLS(LS_AGG_CRS, []);
+const salvaModifiche = obj => salvaLS(LS_MODIFICHE, obj);
+const salvaDisattivazioni = obj => salvaLS(LS_DISATT, obj);
+const salvaAggiungeIns = arr => salvaLS(LS_AGG_INS, arr);
+const salvaAggiungeCorsi = arr => salvaLS(LS_AGG_CRS, arr);
+
+const leggiRicercheIns = () => leggiLS(LS_RICERCHE_INS, {});
+const leggiRicercheLau = () => leggiLS(LS_RICERCHE_LAU, {});
+const salvaRicercheIns = obj => salvaLS(LS_RICERCHE_INS, obj);
+const salvaRicercheLau = obj => salvaLS(LS_RICERCHE_LAU, obj);
+
+function normalizzaPerChiave(s) { return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x00-\x7F]/g,'').toLowerCase().trim().replace(/\s+/g,' '); }
+function chiaveRecord(row) { return [row.ateneo,row.laurea,row.insegnamento,row.anno_ins].map(normalizzaPerChiave).join('||'); }
+function chiaveCorso(ateneo,laurea) { return `${(ateneo||'').trim()}||${(laurea||'').trim()}`; }
+function dataOggi() { const d=new Date(),pad=n=>String(n).padStart(2,'0'); return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function idZan() { return 'ATL-'+Date.now(); }
+
+function aggiornaBadgeHeader() {
+  const tot=Object.keys(leggiModifiche()).length+Object.keys(leggiDisattivazioni()).length+leggiAggiungeIns().length+leggiAggiungeCorsi().length;
+  const el=document.getElementById('header-delta-badge');
+  el.hidden = tot === 0;
+  el.textContent = `${tot} modifich${tot>1?'e':'a'} local${tot>1?'i':'e'}`;
+  el.title = 'Correzioni presenti solo in questo browser: condividile con Export delta';
+}
+
+function applicaModifiche(rows) {
+  const mods=leggiModifiche(), dis=leggiDisattivazioni();
+  return rows.map(row=>{const k=chiaveRecord(row),kc=chiaveCorso(row.ateneo,row.laurea);let r={...row};if(mods[k])r=Object.assign({},r,mods[k],{_modificato:true});if(dis[k]&&dis[k].tipo==='insegnamento'){r._disattivato=true;r._motivo_dis=dis[k].motivo;}if(dis[kc]&&dis[kc].tipo==='corso'){r._disattivato=true;r._corso_disattivato=true;r._motivo_dis=dis[kc].motivo;}return r;});
+}
+function applicaAggiunte(rows) { return [...rows,...leggiAggiungeIns().map(a=>({...a,_aggiunto:true}))]; }
+
+// ============================
+// RICERCHE SALVATE
+// ============================
+
+function aggiornaSelectRicerche(tipo) {
+  const isIns = tipo === 'ins';
+  const ricerche = isIns ? leggiRicercheIns() : leggiRicercheLau();
+  const select = document.getElementById(isIns ? 'sel-ricerche-ins' : 'sel-ricerche-lau');
+  const nomi = Object.keys(ricerche).sort((a,b) => a.localeCompare(b, 'it'));
+  select.innerHTML = '<option value="">— Seleziona —</option>' + nomi.map(n => {
+    const data = ricerche[n]?.data ? ` — ${ricerche[n].data}` : '';
+    return `<option value="${n}">${n}${data}</option>`;
+  }).join('');
+}
+
+function salvaRicercaCorrente(tipo) {
+  const inputDiv = document.getElementById(`ricerche-input-${tipo}`);
+  const input = document.getElementById(`nome-ricerca-${tipo}`);
+  inputDiv.style.display = 'flex';
+  input.value = '';
+  input.focus();
+}
+
+function _raccogliFiltriRicerca(tipo) {
+  if (tipo === 'ins') {
+    return {
+      ateneo: choicesMap['f-ateneo']?.getValue(true) || [],
+      regione: choicesMap['f-regione']?.getValue(true) || [],
+      zona: choicesMap['f-zona']?.getValue(true) || [],
+      tipologia: choicesMap['f-tipologia']?.getValue(true) || [],
+      classe: choicesMap['f-classe']?.getValue(true) || [],
+      ssd: choicesMap['f-ssd']?.getValue(true) || [],
+      newssd: choicesMap['f-newssd']?.getValue(true) || [],
+      lingua: choicesMap['f-lingua']?.getValue(true) || [],
+      anno: choicesMap['f-anno']?.getValue(true) || [],
+      insegnamento: document.getElementById('f-insegnamento').value.trim(),
+      docente: document.getElementById('f-docente').value.trim(),
+      mostraDisattivati: document.getElementById('f-mostra-disattivati').checked
+    };
+  } else {
+    return {
+      ateneo: choicesMapLauree['fl-ateneo']?.getValue(true) || [],
+      regione: choicesMapLauree['fl-regione']?.getValue(true) || [],
+      zona: choicesMapLauree['fl-zona']?.getValue(true) || [],
+      tipologia: choicesMapLauree['fl-tipologia']?.getValue(true) || [],
+      classe: choicesMapLauree['fl-classe']?.getValue(true) || [],
+      laurea: document.getElementById('fl-laurea').value.trim()
+    };
+  }
+}
+
+function confermaSalvataggioRicerca(tipo) {
+  const input = document.getElementById(`nome-ricerca-${tipo}`);
+  const nomeClean = input.value.trim();
+  if (!nomeClean) { input.focus(); return; }
+  const isIns = tipo === 'ins';
+  const ricerche = isIns ? leggiRicercheIns() : leggiRicercheLau();
+  if (ricerche[nomeClean] && !confirm(`Esiste già una ricerca con il nome "${nomeClean}". Vuoi sovrascriverla?`)) return;
+  ricerche[nomeClean] = { filtri: _raccogliFiltriRicerca(tipo), data: dataOggi() };
+  if (isIns) { salvaRicercheIns(ricerche); aggiornaSelectRicerche('ins'); document.getElementById('sel-ricerche-ins').value = nomeClean; }
+  else { salvaRicercheLau(ricerche); aggiornaSelectRicerche('lau'); document.getElementById('sel-ricerche-lau').value = nomeClean; }
+  document.getElementById(`ricerche-input-${tipo}`).style.display = 'none';
+}
+
+function annullaSalvataggioRicerca(tipo) {
+  document.getElementById(`ricerche-input-${tipo}`).style.display = 'none';
+  document.getElementById(`nome-ricerca-${tipo}`).value = '';
+}
+
+function caricaRicercaSalvata(tipo) {
+  const isIns = tipo === 'ins';
+  const select = document.getElementById(isIns ? 'sel-ricerche-ins' : 'sel-ricerche-lau');
+  const nome = select.value;
+  if (!nome) { alert('Seleziona una ricerca da caricare.'); return; }
+
+  const ricerche = isIns ? leggiRicercheIns() : leggiRicercheLau();
+  const ricerca = ricerche[nome];
+  if (!ricerca || !ricerca.filtri) { alert('Ricerca non trovata.'); return; }
+
+  const f = ricerca.filtri;
+
+  if (isIns) {
+    const mapFiltri = {
+      'f-ateneo': f.ateneo || [],
+      'f-regione': f.regione || [],
+      'f-zona': f.zona || [],
+      'f-tipologia': f.tipologia || [],
+      'f-classe': f.classe || [],
+      'f-ssd': f.ssd || [],
+      'f-newssd': f.newssd || [],
+      'f-lingua': f.lingua || [],
+      'f-anno': f.anno || []
+    };
+    for (const [id, valori] of Object.entries(mapFiltri)) {
+      if (choicesMap[id]) {
+        choicesMap[id].removeActiveItems();
+        if (valori.length > 0) {
+          choicesMap[id].setChoiceByValue(valori);
+        }
+      }
+    }
+    document.getElementById('f-insegnamento').value = f.insegnamento || '';
+    document.getElementById('f-docente').value = f.docente || '';
+    document.getElementById('f-mostra-disattivati').checked = !!f.mostraDisattivati;
+    cercaInsegnamenti();
+  } else {
+    const mapFiltri = {
+      'fl-ateneo': f.ateneo || [],
+      'fl-regione': f.regione || [],
+      'fl-zona': f.zona || [],
+      'fl-tipologia': f.tipologia || [],
+      'fl-classe': f.classe || []
+    };
+    for (const [id, valori] of Object.entries(mapFiltri)) {
+      if (choicesMapLauree[id]) {
+        choicesMapLauree[id].removeActiveItems();
+        if (valori.length > 0) {
+          choicesMapLauree[id].setChoiceByValue(valori);
+        }
+      }
+    }
+    document.getElementById('fl-laurea').value = f.laurea || '';
+    cercaLauree();
+  }
+}
+
+function eliminaRicercaSalvata(tipo) {
+  const isIns = tipo === 'ins';
+  const select = document.getElementById(isIns ? 'sel-ricerche-ins' : 'sel-ricerche-lau');
+  const nome = select.value;
+  if (!nome) { alert('Seleziona una ricerca da eliminare.'); return; }
+  if (!confirm(`Eliminare la ricerca "${nome}"?`)) return;
+
+  if (isIns) {
+    const ricerche = leggiRicercheIns();
+    delete ricerche[nome];
+    salvaRicercheIns(ricerche);
+    aggiornaSelectRicerche('ins');
+  } else {
+    const ricerche = leggiRicercheLau();
+    delete ricerche[nome];
+    salvaRicercheLau(ricerche);
+    aggiornaSelectRicerche('lau');
+  }
+}
+
+function rinominaRicercaSalvata(tipo) {
+  const isIns = tipo === 'ins';
+  const select = document.getElementById(isIns ? 'sel-ricerche-ins' : 'sel-ricerche-lau');
+  const nomeVecchio = select.value;
+  if (!nomeVecchio) { alert('Seleziona una ricerca da rinominare.'); return; }
+  const nomeNuovo = prompt('Nuovo nome per la ricerca:', nomeVecchio);
+  if (!nomeNuovo || !nomeNuovo.trim()) return;
+  const nomeNuovoClean = nomeNuovo.trim();
+  if (nomeNuovoClean === nomeVecchio) return;
+  const ricerche = isIns ? leggiRicercheIns() : leggiRicercheLau();
+  if (ricerche[nomeNuovoClean]) { alert(`Esiste già una ricerca con il nome "${nomeNuovoClean}".`); return; }
+  ricerche[nomeNuovoClean] = ricerche[nomeVecchio];
+  delete ricerche[nomeVecchio];
+  if (isIns) { salvaRicercheIns(ricerche); aggiornaSelectRicerche('ins'); document.getElementById('sel-ricerche-ins').value = nomeNuovoClean; }
+  else { salvaRicercheLau(ricerche); aggiornaSelectRicerche('lau'); document.getElementById('sel-ricerche-lau').value = nomeNuovoClean; }
+}
+
+// ============================
+// GATE D'ACCESSO E MOTORE DATI
+// ============================
+
+async function initDuckDB() {
+  const JSDELIVR_BUNDLES=duckdb.getJsDelivrBundles();
+  const bundle=await duckdb.selectBundle(JSDELIVR_BUNDLES);
+  const worker_url=URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`],{type:'text/javascript'}));
+  const worker=new Worker(worker_url);
+  const logger=new duckdb.ConsoleLogger();
+  db=new duckdb.AsyncDuckDB(logger,worker);
+  await db.instantiate(bundle.mainModule,bundle.pthreadWorker);
+  conn=await db.connect();
+  document.getElementById('status').textContent='Verifica accesso...';
+  await caricaCSV();
+}
+
+function chiaveCachePerPercorso(path) { return 'https://atlante.cache.local/file/' + encodeURIComponent(path); }
+
+async function leggiManifestDaCache(cache) {
+  try {
+    const res = await cache.match(CACHE_META_URL);
+    if (!res) return null;
+    const meta = await res.json();
+    if (Date.now() - meta.timestamp > CACHE_TTL_MS) return null;
+    const tutti = [...meta.insegnamenti, ...meta.lauree];
+    const presenti = await Promise.all(tutti.map(p => cache.match(chiaveCachePerPercorso(p)).then(r => !!r)));
+    if (!presenti.every(Boolean)) return null;
+    return meta;
+  } catch (e) { return null; }
+}
+
+async function salvaManifestInCache(cache, manifest) {
+  const meta = {
+    anno_accademico: manifest.anno_accademico,
+    timestamp: Date.now(),
+    insegnamenti: manifest.insegnamenti.map(f => f.path),
+    lauree: manifest.lauree.map(f => f.path),
+  };
+  await cache.put(CACHE_META_URL, new Response(JSON.stringify(meta), { headers: { 'Content-Type': 'application/json' } }));
+}
+
+async function scaricaEMemorizzaInCache(cache, files, aggiornaProgresso) {
+  return Promise.all(files.map(async f => {
+    const resp = await fetch(f.url);
+    const testo = await resp.text();
+    await cache.put(chiaveCachePerPercorso(f.path), new Response(testo, { headers: { 'Content-Type': 'text/csv' } }));
+    aggiornaProgresso();
+    return testo;
+  }));
+}
+
+async function leggiFilesDaCache(cache, paths, aggiornaProgresso) {
+  return Promise.all(paths.map(async path => {
+    const res = await cache.match(chiaveCachePerPercorso(path));
+    const testo = await res.text();
+    aggiornaProgresso();
+    return testo;
+  }));
+}
+
+async function caricaCSV() {
+  const cache = await caches.open(CACHE_NAME);
+  document.getElementById('status').textContent = 'Verifica cache locale...';
+  const metaCache = await leggiManifestDaCache(cache);
+
+  let manifest, daCache = false;
+
+  if (metaCache) {
+    manifest = { anno_accademico: metaCache.anno_accademico, insegnamenti: metaCache.insegnamenti, lauree: metaCache.lauree };
+    daCache = true;
+  } else {
+    document.getElementById('status').textContent = 'Verifica accesso...';
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const resp = await fetch(EDGE_FUNCTION_URL, {
+      headers: { Authorization: `Bearer ${session.access_token}` }
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({ error: 'Errore sconosciuto' }));
+      document.getElementById('status').textContent = 'Errore accesso dati: ' + (err.error || resp.statusText);
+      throw new Error(err.error || 'Errore accesso dati');
+    }
+    manifest = await resp.json(); // { anno_accademico, insegnamenti:[{path,url}], lauree:[{path,url}] }
+  }
+
+  document.getElementById('header-anno').textContent = manifest.anno_accademico ? `Anno accademico ${manifest.anno_accademico}` : '';
+
+  const totaleFile=manifest.insegnamenti.length+manifest.lauree.length;
+  let caricati=0;
+  const aggiornaProgresso=()=>{caricati++;document.getElementById('status').textContent=(daCache?'Caricamento dalla cache locale ':'Caricamento file ')+`${caricati}/${totaleFile}...`;};
+
+  document.getElementById('status').textContent = daCache ? 'Caricamento dalla cache locale...' : 'Caricamento CSV...';
+  let filesIns, filesLau;
+  if (daCache) {
+    filesIns = await leggiFilesDaCache(cache, manifest.insegnamenti, aggiornaProgresso);
+    filesLau = await leggiFilesDaCache(cache, manifest.lauree, aggiornaProgresso);
+  } else {
+    filesIns = await scaricaEMemorizzaInCache(cache, manifest.insegnamenti, aggiornaProgresso);
+    filesLau = await scaricaEMemorizzaInCache(cache, manifest.lauree, aggiornaProgresso);
+    await salvaManifestInCache(cache, manifest);
+  }
+
+  document.getElementById('status').textContent='Costruzione database...';
+  for(let i=0;i<filesIns.length;i++) await db.registerFileText(`ins_${i}.csv`,filesIns[i]);
+  for(let i=0;i<filesLau.length;i++) await db.registerFileText(`lau_${i}.csv`,filesLau[i]);
+
+  const unionIns=filesIns.map((_,i)=>`SELECT * FROM read_csv_auto('ins_${i}.csv',header=true,ignore_errors=true)`).join(' UNION ALL ');
+  await conn.query(`CREATE TABLE insegnamenti AS ${unionIns};`);
+  const unionLau=filesLau.map((_,i)=>`SELECT * FROM read_csv_auto('lau_${i}.csv',header=true,ignore_errors=true)`).join(' UNION ALL ');
+  await conn.query(`CREATE TABLE lauree AS ${unionLau};`);
+
+  document.getElementById('status').textContent='Pronto ✓';
+  document.getElementById('tabella-container').innerHTML='<table id="tabella" class="display" style="width:100%"></table>';
+  document.getElementById('tabella-lauree-container').innerHTML='<table id="tabella-lauree" class="display" style="width:100%"></table>';
+
+  await popolaFiltri();
+  inizializzaTabella();
+  inizializzaTabellaLauree();
+  inizializzaChoices();
+  document.getElementById('btn-export').disabled=false;
+  document.getElementById('btn-export-lauree').disabled=false;
+  document.getElementById('btn-raggruppa').disabled = false;
+  aggiornaBadgeHeader();
+  aggiornaSelectRicerche('ins');
+  aggiornaSelectRicerche('lau');
+
+  try {
+    const resIns = await conn.query(`SELECT COUNT(*) AS n FROM insegnamenti`);
+    const resLau = await conn.query(`SELECT COUNT(*) AS n FROM lauree`);
+    const resTip = await conn.query(`SELECT tipologia, COUNT(*) AS n FROM lauree WHERE tipologia IS NOT NULL AND tipologia!='' GROUP BY tipologia`);
+    const nIns = resIns.toArray()[0].n;
+    const nLau = resLau.toArray()[0].n;
+    const tipMap = {};
+    resTip.toArray().forEach(r => { tipMap[String(r.tipologia||'')] = Number(r.n); });
+    const nTri = tipMap['triennale'] || 0;
+    const nMag = tipMap['magistrale'] || 0;
+    const nCU = tipMap['magistrale ciclo unico'] || 0;
+    document.getElementById('header-stats').textContent = `${Number(nTri).toLocaleString('it-IT')} triennali · ${Number(nMag).toLocaleString('it-IT')} magistrali · ${Number(nCU).toLocaleString('it-IT')} ciclo unico`;
+    // stessi totali nei contatori delle tab: sono già in memoria, nessuna query in più
+    document.getElementById('n-tab-ins').textContent = Number(nIns).toLocaleString('it-IT');
+    document.getElementById('n-tab-lau').textContent = Number(nLau).toLocaleString('it-IT');
+    try {
+      const resAtn = await conn.query('SELECT count(DISTINCT ateneo) AS n FROM lauree');
+      document.getElementById('n-tab-atn').textContent = Number(resAtn.toArray()[0].n).toLocaleString('it-IT');
+    } catch { /* il conteggio degli atenei è un di più: se fallisce, la tab resta senza numero */ }
+  } catch(e) { console.warn('Stats header:', e); }
+}
+
+async function popolaFiltri() {
+  const labelTipologiaMap = {
+    'triennale': 'Triennale',
+    'magistrale': 'Magistrale',
+    'magistrale ciclo unico': 'Magistrale a Ciclo Unico'
+  };
+
+  function sortNaturaleClasse(a, b) {
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+  }
+
+  function esplodiClassi(righe) {
+    const codiciPresenti = new Set();
+    for (const r of righe) {
+      const codice = String(r.codice_classe || '').trim();
+      if (!codice) continue;
+      const codici = codice.split(',').map(c => c.trim()).filter(Boolean);
+      for (const cod of codici) {
+        codiciPresenti.add(cod);
+      }
+    }
+    const NOMI = getNomiClassiUfficiali();
+    return [...codiciPresenti]
+      .map(codice => ({
+        codice,
+        nome: NOMI[codice] || NOMI[codice.toUpperCase()] || ''
+      }))
+      .sort((a, b) => sortNaturaleClasse(a.codice, b.codice));
+  }
+
+  const queriesIns = {
+    ateneo: `SELECT DISTINCT ateneo FROM insegnamenti WHERE ateneo IS NOT NULL AND ateneo!='' ORDER BY ateneo`,
+    regione: `SELECT DISTINCT regione FROM insegnamenti WHERE regione IS NOT NULL AND regione!='' ORDER BY regione`,
+    zona: `SELECT DISTINCT zona FROM insegnamenti WHERE zona IS NOT NULL AND zona!='' ORDER BY zona`,
+    tipologia: `SELECT DISTINCT tipologia FROM insegnamenti WHERE tipologia IS NOT NULL AND tipologia!='' ORDER BY tipologia`,
+    classe: `SELECT DISTINCT codice_classe, nome_classe FROM insegnamenti WHERE codice_classe IS NOT NULL AND codice_classe!=''`,
+    ssd: `SELECT DISTINCT TRIM(unnest(string_split(ssd, '|'))) AS area FROM insegnamenti WHERE ssd IS NOT NULL AND ssd!='' ORDER BY area`,
+    newssd: `SELECT DISTINCT TRIM(unnest(string_split(new_ssd, '|'))) AS area FROM insegnamenti WHERE new_ssd IS NOT NULL AND new_ssd!='' ORDER BY area`,
+    lingua: `SELECT DISTINCT lingua FROM insegnamenti WHERE lingua IS NOT NULL AND lingua!='' ORDER BY lingua`,
+    anno: `SELECT DISTINCT CAST(anno_ins AS VARCHAR) AS anno_ins FROM insegnamenti WHERE anno_ins IS NOT NULL AND CAST(anno_ins AS VARCHAR)!='' ORDER BY anno_ins`
+  };
+
+  for (const [chiave, sql] of Object.entries(queriesIns)) {
+    try {
+      const res = await conn.query(sql);
+      const select = document.getElementById(`f-${chiave}`);
+      if (!select) continue;
+
+      if (chiave === 'tipologia') {
+        const valori = res.toArray().map(r => String(r.tipologia || '')).filter(Boolean);
+        select.innerHTML = valori.map(v => {
+          const label = labelTipologiaMap[v] || v;
+          return `<option value="${v}">${label}</option>`;
+        }).join('');
+      } else if (chiave === 'classe') {
+        const righe = res.toArray().map(r => ({ codice_classe: r.codice_classe, nome_classe: r.nome_classe }));
+        const classi = esplodiClassi(righe);
+        select.innerHTML = classi.map(r => `<option value="${r.codice}">${r.codice} — ${r.nome}</option>`).join('');
+      } else if (chiave === 'anno') {
+        const valori = ['1','2','3','4','5','6'];
+        select.innerHTML = valori.map(v => `<option value="${v}">${v}° Anno</option>`).join('');
+      } else if (chiave === 'lingua') {
+        const valori = [
+          {value: 'ITA', label: 'Italiano'},
+          {value: 'ENG', label: 'Inglese'},
+          {value: 'FRA', label: 'Francese'},
+          {value: 'DEU', label: 'Tedesco'},
+          {value: 'SPA', label: 'Spagnolo'},
+          {value: 'POR', label: 'Portoghese'}
+        ];
+        select.innerHTML = valori.map(v => `<option value="${v.value}">${v.label}</option>`).join('');
+      } else {
+        const valori = res.toArray().map(r => Object.values(r)[0]).filter(Boolean);
+        select.innerHTML = valori.map(v => `<option value="${v}">${v}</option>`).join('');
+      }
+    } catch(e) { console.warn(`Filtro ins ${chiave}:`, e); }
+  }
+
+  const queriesLau = {
+    ateneo: `SELECT DISTINCT ateneo FROM lauree WHERE ateneo IS NOT NULL AND ateneo!='' ORDER BY ateneo`,
+    regione: `SELECT DISTINCT regione FROM lauree WHERE regione IS NOT NULL AND regione!='' ORDER BY regione`,
+    zona: `SELECT DISTINCT zona FROM lauree WHERE zona IS NOT NULL AND zona!='' ORDER BY zona`,
+    tipologia: `SELECT DISTINCT tipologia FROM lauree WHERE tipologia IS NOT NULL AND tipologia!='' ORDER BY tipologia`,
+    classe: `SELECT DISTINCT codice_classe, nome_classe FROM lauree WHERE codice_classe IS NOT NULL AND codice_classe!=''`
+  };
+
+  for (const [chiave, sql] of Object.entries(queriesLau)) {
+    try {
+      const res = await conn.query(sql);
+      const select = document.getElementById(`fl-${chiave}`);
+      if (!select) continue;
+
+      if (chiave === 'tipologia') {
+        const valori = res.toArray().map(r => String(r.tipologia || '')).filter(Boolean);
+        select.innerHTML = valori.map(v => {
+          const label = labelTipologiaMap[v] || v;
+          return `<option value="${v}">${label}</option>`;
+        }).join('');
+      } else if (chiave === 'classe') {
+        const righe = res.toArray().map(r => ({ codice_classe: r.codice_classe, nome_classe: r.nome_classe }));
+        const classi = esplodiClassi(righe);
+        select.innerHTML = classi.map(r => `<option value="${r.codice}">${r.codice} — ${r.nome}</option>`).join('');
+      } else {
+        const valori = res.toArray().map(r => Object.values(r)[0]).filter(Boolean);
+        select.innerHTML = valori.map(v => `<option value="${v}">${v}</option>`).join('');
+      }
+    } catch(e) { console.warn(`Filtro lau ${chiave}:`, e); }
+  }
+}
+
+function inizializzaChoices() {
+  const config={removeItemButton:true,placeholder:true,placeholderValue:'Seleziona...',searchPlaceholderValue:'Cerca...',noResultsText:'Nessun risultato',noChoicesText:'Nessuna opzione',itemSelectText:''};
+  ['f-ateneo','f-regione','f-zona','f-tipologia','f-classe','f-ssd','f-newssd','f-lingua','f-anno'].forEach(id=>{const el=document.getElementById(id);if(el)choicesMap[id]=new Choices(el,config);});
+  ['fl-ateneo','fl-regione','fl-zona','fl-tipologia','fl-classe'].forEach(id=>{const el=document.getElementById(id);if(el)choicesMapLauree[id]=new Choices(el,config);});
+
+  const ssdSelect = document.getElementById('f-ssd');
+  if (ssdSelect) {
+    ssdSelect.addEventListener('change', () => { aggiornaCascataSsdClasse(); });
+  }
+}
+
+function getNomiClassiUfficiali() {
+  return {
+    'L-1':'Beni culturali','L-2':'Biotecnologie','L-3':'Discipline delle arti figurative, della musica, dello spettacolo e della moda','L-4':'Disegno industriale','L-5':'Filosofia','L-6':'Geografia','L-7':'Ingegneria civile e ambientale','L-8':'Ingegneria dell\'informazione','L-9':'Ingegneria industriale','L-10':'Lettere','L-11':'Lingue e culture moderne','L-12':'Mediazione linguistica','L-13':'Scienze biologiche','L-14':'Scienze dei servizi giuridici','L-15':'Scienze del turismo','L-16':'Scienze dell\'amministrazione e dell\'organizzazione','L-17':'Scienze dell\'architettura','L-18':'Scienze dell\'economia e della gestione aziendale','L-19':'Scienze dell\'educazione e della formazione','L-20':'Scienze della comunicazione','L-21':'Scienze della pianificazione territoriale, urbanistica, paesaggistica e ambientale','L-22':'Scienze delle attività motorie e sportive','L-23':'Scienze e tecniche dell\'edilizia','L-24':'Scienze e tecniche psicologiche','L-25':'Scienze e tecnologie agrarie e forestali','L-26':'Scienze e tecnologie agro-alimentari','L-27':'Scienze e tecnologie chimiche','L-28':'Scienze e tecnologie della navigazione','L-29':'Scienze e tecnologie farmaceutiche','L-30':'Scienze e tecnologie fisiche','L-31':'Scienze e tecnologie informatiche','L-32':'Scienze e tecnologie per l\'ambiente e la natura','L-33':'Scienze economiche','L-34':'Scienze geologiche','L-35':'Scienze matematiche','L-36':'Scienze politiche e delle relazioni internazionali','L-37':'Scienze sociali per la cooperazione, lo sviluppo e la pace','L-38':'Scienze zootecniche e tecnologie delle produzioni animali','L-39':'Servizio sociale','L-40':'Sociologia','L-41':'Statistica','L-42':'Storia','L-43':'Diagnostica per la conservazione dei beni culturali',
+    'L-SC.MAT':'Scienze dei materiali','L-GASTR':'Scienze, culture e politiche della gastronomia',
+    'L/DS':'Scienze della difesa e della sicurezza','L/SC':'Scienze criminologiche e della sicurezza',
+    'L/SNT01':'Professioni sanitarie infermieristiche e ostetriche','L/SNT02':'Professioni sanitarie della riabilitazione','L/SNT03':'Professioni sanitarie tecniche','L/SNT04':'Professioni sanitarie della prevenzione',
+    'L-P01':'Professioni tecniche per l\'edilizia e il territorio','L-P02':'Professioni tecniche agrarie, alimentari e forestali','L-P03':'Professioni tecniche industriali e dell\'informazione',
+    'LM-1':'Antropologia culturale ed etnologia','LM-2':'Archeologia','LM-3':'Architettura del paesaggio','LM-4':'Architettura e ingegneria edile-architettura','LM-5':'Archivistica e biblioteconomia','LM-6':'Biologia','LM-7':'Biotecnologie agrarie','LM-8':'Biotecnologie industriali','LM-9':'Biotecnologie mediche, veterinarie e farmaceutiche','LM-10':'Conservazione dei beni architettonici e ambientali','LM-11':'Scienze per la conservazione e restauro dei beni culturali','LM-12':'Design','LM-13':'Farmacia e farmacia industriale','LM-14':'Filologia moderna','LM-15':'Filologia, letterature e storia dell\'antichità','LM-16':'Finanza','LM-17':'Fisica','LM-18':'Informatica','LM-19':'Informazione e sistemi editoriali','LM-20':'Ingegneria aerospaziale e astronautica','LM-21':'Ingegneria biomedica','LM-22':'Ingegneria chimica','LM-23':'Ingegneria civile','LM-24':'Ingegneria dei sistemi edilizi','LM-25':'Ingegneria dell\'automazione','LM-26':'Ingegneria della sicurezza','LM-27':'Ingegneria delle telecomunicazioni','LM-28':'Ingegneria elettrica','LM-29':'Ingegneria elettronica','LM-30':'Ingegneria energetica e nucleare','LM-31':'Ingegneria gestionale','LM-32':'Ingegneria informatica','LM-33':'Ingegneria meccanica','LM-34':'Ingegneria navale','LM-35':'Ingegneria per l\'ambiente e il territorio','LM-36':'Lingue e letterature dell\'Africa e dell\'Asia','LM-37':'Lingue e letterature moderne europee e americane','LM-38':'Lingue moderne per la comunicazione e la cooperazione internazionale','LM-39':'Linguistica','LM-40':'Matematica','LM-41':'Medicina e chirurgia','LM-42':'Medicina veterinaria','LM-43':'Metodologie informatiche per le discipline umanistiche','LM-44':'Modellistica matematico-fisica per l\'ingegneria','LM-45':'Musicologia e beni musicali','LM-46':'Odontoiatria e protesi dentaria','LM-47':'Organizzazione e gestione dei servizi per lo sport e le attività motorie','LM-48':'Pianificazione territoriale urbanistica e ambientale','LM-49':'Progettazione e gestione dei sistemi turistici','LM-50':'Programmazione e gestione dei servizi educativi','LM-51':'Psicologia','LM-52':'Relazioni internazionali','LM-53':'Scienza e ingegneria dei materiali','LM-54':'Scienze chimiche','LM-55':'Scienze cognitive','LM-56':'Scienze dell\'economia','LM-57':'Scienze dell\'educazione degli adulti e della formazione continua','LM-58':'Scienze dell\'universo','LM-59':'Scienze della comunicazione pubblica, d\'impresa e pubblicità','LM-60':'Scienze della natura','LM-61':'Scienze della nutrizione umana','LM-62':'Scienze della politica','LM-63':'Scienze delle pubbliche amministrazioni','LM-64':'Scienze delle religioni','LM-65':'Scienze dello spettacolo e produzione multimediale','LM-66':'Sicurezza informatica','LM-67':'Scienze e tecniche delle attività motorie preventive e adattate','LM-68':'Scienze e tecniche dello sport','LM-69':'Scienze e tecnologie agrarie','LM-70':'Scienze e tecnologie alimentari','LM-71':'Scienze e tecnologie della chimica industriale','LM-72':'Scienze e tecnologie della navigazione','LM-73':'Scienze e tecnologie forestali e ambientali','LM-74':'Scienze e tecnologie geologiche','LM-75':'Scienze e tecnologie per l\'ambiente e il territorio','LM-76':'Scienze economiche per l\'ambiente e la cultura','LM-77':'Scienze economico-aziendali','LM-78':'Scienze filosofiche','LM-79':'Scienze geofisiche','LM-80':'Scienze geografiche','LM-81':'Scienze per la cooperazione allo sviluppo','LM-82':'Scienze statistiche','LM-83':'Scienze statistiche attuariali e finanziarie','LM-84':'Scienze storiche','LM-85':'Scienze pedagogiche','LM-85 BIS':'Scienze della formazione primaria','LM-86':'Scienze zootecniche e tecnologie animali','LM-87':'Servizio sociale e politiche sociali','LM-88':'Sociologia e ricerca sociale','LM-89':'Storia dell\'arte','LM-90':'Studi europei','LM-91':'Tecniche e metodi per la società dell\'informazione','LM-92':'Teorie della comunicazione','LM-93':'Teorie e metodologie dell\'e-learning e della media education','LM-94':'Traduzione specialistica e interpretariato',
+    'LM-4cu':'Architettura e ingegneria edile-architettura (ciclo unico)','LMG-01':'Giurisprudenza','LMR-02':'Conservazione e restauro dei beni culturali',
+    'LM-SC-GIUR':'Scienze giuridiche','LM-DATA':'Data science','LM-SC.MAT':'Scienze dei materiali','LM-GASTR':'Scienze economiche e sociali della gastronomia',
+    'LM/DS':'Scienze della difesa e della sicurezza','LM/SC':'Scienze criminologiche applicate all\'investigazione e alla sicurezza',
+    'LM/SNT01':'Scienze infermieristiche e ostetriche','LM/SNT02':'Scienze delle professioni sanitarie della riabilitazione','LM/SNT03':'Scienze delle professioni sanitarie tecniche','LM/SNT04':'Scienze delle professioni sanitarie della prevenzione',
+    'DS':'Scienze della difesa e della sicurezza','GASTR':'Scienze, culture e politiche della gastronomia'
+  };
+}
+
+async function aggiornaCascataSsdClasse() {
+  const ssdSelezionati = choicesMap['f-ssd']?.getValue(true) || [];
+  const NOMI_CLASSI_UFFICIALI = getNomiClassiUfficiali();
+
+  let sql;
+  if (ssdSelezionati.length === 0) {
+    sql = `SELECT DISTINCT codice_classe FROM insegnamenti WHERE codice_classe IS NOT NULL AND codice_classe!=''`;
+  } else {
+    const condizioni = ssdSelezionati.map(v => `ssd LIKE '%${v.replace(/'/g, "''").replace(/%/g, '')}%'`).join(' OR ');
+    sql = `SELECT DISTINCT codice_classe FROM insegnamenti WHERE codice_classe IS NOT NULL AND codice_classe!='' AND (${condizioni})`;
+  }
+
+  try {
+    const res = await conn.query(sql);
+    const righe = res.toArray();
+    const codiciPresenti = new Set();
+    for (const r of righe) {
+      const codici = String(r.codice_classe || '').split(',').map(c => c.trim()).filter(Boolean);
+      for (const cod of codici) codiciPresenti.add(cod);
+    }
+    const classi = [...codiciPresenti]
+      .map(codice => ({ value: codice, label: `${codice} — ${NOMI_CLASSI_UFFICIALI[codice] || ''}` }))
+      .sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true, sensitivity: 'base' }));
+
+    const selezionatiPrima = choicesMap['f-classe']?.getValue(true) || [];
+    choicesMap['f-classe'].clearChoices();
+    choicesMap['f-classe'].setChoices(classi, 'value', 'label', true);
+    const valoriDisponibili = new Set(classi.map(c => c.value));
+    const daRiselezionare = selezionatiPrima.filter(v => valoriDisponibili.has(v));
+    if (daRiselezionare.length) choicesMap['f-classe'].setChoiceByValue(daRiselezionare);
+  } catch(e) {
+    console.warn('Errore cascata SSD→Classe:', e);
+  }
+}
+
+let dtInsegnamenti=null;
+function inizializzaTabella() {
+  dtInsegnamenti=$('#tabella').DataTable({data:[],columns:[{title:'Insegnamento',data:'insegnamento'},{title:'Ateneo',data:'ateneo'},{title:'Corso di laurea',data:'laurea'},{title:'Tipologia',data:'tipologia'},{title:'SSD',data:'ssd'},{title:'New SSD',data:'new_ssd'},{title:'CFU',data:'cfu'},{title:'Anno',data:'anno_ins'},{title:'Iscritti',data:'isc_anno'},{title:'Sem.',data:'semestre'},{title:'Lingua',data:'lingua'},{title:'Docente',data:'docente'},{title:'Link',data:null},{title:'Azioni',data:null}],
+  columnDefs:[{targets:0,render:(data,type,row)=>{let h=`<strong>${data||''}</strong>`;if(row._modificato)h+=' ✏️';if(row._aggiunto)h+=' 🆕';return h;}},{targets:3,render:data=>{const cls=(data||'').toLowerCase().replace(/\s+/g,'_');return `<span class="badge badge-${cls}">${data||''}</span>`;}},{targets:[4,5],render:data=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).join('<br>');}},{targets:8,render:data=>{if(!data||data==='0')return'';return `<span style="font-weight:600;color:var(--ok)">${Number(data).toLocaleString('it-IT')}</span>`;}},{targets:11,render:data=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).join('<br>');}},{targets:12,orderable:false,render:(data,type,row)=>{let h='';if(row.url_ins)h+=`<a class="link-ins" href="${row.url_ins}" target="_blank">Programma</a>`;if(row.url_ins&&row.url_corso)h+='<br>';if(row.url_corso)h+=`<a class="link-ins" href="${row.url_corso}" target="_blank">Corso</a>`;return h;}},{targets:13,orderable:false,render:(data,type,row)=>`<button class="btn-piano" onclick="window.__atlPiano('${(row.ateneo||'').replace(/'/g,"\\'")}','${(row.laurea||'').replace(/'/g,"\\'")}','${(row.tipologia||'').replace(/'/g,"\\'")}','${(row.codice_classe||'').replace(/'/g,"\\'")}')">Piano</button> <button class="btn-edit" onclick="window.__atlEdit(${row._idx})">✏️</button> <button class="btn-disattiva" onclick="window.__atlDisattiva(${row._idx})">🚫</button>`}],
+  createdRow:(row,data)=>{if(data._disattivato)$(row).addClass('riga-disattivata');else if(data._modificato)$(row).addClass('riga-modificata');},pageLength:50,language:{search:'Filtra tabella:',lengthMenu:'Mostra _MENU_ righe',info:'Righe _START_-_END_ di _TOTAL_',infoEmpty:'Nessun risultato',paginate:{first:'«',previous:'‹',next:'›',last:'»'}},order:[[1,'asc'],[2,'asc'],[0,'asc']]});
+}
+
+let dtLauree=null;
+function inizializzaTabellaLauree() {
+  dtLauree=$('#tabella-lauree').DataTable({data:[],columns:[{title:'Corso di laurea',data:'laurea'},{title:'Ateneo',data:'ateneo'},{title:'Tipologia',data:'tipologia'},{title:'Classe',data:'nome_classe'},{title:'Cod. Classe',data:'codice_classe'},{title:'Durata',data:'durata'},{title:'Regione',data:'regione'},{title:'Isc. 1° anno',data:'isc_1anno'},{title:'Isc. totali',data:'isc_totali'},{title:'Link',data:null},{title:'Azioni',data:null}],
+  columnDefs:[{targets:2,render:data=>{const cls=(data||'').toLowerCase().replace(/\s+/g,'_');return `<span class="badge badge-${cls}">${data||''}</span>`;}},{targets:9,orderable:false,render:(data,type,row)=>row.url_corso?`<a class="link-ins" href="${row.url_corso}" target="_blank">Vai al corso</a>`:''},{targets:10,orderable:false,render:(data,type,row)=>{return `<button class="btn-piano" onclick="window.__atlPiano('${(row.ateneo||'').replace(/'/g,"\\'")}','${(row.laurea||'').replace(/'/g,"\\'")}','${(row.tipologia||'').replace(/'/g,"\\'")}','${(row.codice_classe||'').replace(/'/g,"\\'")}')">📋 Piano</button>`;}}],
+  pageLength:50,language:{search:'Filtra tabella:',lengthMenu:'Mostra _MENU_ righe',info:'Righe _START_-_END_ di _TOTAL_',infoEmpty:'Nessun risultato',paginate:{first:'«',previous:'‹',next:'›',last:'»'}},order:[[1,'asc'],[0,'asc']]});
+}
+
+function costruisciClausolaDocente(valore) {
+  if (!valore) return null;
+  const termini = valore.split(',').map(t => t.trim()).filter(Boolean);
+  if (termini.length === 0) return null;
+  const clausole = termini.map(termine => {
+    const matchEsatto = termine.match(/^<(.+)>$/);
+    if (matchEsatto) {
+      const parola = matchEsatto[1].toLowerCase().replace(/'/g, "''");
+      return `len(list_filter(string_split(lower(COALESCE(docente,'')), '|'), x -> trim(x) = '${parola}')) > 0`;
+    } else {
+      const parole = termine.toLowerCase().split(/\s+/).filter(Boolean);
+      if (parole.length === 0) return null;
+      const cond = parole.map(p => {
+        const esc = p.replace(/'/g, "''");
+        return `trim(x) LIKE '%${esc}%'`;
+      }).join(' AND ');
+      return `len(list_filter(string_split(lower(COALESCE(docente,'')), '|'), x -> ${cond})) > 0`;
+    }
+  }).filter(Boolean);
+  if (clausole.length === 0) return null;
+  if (clausole.length === 1) return clausole[0];
+  return `(${clausole.join(' OR ')})`;
+}
+
+function costruisciClausolaTestoLibero(campo, valore) {
+  if (!valore) return null;
+  const termini = valore.split(',').map(t => t.trim()).filter(Boolean);
+  if (termini.length === 0) return null;
+  const clausole = termini.map(termine => {
+    const matchEsatto = termine.match(/^<(.+)>$/);
+    if (matchEsatto) {
+      const parola = matchEsatto[1].toLowerCase().replace(/'/g, "''");
+      return `lower(TRIM(${campo})) = '${parola}'`;
+    } else {
+      const parole = termine.toLowerCase().split(/\s+/).filter(Boolean);
+      if (parole.length <= 1) {
+        const escaped = termine.toLowerCase().replace(/'/g, "''");
+        return `lower(${campo}) LIKE '%${escaped}%'`;
+      } else {
+        const subClauses = parole.map(p => {
+          const escaped = p.replace(/'/g, "''");
+          return `lower(${campo}) LIKE '%${escaped}%'`;
+        });
+        return `(${subClauses.join(' AND ')})`;
+      }
+    }
+  });
+  if (clausole.length === 1) return clausole[0];
+  return `(${clausole.join(' OR ')})`;
+}
+
+async function cercaInsegnamenti() {
+  const filtri={ateneo:choicesMap['f-ateneo']?.getValue(true)||[],regione:choicesMap['f-regione']?.getValue(true)||[],zona:choicesMap['f-zona']?.getValue(true)||[],tipologia:choicesMap['f-tipologia']?.getValue(true)||[],classe:choicesMap['f-classe']?.getValue(true)||[],ssd:choicesMap['f-ssd']?.getValue(true)||[],newssd:choicesMap['f-newssd']?.getValue(true)||[],lingua:choicesMap['f-lingua']?.getValue(true)||[],anno:choicesMap['f-anno']?.getValue(true)||[],insegnamento:document.getElementById('f-insegnamento').value.trim(),docente:document.getElementById('f-docente').value.trim()};
+  let where=[];
+  if(filtri.ateneo.length)where.push(`ateneo IN (${filtri.ateneo.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.regione.length)where.push(`regione IN (${filtri.regione.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.zona.length)where.push(`zona IN (${filtri.zona.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.tipologia.length)where.push(`tipologia IN (${filtri.tipologia.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.classe.length){
+    const clausole = filtri.classe.map(v => {
+      const esc = v.replace(/'/g,"''");
+      return `(codice_classe = '${esc}' OR codice_classe LIKE '${esc}, %' OR codice_classe LIKE '%, ${esc}' OR codice_classe LIKE '%, ${esc}, %')`;
+    });
+    where.push(`(${clausole.join(' OR ')})`);
+  }
+  if(filtri.ssd.length){const c=filtri.ssd.map(v=>`ssd LIKE '%${v.replace(/'/g,"''")}%'`).join(' OR ');where.push(`(${c})`);}
+  if(filtri.newssd.length){const c=filtri.newssd.map(v=>`new_ssd LIKE '%${v.replace(/'/g,"''")}%'`).join(' OR ');where.push(`(${c})`);}
+  if(filtri.lingua.length){
+    const mappaSinonimi = {
+      'ITA': ['ITA','IT','Italiano','italiano','ITALIANO'],
+      'ENG': ['ENG','EN','Inglese','inglese','INGLESE','English','ENGLISH'],
+      'FRA': ['FRA','FR','Francese','francese','FRANCESE','French','FRENCH'],
+      'DEU': ['DEU','DE','Tedesco','tedesco','TEDESCO','German','GERMAN'],
+      'SPA': ['SPA','ES','Spagnolo','spagnolo','SPAGNOLO','Spanish','SPANISH'],
+      'POR': ['POR','PT','Portoghese','portoghese','PORTOGHESE','Portuguese','PORTUGUESE']
+    };
+    const condizioni = filtri.lingua.map(codice => {
+      const sinonimi = mappaSinonimi[codice] || [codice];
+      return sinonimi.map(s => `lingua LIKE '%${s.replace(/'/g,"''")}%'`).join(' OR ');
+    });
+    where.push(`(${condizioni.join(' OR ')})`);
+  }
+  if(filtri.anno.length){
+    const condAnno = filtri.anno.map(v => `CAST(anno_ins AS VARCHAR) LIKE '%${v}%'`).join(' OR ');
+    where.push(`(${condAnno})`);
+  }
+  if(filtri.insegnamento) {
+    const clausola = costruisciClausolaTestoLibero('insegnamento', filtri.insegnamento);
+    if(clausola) where.push(clausola);
+  }
+  if(filtri.docente) {
+    const clausola = costruisciClausolaDocente(filtri.docente);
+    if(clausola) where.push(clausola);
+  }
+  const whereClause=where.length?'WHERE '+where.join(' AND '):'';
+  const sql=`SELECT insegnamento,ateneo,laurea,nome_classe,codice_classe,tipologia,durata,zona,regione,ssd,new_ssd,CAST(anno_ins AS VARCHAR) AS anno_ins,COALESCE(CAST(isc_anno AS VARCHAR),'') AS isc_anno,CAST(cfu AS VARCHAR) AS cfu,COALESCE(semestre,'') AS semestre,COALESCE(lingua,'') AS lingua,COALESCE(docente,'') AS docente,COALESCE(url_ins,'') AS url_ins,COALESCE(url_corso,'') AS url_corso,COALESCE(CAST(n_curriculum AS VARCHAR),'') AS n_curriculum,COALESCE(curriculum_lista,'') AS curriculum_lista,COALESCE(codice_insegnamento,'') AS codice_insegnamento,COALESCE(CAST(id_laurea AS VARCHAR),'') AS id_laurea FROM insegnamenti ${whereClause} ORDER BY ateneo,laurea,insegnamento LIMIT ${LIMITE_RIGHE_INSEGNAMENTI}`;
+  try{
+    const res=await conn.query(sql);
+    let rows=res.toArray().map((r,idx)=>({insegnamento:String(r.insegnamento||''),ateneo:String(r.ateneo||''),laurea:String(r.laurea||''),nome_classe:String(r.nome_classe||''),codice_classe:String(r.codice_classe||''),tipologia:String(r.tipologia||''),durata:String(r.durata||''),zona:String(r.zona||''),regione:String(r.regione||''),ssd:String(r.ssd||''),new_ssd:String(r.new_ssd||''),anno_ins:String(r.anno_ins||''),isc_anno:String(r.isc_anno||''),cfu:String(r.cfu||''),semestre:String(r.semestre||''),lingua:String(r.lingua||''),docente:String(r.docente||''),url_ins:String(r.url_ins||''),url_corso:String(r.url_corso||''),n_curriculum:String(r.n_curriculum||''),curriculum_lista:String(r.curriculum_lista||''),codice_insegnamento:String(r.codice_insegnamento||''),id_laurea:String(r.id_laurea||''),_idx:idx}));
+    rows=applicaModifiche(rows);rows=applicaAggiunte(rows);
+    if(!document.getElementById('f-mostra-disattivati').checked)rows=rows.filter(r=>!r._disattivato);
+    rows.forEach((r,i)=>r._idx=i);ultimiRisultati=rows;
+    dtInsegnamenti.clear().rows.add(rows).draw();
+    const _ti=rows.reduce((s,r)=>s+(parseInt(r.isc_anno)||0),0);document.getElementById('contatore').innerHTML='<b>'+rows.length.toLocaleString('it-IT')+'</b> insegnamenti trovati<small>'+(rows.length>=LIMITE_RIGHE_INSEGNAMENTI?'limite di '+LIMITE_RIGHE_INSEGNAMENTI.toLocaleString('it-IT')+' righe raggiunto — restringi i filtri':'')+(_ti>0?(rows.length>=LIMITE_RIGHE_INSEGNAMENTI?' · ':'')+'iscritti: '+_ti.toLocaleString('it-IT'):'')+'</small>';
+  }catch(e){console.error('Errore ricerca:',e);document.getElementById('contatore').innerHTML='<span style="color:var(--err);font-family:var(--font-sans);font-size:14px">Errore nella ricerca: '+escapeHtml(e.message)+'</span>';}
+}
+
+async function cercaLauree() {
+  const filtri={ateneo:choicesMapLauree['fl-ateneo']?.getValue(true)||[],regione:choicesMapLauree['fl-regione']?.getValue(true)||[],zona:choicesMapLauree['fl-zona']?.getValue(true)||[],tipologia:choicesMapLauree['fl-tipologia']?.getValue(true)||[],classe:choicesMapLauree['fl-classe']?.getValue(true)||[],laurea:document.getElementById('fl-laurea').value.trim()};
+  let where=[];
+  if(filtri.ateneo.length)where.push(`ateneo IN (${filtri.ateneo.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.regione.length)where.push(`regione IN (${filtri.regione.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.zona.length)where.push(`zona IN (${filtri.zona.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.tipologia.length)where.push(`tipologia IN (${filtri.tipologia.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.classe.length){
+    const clausole = filtri.classe.map(v => {
+      const esc = v.replace(/'/g,"''");
+      return `(codice_classe = '${esc}' OR codice_classe LIKE '${esc}, %' OR codice_classe LIKE '%, ${esc}' OR codice_classe LIKE '%, ${esc}, %')`;
+    });
+    where.push(`(${clausole.join(' OR ')})`);
+  }
+  if(filtri.laurea) {
+    const clausola = costruisciClausolaTestoLibero('laurea', filtri.laurea);
+    if(clausola) where.push(clausola);
+  }
+  const whereClause=where.length?'WHERE '+where.join(' AND '):'';
+  const sql=`SELECT COALESCE(ateneo,'') AS ateneo,COALESCE(laurea,'') AS laurea,COALESCE(tipologia,'') AS tipologia,COALESCE(nome_classe,'') AS nome_classe,COALESCE(codice_classe,'') AS codice_classe,COALESCE(CAST(durata AS VARCHAR),'') AS durata,COALESCE(regione,'') AS regione,COALESCE(zona,'') AS zona,COALESCE(CAST(isc_1anno AS VARCHAR),'') AS isc_1anno,COALESCE(CAST(isc_totali AS VARCHAR),'') AS isc_totali,COALESCE(url_corso,'') AS url_corso,COALESCE(CAST(id_laurea AS VARCHAR),'') AS id_laurea FROM lauree ${whereClause} ORDER BY ateneo,laurea LIMIT ${LIMITE_RIGHE_LAUREE}`;
+  try{const res=await conn.query(sql);let rows=res.toArray().map(r=>({ateneo:String(r.ateneo||''),laurea:String(r.laurea||''),tipologia:String(r.tipologia||''),nome_classe:String(r.nome_classe||''),codice_classe:String(r.codice_classe||''),durata:String(r.durata||''),regione:String(r.regione||''),zona:String(r.zona||''),isc_1anno:String(r.isc_1anno||''),isc_totali:String(r.isc_totali||''),url_corso:String(r.url_corso||''),id_laurea:String(r.id_laurea||'')}));ultimiRisultatiLauree=rows;dtLauree.clear().rows.add(rows).draw();const _t1=rows.reduce((s,r)=>s+(parseInt(r.isc_1anno)||0),0);const _tt=rows.reduce((s,r)=>s+(parseInt(r.isc_totali)||0),0);document.getElementById('contatore-lauree').innerHTML='<b>'+rows.length.toLocaleString('it-IT')+'</b> corsi di laurea trovati<small>'+(rows.length>=LIMITE_RIGHE_LAUREE?'limite di '+LIMITE_RIGHE_LAUREE.toLocaleString('it-IT')+' righe raggiunto — restringi i filtri':'')+(_t1>0?(rows.length>=LIMITE_RIGHE_LAUREE?' · ':'')+'iscritti 1° anno: '+_t1.toLocaleString('it-IT')+' · totali: '+_tt.toLocaleString('it-IT'):'')+'</small>';
+  }catch(e){console.error('Errore ricerca lauree:',e);document.getElementById('contatore-lauree').innerHTML='<span style="color:var(--err);font-family:var(--font-sans);font-size:14px">Errore nella ricerca: '+escapeHtml(e.message)+'</span>';}
+}
+
+async function mostraPianoDiStudi(ateneo, laurea, tipologia, codiceClasse) {
+  let whereExtra = '';
+  if (tipologia) whereExtra += ` AND tipologia = '${tipologia.replace(/'/g, "''")}'`;
+  if (codiceClasse) whereExtra += ` AND codice_classe = '${codiceClasse.replace(/'/g, "''")}'`;
+  const sql=`SELECT CAST(anno_ins AS VARCHAR) AS anno_ins,insegnamento,COALESCE(ssd,'') AS ssd,COALESCE(new_ssd,'') AS new_ssd,CAST(cfu AS VARCHAR) AS cfu,COALESCE(semestre,'') AS semestre,COALESCE(lingua,'') AS lingua,COALESCE(docente,'') AS docente,COALESCE(url_ins,'') AS url_ins FROM insegnamenti WHERE ateneo='${ateneo.replace(/'/g,"''")}' AND laurea='${laurea.replace(/'/g,"''")}'${whereExtra} ORDER BY TRY_CAST(anno_ins AS INTEGER),insegnamento`;
+  try{
+    const res=await conn.query(sql);
+    const rows=res.toArray().map(r=>({anno_ins:String(r.anno_ins||''),insegnamento:String(r.insegnamento||''),ssd:String(r.ssd||''),new_ssd:String(r.new_ssd||''),cfu:String(r.cfu||''),semestre:String(r.semestre||''),lingua:String(r.lingua||''),docente:String(r.docente||''),url_ins:String(r.url_ins||'')}));
+    const perAnno={};rows.forEach(r=>{const a=r.anno_ins||'N/D';if(!perAnno[a])perAnno[a]=[];perAnno[a].push(r);});
+    document.getElementById('piano-titolo').textContent=laurea;
+    document.getElementById('piano-sottotitolo').textContent=`${ateneo}${tipologia?' — '+tipologia:''}${codiceClasse?' ('+codiceClasse+')':''}`;
+    let html='';
+    for(const[anno,insegnamenti] of Object.entries(perAnno).sort((a,b)=>a[0].localeCompare(b[0]))){
+      html+=`<div class="anno-block"><h4>${anno==='NA'?'Anno non specificato':anno+'° Anno'}</h4><table class="piano-table"><thead><tr><th>Insegnamento</th><th>SSD</th><th>New SSD</th><th>CFU</th><th>Sem.</th><th>Lingua</th><th>Docente</th><th>Programma</th></tr></thead><tbody>`;
+      for(const ins of insegnamenti){const doc=ins.docente?ins.docente.split('|').map(d=>d.trim()).join(', '):'';html+=`<tr><td><strong>${ins.insegnamento}</strong></td><td>${ins.ssd.split('|').join(', ')}</td><td>${ins.new_ssd.split('|').join(', ')}</td><td>${ins.cfu}</td><td>${ins.semestre}</td><td>${ins.lingua}</td><td>${doc}</td><td>${ins.url_ins?`<a href="${ins.url_ins}" target="_blank">Programma</a>`:''}</td></tr>`;}
+      html+=`</tbody></table></div>`;
+    }
+    document.getElementById('piano-body').innerHTML=html||'<p>Nessun insegnamento trovato.</p>';
+    document.getElementById('modal-piano-overlay').classList.add('aperto');
+  }catch(e){console.error('Errore piano di studi:',e);alert('Errore nel caricamento del piano di studi');}
+}
+window.__atlPiano=mostraPianoDiStudi;
+
+async function costruisciVistaAteneo() {
+  if(alberoCostruito)return;
+  const container=document.getElementById('albero-container');
+  container.innerHTML='<div class="loading">⏳ Costruzione albero...</div>';
+  try{
+    const sql=`SELECT ateneo, tipologia, codice_classe, nome_classe, laurea, COUNT(*) AS n_ins
+               FROM insegnamenti
+               WHERE ateneo IS NOT NULL AND laurea IS NOT NULL
+               GROUP BY ateneo, tipologia, codice_classe, nome_classe, laurea
+               ORDER BY ateneo, tipologia, codice_classe, laurea`;
+    const res=await conn.query(sql);
+    const rows=res.toArray().map(r=>({
+      ateneo:String(r.ateneo||''),
+      tipologia:String(r.tipologia||''),
+      codice_classe:String(r.codice_classe||''),
+      nome_classe:String(r.nome_classe||''),
+      laurea:String(r.laurea||''),
+      n_ins:Number(r.n_ins||0)
+    }));
+
+    function sortNaturale(a, b) {
+      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+    }
+
+    const ordineTipologia = { 'triennale': 1, 'magistrale': 2, 'magistrale ciclo unico': 3 };
+    function labelTipologia(t) {
+      const map = { 'triennale': 'TRIENNALE', 'magistrale': 'MAGISTRALE', 'magistrale ciclo unico': 'MAGISTRALE A CICLO UNICO' };
+      return map[t] || t.toUpperCase();
+    }
+    function badgeTipologia(t) {
+      const cls = t.toLowerCase().replace(/\s+/g, '_');
+      return `<span class="badge badge-${cls}">${labelTipologia(t)}</span>`;
+    }
+
+    const struttura = {};
+    for (const r of rows) {
+      if (!struttura[r.ateneo]) struttura[r.ateneo] = {};
+      if (!struttura[r.ateneo][r.tipologia]) struttura[r.ateneo][r.tipologia] = {};
+      const chiaveClasse = `${r.codice_classe}|||${r.nome_classe}`;
+      if (!struttura[r.ateneo][r.tipologia][chiaveClasse]) struttura[r.ateneo][r.tipologia][chiaveClasse] = [];
+      struttura[r.ateneo][r.tipologia][chiaveClasse].push(r);
+    }
+
+    let html = '';
+    const ateneiOrdinati = Object.keys(struttura).sort((a, b) => a.localeCompare(b));
+
+    for (const ateneo of ateneiOrdinati) {
+      const tipologie = struttura[ateneo];
+      const totCorsi = Object.values(tipologie).reduce((sum, classi) => sum + Object.values(classi).reduce((s, corsi) => s + corsi.length, 0), 0);
+
+      html += `<div class="ateneo-node" data-ateneo="${ateneo.toLowerCase()}">`;
+      html += `<button class="ateneo-toggle"><span>🏛 ${ateneo} <span style="font-size:0.8rem;color:var(--ink-muted);">(${totCorsi} corsi)</span></span><span>▶</span></button>`;
+      html += `<div class="ateneo-body">`;
+
+      const tipologieOrdinate = Object.keys(tipologie).sort((a, b) => (ordineTipologia[a] || 99) - (ordineTipologia[b] || 99));
+
+      for (const tipologia of tipologieOrdinate) {
+        const classi = tipologie[tipologia];
+        const nCorsiTipo = Object.values(classi).reduce((s, c) => s + c.length, 0);
+
+        html += `<div class="tipologia-block" style="margin-bottom:12px;">`;
+        html += `<div class="tipologia-header" style="padding:8px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">`;
+        html += `<span>${badgeTipologia(tipologia)} <span style="font-size:0.8rem;color:var(--ink-muted);margin-left:8px;">(${nCorsiTipo} cors${nCorsiTipo === 1 ? 'o' : 'i'})</span></span>`;
+        html += `<span class="tipologia-arrow" style="font-size:0.8rem;color:var(--ink-faint);">▶</span>`;
+        html += `</div>`;
+        html += `<div class="tipologia-body" style="display:none;padding-left:16px;">`;
+
+        const classiOrdinate = Object.keys(classi).sort((a, b) => {
+          const codA = a.split('|||')[0];
+          const codB = b.split('|||')[0];
+          return sortNaturale(codA, codB);
+        });
+
+        for (const chiaveClasse of classiOrdinate) {
+          const [codice, nome] = chiaveClasse.split('|||');
+          const corsi = classi[chiaveClasse];
+          corsi.sort((a, b) => a.laurea.localeCompare(b.laurea));
+
+          html += `<div class="classe-block" style="margin-bottom:8px;">`;
+          html += `<div class="classe-header" style="padding:6px 10px;background:#fff;border:1px solid var(--surface-2);border-radius:4px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">`;
+          html += `<span><strong style="color:var(--voce-offerta);">${codice}</strong> <span style="color:var(--ink-muted);">— ${nome}</span> <span style="font-size:0.75rem;color:var(--ink-muted);">(${corsi.length} cors${corsi.length === 1 ? 'o' : 'i'})</span></span>`;
+          html += `<span class="classe-arrow" style="font-size:0.75rem;color:var(--ink-faint);">▶</span>`;
+          html += `</div>`;
+          html += `<div class="classe-body" style="display:none;padding-left:12px;">`;
+
+          for (const corso of corsi) {
+            html += `<div class="corso-item" data-ateneo="${corso.ateneo.replace(/"/g, '&quot;')}" data-laurea="${corso.laurea.replace(/"/g, '&quot;')}" data-tipologia="${corso.tipologia.replace(/"/g, '&quot;')}" data-classe="${corso.codice_classe.replace(/"/g, '&quot;')}">`;
+            html += `<span>📘 ${corso.laurea}</span>`;
+            html += `<span style="font-size:0.75rem;color:var(--ink-muted);">${corso.n_ins} ins.</span>`;
+            html += `</div>`;
+          }
+
+          html += `</div></div>`;
+        }
+
+        html += `</div></div>`;
+      }
+
+      html += `</div></div>`;
+    }
+
+    container.innerHTML = html;
+    alberoCostruito = true;
+
+    container.querySelectorAll('.ateneo-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const body = btn.nextElementSibling;
+        body.classList.toggle('aperto');
+        btn.querySelector('span:last-child').textContent = body.classList.contains('aperto') ? '▼' : '▶';
+      });
+    });
+
+    container.querySelectorAll('.tipologia-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const body = header.nextElementSibling;
+        const arrow = header.querySelector('.tipologia-arrow');
+        const aperto = body.style.display === 'none';
+        body.style.display = aperto ? 'block' : 'none';
+        arrow.textContent = aperto ? '▼' : '▶';
+      });
+    });
+
+    container.querySelectorAll('.classe-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const body = header.nextElementSibling;
+        const arrow = header.querySelector('.classe-arrow');
+        const aperto = body.style.display === 'none';
+        body.style.display = aperto ? 'block' : 'none';
+        arrow.textContent = aperto ? '▼' : '▶';
+      });
+    });
+
+    container.querySelectorAll('.corso-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mostraPianoDiStudi(item.dataset.ateneo, item.dataset.laurea, item.dataset.tipologia, item.dataset.classe);
+      });
+    });
+
+  } catch(e) {
+    console.error('Errore vista ateneo:', e);
+    container.innerHTML = '<p style="color:red;">Errore nella costruzione dell\'albero</p>';
+  }
+}
+
+function filtroAlbero(){const testo=document.getElementById('filtro-albero').value.toLowerCase();document.querySelectorAll('.ateneo-node').forEach(node=>{const match=node.dataset.ateneo.includes(testo)||[...node.querySelectorAll('.corso-item')].some(c=>c.textContent.toLowerCase().includes(testo));node.style.display=match?'':'none';});}
+
+function apriModificaInsegnamento(idx){const row=ultimiRisultati[idx];if(!row)return;editRecordCorrente=row;document.getElementById('edit-sottotitolo').textContent=`${row.insegnamento} — ${row.ateneo}`;document.getElementById('edit-insegnamento').value=row.insegnamento||'';document.getElementById('edit-ssd').value=row.ssd||'';document.getElementById('edit-newssd').value=row.new_ssd||'';document.getElementById('edit-cfu').value=row.cfu||'';document.getElementById('edit-anno').value=row.anno_ins||'';document.getElementById('edit-semestre').value=row.semestre||'';document.getElementById('edit-lingua').value=row.lingua||'';document.getElementById('edit-docente').value=row.docente||'';document.getElementById('edit-url').value=row.url_ins||'';document.getElementById('edit-note').value=row._nota_modifica||'';document.getElementById('btn-reset-edit').style.display=row._modificato?'':'none';document.getElementById('modal-edit-overlay').classList.add('aperto');}
+function salvaModifica(){if(!editRecordCorrente)return;const k=chiaveRecord(editRecordCorrente);const mods=leggiModifiche();mods[k]={insegnamento:document.getElementById('edit-insegnamento').value.trim(),ssd:document.getElementById('edit-ssd').value.trim(),new_ssd:document.getElementById('edit-newssd').value.trim(),cfu:document.getElementById('edit-cfu').value.trim(),anno_ins:document.getElementById('edit-anno').value.trim(),semestre:document.getElementById('edit-semestre').value.trim(),lingua:document.getElementById('edit-lingua').value.trim(),docente:document.getElementById('edit-docente').value.trim(),url_ins:document.getElementById('edit-url').value.trim(),_nota_modifica:document.getElementById('edit-note').value.trim(),_data_modifica:dataOggi()};salvaModifiche(mods);aggiornaBadgeHeader();chiudiModaleEdit();cercaInsegnamenti();}
+function ripristinaOriginale(){if(!editRecordCorrente)return;const k=chiaveRecord(editRecordCorrente);const mods=leggiModifiche();delete mods[k];salvaModifiche(mods);aggiornaBadgeHeader();chiudiModaleEdit();cercaInsegnamenti();}
+function chiudiModaleEdit(){document.getElementById('modal-edit-overlay').classList.remove('aperto');editRecordCorrente=null;}
+window.__atlEdit=apriModificaInsegnamento;
+
+function apriDisattiva(idx){const row=ultimiRisultati[idx];if(!row)return;disattivaRecordCorrente=row;tipoDisattivazione='insegnamento';document.getElementById('disattiva-sottotitolo').textContent=`${row.insegnamento} — ${row.ateneo}`;document.getElementById('dis-motivo').value='';document.getElementById('dis-tipo-ins').classList.add('attivo');document.getElementById('dis-tipo-corso').classList.remove('attivo');const k=chiaveRecord(row),kc=chiaveCorso(row.ateneo,row.laurea),dis=leggiDisattivazioni(),giaD=dis[k]||dis[kc];document.getElementById('btn-riattiva').style.display=giaD?'':'none';document.getElementById('btn-conferma-disattiva').style.display=giaD?'none':'';document.getElementById('modal-disattiva-overlay').classList.add('aperto');}
+function confermaDisattiva(){if(!disattivaRecordCorrente)return;const dis=leggiDisattivazioni(),motivo=document.getElementById('dis-motivo').value.trim();if(tipoDisattivazione==='insegnamento'){dis[chiaveRecord(disattivaRecordCorrente)]={tipo:'insegnamento',motivo,data:dataOggi()};}else{dis[chiaveCorso(disattivaRecordCorrente.ateneo,disattivaRecordCorrente.laurea)]={tipo:'corso',motivo,data:dataOggi()};}salvaDisattivazioni(dis);aggiornaBadgeHeader();chiudiModaleDisattiva();cercaInsegnamenti();}
+function riattiva(){if(!disattivaRecordCorrente)return;const dis=leggiDisattivazioni();delete dis[chiaveRecord(disattivaRecordCorrente)];delete dis[chiaveCorso(disattivaRecordCorrente.ateneo,disattivaRecordCorrente.laurea)];salvaDisattivazioni(dis);aggiornaBadgeHeader();chiudiModaleDisattiva();cercaInsegnamenti();}
+function chiudiModaleDisattiva(){document.getElementById('modal-disattiva-overlay').classList.remove('aperto');disattivaRecordCorrente=null;}
+window.__atlDisattiva=apriDisattiva;
+
+async function popolaAutocompleteAggiungi(){try{const res=await conn.query(`SELECT DISTINCT ateneo FROM insegnamenti WHERE ateneo IS NOT NULL ORDER BY ateneo`);const atenei=res.toArray().map(r=>String(r.ateneo||''));document.getElementById('ai-ateneo-list').innerHTML=atenei.map(a=>`<option value="${a}">`).join('');document.getElementById('ac-ateneo-list').innerHTML=atenei.map(a=>`<option value="${a}">`).join('');}catch(e){console.warn('Autocomplete:',e);}}
+async function aggiornaLaureePerAteneo(ateneo){try{const res=await conn.query(`SELECT DISTINCT laurea FROM insegnamenti WHERE ateneo='${ateneo.replace(/'/g,"''")}' ORDER BY laurea`);document.getElementById('ai-laurea-list').innerHTML=res.toArray().map(r=>`<option value="${String(r.laurea||'')}">`).join('');}catch(e){}}
+function salvaAggiungiInsegnamento(){const ateneo=document.getElementById('ai-ateneo').value.trim(),laurea=document.getElementById('ai-laurea').value.trim(),insegnamento=document.getElementById('ai-insegnamento').value.trim();if(!ateneo||!laurea||!insegnamento){alert('Ateneo, corso di laurea e nome insegnamento sono obbligatori.');return;}const nuovo={_id:idZan(),ateneo,laurea,insegnamento,ssd:document.getElementById('ai-ssd').value.trim(),new_ssd:document.getElementById('ai-newssd').value.trim(),cfu:document.getElementById('ai-cfu').value.trim(),anno_ins:document.getElementById('ai-anno').value,semestre:document.getElementById('ai-semestre').value.trim(),lingua:document.getElementById('ai-lingua').value.trim(),docente:document.getElementById('ai-docente').value.trim(),url_ins:document.getElementById('ai-url').value.trim(),_nota:document.getElementById('ai-note').value.trim(),_data_aggiunta:dataOggi(),nome_classe:'',codice_classe:'',tipologia:'',durata:'',zona:'',regione:'',url_corso:'',n_curriculum:'',curriculum_lista:'',codice_insegnamento:'',id_laurea:''};const aggiunte=leggiAggiungeIns();aggiunte.push(nuovo);salvaAggiungeIns(aggiunte);aggiornaBadgeHeader();['ai-ateneo','ai-laurea','ai-insegnamento','ai-ssd','ai-newssd','ai-cfu','ai-semestre','ai-lingua','ai-docente','ai-url','ai-note'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('modal-aggiungi-ins-overlay').classList.remove('aperto');alert('Insegnamento aggiunto!');}
+function salvaAggiungiCorso(){const ateneo=document.getElementById('ac-ateneo').value.trim(),laurea=document.getElementById('ac-laurea').value.trim(),classe=document.getElementById('ac-classe').value.trim(),tipologia=document.getElementById('ac-tipologia').value;if(!ateneo||!laurea||!classe){alert('Ateneo, nome corso e classe sono obbligatori.');return;}const nuovo={_id:idZan(),ateneo,laurea,codice_classe:classe,nome_classe:'',tipologia,durata:document.getElementById('ac-durata').value.trim(),_nota:document.getElementById('ac-note').value.trim(),_data_aggiunta:dataOggi()};const aggiunte=leggiAggiungeCorsi();aggiunte.push(nuovo);salvaAggiungeCorsi(aggiunte);aggiornaBadgeHeader();['ac-ateneo','ac-laurea','ac-classe','ac-durata','ac-note'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('modal-aggiungi-corso-overlay').classList.remove('aperto');alert('Corso aggiunto!');}
+
+function aggiornaStatsDelta(){document.getElementById('delta-stats-export').innerHTML=`Modifiche: <strong>${Object.keys(leggiModifiche()).length}</strong> | Disattivazioni: <strong>${Object.keys(leggiDisattivazioni()).length}</strong> | Nuovi ins.: <strong>${leggiAggiungeIns().length}</strong> | Nuovi corsi: <strong>${leggiAggiungeCorsi().length}</strong>`;}
+function esportaDelta(){const promotore=document.getElementById('delta-promotore').value.trim()||'Anonimo';const delta={versione:'atlante-1.0',promotore,data_export:dataOggi(),modifiche:leggiModifiche(),disattivazioni:leggiDisattivazioni(),aggiunte_insegnamenti:leggiAggiungeIns(),aggiunte_corsi:leggiAggiungeCorsi()};const blob=new Blob([JSON.stringify(delta,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`delta_${promotore.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url);}
+function importaDelta(json){try{const delta=JSON.parse(json);if(delta.modifiche){const mods=leggiModifiche();Object.assign(mods,delta.modifiche);salvaModifiche(mods);}if(delta.disattivazioni){const dis=leggiDisattivazioni();Object.assign(dis,delta.disattivazioni);salvaDisattivazioni(dis);}if(delta.aggiunte_insegnamenti){const agg=leggiAggiungeIns();const ids=new Set(agg.map(a=>a._id));delta.aggiunte_insegnamenti.forEach(a=>{if(!ids.has(a._id))agg.push(a);});salvaAggiungeIns(agg);}if(delta.aggiunte_corsi){const agg=leggiAggiungeCorsi();const ids=new Set(agg.map(a=>a._id));delta.aggiunte_corsi.forEach(a=>{if(!ids.has(a._id))agg.push(a);});salvaAggiungeCorsi(agg);}aggiornaBadgeHeader();alert(`Delta importato!\nPromotore: ${delta.promotore||'N/D'}\nData: ${delta.data_export||'N/D'}`);document.getElementById('modal-delta-overlay').classList.remove('aperto');}catch(e){alert('Errore nel file delta: '+e.message);}}
+
+function exportExcelInsegnamenti(){
+  if(!ultimiRisultati.length){alert('Nessun dato. Esegui prima una ricerca.');return;}
+  const col=['insegnamento','ateneo','laurea','tipologia','nome_classe','codice_classe','ssd','new_ssd','cfu','anno_ins','isc_anno','semestre','lingua','docente','url_ins','url_corso'];
+  const colLink = new Set(['url_ins','url_corso']);
+  const msHead = '\x3C!--[if gte mso 9]\x3E\x3Cxml\x3E\x3Cx:ExcelWorkbook\x3E\x3Cx:ExcelWorksheets\x3E\x3Cx:ExcelWorksheet\x3E\x3Cx:Name\x3EInsegnamenti\x3C/x:Name\x3E\x3Cx:WorksheetOptions\x3E\x3Cx:DisplayGridlines/\x3E\x3C/x:WorksheetOptions\x3E\x3C/x:ExcelWorksheet\x3E\x3C/x:ExcelWorksheets\x3E\x3C/x:ExcelWorkbook\x3E\x3C/xml\x3E\x3C![endif]--\x3E';
+  let html = '\x3Chtml xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"\x3E\x3Chead\x3E\x3Cmeta charset="utf-8"\x3E' + msHead + '\x3C/head\x3E\x3Cbody\x3E\x3Ctable border="1"\x3E';
+  html += '\x3Cthead\x3E\x3Ctr\x3E' + col.map(c => '\x3Cth\x3E' + c + '\x3C/th\x3E').join('') + '\x3C/tr\x3E\x3C/thead\x3E\x3Ctbody\x3E';
+  for(const r of ultimiRisultati){
+    html += '\x3Ctr\x3E';
+    for(const c of col){
+      const val = (r[c]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      if(colLink.has(c) && r[c] && r[c].trim()){
+        const etichetta = c === 'url_ins' ? 'Programma' : 'Corso di laurea';
+        html += '\x3Ctd\x3E\x3Ca href="' + r[c].replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '"\x3E' + etichetta + '\x3C/a\x3E\x3C/td\x3E';
+      } else {
+        html += '\x3Ctd\x3E' + val + '\x3C/td\x3E';
+      }
+    }
+    html += '\x3C/tr\x3E';
+  }
+    const _ti2=ultimiRisultati.reduce((s,r)=>s+(parseInt(r.isc_anno)||0),0);const _ia=col.indexOf('isc_anno');html+='\x3Ctr style=\x22font-weight:bold;background:var(--ok-soft)\x22\x3E';col.forEach((c,i)=>{if(i===0)html+='\x3Ctd\x3ETOTALE\x3C/td\x3E';else if(i===_ia)html+='\x3Ctd\x3E'+_ti2+'\x3C/td\x3E';else html+='\x3Ctd\x3E\x3C/td\x3E';});html+='\x3C/tr\x3E';
+html += '\x3C/tbody\x3E\x3C/table\x3E\x3C/body\x3E\x3C/html\x3E';
+  const blob = new Blob(['\uFEFF' + html], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'insegnamenti_export_' + new Date().toISOString().slice(0,10) + '.xls'; a.click(); URL.revokeObjectURL(url);
+}
+function exportExcelLauree(){
+  if(!ultimiRisultatiLauree.length){alert('Nessun dato. Esegui prima una ricerca.');return;}
+  const col=['laurea','ateneo','tipologia','nome_classe','codice_classe','durata','regione','isc_1anno','isc_totali','url_corso'];
+  const colLink = new Set(['url_corso']);
+  const msHead = '\x3C!--[if gte mso 9]\x3E\x3Cxml\x3E\x3Cx:ExcelWorkbook\x3E\x3Cx:ExcelWorksheets\x3E\x3Cx:ExcelWorksheet\x3E\x3Cx:Name\x3ELauree\x3C/x:Name\x3E\x3Cx:WorksheetOptions\x3E\x3Cx:DisplayGridlines/\x3E\x3C/x:WorksheetOptions\x3E\x3C/x:ExcelWorksheet\x3E\x3C/x:ExcelWorksheets\x3E\x3C/x:ExcelWorkbook\x3E\x3C/xml\x3E\x3C![endif]--\x3E';
+  let html = '\x3Chtml xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"\x3E\x3Chead\x3E\x3Cmeta charset="utf-8"\x3E' + msHead + '\x3C/head\x3E\x3Cbody\x3E\x3Ctable border="1"\x3E';
+  html += '\x3Cthead\x3E\x3Ctr\x3E' + col.map(c => '\x3Cth\x3E' + c + '\x3C/th\x3E').join('') + '\x3C/tr\x3E\x3C/thead\x3E\x3Ctbody\x3E';
+  for(const r of ultimiRisultatiLauree){
+    html += '\x3Ctr\x3E';
+    for(const c of col){
+      const val = (r[c]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      if(colLink.has(c) && r[c] && r[c].trim()){
+        html += '\x3Ctd\x3E\x3Ca href="' + r[c].replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '"\x3ECorso di laurea\x3C/a\x3E\x3C/td\x3E';
+      } else {
+        html += '\x3Ctd\x3E' + val + '\x3C/td\x3E';
+      }
+    }
+    html += '\x3C/tr\x3E';
+  }
+    const _t1x=ultimiRisultatiLauree.reduce((s,r)=>s+(parseInt(r.isc_1anno)||0),0);const _ttx=ultimiRisultatiLauree.reduce((s,r)=>s+(parseInt(r.isc_totali)||0),0);const _i1=col.indexOf('isc_1anno');const _it=col.indexOf('isc_totali');html+='\x3Ctr style=\x22font-weight:bold;background:var(--ok-soft)\x22\x3E';col.forEach((c,i)=>{if(i===0)html+='\x3Ctd\x3ETOTALE\x3C/td\x3E';else if(i===_i1)html+='\x3Ctd\x3E'+_t1x+'\x3C/td\x3E';else if(i===_it)html+='\x3Ctd\x3E'+_ttx+'\x3C/td\x3E';else html+='\x3Ctd\x3E\x3C/td\x3E';});html+='\x3C/tr\x3E';
+html += '\x3C/tbody\x3E\x3C/table\x3E\x3C/body\x3E\x3C/html\x3E';
+  const blob = new Blob(['\uFEFF' + html], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'lauree_export_' + new Date().toISOString().slice(0,10) + '.xls'; a.click(); URL.revokeObjectURL(url);
+}
+
+// --- RAGGRUPPA PER DENOMINAZIONE ---
+let raggruppaDenominazioni = [];
+
+async function eseguiRaggruppamento() {
+  const filtri = {
+    ateneo: choicesMap['f-ateneo']?.getValue(true) || [],
+    regione: choicesMap['f-regione']?.getValue(true) || [],
+    zona: choicesMap['f-zona']?.getValue(true) || [],
+    tipologia: choicesMap['f-tipologia']?.getValue(true) || [],
+    classe: choicesMap['f-classe']?.getValue(true) || [],
+    ssd: choicesMap['f-ssd']?.getValue(true) || [],
+    newssd: choicesMap['f-newssd']?.getValue(true) || [],
+    lingua: choicesMap['f-lingua']?.getValue(true) || [],
+    anno: choicesMap['f-anno']?.getValue(true) || [],
+    insegnamento: document.getElementById('f-insegnamento').value.trim(),
+    docente: document.getElementById('f-docente').value.trim()
+  };
+
+  let where = [];
+  if (filtri.ateneo.length) where.push(`ateneo IN (${filtri.ateneo.map(v => `'${v.replace(/'/g, "''")}'`).join(',')})`);
+  if (filtri.regione.length) where.push(`regione IN (${filtri.regione.map(v => `'${v.replace(/'/g, "''")}'`).join(',')})`);
+  if (filtri.zona.length) where.push(`zona IN (${filtri.zona.map(v => `'${v.replace(/'/g, "''")}'`).join(',')})`);
+  if (filtri.tipologia.length) where.push(`tipologia IN (${filtri.tipologia.map(v => `'${v.replace(/'/g, "''")}'`).join(',')})`);
+  if (filtri.classe.length) {
+    const clausole = filtri.classe.map(v => {
+      const esc = v.replace(/'/g, "''");
+      return `(codice_classe = '${esc}' OR codice_classe LIKE '${esc}, %' OR codice_classe LIKE '%, ${esc}' OR codice_classe LIKE '%, ${esc}, %')`;
+    });
+    where.push(`(${clausole.join(' OR ')})`);
+  }
+  if (filtri.ssd.length) { const c = filtri.ssd.map(v => `ssd LIKE '%${v.replace(/'/g, "''")}%'`).join(' OR '); where.push(`(${c})`); }
+  if (filtri.newssd.length) { const c = filtri.newssd.map(v => `new_ssd LIKE '%${v.replace(/'/g, "''")}%'`).join(' OR '); where.push(`(${c})`); }
+  if (filtri.lingua.length) {
+    const mappaSinonimi = {
+      'ITA': ['ITA','IT','Italiano','italiano','ITALIANO'],
+      'ENG': ['ENG','EN','Inglese','inglese','INGLESE','English','ENGLISH'],
+      'FRA': ['FRA','FR','Francese','francese','FRANCESE','French','FRENCH'],
+      'DEU': ['DEU','DE','Tedesco','tedesco','TEDESCO','German','GERMAN'],
+      'SPA': ['SPA','ES','Spagnolo','spagnolo','SPAGNOLO','Spanish','SPANISH'],
+      'POR': ['POR','PT','Portoghese','portoghese','PORTOGHESE','Portuguese','PORTUGUESE']
+    };
+    const condizioni = filtri.lingua.map(codice => {
+      const sinonimi = mappaSinonimi[codice] || [codice];
+      return sinonimi.map(s => `lingua LIKE '%${s.replace(/'/g, "''")}%'`).join(' OR ');
+    });
+    where.push(`(${condizioni.join(' OR ')})`);
+  }
+  if (filtri.anno.length) {
+    const condAnno = filtri.anno.map(v => `CAST(anno_ins AS VARCHAR) LIKE '%${v}%'`).join(' OR ');
+    where.push(`(${condAnno})`);
+  }
+  if (filtri.insegnamento) {
+    const clausola = costruisciClausolaTestoLibero('insegnamento', filtri.insegnamento);
+    if (clausola) where.push(clausola);
+  }
+  if (filtri.docente) {
+    const clausola = costruisciClausolaTestoLibero('docente', filtri.docente);
+    if (clausola) where.push(clausola);
+  }
+
+  const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
+  const sql = `SELECT LOWER(TRIM(insegnamento)) AS denominazione, COUNT(*) AS n FROM insegnamenti ${whereClause} GROUP BY LOWER(TRIM(insegnamento)) ORDER BY n DESC, denominazione ASC`;
+
+  try {
+    const res = await conn.query(sql);
+    const rows = res.toArray();
+    raggruppaDenominazioni = rows.map(r => ({
+      nome: String(r.denominazione || ''),
+      count: Number(r.n),
+      checked: true
+    }));
+    renderListaRaggruppamento();
+    document.getElementById('modal-raggruppa-overlay').classList.add('aperto');
+  } catch (e) {
+    console.error('Errore raggruppamento:', e);
+    alert('Errore nel raggruppamento per denominazione.');
+  }
+}
+
+function renderListaRaggruppamento(filtroTesto) {
+  const container = document.getElementById('raggruppa-lista');
+  const filtro = (filtroTesto || '').toLowerCase();
+  const totale = raggruppaDenominazioni.reduce((s, d) => s + d.count, 0);
+  const denominazioniFiltrate = filtro
+    ? raggruppaDenominazioni.filter(d => d.nome.toLowerCase().includes(filtro))
+    : raggruppaDenominazioni;
+
+  let html = '';
+  for (let i = 0; i < denominazioniFiltrate.length; i++) {
+    const d = denominazioniFiltrate[i];
+    const idxOriginale = raggruppaDenominazioni.indexOf(d);
+    html += `<label style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--surface-2);cursor:pointer;font-size:0.85rem;" data-idx="${idxOriginale}">`;
+    html += `<input type="checkbox" ${d.checked ? 'checked' : ''} data-idx="${idxOriginale}" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">`;
+    html += `<span style="flex:1;${d.checked ? '' : 'color:var(--ink-muted);'}">${d.nome}</span>`;
+    html += `<span style="background:var(--surface-2);padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600;color:var(--v);">${d.count}</span>`;
+    html += `</label>`;
+  }
+  container.innerHTML = html || '<p style="padding:16px;color:var(--ink-muted);text-align:center;">Nessuna denominazione trovata</p>';
+
+  const selezionati = raggruppaDenominazioni.filter(d => d.checked);
+  const nSelezionati = selezionati.reduce((s, d) => s + d.count, 0);
+  document.getElementById('raggruppa-contatore').innerHTML =
+    `<strong>${raggruppaDenominazioni.length}</strong> denominazioni · <strong>${nSelezionati}</strong>/${totale} insegnamenti selezionati`;
+
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      raggruppaDenominazioni[idx].checked = e.target.checked;
+      const sel = raggruppaDenominazioni.filter(d => d.checked);
+      const nSel = sel.reduce((s, d) => s + d.count, 0);
+      document.getElementById('raggruppa-contatore').innerHTML =
+        `<strong>${raggruppaDenominazioni.length}</strong> denominazioni · <strong>${nSel}</strong>/${totale} insegnamenti selezionati`;
+      e.target.closest('label').querySelector('span').style.color = e.target.checked ? '' : 'var(--ink-muted)';
+    });
+  });
+}
+
+function applicaRaggruppamento() {
+  const selezionati = raggruppaDenominazioni.filter(d => d.checked).map(d => d.nome);
+  if (selezionati.length === 0) {
+    alert('Seleziona almeno una denominazione.');
+    return;
+  }
+  if (selezionati.length === raggruppaDenominazioni.length) {
+    document.getElementById('modal-raggruppa-overlay').classList.remove('aperto');
+    return;
+  }
+  const valoreTestoLibero = selezionati.map(nome => `<${nome}>`).join(',');
+  document.getElementById('f-insegnamento').value = valoreTestoLibero;
+  document.getElementById('modal-raggruppa-overlay').classList.remove('aperto');
+  cercaInsegnamenti();
+}
+
+// ============================
+// EVENT LISTENERS
+// ============================
+
+function inizializzaEventListeners(){
+  document.getElementById('btn-aggiorna-dati').addEventListener('click', async () => {
+    await caches.delete(CACHE_NAME);
+    location.reload();
+  });
+
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn[data-tab]').forEach(b=>b.classList.remove('attivo'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('attivo'));btn.classList.add('attivo');document.getElementById(btn.dataset.tab).classList.add('attivo');if(btn.dataset.tab==='tab-ateneo'&&!alberoCostruito)costruisciVistaAteneo();});});
+
+  document.getElementById('btn-cerca').addEventListener('click',cercaInsegnamenti);
+  document.getElementById('btn-reset').addEventListener('click',()=>{Object.values(choicesMap).forEach(c=>{c.removeActiveItems();c.setChoiceByValue([]);});document.getElementById('f-insegnamento').value='';document.getElementById('f-docente').value='';document.getElementById('f-mostra-disattivati').checked=false;dtInsegnamenti.clear().draw();document.getElementById('contatore').innerHTML='';});
+  document.getElementById('btn-export').addEventListener('click',exportExcelInsegnamenti);
+  document.getElementById('btn-cerca-lauree').addEventListener('click',cercaLauree);
+  document.getElementById('btn-reset-lauree').addEventListener('click',()=>{Object.values(choicesMapLauree).forEach(c=>{c.removeActiveItems();c.setChoiceByValue([]);});document.getElementById('fl-laurea').value='';dtLauree.clear().draw();document.getElementById('contatore-lauree').innerHTML='';});
+  document.getElementById('btn-export-lauree').addEventListener('click',exportExcelLauree);
+  document.getElementById('filtro-albero').addEventListener('input',filtroAlbero);
+  document.getElementById('btn-chiudi-tutti-albero').addEventListener('click',()=>{document.querySelectorAll('.ateneo-body.aperto').forEach(b=>{b.classList.remove('aperto');b.previousElementSibling.querySelector('span:last-child').textContent='▶';});document.querySelectorAll('.tipologia-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.tipologia-arrow').textContent='▶';});document.querySelectorAll('.classe-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.classe-arrow').textContent='▶';});});
+  document.getElementById('btn-chiudi-piano').addEventListener('click',()=>{document.getElementById('modal-piano-overlay').classList.remove('aperto');});
+  document.getElementById('btn-chiudi-edit').addEventListener('click',chiudiModaleEdit);
+  document.getElementById('btn-annulla-edit').addEventListener('click',chiudiModaleEdit);
+  document.getElementById('btn-salva-edit').addEventListener('click',salvaModifica);
+  document.getElementById('btn-reset-edit').addEventListener('click',ripristinaOriginale);
+  document.getElementById('btn-chiudi-disattiva').addEventListener('click',chiudiModaleDisattiva);
+  document.getElementById('btn-annulla-disattiva').addEventListener('click',chiudiModaleDisattiva);
+  document.getElementById('btn-conferma-disattiva').addEventListener('click',confermaDisattiva);
+  document.getElementById('btn-riattiva').addEventListener('click',riattiva);
+  document.getElementById('dis-tipo-ins').addEventListener('click',()=>{tipoDisattivazione='insegnamento';document.getElementById('dis-tipo-ins').classList.add('attivo');document.getElementById('dis-tipo-corso').classList.remove('attivo');});
+  document.getElementById('dis-tipo-corso').addEventListener('click',()=>{tipoDisattivazione='corso';document.getElementById('dis-tipo-corso').classList.add('attivo');document.getElementById('dis-tipo-ins').classList.remove('attivo');});
+  document.getElementById('btn-aggiungi-ins').addEventListener('click',()=>{document.getElementById('modal-aggiungi-ins-overlay').classList.add('aperto');popolaAutocompleteAggiungi();});
+  document.getElementById('btn-chiudi-aggiungi-ins').addEventListener('click',()=>{document.getElementById('modal-aggiungi-ins-overlay').classList.remove('aperto');});
+  document.getElementById('btn-annulla-aggiungi-ins').addEventListener('click',()=>{document.getElementById('modal-aggiungi-ins-overlay').classList.remove('aperto');});
+  document.getElementById('btn-salva-aggiungi-ins').addEventListener('click',salvaAggiungiInsegnamento);
+  document.getElementById('ai-ateneo').addEventListener('change',e=>{aggiornaLaureePerAteneo(e.target.value);});
+  document.getElementById('btn-aggiungi-corso').addEventListener('click',()=>{document.getElementById('modal-aggiungi-corso-overlay').classList.add('aperto');popolaAutocompleteAggiungi();});
+  document.getElementById('btn-chiudi-aggiungi-corso').addEventListener('click',()=>{document.getElementById('modal-aggiungi-corso-overlay').classList.remove('aperto');});
+  document.getElementById('btn-annulla-aggiungi-corso').addEventListener('click',()=>{document.getElementById('modal-aggiungi-corso-overlay').classList.remove('aperto');});
+  document.getElementById('btn-salva-aggiungi-corso').addEventListener('click',salvaAggiungiCorso);
+  const apriDelta = () => { aggiornaStatsDelta(); document.getElementById('modal-delta-overlay').classList.add('aperto'); };
+  document.getElementById('btn-delta').addEventListener('click', apriDelta);
+  document.getElementById('link-delta-helper').addEventListener('click', e => { e.preventDefault(); apriDelta(); });
+  document.getElementById('btn-chiudi-delta').addEventListener('click',()=>{document.getElementById('modal-delta-overlay').classList.remove('aperto');});
+  document.getElementById('btn-chiudi-delta-btn').addEventListener('click',()=>{document.getElementById('modal-delta-overlay').classList.remove('aperto');});
+  document.getElementById('btn-esporta-delta').addEventListener('click',esportaDelta);
+  document.getElementById('btn-importa-delta').addEventListener('click',()=>{if(deltaImportPending)importaDelta(deltaImportPending);else alert('Nessun file selezionato.');});
+
+  document.getElementById('btn-raggruppa').addEventListener('click', eseguiRaggruppamento);
+  document.getElementById('btn-chiudi-raggruppa').addEventListener('click', () => { document.getElementById('modal-raggruppa-overlay').classList.remove('aperto'); });
+  document.getElementById('btn-annulla-raggruppa').addEventListener('click', () => { document.getElementById('modal-raggruppa-overlay').classList.remove('aperto'); });
+  document.getElementById('btn-applica-raggruppa').addEventListener('click', applicaRaggruppamento);
+  document.getElementById('raggruppa-sel-tutti').addEventListener('click', () => { raggruppaDenominazioni.forEach(d => d.checked = true); renderListaRaggruppamento(document.getElementById('raggruppa-filtra').value); });
+  document.getElementById('raggruppa-desel-tutti').addEventListener('click', () => { raggruppaDenominazioni.forEach(d => d.checked = false); renderListaRaggruppamento(document.getElementById('raggruppa-filtra').value); });
+  document.getElementById('raggruppa-filtra').addEventListener('input', (e) => { renderListaRaggruppamento(e.target.value); });
+
+  document.getElementById('btn-salva-ricerca-ins').addEventListener('click', () => salvaRicercaCorrente('ins'));
+  document.getElementById('btn-carica-ricerca-ins').addEventListener('click', () => caricaRicercaSalvata('ins'));
+  document.getElementById('btn-elimina-ricerca-ins').addEventListener('click', () => eliminaRicercaSalvata('ins'));
+  document.getElementById('btn-rinomina-ricerca-ins').addEventListener('click', () => rinominaRicercaSalvata('ins'));
+  document.getElementById('btn-conferma-ricerca-ins').addEventListener('click', () => confermaSalvataggioRicerca('ins'));
+  document.getElementById('btn-annulla-ricerca-ins').addEventListener('click', () => annullaSalvataggioRicerca('ins'));
+  document.getElementById('nome-ricerca-ins').addEventListener('keydown', e => { if (e.key === 'Enter') confermaSalvataggioRicerca('ins'); if (e.key === 'Escape') annullaSalvataggioRicerca('ins'); });
+
+  document.getElementById('btn-salva-ricerca-lau').addEventListener('click', () => salvaRicercaCorrente('lau'));
+  document.getElementById('btn-carica-ricerca-lau').addEventListener('click', () => caricaRicercaSalvata('lau'));
+  document.getElementById('btn-elimina-ricerca-lau').addEventListener('click', () => eliminaRicercaSalvata('lau'));
+  document.getElementById('btn-rinomina-ricerca-lau').addEventListener('click', () => rinominaRicercaSalvata('lau'));
+  document.getElementById('btn-conferma-ricerca-lau').addEventListener('click', () => confermaSalvataggioRicerca('lau'));
+  document.getElementById('btn-annulla-ricerca-lau').addEventListener('click', () => annullaSalvataggioRicerca('lau'));
+  document.getElementById('nome-ricerca-lau').addEventListener('keydown', e => { if (e.key === 'Enter') confermaSalvataggioRicerca('lau'); if (e.key === 'Escape') annullaSalvataggioRicerca('lau'); });
+
+  const dropZone=document.getElementById('delta-drop-zone'),fileInput=document.getElementById('delta-file-input');
+  dropZone.addEventListener('click',()=>fileInput.click());
+  dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.style.borderColor='var(--v)';});
+  dropZone.addEventListener('dragleave',()=>{dropZone.style.borderColor='var(--line)';});
+  dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.style.borderColor='var(--line)';if(e.dataTransfer.files[0])leggiFileDelta(e.dataTransfer.files[0]);});
+  fileInput.addEventListener('change',e=>{if(e.target.files[0])leggiFileDelta(e.target.files[0]);});
+  function leggiFileDelta(file){const reader=new FileReader();reader.onload=e=>{deltaImportPending=e.target.result;try{const p=JSON.parse(deltaImportPending);document.getElementById('delta-import-preview').innerHTML=`<div class="helper ok" style="margin:12px 0 0"><span class="ic">✓</span><div><strong>${escapeHtml(file.name)}</strong><br>Promotore: ${escapeHtml(p.promotore||'n/d')} · Data: ${escapeHtml(p.data_export||'n/d')}<br>Modifiche: ${Object.keys(p.modifiche||{}).length} · Disattivazioni: ${Object.keys(p.disattivazioni||{}).length} · Nuovi insegnamenti: ${(p.aggiunte_insegnamenti||[]).length} · Nuovi corsi: ${(p.aggiunte_corsi||[]).length}</div></div>`;}catch(err){document.getElementById('delta-import-preview').innerHTML=`<div class="helper errore" style="margin:12px 0 0"><span class="ic">!</span><div>File non valido: ${escapeHtml(err.message)}</div></div>`;deltaImportPending=null;}};reader.readAsText(file);}
+
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.aperto,.modal-edit-overlay.aperto,.modal-disattiva-overlay.aperto,.modal-aggiungi-overlay.aperto,.modal-delta-overlay.aperto').forEach(m=>m.classList.remove('aperto'));});
+  document.getElementById('f-insegnamento').addEventListener('keydown',e=>{if(e.key==='Enter')cercaInsegnamenti();});
+  document.getElementById('f-docente').addEventListener('keydown',e=>{if(e.key==='Enter')cercaInsegnamenti();});
+  document.getElementById('fl-laurea').addEventListener('keydown',e=>{if(e.key==='Enter')cercaLauree();});
+}
+
+// ============================
+// AVVIO: autenticazione + entitlement, poi motore dati
+// ============================
+
+async function main() {
+  const statoIniziale = document.getElementById('stato-iniziale');
+  const sessione = await avviaSessione(supabaseClient, { redirect: false });
+  if (!sessione) { statoIniziale.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>'; return; }
+  if (!sessione.profilo) { statoIniziale.innerHTML = bloccoSenzaProfilo(sessione.session.user.email); return; }
+
+  popolaSidebar(sessione, supabaseClient);
+  statoIniziale.hidden = true;
+
+  if (!sessione.profilo.clienti.offerta_formativa_inclusa) {
+    const stato = document.getElementById('stato-accesso');
+    stato.style.display = 'block';
+    stato.innerHTML = `<div class="empty"><h4>Sezione non attiva</h4><p>Il tuo editore non ha accesso a “Offerta formativa”. Contatta l'amministratore di Atlante per attivarla.</p></div>`;
+    return;
+  }
+
+  document.getElementById('app').style.display = 'block';
+  inizializzaEventListeners();
+  initDuckDB().catch(err=>{console.error('Errore inizializzazione:',err);document.getElementById('status').textContent='Errore di inizializzazione!';});
+}
+
+main();
+</script>
+</body>
+</html>

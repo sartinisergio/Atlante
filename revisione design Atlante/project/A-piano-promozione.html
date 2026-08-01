@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>A · Piano di promozione — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  :root {
+    --v: var(--voce-piano);
+    --v-soft: var(--voce-piano-soft);
+    --v-ink: var(--voce-piano-ink);
+    --voce-corrente-soft: var(--voce-piano-soft);
+    --voce-corrente-ink: var(--voce-piano-ink);
+  }
+
+  main.a-main { max-width: 1520px; }
+
+  /* Pipeline visualizer (invece dei semplici tab: rende visibile che è un flusso) */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    padding: 6px; margin-bottom: 24px;
+    position: relative;
+  }
+  .pipe-step {
+    padding: 12px 16px; border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit;
+    border: none; font-family: inherit;
+    text-align: left;
+  }
+  .pipe-step:hover { background: var(--paper-warm); }
+  .pipe-step.on { background: var(--v); color: #fff; }
+  .pipe-step .num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--paper-warm); color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-weight: 600; font-size: 12px;
+    flex: none;
+  }
+  .pipe-step.done .num { background: var(--v); color: #fff; }
+  .pipe-step.on .num { background: rgba(255,255,255,0.3); color: #fff; }
+  .pipe-step .lab { line-height: 1.15; }
+  .pipe-step .lab strong { display: block; font-size: 13px; font-weight: 600; }
+  .pipe-step .lab span { font-size: 11px; opacity: 0.7; }
+  .pipe-step .badge-c {
+    margin-left: auto;
+    background: var(--paper-warm); color: var(--ink-muted);
+    padding: 1px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+    font-family: var(--font-mono);
+  }
+  .pipe-step.on .badge-c { background: rgba(255,255,255,0.25); color: #fff; }
+  .pipe-step.done .badge-c { background: var(--v-soft); color: var(--v-ink); }
+
+  /* Sotto-header di sezione */
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 12px;
+  }
+  .sec-head h2 { font-family: var(--font-serif); font-weight: 500; font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+  .sec-head h2 em { color: var(--v); font-style: italic; }
+  .sec-head .meta { font-size: 12.5px; color: var(--ink-muted); }
+  .sec-head .actions { display: flex; gap: 6px; }
+
+  /* Toolbar filtri leggera */
+  .toolbar-p {
+    display: flex; gap: 10px; align-items: center;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .search-box {
+    flex: 1; max-width: 380px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .search-box::before { content: '⌕'; color: var(--ink-faint); font-size: 16px; }
+  .search-box input {
+    border: none; background: transparent;
+    flex: 1; font-size: 13px; outline: none; color: var(--ink);
+    font-family: inherit;
+  }
+  .pill-filter {
+    padding: 8px 12px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; font-size: 13px; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .pill-filter .lab { color: var(--ink-muted); font-size: 12px; }
+  .pill-filter .caret { color: var(--ink-faint); font-size: 10px; }
+
+  /* Campagne: card list */
+  .campagne-list {
+    display: grid; grid-template-columns: 1fr; gap: 12px;
+  }
+  .campagna {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .12s;
+  }
+  .campagna:hover { border-color: var(--v); }
+  .campagna .top-c {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .campagna .titolo-c {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 17px; letter-spacing: -0.005em;
+    margin: 0 0 4px; color: var(--ink);
+  }
+  .campagna .sub-c { font-size: 12.5px; color: var(--ink-muted); }
+  .campagna .sub-c .sep { margin: 0 6px; color: var(--ink-faint); }
+
+  .campagna .metric { text-align: center; padding: 0 12px; border-left: 1px solid var(--line-soft); }
+  .campagna .metric .v {
+    font-family: var(--font-serif); font-size: 22px; font-weight: 400;
+    color: var(--ink); letter-spacing: -0.01em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .campagna .metric .v.warn { color: var(--warn); }
+  .campagna .metric .v.ok { color: var(--ok); }
+  .campagna .metric .l {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--ink-muted); font-weight: 600; margin-top: 4px;
+  }
+  .stato-campagna {
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .sc-bozza { background: var(--warn-soft); color: var(--warn); }
+  .sc-attiva { background: var(--v-soft); color: var(--v-ink); }
+  .sc-completata { background: var(--ok-soft); color: var(--ok); }
+
+  .campagna .body-c {
+    padding: 14px 22px;
+    background: var(--paper-warm);
+    display: none;
+  }
+  .campagna.open .body-c { display: block; }
+  .campagna .body-c .row-info {
+    display: grid; grid-template-columns: 160px 1fr; gap: 4px 14px;
+    font-size: 13px; margin-bottom: 4px;
+  }
+  .campagna .body-c .row-info dt { color: var(--ink-muted); font-family: var(--font-serif); font-style: italic; }
+  .campagna .body-c .row-info dd { margin: 0; color: var(--ink); font-weight: 500; }
+
+  /* Tabella target aperta */
+  .target-table-wrap {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    overflow: hidden; margin-top: 20px;
+  }
+  .target-head {
+    padding: 14px 20px; background: var(--paper-warm);
+    border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .target-head h3 { font-family: var(--font-serif); font-weight: 500; font-size: 16px; margin: 0; letter-spacing: -0.01em; }
+  .target-head h3 em { color: var(--v); font-style: italic; }
+  .target-head p { font-size: 12px; color: var(--ink-muted); margin: 3px 0 0; }
+  .target-head .contatori {
+    display: flex; gap: 14px;
+    font-size: 12px; color: var(--ink-muted);
+  }
+  .target-head .contatori b { font-family: var(--font-mono); color: var(--ink); }
+
+  table.target {
+    width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px;
+  }
+  table.target thead th {
+    text-align: left; padding: 12px 16px;
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--line);
+  }
+  table.target thead th.right { text-align: right; }
+  table.target tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  table.target tbody tr:last-child td { border-bottom: none; }
+  table.target tbody tr:hover { background: color-mix(in srgb, var(--v-soft) 30%, transparent); }
+  table.target td .doc { font-weight: 500; color: var(--ink); }
+  table.target td .sub { font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+
+  .rilevanza {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 4px;
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .rilevanza::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+  .r-alta { background: var(--err-soft); color: var(--err); }
+  .r-alta::before { background: var(--err); }
+  .r-media { background: var(--warn-soft); color: var(--warn); }
+  .r-media::before { background: var(--warn); }
+  .r-bassa { background: var(--surface-2); color: var(--ink-muted); }
+  .r-bassa::before { background: var(--ink-faint); }
+
+  .scenario {
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 7px; border-radius: 3px;
+  }
+  .sc-princ { background: var(--v-soft); color: var(--v-ink); }
+  .sc-alt { background: var(--paper-warm); color: var(--ink-muted); }
+  .sc-ass { background: var(--surface-2); color: var(--ink-faint); }
+
+  .m-btn {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 5px; padding: 4px 10px;
+    font-size: 11.5px; color: var(--ink-2); cursor: pointer;
+    font-family: inherit;
+  }
+  .m-btn:hover { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+  .m-btn.primary { background: var(--v); color: #fff; border-color: var(--v); }
+  .m-btn.primary:hover { background: var(--v-ink); }
+
+  /* Riquadro motivazione + email (mostrato aperto) */
+  .drawer-motiv {
+    background: var(--surface);
+    border: 1px solid var(--v);
+    border-radius: var(--r-lg); box-shadow: var(--sh-2);
+    margin-top: 16px; overflow: hidden;
+  }
+  .drawer-motiv-head {
+    padding: 14px 20px;
+    background: color-mix(in srgb, var(--v-soft) 60%, var(--surface));
+    border-bottom: 1px solid var(--v-soft);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .drawer-motiv-head h4 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 15px; margin: 0; letter-spacing: -0.005em;
+    color: var(--v-ink);
+  }
+  .drawer-motiv-head h4 em { font-style: italic; }
+  .drawer-motiv-head .close {
+    background: transparent; border: none; cursor: pointer; color: var(--ink-muted); font-size: 16px;
+  }
+  .drawer-motiv .body { padding: 20px 24px; }
+  .drawer-motiv .body h5 {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--v-ink); font-weight: 700; margin: 0 0 8px;
+  }
+  .drawer-motiv .body h5:not(:first-child) { margin-top: 20px; }
+  .drawer-motiv .body p {
+    font-family: var(--font-serif); font-size: 14px; line-height: 1.6;
+    color: var(--ink-2); margin: 0 0 8px;
+  }
+  .drawer-motiv .body .pesi {
+    display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0;
+  }
+  .drawer-motiv .body .pesi .p {
+    font-size: 11.5px; padding: 2px 8px; border-radius: 4px;
+    background: var(--v-soft); color: var(--v-ink); font-weight: 500;
+  }
+  .drawer-motiv .body .email-box {
+    background: var(--paper); border: 1px solid var(--line-soft);
+    border-radius: 7px; padding: 14px 16px; margin-top: 6px;
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--ink-2); line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .drawer-motiv .body .email-actions {
+    display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb"><a href="A-home.html">Atlante</a><span class="sep">›</span><a href="#">Zanichelli</a><span class="sep">›</span><span>Piano di promozione</span></div>
+
+  <h1 class="page">Piano di promozione<em>.</em></h1>
+  <p class="subtitle">Pipeline dei programmi didattici: dai PDF caricati oggi alle email di promozione mirate. Ogni programma attraversa quattro stadi — carica, staging, database, campagne — e resta a disposizione delle campagne future.</p>
+
+  <!-- Pipeline visualizer -->
+  <nav class="pipeline" aria-label="Pipeline">
+    <a class="pipe-step done" href="#" title="Vai a Carica programmi">
+      <div class="num">1</div>
+      <div class="lab"><strong>Carica</strong><span>PDF programmi</span></div>
+      <span class="badge-c">387</span>
+    </a>
+    <a class="pipe-step done" href="#" title="Vai a Staging">
+      <div class="num">2</div>
+      <div class="lab"><strong>Staging</strong><span>Da verificare</span></div>
+      <span class="badge-c">3</span>
+    </a>
+    <a class="pipe-step done" href="#" title="Vai a Database">
+      <div class="num">3</div>
+      <div class="lab"><strong>Database</strong><span>Confermati</span></div>
+      <span class="badge-c">384</span>
+    </a>
+    <a class="pipe-step on" href="#" title="Vai a Campagne">
+      <div class="num">4</div>
+      <div class="lab"><strong>Campagne</strong><span>Sei qui</span></div>
+      <span class="badge-c">7</span>
+    </a>
+  </nav>
+
+  <!-- Sezione: Campagne -->
+  <div class="sec-head">
+    <div>
+      <h2>Le tue <em>campagne</em></h2>
+      <p class="meta" style="margin: 3px 0 0;">Ogni campagna genera un elenco di docenti target con motivazione ed email personalizzata.</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost">↓ Esporta piano</button>
+      <button class="btn btn-primary">＋ Nuova campagna</button>
+    </div>
+  </div>
+
+  <div class="toolbar-p">
+    <div class="search-box">
+      <input placeholder="Cerca campagna…" />
+    </div>
+    <div class="pill-filter">
+      <span class="lab">Materia:</span><span>Tutte</span><span class="caret">▾</span>
+    </div>
+    <div class="pill-filter">
+      <span class="lab">Stato:</span><span>Tutti</span><span class="caret">▾</span>
+    </div>
+    <div class="pill-filter">
+      <span class="lab">Volume:</span><span>Singolo o catalogo</span><span class="caret">▾</span>
+    </div>
+  </div>
+
+  <!-- Elenco campagne -->
+  <div class="campagne-list">
+
+    <!-- Campagna 1: aperta, con dettaglio -->
+    <div class="campagna open">
+      <div class="top-c">
+        <div>
+          <h3 class="titolo-c">Farmacologia autunno 2026 — Goodman &amp; Gilman 14ª ed.</h3>
+          <div class="sub-c">
+            Volume singolo <span class="sep">·</span> materia <strong>Farmacologia</strong> <span class="sep">·</span> creata 3 giorni fa <span class="sep">·</span> ultimo aggiornamento ieri
+          </div>
+        </div>
+        <div class="metric"><div class="v">124</div><div class="l">Programmi in scope</div></div>
+        <div class="metric"><div class="v warn">31</div><div class="l">Docenti target</div></div>
+        <div class="metric"><div class="v ok">18</div><div class="l">Email pronte</div></div>
+        <span class="stato-campagna sc-bozza">Bozza</span>
+      </div>
+      <div class="body-c">
+        <dl class="row-info"><dt>Manuale promosso</dt><dd>Goodman &amp; Gilman — 14ª ed. · Zanichelli</dd></dl>
+        <dl class="row-info"><dt>Framework</dt><dd>MAP Farmacologia 2024 v.2</dd></dl>
+        <dl class="row-info"><dt>Criterio di selezione</dt><dd>Programmi con almeno 1 gap di peso ≥ medio sull'adottato attuale</dd></dl>
+        <dl class="row-info"><dt>Modello per motivazioni ed email</dt><dd>gpt-4o (stima ~4,20 $ per completare i 13 target residui)</dd></dl>
+      </div>
+    </div>
+
+    <!-- Altre campagne (compatte) -->
+    <div class="campagna">
+      <div class="top-c">
+        <div>
+          <h3 class="titolo-c">Biochimica strutturale — catalogo intero</h3>
+          <div class="sub-c">Catalogo materia <span class="sep">·</span> materia <strong>Biochimica</strong> <span class="sep">·</span> creata 8 giorni fa</div>
+        </div>
+        <div class="metric"><div class="v">89</div><div class="l">Programmi in scope</div></div>
+        <div class="metric"><div class="v warn">22</div><div class="l">Docenti target</div></div>
+        <div class="metric"><div class="v ok">22</div><div class="l">Email pronte</div></div>
+        <span class="stato-campagna sc-attiva">Attiva</span>
+      </div>
+    </div>
+
+    <div class="campagna">
+      <div class="top-c">
+        <div>
+          <h3 class="titolo-c">Chimica organica 2026 — Bruice 8ª ed.</h3>
+          <div class="sub-c">Volume singolo <span class="sep">·</span> materia <strong>Chimica organica</strong> <span class="sep">·</span> completata 2 mesi fa</div>
+        </div>
+        <div class="metric"><div class="v">156</div><div class="l">Programmi in scope</div></div>
+        <div class="metric"><div class="v">42</div><div class="l">Docenti target</div></div>
+        <div class="metric"><div class="v ok">42</div><div class="l">Email inviate</div></div>
+        <span class="stato-campagna sc-completata">Completata</span>
+      </div>
+    </div>
+
+    <div class="campagna">
+      <div class="top-c">
+        <div>
+          <h3 class="titolo-c">Economia aziendale Nord — Sostero 3ª ed.</h3>
+          <div class="sub-c">Volume singolo <span class="sep">·</span> materia <strong>Economia aziendale</strong> <span class="sep">·</span> creata 12 giorni fa</div>
+        </div>
+        <div class="metric"><div class="v">78</div><div class="l">Programmi in scope</div></div>
+        <div class="metric"><div class="v warn">15</div><div class="l">Docenti target</div></div>
+        <div class="metric"><div class="v">0</div><div class="l">Email pronte</div></div>
+        <span class="stato-campagna sc-bozza">Bozza</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dettaglio target della campagna aperta -->
+  <div class="target-table-wrap">
+    <div class="target-head">
+      <div>
+        <h3>Docenti target · <em>Farmacologia autunno 2026</em></h3>
+        <p>31 docenti selezionati automaticamente. Espandi una riga per motivazione ed email.</p>
+      </div>
+      <div class="contatori">
+        <span>Rilevanza: <b style="color: var(--err);">12 alta</b> · <b style="color: var(--warn);">15 media</b> · <b>4 bassa</b></span>
+      </div>
+    </div>
+
+    <table class="target">
+      <thead>
+        <tr>
+          <th style="width: 22%">Docente &amp; ateneo</th>
+          <th>Insegnamento</th>
+          <th style="width: 14%">Manuale adottato</th>
+          <th style="width: 10%">Scenario</th>
+          <th style="width: 10%">Rilevanza</th>
+          <th style="width: 12%">Email</th>
+          <th style="width: 8%; text-align: right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: color-mix(in srgb, var(--v-soft) 30%, transparent);">
+          <td>
+            <div class="doc">Prof. Marco Bianchi</div>
+            <div class="sub">Torino · Farmacia LM-13</div>
+          </td>
+          <td>
+            <div class="doc">Farmacologia clinica</div>
+            <div class="sub">4° anno · 9 CFU</div>
+          </td>
+          <td>Katzung 12ª</td>
+          <td><span class="scenario sc-alt">alternativo</span></td>
+          <td><span class="rilevanza r-alta">alta</span></td>
+          <td><span class="stato-campagna sc-bozza" style="font-size: 10px;">bozza</span></td>
+          <td class="right"><button class="m-btn primary">▾ chiudi</button></td>
+        </tr>
+        <!-- Drawer aperto -->
+        <tr>
+          <td colspan="7" style="padding: 0; background: var(--paper);">
+            <div class="drawer-motiv" style="margin: 12px 20px; border-color: var(--v);">
+              <div class="drawer-motiv-head">
+                <h4>Motivazione della proposta a <em>Prof. Bianchi</em></h4>
+                <button class="close">×</button>
+              </div>
+              <div class="body">
+                <h5>Sintesi della motivazione</h5>
+                <p>Il programma del prof. Bianchi enfatizza le <strong>interazioni farmacologiche</strong> e la <strong>farmacogenomica</strong> — due temi che l'attuale Katzung non copre bene (Cap. 66 assente, farmacogenomica non trattata). Goodman &amp; Gilman ha capitoli dedicati a entrambi. Il docente è <em>pragmatico moderno</em>, aperto a testi che integrano clinica e ricerca.</p>
+
+                <h5>Fattori decisivi che pesano nella scelta di Katzung oggi</h5>
+                <div class="pesi">
+                  <span class="p">tradizione (peso alto)</span>
+                  <span class="p">ossatura per apparati (peso alto)</span>
+                  <span class="p">tossicologia estesa (peso medio)</span>
+                  <span class="p">costo per lo studente (peso basso)</span>
+                </div>
+
+                <h5 style="margin-top: 20px;">Email suggerita</h5>
+                <div class="email-box">Oggetto: Farmacologia clinica — un'integrazione per il modulo interazioni
+
+Gentile Prof. Bianchi,
+
+leggendo il programma di Farmacologia clinica ho notato la sua scelta di dedicare 6 ore a un modulo esplicito sulle interazioni farmacologiche e di trattare la farmacogenomica in modo strutturato — un approccio non scontato che orienta chiaramente il corso verso la pratica clinica.
+
+Volevo segnalarle che la nuova 14ª edizione di Goodman &amp; Gilman (Zanichelli) dedica un intero capitolo — il 66 — alle interazioni farmaco-farmaco e farmaco-cibo, e un capitolo autonomo (il 7) alla farmacogenomica. Immagino le sarebbero utili anche i box clinici che affiancano ogni sezione, dati i journal club che ha in programma.
+
+Se le fa piacere, le lascio in visione una copia della nuova edizione — passo io a Torino il 12 settembre.
+
+Un cordiale saluto,
+Sergio Sartini
+Promotore Zanichelli · Nord-Ovest</div>
+                <div class="email-actions">
+                  <button class="m-btn">Rigenera</button>
+                  <button class="m-btn">Modifica</button>
+                  <button class="m-btn primary">✓ Approva &amp; copia</button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><div class="doc">Prof. Giovanna Rossi</div><div class="sub">Milano Statale · Farmacia LM-13</div></td>
+          <td><div class="doc">Farmacologia e Farmacoterapia</div><div class="sub">3° anno · 10 CFU</div></td>
+          <td>Katzung 12ª</td>
+          <td><span class="scenario sc-ass">assente</span></td>
+          <td><span class="rilevanza r-alta">alta</span></td>
+          <td><span class="stato-campagna sc-completata" style="font-size: 10px;">pronta</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+        <tr>
+          <td><div class="doc">Prof. Paolo Verdi</div><div class="sub">Genova · CTF LM-13</div></td>
+          <td><div class="doc">Farmacologia generale e molecolare</div><div class="sub">3° anno · 8 CFU</div></td>
+          <td>Rang–Dale 9ª</td>
+          <td><span class="scenario sc-ass">assente</span></td>
+          <td><span class="rilevanza r-alta">alta</span></td>
+          <td><span class="stato-campagna sc-completata" style="font-size: 10px;">pronta</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+        <tr>
+          <td><div class="doc">Prof. Anna Colombo</div><div class="sub">Pavia · Farmacia LM-13</div></td>
+          <td><div class="doc">Farmacologia speciale</div><div class="sub">4° anno · 6 CFU</div></td>
+          <td>Goodman &amp; Gilman 13ª</td>
+          <td><span class="scenario sc-princ">principale</span></td>
+          <td><span class="rilevanza r-media">media</span></td>
+          <td><span class="stato-campagna sc-completata" style="font-size: 10px;">pronta</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+        <tr>
+          <td><div class="doc">Prof. Silvia Ferrari</div><div class="sub">Bologna · Farmacia LM-13</div></td>
+          <td><div class="doc">Farmacologia I</div><div class="sub">3° anno · 7 CFU</div></td>
+          <td>Furlanut 3ª</td>
+          <td><span class="scenario sc-alt">alternativo</span></td>
+          <td><span class="rilevanza r-media">media</span></td>
+          <td><span class="stato-campagna sc-bozza" style="font-size: 10px;">bozza</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+        <tr>
+          <td><div class="doc">Prof. Fabio Marchetti</div><div class="sub">Padova · Biotecn. mediche LM-9</div></td>
+          <td><div class="doc">Chemioterapia</div><div class="sub">2° anno · 4 CFU</div></td>
+          <td>Rossi–Cuomo 4ª</td>
+          <td><span class="scenario sc-ass">assente</span></td>
+          <td><span class="rilevanza r-bassa">bassa</span></td>
+          <td><span class="stato-campagna sc-bozza" style="font-size: 10px;">bozza</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+        <tr>
+          <td><div class="doc">Prof. Laura Greco</div><div class="sub">Firenze · Biotecn. mediche LM-9</div></td>
+          <td><div class="doc">Farmacologia cellulare</div><div class="sub">1° anno · 6 CFU (inglese)</div></td>
+          <td>Katzung 12ª (en)</td>
+          <td><span class="scenario sc-alt">alternativo</span></td>
+          <td><span class="rilevanza r-media">media</span></td>
+          <td><span class="stato-campagna sc-completata" style="font-size: 10px;">pronta</span></td>
+          <td class="right"><button class="m-btn">▸ apri</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="text-align: center; margin-top: 20px; font-size: 12.5px; color: var(--ink-muted); font-family: var(--font-serif); font-style: italic;">Mostrati 7 di 31 target · <a href="#" style="color: var(--v); font-weight: 500; font-style: normal; text-decoration: none;">mostra tutti →</a></p>
+
+</main>
+
+<script src="shell.js" data-attiva="piano"></script>
+</body>
+</html>

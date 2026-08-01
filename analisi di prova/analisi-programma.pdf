@@ -1,0 +1,8586 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 5167
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0 g
+40. 791.8899999999999864 Td
+(Analisi programma — Chimica Organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 765.8899999999999864 Td
+(Università di Catania · Docente: ANDREA PAPPALARDO · CFU: n/d · Classe di laurea: L-2/L-13 Biotecnologie e) Tj
+T* (Biologia · Framework: Chimica Organica · Tipo analisi: avanzata) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 733.8899999999999864 Td
+(Valutazione complessiva: discreto — Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 714.8899999999999864 Td
+(Il programma di Chimica Organica dell'Università di Catania offre una formazione solida sui principi fondamentali) Tj
+T* (della chimica organica, con un buon equilibrio tra teoria e applicazioni pratiche. I punti di forza includono una chiara) Tj
+T* (definizione degli obiettivi formativi e un'ampia copertura di argomenti chiave. Tuttavia, ci sono lacune significative) Tj
+T* (rispetto ai moduli del framework, in particolare per quanto riguarda le tecniche sperimentali e la chimica) Tj
+T* (computazionale, che potrebbero limitare l'adeguatezza alla classe di laurea in Scienze Biologiche.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+40. 635.8899999999999864 Td
+(Executive summary) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 617.8899999999999864 Td
+(•  Docente: Approccio misto, livello intermedio, stile tradizionale, focus disciplinare.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 602.8899999999999864 Td
+(•  Situazione attuale: Programma discreto, manuale copre parte significativa, gap marginali.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 587.8899999999999864 Td
+(•  Opportunità: Nessun argomento di peso alto o medio da colmare nel manuale adottato.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 572.8899999999999864 Td
+(•  Approccio al colloquio: Discutere il bilancio tra McMurry e Brown et al. per eventuali integrazioni.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 557.8899999999999864 Td
+(•  Attenzione: Inclusività garantita con misure compensative per studenti con disabilità.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+40. 528.8899999999999864 Td
+(Quadro del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 510.8899999999999864 Td
+(Corso teorico-pratico Il corso di Chimica Organica si propone di fornire una solida base teorica e pratica sui principi) Tj
+T* (fondamentali della chimica organica, con un focus sulle applicazioni biologiche e quotidiane.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 478.8899999999999864 Td
+(Livello di complessità: intermedio) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 459.8899999999999864 Td
+(Peso dei moduli nel programma:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 440.8899999999999864 Td
+(•  1. Fondamenti di chimica organica: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 425.8899999999999864 Td
+(•  2. Stereochimica: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 410.8899999999999864 Td
+(•  3. Metodi di studio delle molecole organiche: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 395.8899999999999864 Td
+(•  4. Alcani e cicloalcani: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 380.8899999999999864 Td
+(•  5. Alcheni e alchini: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 365.8899999999999864 Td
+(•  6. Composti aromatici: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 350.8899999999999864 Td
+(•  7. Alogenuri alchilici e solfonati: medio) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 335.8899999999999864 Td
+(•  8. Alcoli, fenoli ed eteri: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 320.8899999999999864 Td
+(•  9. Epossidi e ossiranni: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 305.8899999999999864 Td
+(•  10. Composti carbonilici: aldeidi e chetoni: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 290.8899999999999864 Td
+(•  11. Acidi carbossilici e derivati: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 275.8899999999999864 Td
+(•  12. Composti con enolati e alfa-carbonili: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 260.8899999999999864 Td
+(•  13. Ammine e composti azotati: medio) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 245.8899999999999864 Td
+(•  14. Zuccheri e carboidrati: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 230.8899999999999864 Td
+(•  15. Aminoacidi e peptidi: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 215.8899999999999864 Td
+(•  16. Lipidi: alto) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 200.8899999999999864 Td
+(•  17. Nucleotidi e acidi nucleici: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 185.8899999999999864 Td
+(•  18. Chimica organometallica: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 170.8899999999999864 Td
+(•  19. Reazioni pericicliche: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 155.8899999999999864 Td
+(•  20. Sintesi e strategia: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 140.8899999999999864 Td
+(•  21. Polimeri: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 125.8899999999999864 Td
+(•  22. Fotochimica organica: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 110.8899999999999864 Td
+(•  23. Chimica verde e sostenibile: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 95.8899999999999864 Td
+(•  24. Tecniche sperimentali in organica: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 80.8899999999999864 Td
+(•  25. Bioorganica e chimica medicinale: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 65.8899999999999864 Td
+(•  26. Spettroscopia avanzata: basso) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 12930
+>>
+stream
+0.200025 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 791.8899999999999864 Td
+(•  27. Chimica computazionale organica: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 776.8899999999999864 Td
+(•  28. Metabolismo organico: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 761.8899999999999864 Td
+(•  29. Cinetica e termodinamica delle reazioni organiche: basso) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 746.8899999999999864 Td
+(•  30. Sicurezza in laboratorio di organica: basso) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0 g
+40. 721.8899999999999864 Td
+(Profilo pedagogico del docente) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 707.8899999999999864 Td
+(Approccio: misto · Livello: intermedio · Stile: tradizionale · Orientamento: disciplinare puro) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 688.8899999999999864 Td
+(Enfasi: Capacità di ragionamento induttivo e deduttivo, Capacità di progettare un percorso sintetico, Capacità di) Tj
+T* (descrivere argomenti con rigore terminologico) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 656.8899999999999864 Td
+(Metodologia: Lezioni frontali e esercitazioni in aula, con valutazione tramite prova d'esame orale.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0 g
+40. 633.8899999999999864 Td
+(Allineamento con la classe di laurea) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+40. 619.8899999999999864 Td
+(Allineamento complessivo: Medio) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 600.8899999999999864 Td
+(•  Chimica delle biomolecole — Perfetto allineamento: Trattazione di amminoacidi e proteine, carboidrati, lipidi e) Tj
+T* (acidi nucleici.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 572.8899999999999864 Td
+(•  Meccanismi enzimatici/metabolici — Disallineamento: Non è presente un focus specifico sui meccanismi) Tj
+T* (enzimatici o metabolici.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 544.8899999999999864 Td
+(•  Stereochimica — Perfetto allineamento: Trattazione della chiralità, enantiomeria e stereoisomeria.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 529.8899999999999864 Td
+(•  Sintesi complessa e organometallica — Disallineamento: Non viene trattata la chimica organometallica o sintesi) Tj
+T* (complesse.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 501.8899999999999864 Td
+(•  Polimeri — Disallineamento: Non è presente un focus sui polimeri.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 486.8899999999999864 Td
+(•  Spettroscopia avanzata fisica — Disallineamento: Non viene trattata la spettroscopia avanzata.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+40. 457.8899999999999864 Td
+(Valutazione didattica del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 439.8899999999999864 Td
+(•  Obiettivi formativi: buono — Gli obiettivi formativi sono chiari e misurabili, con competenze trasversali ben) Tj
+T* (definite, come evidenziato nella sezione 'Risultati di apprendimento attesi'.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 411.8899999999999864 Td
+(•  Metodologia didattica: sufficiente — La metodologia didattica prevede lezioni frontali ed esercitazioni, ma manca) Tj
+T* (di dettagli su materiali e supporto allo studente.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 383.8899999999999864 Td
+(•  Allineamento curriculum: discreto — Il programma mostra una certa coerenza con altri insegnamenti, ma non è) Tj
+T* (chiaro come si integri con la progressione didattica complessiva.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+46. 355.8899999999999864 Td
+(•  Risultati attesi: buono — I risultati attesi includono competenze tecnico-scientifiche e trasversali, come indicato) Tj
+T* (nella sezione 'Risultati di apprendimento attesi'.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0 g
+40. 317.8899999999999864 Td
+(Copertura dei moduli nel programma) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 303.8899999999999864 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 293.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+178.6075159536696333 303.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+182.6075159536696333 293.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+217.4875159536696287 303.8899999999999864 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+221.4875159536696287 293.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 286.6899999999999409 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 275.8899999999999864 Td
+(1. Fondamenti di chimica organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 286.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 275.8899999999999864 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 286.6899999999999409 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 275.8899999999999864 Td
+(Il programma tratta ampiamente la struttura elettronica, modelli di legame covalente e) Tj
+T* (nomenclatura sistematica IUPAC nel Capitolo 1.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 260.2899999999999636 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 249.4900000000000091 Td
+(2. Stereochimica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 260.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 249.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 260.2899999999999636 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 249.4900000000000091 Td
+(La stereochimica è trattata in modo sostanziale nel Capitolo 4, con focus su chiralità e attività) Tj
+T* (ottica.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 233.8899999999999864 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 223.0900000000000318 Td
+(3. Metodi di studio delle molecole) Tj
+T* (organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 233.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 223.0900000000000318 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 233.8899999999999864 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 223.0900000000000318 Td
+(Non ci sono riferimenti specifici a metodi di caratterizzazione strutturale nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 207.4900000000000091 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 196.6900000000000546 Td
+(4. Alcani e cicloalcani) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 207.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 196.6900000000000546 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 207.4900000000000091 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 196.6900000000000546 Td
+(Il programma include dettagli su proprietà fisiche e reattività degli alcani nel Capitolo 3.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 190.2899999999999636 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 179.4900000000000091 Td
+(5. Alcheni e alchini) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 190.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 179.4900000000000091 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 190.2899999999999636 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 179.4900000000000091 Td
+(Trattati nel Capitolo 5 e 6, con focus su meccanismi di reazione e reattività.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 173.0899999999999181 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 162.2899999999999636 Td
+(6. Composti aromatici) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 173.0899999999999181 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 162.2899999999999636 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 173.0899999999999181 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 162.2899999999999636 Td
+(Il Capitolo 7 discute in dettaglio la teoria dell'aromaticità e le reazioni di sostituzione elettrofila.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 155.8899999999998727 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 145.0899999999999181 Td
+(7. Alogenuri alchilici e solfonati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 155.8899999999998727 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 145.0899999999999181 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 155.8899999999998727 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 145.0899999999999181 Td
+(Trattati nel Capitolo 8, con analisi delle reazioni di sostituzione nucleofila.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 138.6899999999998272 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 127.8899999999998727 Td
+(8. Alcoli, fenoli ed eteri) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 138.6899999999998272 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 127.8899999999998727 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 138.6899999999998272 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 127.8899999999998727 Td
+(Il Capitolo 9 fornisce una panoramica completa su sintesi e reattività degli alcoli.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 121.4899999999997817 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 110.6899999999998272 Td
+(9. Epossidi e ossiranni) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 121.4899999999997817 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 110.6899999999998272 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 121.4899999999997817 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 110.6899999999998272 Td
+(Non ci sono riferimenti specifici a epossidi e ossiranni nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 104.2899999999997362 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 93.4899999999997817 Td
+(10. Composti carbonilici: aldeidi e) Tj
+T* (chetoni) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 104.2899999999997362 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 93.4899999999997817 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 104.2899999999997362 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 93.4899999999997817 Td
+(Trattati nel Capitolo 10, con focus su reattività del gruppo carbonilico.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 77.889999999999759 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 67.0899999999998045 Td
+(11. Acidi carbossilici e derivati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 77.889999999999759 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 67.0899999999998045 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 77.889999999999759 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 67.0899999999998045 Td
+(Il Capitolo 11 discute in dettaglio la relazione struttura-acidità e meccanismi di reazione.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 60.6899999999997135 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 49.889999999999759 Td
+(12. Composti con enolati e) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 60.6899999999997135 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 49.889999999999759 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 60.6899999999997135 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 49.889999999999759 Td
+(Non ci sono riferimenti a composti con enolati nel programma.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.78 G
+0. w
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 16371
+>>
+stream
+0. w
+0.78 G
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 801.8899999999999864 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 791.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+178.6075159536696333 801.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+182.6075159536696333 791.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+217.4875159536696287 801.8899999999999864 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+221.4875159536696287 791.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+1. g
+0.78 G
+0. w
+1. g
+40. 784.6899999999999409 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 773.8899999999999864 Td
+(alfa-carbonili) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 784.6899999999999409 38.8800000000000026 -17.1999999999999993 re
+f
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 784.6899999999999409 337.7924840463105056 -17.1999999999999993 re
+f
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 767.4900000000000091 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 756.6899999999999409 Td
+(13. Ammine e composti azotati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 767.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 756.6899999999999409 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 767.4900000000000091 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 756.6899999999999409 Td
+(Trattati nel Capitolo 13, con focus su basicità e nucleofilia delle ammine.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 750.2899999999999636 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 739.4900000000000091 Td
+(14. Zuccheri e carboidrati) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 750.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 739.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 750.2899999999999636 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 739.4900000000000091 Td
+(Il Capitolo 13 fornisce una panoramica sui carboidrati, inclusa la loro struttura e reattività.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 733.0899999999999181 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 722.2899999999999636 Td
+(15. Aminoacidi e peptidi) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 733.0899999999999181 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 722.2899999999999636 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 733.0899999999999181 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 722.2899999999999636 Td
+(Trattati nel Capitolo 14, con focus sulla struttura e sintesi degli amminoacidi.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 715.8899999999999864 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 705.0899999999999181 Td
+(16. Lipidi) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 715.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 705.0899999999999181 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 715.8899999999999864 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 705.0899999999999181 Td
+(Il Capitolo 15 discute la classificazione e struttura dei lipidi.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 698.6899999999999409 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 687.8899999999999864 Td
+(17. Nucleotidi e acidi nucleici) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 698.6899999999999409 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 687.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 698.6899999999999409 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 687.8899999999999864 Td
+(Non ci sono riferimenti specifici a nucleotidi e acidi nucleici nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 681.4900000000000091 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 670.6899999999999409 Td
+(18. Chimica organometallica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 681.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 670.6899999999999409 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 681.4900000000000091 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 670.6899999999999409 Td
+(Non ci sono riferimenti a chimica organometallica nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 664.2899999999999636 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 653.4900000000000091 Td
+(19. Reazioni pericicliche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 664.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 653.4900000000000091 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 664.2899999999999636 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 653.4900000000000091 Td
+(Non ci sono riferimenti a reazioni pericicliche nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 647.0900000000000318 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 636.2899999999999636 Td
+(20. Sintesi e strategia) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 647.0900000000000318 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 636.2899999999999636 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 647.0900000000000318 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 636.2899999999999636 Td
+(Non ci sono riferimenti a strategie di sintesi nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 629.8899999999999864 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 619.0900000000000318 Td
+(21. Polimeri) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 629.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 619.0900000000000318 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 629.8899999999999864 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 619.0900000000000318 Td
+(Non ci sono riferimenti a polimeri nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 612.6900000000000546 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 601.8899999999999864 Td
+(22. Fotochimica organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 612.6900000000000546 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 601.8899999999999864 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 612.6900000000000546 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 601.8899999999999864 Td
+(Non ci sono riferimenti a fotochimica organica nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 595.4900000000000091 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 584.6900000000000546 Td
+(23. Chimica verde e sostenibile) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 595.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 584.6900000000000546 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 595.4900000000000091 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 584.6900000000000546 Td
+(Non ci sono riferimenti a chimica verde nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 578.2899999999999636 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 567.4900000000000091 Td
+(24. Tecniche sperimentali in organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 578.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 567.4900000000000091 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 578.2899999999999636 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 567.4900000000000091 Td
+(Non ci sono riferimenti a tecniche sperimentali nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 561.0900000000000318 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 550.2899999999999636 Td
+(25. Bioorganica e chimica medicinale) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 561.0900000000000318 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 550.2899999999999636 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 561.0900000000000318 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 550.2899999999999636 Td
+(Non ci sono riferimenti a bioorganica nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 543.8900000000001 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 533.0900000000000318 Td
+(26. Spettroscopia avanzata) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 543.8900000000001 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 533.0900000000000318 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 543.8900000000001 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 533.0900000000000318 Td
+(Non ci sono riferimenti a spettroscopia avanzata nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 526.6900000000000546 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 515.8900000000001 Td
+(27. Chimica computazionale) Tj
+T* (organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 526.6900000000000546 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 515.8900000000001 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 526.6900000000000546 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 515.8900000000001 Td
+(Non ci sono riferimenti a chimica computazionale nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 500.2900000000000773 138.6075159536696333 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 489.4900000000000659 Td
+(28. Metabolismo organico) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 500.2900000000000773 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 489.4900000000000659 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 500.2900000000000773 337.7924840463105056 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 489.4900000000000659 Td
+(Non ci sono riferimenti a metabolismo organico nel programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 483.0900000000000887 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 472.2900000000000773 Td
+(29. Cinetica e termodinamica delle) Tj
+T* (reazioni organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.6075159536696333 483.0900000000000887 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 472.2900000000000773 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.4875159536696287 483.0900000000000887 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 472.2900000000000773 Td
+(Non ci sono riferimenti a cinetica e termodinamica nel programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 456.6900000000001114 138.6075159536696333 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 445.8900000000001 Td
+(30. Sicurezza in laboratorio di) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.6075159536696333 456.6900000000001114 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.6075159536696333 445.8900000000001 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.4875159536696287 456.6900000000001114 337.7924840463105056 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.4875159536696287 445.8900000000001 Td
+(Non ci sono riferimenti a sicurezza in laboratorio nel programma.) Tj
+ET
+0. G
+0.200025 w
+0.78 G
+0. w
+0. G
+0.200025 w
+0. G
+0.200025 w
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 406.2900000000001342 Td
+(Perché ha scelto questo manuale) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 388.2900000000001342 Td
+(Priorità del docente per questo corso:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 369.2900000000001342 Td
+(•  Fornire una base teorica solida) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 354.2900000000001342 Td
+(•  Enfatizzare gli aspetti applicativi della chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 339.2900000000001342 Td
+(•  Sviluppare capacità di ragionamento critico e progettazione sintetica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 318.2900000000000773 Td
+(Perché questo manuale principale:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 299.2900000000000773 Td
+(•  Completezza dei contenuti \(peso alto\) — Il corso copre ampiamente i fondamenti della chimica organica, inclusi) Tj
+T* (legami, reazioni e stereochimica. La scelta del manuale principale è probabilmente motivata dalla sua capacità di) Tj
+T* (fornire una copertura dettagliata e sistematica degli argomenti richiesti dal programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 258.2900000000000773 Td
+(•  Riconoscimento accademico \(peso alto\) — Brown et al. è un testo ampiamente utilizzato in corsi di chimica) Tj
+T* (organica a livello internazionale. L'adozione di un testo riconosciuto può riflettere la volontà del docente di) Tj
+T* (garantire standard accademici elevati e di facilitare il riconoscimento del corso.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 217.2900000000000773 Td
+(•  Approccio pratico \(peso medio\) — Il manuale include sezioni dedicate a reazioni e meccanismi, che sono) Tj
+T* (essenziali per l'applicazione pratica della chimica organica. L'enfasi su aspetti pratici e applicativi è in linea con gli) Tj
+T* (obiettivi del corso, rendendo il manuale una scelta logica.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 170.2900000000000773 Td
+(Natura della scelta: convinta — Il docente sembra aver scelto il manuale principale in base a una valutazione attenta) Tj
+T* (delle sue caratteristiche e della sua adeguatezza al programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 138.2900000000000773 Td
+(Ruolo dei testi alternativi in bibliografia:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 119.2900000000000773 Td
+(•  Botta — Chimica organica — approfondimento: L'indice di Botta suggerisce un focus su aspetti generali e) Tj
+T* (reattività, che potrebbe integrare o chiarire concetti non completamente esplorati nel manuale principale.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 91.2900000000000773 Td
+(•  Solomons — Chimica organica — semplificazione: L'indice di Solomons offre una presentazione più accessibile) Tj
+T* (di concetti complessi, suggerendo che il manuale principale potrebbe risultare denso per alcuni studenti.) Tj
+ET
+endstream
+endobj
+9 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 10 0 R
+>>
+endobj
+10 0 obj
+<<
+/Length 7738
+>>
+stream
+0.200025 w
+0. G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 791.8899999999999864 Td
+(Da verificare in colloquio: Discutere l'integrazione dei testi alternativi per garantire che gli studenti possano affrontare) Tj
+T* (le difficoltà di apprendimento e colmare eventuali lacune nel manuale principale.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 759.8899999999999864 Td
+(Profilo decisionale: cerca Testo completo e dettagliato, Riconoscimento accademico del manuale, Materiale che) Tj
+T* (supporti l'applicazione pratica; evita Testi poco riconosciuti, Materiali che non coprono adeguatamente gli argomenti) Tj
+T* (richiesti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 714.8899999999999864 Td
+(Sensibilità prezzo: media · Familiarità con l'editore proprio: alta · Apertura al cambio del principale: media · Apertura) Tj
+T* (a un alternativo in più: alta.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 674.8899999999999864 Td
+(Profilo del docente \(analisi avanzata\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 656.8899999999999864 Td
+(Tipo docente: Tradizionalista pragmatico) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 637.8899999999999864 Td
+(Sensibilità chiave: Attenzione all'inclusività e rigore terminologico) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 618.8899999999999864 Td
+(Approccio consigliato: Iniziare la conversazione sottolineando l'importanza di un approccio inclusivo e di materiali) Tj
+T* (che supportino il rigore scientifico, evidenziando come questi possano facilitare l'apprendimento degli studenti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 586.8899999999999864 Td
+(Leve potenziali:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 567.8899999999999864 Td
+(•  L'inclusione di misure compensative per studenti con disabilità, che dimostra un impegno verso l'accessibilità e) Tj
+T* (l'attenzione alle diverse esigenze degli studenti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 539.8899999999999864 Td
+(•  L'enfasi sulla capacità di ragionamento induttivo e deduttivo, che suggerisce un interesse per l'approfondimento) Tj
+T* (e la comprensione critica della materia.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 505.8899999999999864 Td
+(Possibili resistenze:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 486.8899999999999864 Td
+(•  Resistenza a metodi didattici innovativi che non si allineano con il suo approccio tradizionale, come l'uso) Tj
+T* (eccessivo di tecnologie digitali senza un adeguato supporto teorico.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 458.8899999999999864 Td
+(•  Possibile scetticismo riguardo a materiali didattici che non rispettano il rigore terminologico e la struttura del) Tj
+T* (programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 424.8899999999999864 Td
+(Argomenti rilevanti: Capacità di progettare un percorso sintetico · Rigoroso uso della terminologia scientifica ·) Tj
+T* (Inclusione di misure compensative per studenti con disabilità) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 384.8899999999999864 Td
+(Manuale adottato — Brown et al. — Chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 366.8899999999999864 Td
+(Copertura: Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 347.8899999999999864 Td
+(Il manuale di Brown et al. offre una solida base per la Chimica Organica, coprendo molti dei temi richiesti dal) Tj
+T* (programma dell'Università di Catania. Tuttavia, presenta lacune significative in aree come metodi di studio e chimica) Tj
+T* (organometallica, che potrebbero limitare la preparazione degli studenti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 302.8899999999999864 Td
+(Punti di forza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 283.8899999999999864 Td
+(•  Il manuale fornisce una copertura dettagliata dei fondamenti di chimica organica, inclusi legame covalente e) Tj
+T* (risonanza.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 255.8899999999999864 Td
+(•  Tratta in modo approfondito la stereochimica, con focus su chiralità e attività ottica, che sono cruciali per il) Tj
+T* (programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 227.8899999999999864 Td
+(•  Include una sezione sui composti aromatici e le loro reazioni, essenziali per comprendere la chimica organica) Tj
+T* (avanzata.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 193.8899999999999864 Td
+(Punti di debolezza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 174.8899999999999864 Td
+(•  Non affronta i metodi di caratterizzazione strutturale, che sono fondamentali per lo studio delle molecole) Tj
+T* (organiche.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 146.8899999999999864 Td
+(•  Manca di contenuti su chimica organometallica e tecniche sperimentali, che sono rilevanti per il programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 131.8899999999999864 Td
+(•  Non include argomenti di chimica verde e sostenibile, che sono sempre più importanti nel contesto attuale.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 110.8899999999999864 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 100.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+141.4939391663502875 110.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+145.4939391663502875 100.0900000000000318 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+178.7739391663502886 110.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+182.7739391663502886 100.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+217.653939166350284 110.8899999999999864 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+221.653939166350284 100.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 93.6899999999999409 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 82.8899999999999864 Td
+(1. Fondamenti di chimica) Tj
+T* (organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 93.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 82.8899999999999864 Td
+(Cap. 1) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 93.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 82.8899999999999864 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 93.6899999999999409 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 82.8899999999999864 Td
+(Il Cap. 1 tratta della struttura elettronica degli atomi, modelli di legame di Lewis, risonanza e) Tj
+T* (nomenclatura sistematica IUPAC, coprendo così i fondamenti richiesti dal programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 67.2899999999999636 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 56.4900000000000091 Td
+(2. Stereochimica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 67.2899999999999636 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 56.4900000000000091 Td
+(Cap. 3) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 67.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 56.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 67.2899999999999636 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 56.4900000000000091 Td
+(Il Cap. 3 affronta la chiralità, la stereoisomeria e la nomenclatura dei centri chirali,) Tj
+T* (rispondendo alle esigenze del programma riguardo alla classificazione dell'isomeria e) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.78 G
+0. w
+endstream
+endobj
+11 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 12 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 27771
+>>
+stream
+0. w
+0.78 G
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 801.8899999999999864 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 791.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+141.4939391663502875 801.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+145.4939391663502875 791.0900000000000318 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+178.7739391663502886 801.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+182.7739391663502886 791.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+217.653939166350284 801.8899999999999864 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+221.653939166350284 791.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+1. g
+0.78 G
+0. w
+1. g
+40. 784.6899999999999409 101.4939391663502732 -17.1999999999999993 re
+f
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 784.6899999999999409 37.2800000000000011 -17.1999999999999993 re
+f
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 784.6899999999999409 38.8800000000000026 -17.1999999999999993 re
+f
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 784.6899999999999409 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 773.8899999999999864 Td
+(all'attività ottica.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 767.4900000000000091 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 756.6899999999999409 Td
+(3. Metodi di studio delle) Tj
+T* (molecole organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 767.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 756.6899999999999409 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 767.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 756.6899999999999409 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 767.4900000000000091 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 756.6899999999999409 Td
+(Non ci sono riferimenti specifici a metodi di caratterizzazione strutturale nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 741.0899999999999181 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 730.2899999999999636 Td
+(4. Alcani e cicloalcani) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 741.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 730.2899999999999636 Td
+(Cap. 2) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 741.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 730.2899999999999636 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 741.0899999999999181 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 730.2899999999999636 Td
+(Il Cap. 2 discute la struttura, la nomenclatura e le proprietà fisiche degli alcani e cicloalcani,) Tj
+T* (coprendo le reazioni radicaliche e l'analisi conformazionale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 714.6899999999999409 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 703.8899999999999864 Td
+(5. Alcheni e alchini) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 714.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 703.8899999999999864 Td
+(Cap. 5,) Tj
+T* (6, 7) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 714.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 703.8899999999999864 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 714.6899999999999409 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 703.8899999999999864 Td
+(I Capitoli 5, 6 e 7 trattano la struttura, la reattività e i meccanismi di reazione degli alcheni e) Tj
+T* (alchini, inclusi addizioni elettrofile e radicaliche.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 688.2899999999999636 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 677.4900000000000091 Td
+(6. Composti aromatici) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 688.2899999999999636 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 677.4900000000000091 Td
+(Cap. 18,) Tj
+T* (19) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 688.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 677.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 688.2899999999999636 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 677.4900000000000091 Td
+(I Capitoli 18 e 19 coprono la teoria dell'aromaticità e le reazioni di sostituzione elettrofila) Tj
+T* (aromatica, rispondendo alle esigenze del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 661.8899999999999864 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 651.0899999999999181 Td
+(7. Alogenuri alchilici e) Tj
+T* (solfonati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 661.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 651.0899999999999181 Td
+(Cap. 8,) Tj
+T* (9) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 661.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 651.0899999999999181 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 661.8899999999999864 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 651.0899999999999181 Td
+(I Capitoli 8 e 9 analizzano le reazioni di sostituzione nucleofila e di eliminazione, coprendo i) Tj
+T* (meccanismi SN1 e SN2.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 635.4900000000000091 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 624.6899999999999409 Td
+(8. Alcoli, fenoli ed eteri) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 635.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 624.6899999999999409 Td
+(Cap. 10,) Tj
+T* (11) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 635.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 624.6899999999999409 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 635.4900000000000091 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 624.6899999999999409 Td
+(I Capitoli 10 e 11 trattano la sintesi e la reattività degli alcoli e degli eteri, inclusi ossidazione e) Tj
+T* (disidratazione.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 609.0899999999999181 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 598.2899999999999636 Td
+(9. Epossidi e ossiranni) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 609.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 598.2899999999999636 Td
+(Cap. 11) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 609.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 598.2899999999999636 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 609.0899999999999181 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 598.2899999999999636 Td
+(Il Cap. 11 menziona gli epossidi, trattando la loro sintesi e reattività, anche se non in modo) Tj
+T* (approfondito.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 582.6899999999999409 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 571.8899999999998727 Td
+(10. Composti carbonilici:) Tj
+T* (aldeidi e chetoni) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 582.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 571.8899999999998727 Td
+(Cap. 13) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 582.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 571.8899999999998727 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 582.6899999999999409 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 571.8899999999998727 Td
+(Il Cap. 13 discute la reattività del gruppo carbonilico, coprendo addizioni nucleofile e reazioni) Tj
+T* (redox.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 556.2899999999999636 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 545.4900000000000091 Td
+(11. Acidi carbossilici e) Tj
+T* (derivati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 556.2899999999999636 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 545.4900000000000091 Td
+(Cap. 14,) Tj
+T* (15) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 556.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 545.4900000000000091 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 556.2899999999999636 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 545.4900000000000091 Td
+(I Capitoli 14 e 15 trattano la struttura, la nomenclatura e i meccanismi di reazione degli acidi) Tj
+T* (carbossilici e dei loro derivati.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 529.8899999999999864 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 519.0899999999999181 Td
+(12. Composti con enolati e) Tj
+T* (alfa-carbonili) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 529.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 519.0899999999999181 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 529.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 519.0899999999999181 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 529.8899999999999864 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 519.0899999999999181 Td
+(Non ci sono riferimenti a composti con enolati nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 503.4900000000000091 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 492.6899999999999977 Td
+(13. Ammine e composti) Tj
+T* (azotati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 503.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 492.6899999999999977 Td
+(Cap. 20) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 503.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 492.6899999999999977 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 503.4900000000000091 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 492.6899999999999977 Td
+(Il Cap. 20 tratta la struttura, la nomenclatura e le reazioni delle ammine, coprendo la loro) Tj
+T* (basicità e nucleofilia.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 477.0900000000000318 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 466.2900000000000205 Td
+(14. Zuccheri e carboidrati) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 477.0900000000000318 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 466.2900000000000205 Td
+(Cap. 23) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 477.0900000000000318 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 466.2900000000000205 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 477.0900000000000318 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 466.2900000000000205 Td
+(Il Cap. 23 fornisce una panoramica sui carboidrati, inclusa la loro struttura e reattività.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 459.8900000000000432 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 449.0900000000000318 Td
+(15. Aminoacidi e peptidi) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 459.8900000000000432 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 449.0900000000000318 Td
+(Cap. 25) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 459.8900000000000432 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 449.0900000000000318 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 459.8900000000000432 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 449.0900000000000318 Td
+(Il Cap. 25 discute la struttura e la sintesi degli amminoacidi e delle proteine, coprendo aspetti) Tj
+T* (fondamentali richiesti dal programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 433.4900000000000659 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 422.6900000000000546 Td
+(16. Lipidi) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 433.4900000000000659 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 422.6900000000000546 Td
+(Cap. 24) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 433.4900000000000659 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 422.6900000000000546 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 433.4900000000000659 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 422.6900000000000546 Td
+(Il Cap. 24 tratta la classificazione e la struttura dei lipidi, rispondendo alle esigenze del) Tj
+T* (programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 407.0900000000000887 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 396.2900000000000773 Td
+(17. Nucleotidi e acidi) Tj
+T* (nucleici) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 407.0900000000000887 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 396.2900000000000773 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 407.0900000000000887 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 396.2900000000000773 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 407.0900000000000887 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 396.2900000000000773 Td
+(Non ci sono riferimenti specifici a nucleotidi e acidi nucleici nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 380.6900000000001114 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 369.8900000000001 Td
+(18. Chimica) Tj
+T* (organometallica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 380.6900000000001114 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 369.8900000000001 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 380.6900000000001114 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 369.8900000000001 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 380.6900000000001114 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 369.8900000000001 Td
+(Non ci sono riferimenti a chimica organometallica nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 354.2900000000001342 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 343.4900000000001228 Td
+(19. Reazioni pericicliche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 354.2900000000001342 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 343.4900000000001228 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 354.2900000000001342 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 343.4900000000001228 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 354.2900000000001342 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 343.4900000000001228 Td
+(Non ci sono riferimenti a reazioni pericicliche nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 337.0900000000001455 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 326.290000000000191 Td
+(20. Sintesi e strategia) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 337.0900000000001455 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 326.290000000000191 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 337.0900000000001455 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 326.290000000000191 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 337.0900000000001455 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 326.290000000000191 Td
+(Non ci sono riferimenti a strategie di sintesi nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 319.8900000000001 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 309.0900000000001455 Td
+(21. Polimeri) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 319.8900000000001 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 309.0900000000001455 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 319.8900000000001 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 309.0900000000001455 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 319.8900000000001 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 309.0900000000001455 Td
+(Non ci sono riferimenti a polimeri nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 302.6900000000000546 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 291.8900000000001 Td
+(22. Fotochimica organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 302.6900000000000546 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 291.8900000000001 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 302.6900000000000546 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 291.8900000000001 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 302.6900000000000546 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 291.8900000000001 Td
+(Non ci sono riferimenti a fotochimica organica nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 285.4900000000000091 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 274.6900000000000546 Td
+(23. Chimica verde e) Tj
+T* (sostenibile) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 285.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 274.6900000000000546 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 285.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 274.6900000000000546 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 285.4900000000000091 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 274.6900000000000546 Td
+(Non ci sono riferimenti a chimica verde nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 259.0900000000000318 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 248.2900000000000773 Td
+(24. Tecniche sperimentali) Tj
+T* (in organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 259.0900000000000318 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 248.2900000000000773 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 259.0900000000000318 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 248.2900000000000773 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 259.0900000000000318 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 248.2900000000000773 Td
+(Non ci sono riferimenti a tecniche sperimentali nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 232.6900000000000546 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 221.8900000000001 Td
+(25. Bioorganica e chimica) Tj
+T* (medicinale) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 232.6900000000000546 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 221.8900000000001 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 232.6900000000000546 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 221.8900000000001 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 232.6900000000000546 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 221.8900000000001 Td
+(Non ci sono riferimenti a bioorganica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 206.2900000000000773 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 195.4900000000001228 Td
+(26. Spettroscopia) Tj
+T* (avanzata) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 206.2900000000000773 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 195.4900000000001228 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 206.2900000000000773 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 195.4900000000001228 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 206.2900000000000773 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 195.4900000000001228 Td
+(Non ci sono riferimenti a spettroscopia avanzata nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 179.8900000000001 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 169.0900000000001455 Td
+(27. Chimica) Tj
+T* (computazionale organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 179.8900000000001 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 169.0900000000001455 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 179.8900000000001 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 169.0900000000001455 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 179.8900000000001 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 169.0900000000001455 Td
+(Non ci sono riferimenti a chimica computazionale nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 153.4900000000001228 101.4939391663502732 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 142.6900000000001683 Td
+(28. Metabolismo organico) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 153.4900000000001228 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 142.6900000000001683 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 153.4900000000001228 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 142.6900000000001683 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 153.4900000000001228 337.6260608336340283 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 142.6900000000001683 Td
+(Non ci sono riferimenti a metabolismo organico nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 136.2900000000000773 101.4939391663502732 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 125.4900000000001228 Td
+(29. Cinetica e) Tj
+T* (termodinamica delle) Tj
+T* (reazioni organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+141.4939391663502875 136.2900000000000773 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 125.4900000000001228 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+178.7739391663502886 136.2900000000000773 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 125.4900000000001228 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+217.653939166350284 136.2900000000000773 337.6260608336340283 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 125.4900000000001228 Td
+(Non ci sono riferimenti a cinetica e termodinamica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 100.6900000000000546 101.4939391663502732 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 89.8900000000001 Td
+(30. Sicurezza in) Tj
+T* (laboratorio di organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+141.4939391663502875 100.6900000000000546 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+145.4939391663502875 89.8900000000001 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+178.7739391663502886 100.6900000000000546 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+182.7739391663502886 89.8900000000001 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+217.653939166350284 100.6900000000000546 337.6260608336340283 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+221.653939166350284 89.8900000000001 Td
+(Non ci sono riferimenti a sicurezza in laboratorio nel manuale.) Tj
+ET
+0. G
+0.200025 w
+0.78 G
+0. w
+0. G
+0.200025 w
+0. G
+0.200025 w
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 58.2900000000000773 Td
+(Argomenti del manuale eccedenti rispetto al programma:) Tj
+ET
+endstream
+endobj
+13 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 14 0 R
+>>
+endobj
+14 0 obj
+<<
+/Length 19949
+>>
+stream
+0.200025 w
+0. G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 791.8899999999999864 Td
+(•  Introduzione ai composti organometallici) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 762.8899999999999864 Td
+(Manuali alternativi in bibliografia) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 740.8899999999999864 Td
+(Botta — Chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 726.8899999999999864 Td
+(Copertura: Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 707.8899999999999864 Td
+(Il manuale di Botta offre una solida base per i fondamenti della chimica organica e copre in modo adeguato la) Tj
+T* (maggior parte degli argomenti richiesti dal programma. Tuttavia, la mancanza di sezioni su metodi di) Tj
+T* (caratterizzazione e tecniche sperimentali limita la sua completezza.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 662.8899999999999864 Td
+(Punti di forza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 643.8899999999999864 Td
+(•  Il manuale fornisce una copertura dettagliata dei fondamenti di chimica organica, inclusi legami e risonanza,) Tj
+T* (essenziali per la comprensione del corso.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 615.8899999999999864 Td
+(•  La trattazione della stereochimica è approfondita, con focus su chiralità e attività ottica, in linea con le esigenze) Tj
+T* (del programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 581.8899999999999864 Td
+(Punti di debolezza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 562.8899999999999864 Td
+(•  Manca una sezione sui metodi di caratterizzazione strutturale, che è cruciale per la comprensione delle molecole) Tj
+T* (organiche.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 534.8899999999999864 Td
+(•  Non affronta argomenti come la chimica verde e le tecniche sperimentali, che sono rilevanti per un approccio) Tj
+T* (moderno alla chimica organica.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 500.8899999999999864 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 490.089999999999975 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+155.0732772751521793 500.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+159.0732772751521793 490.089999999999975 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+192.3532772751521804 500.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+196.3532772751521804 490.089999999999975 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+231.2332772751521759 500.8899999999999864 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+235.2332772751521759 490.089999999999975 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 483.6899999999999977 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 472.8899999999999864 Td
+(1. Fondamenti di chimica) Tj
+T* (organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 483.6899999999999977 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 472.8899999999999864 Td
+(Cap. 1) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 483.6899999999999977 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 472.8899999999999864 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 483.6899999999999977 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 472.8899999999999864 Td
+(Il Cap. 1 tratta della struttura dell'atomo, della formazione dei legami e della teoria della) Tj
+T* (risonanza, coprendo i principi fondamentali richiesti dal programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 457.2900000000000205 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 446.4900000000000091 Td
+(2. Stereochimica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 457.2900000000000205 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 446.4900000000000091 Td
+(Cap. 4) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 457.2900000000000205 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 446.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 457.2900000000000205 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 446.4900000000000091 Td
+(Il Cap. 4 discute l'isomeria, la chiralità molecolare e la nomenclatura dei composti chirali,) Tj
+T* (affrontando in modo dettagliato i concetti richiesti dal programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 430.8900000000000432 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 420.0900000000000318 Td
+(3. Metodi di studio delle) Tj
+T* (molecole organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 430.8900000000000432 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 420.0900000000000318 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 430.8900000000000432 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 420.0900000000000318 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 430.8900000000000432 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 420.0900000000000318 Td
+(Non ci sono riferimenti specifici a metodi di caratterizzazione strutturale nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 404.4900000000000659 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 393.6900000000000546 Td
+(4. Alcani e cicloalcani) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 404.4900000000000659 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 393.6900000000000546 Td
+(Cap. 3) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 404.4900000000000659 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 393.6900000000000546 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 404.4900000000000659 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 393.6900000000000546 Td
+(Il Cap. 3 fornisce informazioni dettagliate su proprietà fisiche e reattività degli alcani,) Tj
+T* (coprendo le necessità del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 378.0900000000000887 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 367.2900000000000773 Td
+(5. Alcheni e alchini) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 378.0900000000000887 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 367.2900000000000773 Td
+(Cap. 5,) Tj
+T* (6) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 378.0900000000000887 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 367.2900000000000773 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 378.0900000000000887 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 367.2900000000000773 Td
+(I Capitoli 5 e 6 trattano la reattività degli alcheni e alchini, inclusi i meccanismi di reazione,) Tj
+T* (in linea con quanto richiesto dal programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 351.6900000000001114 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 340.8900000000001 Td
+(6. Composti aromatici) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 351.6900000000001114 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 340.8900000000001 Td
+(Cap. 16) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 351.6900000000001114 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 340.8900000000001 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 351.6900000000001114 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 340.8900000000001 Td
+(Il Cap. 16 discute la teoria dell'aromaticità e le reazioni di sostituzione elettrofila, coprendo) Tj
+T* (i requisiti del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 325.2900000000000773 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 314.4900000000001228 Td
+(7. Alogenuri alchilici e) Tj
+T* (solfonati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 325.2900000000000773 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 314.4900000000001228 Td
+(Cap. 7) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 325.2900000000000773 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 314.4900000000001228 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 325.2900000000000773 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 314.4900000000001228 Td
+(Il Cap. 7 analizza la reattività degli alogenuri alchilici, coprendo le reazioni di sostituzione) Tj
+T* (nucleofila richieste dal programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 298.8900000000001 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 288.0900000000001455 Td
+(8. Alcoli, fenoli ed eteri) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 298.8900000000001 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 288.0900000000001455 Td
+(Cap. 8) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 298.8900000000001 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 288.0900000000001455 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 298.8900000000001 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 288.0900000000001455 Td
+(Il Cap. 8 fornisce una panoramica completa su sintesi e reattività degli alcoli, in linea con) Tj
+T* (le esigenze del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 272.4900000000001228 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 261.6900000000001683 Td
+(9. Epossidi e ossiranni) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 272.4900000000001228 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 261.6900000000001683 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 272.4900000000001228 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 261.6900000000001683 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 272.4900000000001228 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 261.6900000000001683 Td
+(Non ci sono riferimenti specifici a epossidi e ossiranni nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 255.2900000000000773 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 244.4900000000001228 Td
+(10. Composti carbonilici:) Tj
+T* (aldeidi e chetoni) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 255.2900000000000773 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 244.4900000000001228 Td
+(Cap. 11) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 255.2900000000000773 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 244.4900000000001228 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 255.2900000000000773 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 244.4900000000001228 Td
+(Il Cap. 11 tratta la reattività di aldeidi e chetoni, coprendo le necessità del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 228.8900000000001 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 218.0900000000001455 Td
+(11. Acidi carbossilici e derivati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 228.8900000000001 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 218.0900000000001455 Td
+(Cap. 12) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 228.8900000000001 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 218.0900000000001455 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 228.8900000000001 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 218.0900000000001455 Td
+(Il Cap. 12 discute la relazione struttura-acidità e i meccanismi di reazione degli acidi) Tj
+T* (carbossilici, in linea con il programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 202.4900000000001228 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 191.6900000000001683 Td
+(12. Composti con enolati e) Tj
+T* (alfa-carbonili) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 202.4900000000001228 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 191.6900000000001683 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 202.4900000000001228 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 191.6900000000001683 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 202.4900000000001228 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 191.6900000000001683 Td
+(Non ci sono riferimenti a composti con enolati nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 176.0900000000001455 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 165.290000000000191 Td
+(13. Ammine e composti) Tj
+T* (azotati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 176.0900000000001455 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 165.290000000000191 Td
+(Cap. 10) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 176.0900000000001455 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 165.290000000000191 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 176.0900000000001455 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 165.290000000000191 Td
+(Il Cap. 10 tratta la reattività delle ammine alifatiche, coprendo le necessità del) Tj
+T* (programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 149.6900000000001683 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 138.8900000000002137 Td
+(14. Zuccheri e carboidrati) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 149.6900000000001683 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 138.8900000000002137 Td
+(Cap. 19) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 149.6900000000001683 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 138.8900000000002137 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 149.6900000000001683 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 138.8900000000002137 Td
+(Il Cap. 19 fornisce una panoramica sui carboidrati, inclusa la loro struttura e reattività, in) Tj
+T* (linea con il programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 123.290000000000191 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 112.4900000000002365 Td
+(15. Aminoacidi e peptidi) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 123.290000000000191 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 112.4900000000002365 Td
+(Cap. 20) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 123.290000000000191 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 112.4900000000002365 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 123.290000000000191 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 112.4900000000002365 Td
+(Il Cap. 20 tratta la struttura e sintesi degli amminoacidi, coprendo le necessità del) Tj
+T* (programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 96.8900000000002137 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 86.0900000000002592 Td
+(16. Lipidi) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 96.8900000000002137 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 86.0900000000002592 Td
+(Cap. 22) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 96.8900000000002137 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 86.0900000000002592 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 96.8900000000002137 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 86.0900000000002592 Td
+(Il Cap. 22 discute la classificazione e struttura dei lipidi, in linea con il programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 79.6900000000001683 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 68.8900000000002137 Td
+(17. Nucleotidi e acidi nucleici) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 79.6900000000001683 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 68.8900000000002137 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 79.6900000000001683 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 68.8900000000002137 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 79.6900000000001683 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 68.8900000000002137 Td
+(Non ci sono riferimenti specifici a nucleotidi e acidi nucleici nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 62.4900000000001228 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 51.6900000000001683 Td
+(18. Chimica organometallica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 62.4900000000001228 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 51.6900000000001683 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 62.4900000000001228 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 51.6900000000001683 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 62.4900000000001228 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 51.6900000000001683 Td
+(Non ci sono riferimenti a chimica organometallica nel manuale.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.78 G
+0. w
+endstream
+endobj
+15 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 16 0 R
+>>
+endobj
+16 0 obj
+<<
+/Length 17546
+>>
+stream
+0. w
+0.78 G
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 801.8899999999999864 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 791.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+155.0732772751521793 801.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+159.0732772751521793 791.0900000000000318 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+192.3532772751521804 801.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+196.3532772751521804 791.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+231.2332772751521759 801.8899999999999864 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+235.2332772751521759 791.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 784.6899999999999409 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 773.8899999999999864 Td
+(19. Reazioni pericicliche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 784.6899999999999409 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 773.8899999999999864 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 784.6899999999999409 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 773.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 784.6899999999999409 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 773.8899999999999864 Td
+(Non ci sono riferimenti a reazioni pericicliche nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 767.4900000000000091 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 756.6899999999999409 Td
+(20. Sintesi e strategia) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 767.4900000000000091 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 756.6899999999999409 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 767.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 756.6899999999999409 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 767.4900000000000091 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 756.6899999999999409 Td
+(Non ci sono riferimenti a strategie di sintesi nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 750.2899999999999636 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 739.4900000000000091 Td
+(21. Polimeri) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 750.2899999999999636 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 739.4900000000000091 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 750.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 739.4900000000000091 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 750.2899999999999636 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 739.4900000000000091 Td
+(Non ci sono riferimenti a polimeri nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 733.0899999999999181 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 722.2899999999999636 Td
+(22. Fotochimica organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 733.0899999999999181 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 722.2899999999999636 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 733.0899999999999181 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 722.2899999999999636 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 733.0899999999999181 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 722.2899999999999636 Td
+(Non ci sono riferimenti a fotochimica organica nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 715.8899999999999864 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 705.0899999999999181 Td
+(23. Chimica verde e) Tj
+T* (sostenibile) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 715.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 705.0899999999999181 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 715.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 705.0899999999999181 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 715.8899999999999864 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 705.0899999999999181 Td
+(Non ci sono riferimenti a chimica verde nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 689.4900000000000091 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 678.6899999999999409 Td
+(24. Tecniche sperimentali in) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 689.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 678.6899999999999409 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 689.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 678.6899999999999409 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 689.4900000000000091 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 678.6899999999999409 Td
+(Non ci sono riferimenti a tecniche sperimentali nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 663.0899999999999181 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 652.2899999999999636 Td
+(25. Bioorganica e chimica) Tj
+T* (medicinale) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 663.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 652.2899999999999636 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 663.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 652.2899999999999636 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 663.0899999999999181 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 652.2899999999999636 Td
+(Non ci sono riferimenti a bioorganica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 636.6899999999999409 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 625.8899999999999864 Td
+(26. Spettroscopia avanzata) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 636.6899999999999409 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 625.8899999999999864 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 636.6899999999999409 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 625.8899999999999864 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 636.6899999999999409 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 625.8899999999999864 Td
+(Non ci sono riferimenti a spettroscopia avanzata nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 619.4900000000000091 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 608.6899999999999409 Td
+(27. Chimica computazionale) Tj
+T* (organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 619.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 608.6899999999999409 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 619.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 608.6899999999999409 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 619.4900000000000091 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 608.6899999999999409 Td
+(Non ci sono riferimenti a chimica computazionale nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 593.0899999999999181 115.0732772751521651 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 582.2899999999999636 Td
+(28. Metabolismo organico) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 593.0899999999999181 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 582.2899999999999636 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 593.0899999999999181 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 582.2899999999999636 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 593.0899999999999181 324.0467227248693689 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 582.2899999999999636 Td
+(Non ci sono riferimenti a metabolismo organico nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 575.8899999999999864 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 565.0899999999999181 Td
+(29. Cinetica e termodinamica) Tj
+T* (delle reazioni organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+155.0732772751521793 575.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 565.0899999999999181 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+192.3532772751521804 575.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 565.0899999999999181 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+231.2332772751521759 575.8899999999999864 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 565.0899999999999181 Td
+(Non ci sono riferimenti a cinetica e termodinamica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 549.4900000000000091 115.0732772751521651 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 538.6900000000000546 Td
+(30. Sicurezza in laboratorio di) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+155.0732772751521793 549.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+159.0732772751521793 538.6900000000000546 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+192.3532772751521804 549.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+196.3532772751521804 538.6900000000000546 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+231.2332772751521759 549.4900000000000091 324.0467227248693689 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+235.2332772751521759 538.6900000000000546 Td
+(Non ci sono riferimenti a sicurezza in laboratorio nel manuale.) Tj
+ET
+0. G
+0.200025 w
+0.78 G
+0. w
+0. G
+0.200025 w
+0. G
+0.200025 w
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 507.0900000000000318 Td
+(Argomenti del manuale eccedenti rispetto al programma:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 488.0900000000000318 Td
+(•  Composti organometallici) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 473.0900000000000318 Td
+(•  Sistemi coniugati) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 458.0900000000000318 Td
+(•  Eterocicli aromatici) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 433.0900000000000318 Td
+(Solomons — Chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 419.0900000000000318 Td
+(Copertura: Copertura parziale del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 400.0900000000000318 Td
+(Il manuale di Solomons offre una copertura sostanziale dei fondamenti e delle reazioni della chimica organica,) Tj
+T* (allineandosi bene con le esigenze del programma. Tuttavia, presenta lacune significative in termini di metodi di) Tj
+T* (caratterizzazione e aspetti pratici, che potrebbero limitare l'esperienza formativa complessiva degli studenti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 355.0900000000000318 Td
+(Punti di forza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 336.0900000000000318 Td
+(•  Il manuale fornisce una copertura dettagliata dei fondamenti di chimica organica, inclusi legami, struttura) Tj
+T* (molecolare e nomenclatura, che sono essenziali per il programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 308.0900000000000318 Td
+(•  La trattazione della stereochimica è ben sviluppata, con un focus su chiralità e attività ottica, che è cruciale per) Tj
+T* (la comprensione delle molecole biologiche.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 280.0900000000000318 Td
+(•  Le sezioni dedicate agli alcheni, alchini e composti aromatici offrono una solida base per le reazioni e i) Tj
+T* (meccanismi richiesti dal programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 246.0900000000000318 Td
+(Punti di debolezza:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 227.0900000000000318 Td
+(•  Il manuale non copre metodi di caratterizzazione strutturale, che sono fondamentali per lo studio delle molecole) Tj
+T* (organiche.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 199.0900000000000318 Td
+(•  Manca una trattazione approfondita su epossidi, lipidi, nucleotidi e acidi nucleici, che sono importanti per una) Tj
+T* (comprensione completa della chimica organica.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 171.0900000000000318 Td
+(•  Non ci sono riferimenti a tecniche sperimentali e sicurezza in laboratorio, aspetti cruciali per la formazione) Tj
+T* (pratica degli studenti.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 137.0900000000000318 70.2112897778998928 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 126.2900000000000773 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+110.2112897778998928 137.0900000000000318 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+114.2112897778998928 126.2900000000000773 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+147.4912897778999081 137.0900000000000318 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+151.4912897778999081 126.2900000000000773 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+186.3712897778999036 137.0900000000000318 368.9087102221408259 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+190.3712897778999036 126.2900000000000773 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 119.8899999999999864 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 109.0900000000000318 Td
+(1. Fondamenti di) Tj
+T* (chimica organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 119.8899999999999864 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 109.0900000000000318 Td
+(Cap. 1,) Tj
+T* (2, 3, 4) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 119.8899999999999864 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 109.0900000000000318 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 119.8899999999999864 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 109.0900000000000318 Td
+(Il manuale tratta ampiamente la struttura elettronica, i modelli di legame covalente e la nomenclatura) Tj
+T* (sistematica IUPAC nei capitoli 1 e 2. Inoltre, il capitolo 3 discute le reazioni acido-base e la loro) Tj
+T* (meccanistica, che è fondamentale per comprendere l'acidità e la basicità nel contesto organico.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 84.2899999999999636 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 73.4900000000000091 Td
+(2. Stereochimica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 84.2899999999999636 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 73.4900000000000091 Td
+(Cap. 5) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 84.2899999999999636 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 73.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 84.2899999999999636 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 73.4900000000000091 Td
+(Il capitolo 5 del manuale affronta la stereochimica, inclusi concetti di chiralità, enantiomeri e attività) Tj
+T* (ottica, che sono essenziali per la comprensione della classificazione dell'isomeria e delle proiezioni) Tj
+T* (stereochimiche richieste dal programma.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.78 G
+0. w
+endstream
+endobj
+17 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 18 0 R
+>>
+endobj
+18 0 obj
+<<
+/Length 24918
+>>
+stream
+0. w
+0.78 G
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 801.8899999999999864 70.2112897778998928 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 791.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+110.2112897778998928 801.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+114.2112897778998928 791.0900000000000318 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+147.4912897778999081 801.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+151.4912897778999081 791.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+186.3712897778999036 801.8899999999999864 368.9087102221408259 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+190.3712897778999036 791.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 784.6899999999999409 70.2112897778998928 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 773.8899999999999864 Td
+(3. Metodi di) Tj
+T* (studio delle) Tj
+T* (molecole) Tj
+T* (organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 784.6899999999999409 37.2800000000000011 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 773.8899999999999864 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 784.6899999999999409 38.8800000000000026 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 773.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 784.6899999999999409 368.9087102221408259 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 773.8899999999999864 Td
+(Non ci sono riferimenti specifici a metodi di caratterizzazione strutturale tramite spettroscopia IR, NMR) Tj
+T* (o spettrometria di massa nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 739.8899999999999864 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 729.0900000000000318 Td
+(4. Alcani e) Tj
+T* (cicloalcani) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 739.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 729.0900000000000318 Td
+(Cap. 4) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 739.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 729.0900000000000318 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 739.8899999999999864 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 729.0900000000000318 Td
+(Il capitolo 4 fornisce una dettagliata analisi della nomenclatura e delle proprietà fisiche degli alcani e) Tj
+T* (cicloalcani, oltre a trattare l'analisi conformazionale, che è cruciale per il programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 713.4900000000000091 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 702.6899999999999409 Td
+(5. Alcheni e) Tj
+T* (alchini) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 713.4900000000000091 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 702.6899999999999409 Td
+(Cap. 7,) Tj
+T* (8) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 713.4900000000000091 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 702.6899999999999409 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 713.4900000000000091 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 702.6899999999999409 Td
+(I capitoli 7 e 8 coprono i meccanismi di addizione elettrofila e nucleofila, nonché le reazioni di) Tj
+T* (ossidazione e riduzione degli alcheni e alchini, in linea con le richieste del programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 687.0899999999999181 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 676.2899999999999636 Td
+(6. Composti) Tj
+T* (aromatici) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 687.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 676.2899999999999636 Td
+(Cap. 14,) Tj
+T* (15) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 687.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 676.2899999999999636 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 687.0899999999999181 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 676.2899999999999636 Td
+(I capitoli 14 e 15 trattano la teoria dell'aromaticità e le reazioni di sostituzione elettrofila aromatica,) Tj
+T* (inclusi gli effetti dei sostituenti, che sono richiesti dal programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 660.6899999999999409 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 649.8899999999999864 Td
+(7. Alogenuri) Tj
+T* (alchilici e) Tj
+T* (solfonati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 660.6899999999999409 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 649.8899999999999864 Td
+(Cap. 6) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 660.6899999999999409 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 649.8899999999999864 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 660.6899999999999409 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 649.8899999999999864 Td
+(Il capitolo 6 analizza le reazioni di sostituzione nucleofila e di eliminazione degli alogenuri alchilici,) Tj
+T* (coprendo le meccaniche SN1 e SN2, in linea con le esigenze del programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 625.0899999999999181 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 614.2899999999999636 Td
+(8. Alcoli, fenoli ed) Tj
+T* (eteri) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 625.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 614.2899999999999636 Td
+(Cap. 11) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 625.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 614.2899999999999636 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 625.0899999999999181 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 614.2899999999999636 Td
+(Il capitolo 11 fornisce una panoramica completa sulla sintesi e reattività degli alcoli, inclusa) Tj
+T* (l'ossidazione e la disidratazione, che sono richieste dal programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 598.6899999999999409 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 587.8899999999999864 Td
+(9. Epossidi e) Tj
+T* (ossiranni) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 598.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 587.8899999999999864 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 598.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 587.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 598.6899999999999409 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 587.8899999999999864 Td
+(Non ci sono riferimenti specifici a epossidi e ossiranni nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 572.2899999999999636 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 561.4900000000000091 Td
+(10. Composti) Tj
+T* (carbonilici: aldeidi) Tj
+T* (e chetoni) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 572.2899999999999636 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 561.4900000000000091 Td
+(Cap. 16,) Tj
+T* (17) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 572.2899999999999636 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 561.4900000000000091 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 572.2899999999999636 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 561.4900000000000091 Td
+(I capitoli 16 e 17 trattano la reattività del gruppo carbonilico, inclusa l'addizione nucleofila e le reazioni) Tj
+T* (aldoliche, in linea con le richieste del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 536.6899999999999409 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 525.8899999999998727 Td
+(11. Acidi) Tj
+T* (carbossilici e) Tj
+T* (derivati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 536.6899999999999409 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 525.8899999999998727 Td
+(Cap. 18) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 536.6899999999999409 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 525.8899999999998727 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 536.6899999999999409 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 525.8899999999998727 Td
+(Il capitolo 18 discute la relazione struttura-acidità e i meccanismi di interconversione dei derivati degli) Tj
+T* (acidi carbossilici, coprendo le necessità del programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 501.0899999999999181 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 490.2899999999999068 Td
+(12. Composti con) Tj
+T* (enolati e) Tj
+T* (alfa-carbonili) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 501.0899999999999181 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 490.2899999999999068 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 501.0899999999999181 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 490.2899999999999068 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 501.0899999999999181 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 490.2899999999999068 Td
+(Non ci sono riferimenti a composti con enolati nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 465.4899999999998954 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 454.689999999999884 Td
+(13. Ammine e) Tj
+T* (composti azotati) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 465.4899999999998954 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 454.689999999999884 Td
+(Cap. 20) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 465.4899999999998954 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 454.689999999999884 Td
+(presente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 465.4899999999998954 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 454.689999999999884 Td
+(Il capitolo 20 tratta la basicità e nucleofilia delle ammine, oltre alle loro reazioni, in linea con le richieste) Tj
+T* (del programma.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 439.0899999999999181 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 428.2899999999999068 Td
+(14. Zuccheri e) Tj
+T* (carboidrati) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 439.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 428.2899999999999068 Td
+(Cap. 22) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 439.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 428.2899999999999068 Td
+(presente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 439.0899999999999181 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 428.2899999999999068 Td
+(Il capitolo 22 fornisce una panoramica sui carboidrati, inclusa la loro struttura e reattività, in linea con) Tj
+T* (le esigenze del programma.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 412.6899999999999409 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 401.8899999999999295 Td
+(15. Aminoacidi e) Tj
+T* (peptidi) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 412.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 401.8899999999999295 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 412.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 401.8899999999999295 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 412.6899999999999409 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 401.8899999999999295 Td
+(Non ci sono riferimenti specifici a amminoacidi e peptidi nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 386.2899999999999636 70.2112897778998928 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 375.4899999999999523 Td
+(16. Lipidi) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 386.2899999999999636 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 375.4899999999999523 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 386.2899999999999636 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 375.4899999999999523 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 386.2899999999999636 368.9087102221408259 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 375.4899999999999523 Td
+(Non ci sono riferimenti specifici a lipidi nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 369.089999999999975 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 358.2899999999999636 Td
+(17. Nucleotidi e) Tj
+T* (acidi nucleici) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 369.089999999999975 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 358.2899999999999636 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 369.089999999999975 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 358.2899999999999636 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 369.089999999999975 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 358.2899999999999636 Td
+(Non ci sono riferimenti specifici a nucleotidi e acidi nucleici nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 342.6899999999999977 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 331.8899999999999864 Td
+(18. Chimica) Tj
+T* (organometallica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 342.6899999999999977 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 331.8899999999999864 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 342.6899999999999977 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 331.8899999999999864 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 342.6899999999999977 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 331.8899999999999864 Td
+(Non ci sono riferimenti specifici a chimica organometallica nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 316.2899999999999636 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 305.4900000000000091 Td
+(19. Reazioni) Tj
+T* (pericicliche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 316.2899999999999636 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 305.4900000000000091 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 316.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 305.4900000000000091 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 316.2899999999999636 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 305.4900000000000091 Td
+(Non ci sono riferimenti specifici a reazioni pericicliche nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 289.8899999999999864 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 279.0900000000000318 Td
+(20. Sintesi e) Tj
+T* (strategia) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 289.8899999999999864 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 279.0900000000000318 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 289.8899999999999864 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 279.0900000000000318 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 289.8899999999999864 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 279.0900000000000318 Td
+(Non ci sono riferimenti specifici a strategie di sintesi nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 263.4900000000000091 70.2112897778998928 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 252.6900000000000546 Td
+(21. Polimeri) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 263.4900000000000091 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 252.6900000000000546 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 263.4900000000000091 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 252.6900000000000546 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 263.4900000000000091 368.9087102221408259 -17.1999999999999993 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 252.6900000000000546 Td
+(Non ci sono riferimenti specifici a polimeri nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 246.2899999999999636 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 235.4900000000000091 Td
+(22. Fotochimica) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 246.2899999999999636 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 235.4900000000000091 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 246.2899999999999636 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 235.4900000000000091 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 246.2899999999999636 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 235.4900000000000091 Td
+(Non ci sono riferimenti specifici a fotochimica organica nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 219.8899999999999864 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 209.0900000000000318 Td
+(23. Chimica) Tj
+T* (verde e) Tj
+T* (sostenibile) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 219.8899999999999864 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 209.0900000000000318 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 219.8899999999999864 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 209.0900000000000318 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 219.8899999999999864 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 209.0900000000000318 Td
+(Non ci sono riferimenti specifici a chimica verde nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 184.2899999999999636 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 173.4900000000000091 Td
+(24. Tecniche) Tj
+T* (sperimentali in) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 184.2899999999999636 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 173.4900000000000091 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 184.2899999999999636 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 173.4900000000000091 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 184.2899999999999636 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 173.4900000000000091 Td
+(Non ci sono riferimenti specifici a tecniche sperimentali nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 148.6899999999999409 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 137.8899999999999864 Td
+(25. Bioorganica e) Tj
+T* (chimica) Tj
+T* (medicinale) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 148.6899999999999409 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 137.8899999999999864 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 148.6899999999999409 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 137.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 148.6899999999999409 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 137.8899999999999864 Td
+(Non ci sono riferimenti specifici a bioorganica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 113.0899999999999181 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 102.2899999999999636 Td
+(26. Spettroscopia) Tj
+T* (avanzata) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 113.0899999999999181 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 102.2899999999999636 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 113.0899999999999181 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 102.2899999999999636 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 113.0899999999999181 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 102.2899999999999636 Td
+(Non ci sono riferimenti specifici a spettroscopia avanzata nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 86.6899999999999409 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 75.8899999999999864 Td
+(27. Chimica) Tj
+T* (computazionale) Tj
+T* (organica) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 86.6899999999999409 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 75.8899999999999864 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 86.6899999999999409 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 75.8899999999999864 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 86.6899999999999409 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 75.8899999999999864 Td
+(Non ci sono riferimenti specifici a chimica computazionale nel manuale.) Tj
+ET
+0. G
+0.200025 w
+0. G
+0.200025 w
+0.78 G
+0. w
+endstream
+endobj
+19 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 20 0 R
+>>
+endobj
+20 0 obj
+<<
+/Length 8496
+>>
+stream
+0. w
+0.78 G
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+40. 801.8899999999999864 70.2112897778998928 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+44. 791.0900000000000318 Td
+(Modulo) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+110.2112897778998928 801.8899999999999864 37.2800000000000011 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+114.2112897778998928 791.0900000000000318 Td
+(Capitoli) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+147.4912897778999081 801.8899999999999864 38.8800000000000026 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+151.4912897778999081 791.0900000000000318 Td
+(Stato) Tj
+ET
+0.16 0.5 0.73 rg
+0.78 G
+0. w
+0.16 0.5 0.73 rg
+186.3712897778999036 801.8899999999999864 368.9087102221408259 -17.1999999999999993 re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+190.3712897778999036 791.0900000000000318 Td
+(Nota) Tj
+ET
+0. G
+0.200025 w
+1. g
+0.78 G
+0. w
+1. g
+40. 784.6899999999999409 70.2112897778998928 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 773.8899999999999864 Td
+(28. Metabolismo) Tj
+T* (organico) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 784.6899999999999409 37.2800000000000011 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 773.8899999999999864 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 784.6899999999999409 38.8800000000000026 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 773.8899999999999864 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 784.6899999999999409 368.9087102221408259 -26.3999999999999986 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 773.8899999999999864 Td
+(Non ci sono riferimenti specifici a metabolismo organico nel manuale.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 758.2899999999999636 70.2112897778998928 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 747.4900000000000091 Td
+(29. Cinetica e) Tj
+T* (termodinamica) Tj
+T* (delle reazioni) Tj
+T* (organiche) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+110.2112897778998928 758.2899999999999636 37.2800000000000011 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 747.4900000000000091 Td
+(—) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+147.4912897778999081 758.2899999999999636 38.8800000000000026 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 747.4900000000000091 Td
+(assente) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+186.3712897778999036 758.2899999999999636 368.9087102221408259 -44.7999999999999972 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 747.4900000000000091 Td
+(Non ci sono riferimenti specifici a cinetica e termodinamica nel manuale.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 713.4900000000000091 70.2112897778998928 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+44. 702.6900000000000546 Td
+(30. Sicurezza in) Tj
+T* (laboratorio di) Tj
+T* (organica) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+110.2112897778998928 713.4900000000000091 37.2800000000000011 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+114.2112897778998928 702.6900000000000546 Td
+(—) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+147.4912897778999081 713.4900000000000091 38.8800000000000026 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+151.4912897778999081 702.6900000000000546 Td
+(assente) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+186.3712897778999036 713.4900000000000091 368.9087102221408259 -35.5999999999999943 re
+f
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.314 g
+190.3712897778999036 702.6900000000000546 Td
+(Non ci sono riferimenti specifici a sicurezza in laboratorio nel manuale.) Tj
+ET
+0. G
+0.200025 w
+0.78 G
+0. w
+0. G
+0.200025 w
+0. G
+0.200025 w
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 661.8899999999999864 Td
+(Argomenti del manuale eccedenti rispetto al programma:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 642.8899999999999864 Td
+(•  Reazioni radicaliche) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 613.8899999999999864 Td
+(Insights commerciali) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 595.8899999999999864 Td
+(•  Il programma offre un approccio integrato tra teoria e pratica, facilitando l'applicazione dei concetti chimici in) Tj
+T* (contesti reali.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 567.8899999999999864 Td
+(•  La presenza di laboratori pratici ben strutturati consente agli studenti di consolidare le conoscenze teoriche) Tj
+T* (attraverso esperienze dirette.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 539.8899999999999864 Td
+(•  Il docente, con un profilo tradizionalista pragmatico, è in grado di trasmettere efficacemente le competenze) Tj
+T* (fondamentali, creando un ambiente di apprendimento stimolante.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 505.8899999999999864 Td
+(•  Il manuale attuale potrebbe beneficiare di una maggiore enfasi sui metodi di studio delle molecole organiche,) Tj
+T* (anche se il peso è basso; ciò potrebbe migliorare la comprensione degli studenti senza richiedere un cambiamento) Tj
+T* (radicale.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 464.8899999999999864 Td
+(•  Una trattazione più approfondita dei composti con enolati e alfa-carbonili, sebbene non sia considerata cruciale,) Tj
+T* (potrebbe arricchire il bagaglio di conoscenze degli studenti, rendendo il corso più completo.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 436.8899999999999864 Td
+(•  Il manuale potrebbe includere esempi pratici e casi studio sui nucleotidi e acidi nucleici, per stimolare l'interesse) Tj
+T* (degli studenti e collegare la teoria alla biologia, anche se il peso è basso.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 402.8899999999999864 Td
+(Opportunità manuale: La proposta di 'McMurry — Chimica organica: approccio biologico' si presenta come) Tj
+T* (un'opzione valida, sebbene non risolva i gap in modo netto. Tuttavia, la sua copertura dettagliata della stereochimica) Tj
+T* (e delle reazioni dei composti aromatici potrebbe fornire un supporto didattico più robusto, facilitando l'insegnamento) Tj
+T* (e l'apprendimento di concetti complessi.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 344.8899999999999864 Td
+(Impatto dei gap critici:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 325.8899999999999864 Td
+(•  3. Metodi di studio delle molecole organiche — per il docente: Il docente deve integrare dispense o materiali) Tj
+T* (esterni per colmare questa lacuna, dedicando tempo extra alla preparazione di risorse didattiche.; per gli studenti:) Tj
+T* (Gli studenti potrebbero sentirsi meno sicuri nella loro comprensione dei metodi di studio, ma l'impatto è limitato e) Tj
+T* (gestibile.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 271.8899999999999864 Td
+(•  12. Composti con enolati e alfa-carbonili — per il docente: Il docente potrebbe dover fornire ulteriori spiegazioni) Tj
+T* (o esempi pratici, richiedendo tempo extra per preparare il materiale.; per gli studenti: Gli studenti potrebbero non) Tj
+T* (avere una visione completa di questi composti, ma l'impatto sulla loro formazione è relativamente contenuto.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 230.8899999999999864 Td
+(•  17. Nucleotidi e acidi nucleici — per il docente: Il docente potrebbe considerare l'uso di risorse esterne per) Tj
+T* (integrare la materia, ma senza un impegno eccessivo.; per gli studenti: Gli studenti potrebbero non approfondire) Tj
+T* (completamente questi argomenti, ma l'effetto sulla loro preparazione è marginale.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 183.8899999999999864 Td
+(Benefici di un cambio manuale: Un cambio manuale potrebbe portare a una maggiore coerenza tra teoria e pratica,) Tj
+T* (migliorando l'esperienza di apprendimento per gli studenti. La maggiore chiarezza e la copertura dettagliata di) Tj
+T* (argomenti chiave potrebbero facilitare la comprensione e l'applicazione dei concetti chimici, rendendo il corso più) Tj
+T* (coinvolgente e stimolante. Inoltre, il docente potrebbe beneficiare di un supporto didattico più efficace, riducendo il) Tj
+T* (tempo necessario per preparare materiali supplementari.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 104.8899999999999864 Td
+(Manuali propri disponibili per questa materia) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 86.8899999999999864 Td
+(Quasi pareggio tra 3 candidati \(differenza di 1 modulo o meno\): McMurry — Chimica organica: approccio biologico,) Tj
+T* (McMurry — Fondamenti di chimica organica, Vollhardt — Chimica organica — a piccoli cambiamenti nell'analisi il) Tj
+T* (primo posto potrebbe scambiarsi tra questi.) Tj
+ET
+endstream
+endobj
+21 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 22 0 R
+>>
+endobj
+22 0 obj
+<<
+/Length 5335
+>>
+stream
+0.200025 w
+0. G
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 787.8899999999999864 Td
+(McMurry — Chimica organica: approccio biologico \(primo in classifica, quasi pareggio\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 773.8899999999999864 Td
+(Copertura: Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 754.8899999999999864 Td
+(Rispetto all'adottato \(calcolato\): più forte su 0 modulo/i, alla pari su 29, più debole su 1 \(di 30 moduli totali\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 735.8899999999999864 Td
+(Rispetto al manuale adottato \(calcolato, non generato dall'AI\):) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 716.8899999999999864 Td
+(•  Nessun vantaggio di copertura emerso rispetto all'adottato.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 695.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 9. Epossidi e ossiranni) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 674.8899999999999864 Td
+(•  Il manuale fornisce una copertura dettagliata della stereochimica, essenziale per comprendere le interazioni) Tj
+T* (molecolari in chimica organica.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 646.8899999999999864 Td
+(•  Le sezioni sui composti aromatici e le loro reazioni sono ben sviluppate, fornendo una solida base per le reazioni) Tj
+T* (organiche.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 618.8899999999999864 Td
+(•  Il manuale include una panoramica completa sulla reattività degli alcheni e degli alchini, che è cruciale per il) Tj
+T* (programma.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 580.8899999999999864 Td
+(McMurry — Fondamenti di chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 566.8899999999999864 Td
+(Copertura: Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 547.8899999999999864 Td
+(Rispetto all'adottato \(calcolato\): più forte su 0 modulo/i, alla pari su 29, più debole su 1 \(di 30 moduli totali\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 528.8899999999999864 Td
+(Rispetto al manuale adottato \(calcolato, non generato dall'AI\):) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 509.8899999999999864 Td
+(•  Nessun vantaggio di copertura emerso rispetto all'adottato.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 488.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 9. Epossidi e ossiranni) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 467.8899999999999864 Td
+(•  Il manuale fornisce una solida base sui fondamenti della chimica organica, coprendo in dettaglio la struttura e il) Tj
+T* (legame chimico.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 439.8899999999999864 Td
+(•  Le sezioni sulla stereochimica e sui composti aromatici sono ben sviluppate e allineate con le esigenze del) Tj
+T* (programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 411.8899999999999864 Td
+(•  Le reazioni degli alcheni e degli alchini sono trattate in modo approfondito, con focus su meccanismi e reattività.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 386.8899999999999864 Td
+(Vollhardt — Chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 372.8899999999999864 Td
+(Copertura: Copre una parte significativa del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 353.8899999999999864 Td
+(Rispetto all'adottato \(calcolato\): più forte su 0 modulo/i, alla pari su 28, più debole su 2 \(di 30 moduli totali\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 334.8899999999999864 Td
+(Rispetto al manuale adottato \(calcolato, non generato dall'AI\):) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 315.8899999999999864 Td
+(•  Nessun vantaggio di copertura emerso rispetto all'adottato.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 294.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 9. Epossidi e ossiranni) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 279.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 16. Lipidi) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 258.8899999999999864 Td
+(•  Il manuale fornisce una copertura dettagliata dei fondamenti di chimica organica, inclusi modelli di legame e) Tj
+T* (stereochimica, che sono essenziali per il programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 230.8899999999999864 Td
+(•  Le sezioni dedicate agli alcani, alcheni e composti aromatici offrono una comprensione approfondita delle) Tj
+T* (reazioni e meccanismi richiesti dal programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 202.8899999999999864 Td
+(•  Il manuale include anche una trattazione esaustiva delle reazioni degli alcoli e delle ammine, che sono cruciali) Tj
+T* (per il curriculum.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 164.8899999999999864 Td
+(Hart — Fondamenti di chimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 150.8899999999999864 Td
+(Copertura: Copertura parziale del programma) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 131.8899999999999864 Td
+(Rispetto all'adottato \(calcolato\): più forte su 0 modulo/i, alla pari su 27, più debole su 3 \(di 30 moduli totali\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 112.8899999999999864 Td
+(Rispetto al manuale adottato \(calcolato, non generato dall'AI\):) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 93.8899999999999864 Td
+(•  Nessun vantaggio di copertura emerso rispetto all'adottato.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 72.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 9. Epossidi e ossiranni) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 57.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 15. Aminoacidi e peptidi) Tj
+ET
+endstream
+endobj
+23 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 24 0 R
+>>
+endobj
+24 0 obj
+<<
+/Length 5401
+>>
+stream
+0.200025 w
+0. G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 791.8899999999999864 Td
+(•  Da presidiare: l'adottato è più forte su 16. Lipidi) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 770.8899999999999864 Td
+(•  Il manuale fornisce una copertura dettagliata dei fondamenti di chimica organica, inclusi legami chimici e) Tj
+T* (nomenclatura, essenziali per il programma.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 742.8899999999999864 Td
+(•  La trattazione della stereochimica è completa e include concetti chiave come chiralità e proiezioni di Fischer, che) Tj
+T* (sono fondamentali per la comprensione della chimica organica.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 708.8899999999999864 Td
+(Sintesi generale: Si consiglia di scegliere il manuale McMurry — Chimica organica: approccio biologico, poiché offre) Tj
+T* (una copertura dettagliata della stereochimica e delle reazioni dei composti aromatici, elementi cruciali per il) Tj
+T* (programma. Tuttavia, se si desidera un focus più approfondito sui fondamenti e sui meccanismi delle reazioni, il) Tj
+T* (manuale McMurry — Fondamenti di chimica organica potrebbe essere preferibile, grazie alla sua trattazione) Tj
+T* (esaustiva della struttura e del legame chimico. In alternativa, il manuale Vollhardt — Chimica organica è un'ottima) Tj
+T* (scelta per una comprensione approfondita delle reazioni degli alcoli e delle ammine, mentre Hart — Fondamenti di) Tj
+T* (chimica organica, pur avendo una copertura parziale, è utile per chi cerca una base solida sui legami chimici e sulla) Tj
+T* (nomenclatura.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0. g
+40. 590.8899999999999864 Td
+(Guida per il colloquio) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 572.8899999999999864 Td
+(Non esiste un syllabus nazionale condiviso per gli insegnamenti universitari, e l'autonomia del docente nella scelta) Tj
+T* (dei contenuti è ampia. La conseguenza è che l'assenza nel programma di un modulo del framework non è di per sé) Tj
+T* (una lacuna: la matrice di valutazione è stata costruita analizzando un numero significativo di programmi per trovare) Tj
+T* (gli elementi comuni, ma poi è il docente a scegliere legittimamente cosa trattare. Per questo ogni gap è marcato col) Tj
+T* (peso che il programma stesso gli attribuisce. È opportuno tenerlo presente nel colloquio e utilizzarlo soltanto se è) Tj
+T* (alto o medio.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 488.8899999999999864 Td
+(Nessuno dei moduli assenti nel manuale adottato ha peso "alto" o "medio" secondo il quadro generale del) Tj
+T* (programma — sono tutti marginali per questo corso specifico. Su ciò che il docente sembra considerare centrale,) Tj
+T* ("Brown et al. — Chimica organica" copre già tutto: le eventuali corrispondenze qui sotto riguardano argomenti di) Tj
+T* (peso "basso" — utili da menzionare, non un argomento forte di conversione.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 426.8899999999999864 Td
+(Altri moduli assenti, tutti di peso marginale — probabilmente fuori scopo per scelta del docente) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 412.8899999999999864 Td
+(•  3. Metodi di studio delle molecole organiche) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 397.8899999999999864 Td
+(•  12. Composti con enolati e alfa-carbonili) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 382.8899999999999864 Td
+(•  17. Nucleotidi e acidi nucleici) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 367.8899999999999864 Td
+(•  18. Chimica organometallica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 352.8899999999999864 Td
+(•  19. Reazioni pericicliche) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 337.8899999999999864 Td
+(•  20. Sintesi e strategia) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 322.8899999999999864 Td
+(•  21. Polimeri) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 307.8899999999999864 Td
+(•  22. Fotochimica organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 292.8899999999999864 Td
+(•  23. Chimica verde e sostenibile) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 277.8899999999999864 Td
+(•  24. Tecniche sperimentali in organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 262.8899999999999864 Td
+(•  25. Bioorganica e chimica medicinale) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 247.8899999999999864 Td
+(•  26. Spettroscopia avanzata) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 232.8899999999999864 Td
+(•  27. Chimica computazionale organica) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 217.8899999999999864 Td
+(•  28. Metabolismo organico) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 202.8899999999999864 Td
+(•  29. Cinetica e termodinamica delle reazioni organiche) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+46. 187.8899999999999864 Td
+(•  30. Sicurezza in laboratorio di organica) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+40. 162.8899999999999864 Td
+(Se il colloquio non fa emergere nulla di specifico \(fallback\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 148.8899999999999864 Td
+(Il bilancio netto tra i primi candidati è molto vicino \(differenza di 1 modulo o meno tra "McMurry — Chimica organica:) Tj
+T* (approccio biologico", "McMurry — Fondamenti di chimica organica", "Vollhardt — Chimica organica"\): a piccoli) Tj
+T* (cambiamenti nell'analisi il primo posto potrebbe scambiarsi tra questi, quindi vale il gruppo più del singolo nome. Tra) Tj
+T* (questi, il primo in classifica ora è "McMurry — Chimica organica: approccio biologico".  Non risulta più forte) Tj
+T* (dell'adottato su nessun modulo: è il primo in classifica solo per bilancio netto complessivo, non per un vantaggio) Tj
+T* (concreto identificabile.) Tj
+ET
+endstream
+endobj
+25 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 26 0 R
+>>
+endobj
+26 0 obj
+<<
+/Length 1371
+>>
+stream
+0.200025 w
+0. G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 791.8899999999999864 Td
+(Pitch di apertura — primo contatto: Buongiorno, ho notato il suo impegno per un approccio inclusivo) Tj
+T* (nell'insegnamento. Vorrei capire come possiamo supportare le sue esigenze specifiche per garantire che ogni) Tj
+T* (studente, indipendentemente dalle proprie capacità, possa trarre il massimo dal suo corso.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 746.8899999999999864 Td
+(Pitch di apertura — docente già conosciuto: Ciao, so quanto tenga al rigore terminologico e all'inclusività. Mi) Tj
+T* (piacerebbe discutere come possiamo affinare ulteriormente i materiali didattici per rispondere alle sue aspettative e) Tj
+T* (alle esigenze dei suoi studenti.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 701.8899999999999864 Td
+(Inizia con un saluto caloroso e una domanda aperta sull'insegnamento. Ascolta attentamente per cogliere eventuali) Tj
+T* (frustrazioni o necessità specifiche. Chiedi quali sfide affronta nel garantire un apprendimento inclusivo. Una volta) Tj
+T* (identificato il problema, rispondi evidenziando come i materiali possano affrontare direttamente le sue) Tj
+T* (preoccupazioni. Chiudi la conversazione proponendo un follow-up per approfondire ulteriormente.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+40. 643.8899999999999864 Td
+(Generato il 25/07/2026 — Atlante, Analisi di un programma.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R ]
+/Count 12
+>>
+endobj
+27 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+28 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+29 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+30 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+31 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+32 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+33 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+34 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+35 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+36 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+37 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+38 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+39 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+40 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 27 0 R
+/F2 28 0 R
+/F3 29 0 R
+/F4 30 0 R
+/F5 31 0 R
+/F6 32 0 R
+/F7 33 0 R
+/F8 34 0 R
+/F9 35 0 R
+/F10 36 0 R
+/F11 37 0 R
+/F12 38 0 R
+/F13 39 0 R
+/F14 40 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+41 0 obj
+<<
+/Producer (jsPDF 2.5.2)
+/CreationDate (D:20260725225520+02'00')
+>>
+endobj
+42 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 43
+0000000000 65535 f 
+0000155308 00000 n 
+0000157205 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000005371 00000 n 
+0000005508 00000 n 
+0000018491 00000 n 
+0000018628 00000 n 
+0000035052 00000 n 
+0000035190 00000 n 
+0000042981 00000 n 
+0000043120 00000 n 
+0000070945 00000 n 
+0000071084 00000 n 
+0000091087 00000 n 
+0000091226 00000 n 
+0000108826 00000 n 
+0000108965 00000 n 
+0000133937 00000 n 
+0000134076 00000 n 
+0000142625 00000 n 
+0000142764 00000 n 
+0000148152 00000 n 
+0000148291 00000 n 
+0000153745 00000 n 
+0000153884 00000 n 
+0000155440 00000 n 
+0000155566 00000 n 
+0000155697 00000 n 
+0000155831 00000 n 
+0000155969 00000 n 
+0000156093 00000 n 
+0000156222 00000 n 
+0000156354 00000 n 
+0000156490 00000 n 
+0000156618 00000 n 
+0000156745 00000 n 
+0000156874 00000 n 
+0000157007 00000 n 
+0000157109 00000 n 
+0000157458 00000 n 
+0000157544 00000 n 
+trailer
+<<
+/Size 43
+/Root 42 0 R
+/Info 41 0 R
+/ID [ <6CA5E212DA9941BA697214D8708C8B7D> <6CA5E212DA9941BA697214D8708C8B7D> ]
+>>
+startxref
+157648
+%%EOF

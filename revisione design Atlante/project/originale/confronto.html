@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Atlante — confronto manuali</title>
+<link rel="stylesheet" href="css/atlante-theme.css" />
+<style>
+  html { background: color-mix(in srgb, var(--paper) 80%, var(--voce-confronto-tint) 20%); }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 40px auto; padding: 0 20px; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, var(--voce-confronto-tint) 20%); }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 21px; margin-bottom: 4px; }
+  #chi { font-size: 13px; color: var(--ink-muted); margin-bottom: 8px; }
+  #chi a { color: var(--voce-confronto); }
+  nav { font-size: 13px; margin-bottom: 24px; }
+  nav a { color: var(--voce-confronto); }
+  h2 { font-size: 15px; margin: 30px 0 10px; }
+  h3 { font-size: 14px; margin: 20px 0 8px; }
+  select { padding: 8px; font-size: 14px; width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .elenco-manuali { border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px; }
+  .riga-manuale { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .riga-manuale:last-child { border-bottom: none; }
+  .riga-manuale .principale { flex: 1; }
+  .riga-manuale .principale small { color: var(--ink-muted); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .disponibile { background: var(--green-tint); color: var(--green); }
+  .non-disponibile { background: var(--surface-2); color: var(--ink-muted); }
+  .chiave { margin: 16px 0; }
+  .chiave label { display: block; font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; }
+  .chiave input { width: 100%; max-width: 420px; padding: 8px; font-size: 14px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .chiave p { font-size: 12px; color: var(--ink-muted); margin: 4px 0 0; }
+  button#confronta { padding: 10px 18px; font-size: 14px; cursor: pointer; margin-top: 10px; background: var(--voce-confronto); color: #fff; border: none; border-radius: 6px; }
+  button#confronta:hover { background: var(--voce-confronto-strong); }
+  button#confronta:disabled { opacity: .5; cursor: not-allowed; }
+  #msg { font-size: 13px; margin-top: 10px; }
+  #msg.errore { color: var(--brick); }
+  #msg.attesa { color: var(--voce-confronto); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--voce-confronto); border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #stato { padding: 12px; border-radius: 6px; background: var(--amber-tint); margin: 20px 0; }
+  .panoramiche p { font-size: 14px; line-height: 1.55; }
+  table.risultato { width: 100%; border-collapse: collapse; font-size: 13px; margin: 20px 0; }
+  table.risultato th, table.risultato td { text-align: left; padding: 8px 10px; border: 1px solid var(--line); vertical-align: top; }
+  table.risultato th { background: var(--surface-2); font-size: 12px; }
+  table.risultato td.modulo { min-width: 200px; font-weight: 600; }
+  .stato-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
+  .stato-presente { background: var(--green-tint); color: var(--green); }
+  .stato-parziale { background: var(--amber-tint); color: #8a6417; }
+  .stato-assente { background: var(--brick-tint); color: var(--brick); }
+  .stato-indice_non_disponibile, .stato-n\/d { background: var(--surface-2); color: var(--ink-muted); }
+  .nota { color: var(--ink); margin-top: 3px; }
+  #avviso-conteggio { font-size: 12px; color: var(--brick); margin-top: 8px; }
+  .comuni-reciproco { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+  .griglia-reciproco { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 10px; }
+  .colonna-reciproco { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+  .colonna-reciproco h3 { font-size: 14px; margin: 0 0 8px; }
+  .sottotitolo-reciproco { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); margin: 0 0 6px; }
+  .vuoto-reciproco { font-size: 13px; color: var(--ink-muted); margin: 0; }
+  .comuni-reciproco ul, .colonna-reciproco ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  .etichetta-lista { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); margin: 10px 0 4px; }
+  .conteggio-box { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 12px 0 24px; }
+  .conteggio-box ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+  .giudizio-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; white-space: nowrap; }
+  .giudizio-insufficiente { background: #f1dbd7; color: #9c3b30; }
+  .giudizio-sufficiente { background: #f6e2d0; color: #96591b; }
+  .giudizio-discreto { background: #f3e6cc; color: #8a6417; }
+  .giudizio-buono { background: #e3ecd8; color: #4f7a2f; }
+  .giudizio-molto-buono { background: #dcece3; color: #2f6b4f; }
+  .giudizio-eccellente { background: #d6e8f5; color: #1f5c8a; }
+  .giudizio-n\/d { background: var(--surface-2); color: var(--ink-muted); }
+  .sintesi-classi { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 16px 0 24px; }
+  .sintesi-classi ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+  .adozione { margin-top: 30px; border: 1px solid #cfe0d0; background: #f5faf6; border-radius: 8px; padding: 4px 20px 16px; }
+  .adozione h2 { border-bottom-color: #cfe0d0; }
+  .adozione h3 { margin: 18px 0 8px; }
+  .adozione ul { font-size: 14px; line-height: 1.5; padding-left: 20px; }
+  .adozione-avviso { font-size: 12px; color: var(--ink-muted); font-style: italic; }
+  .esportazioni { margin: 20px 0; display: none; gap: 8px; }
+  .esportazioni button { padding: 7px 12px; font-size: 13px; cursor: pointer; background: var(--surface); color: var(--voce-confronto); border: 1px solid var(--voce-confronto); border-radius: 6px; }
+  .esportazioni button:hover { background: var(--voce-confronto-tint); }
+</style>
+</head>
+<body>
+
+<h1>Atlante — confronto manuali</h1>
+<div id="chi">Caricamento...</div>
+<nav><a href="home.html">← Menu</a></nav>
+
+<details class="come-funziona" style="--voce-corrente: var(--voce-confronto)">
+  <summary>❓ Come funziona questa sezione</summary>
+  <p>Scegli un framework di valutazione, poi uno o più manuali sulla stessa materia. Con un solo manuale vedrai il confronto con il framework; con due o più, anche il confronto reciproco tra i manuali (argomenti in comune, differenze di approfondimento, punti di forza distintivi).</p>
+</details>
+
+<div id="contenuto" style="display:none">
+
+  <h2>1. Scegli un framework</h2>
+  <select id="selFramework"><option value="">— seleziona —</option></select>
+
+  <h2>2. Scegli uno o più manuali sulla stessa materia</h2>
+  <p style="font-size:13px;color:var(--ink-muted);margin-top:-6px">Con un solo manuale vedrai il confronto con il framework. Con due o più, anche il confronto dei manuali tra loro.</p>
+  <div id="elencoManuali" class="elenco-manuali"><p style="color:var(--ink-muted);font-size:13px">Seleziona prima un framework.</p></div>
+
+  <div class="chiave">
+    <label>Chiave API OpenAI (usata solo dal tuo browser, non viene salvata su Atlante)</label>
+    <input id="apiKey" type="password" placeholder="sk-..." />
+    <p>Necessaria per generare il confronto. Resta salvata solo in questo browser.</p>
+  </div>
+
+  <div class="chiave">
+    <label>Modello</label>
+    <select id="modello">
+      <option value="gpt-4o-mini">gpt-4o-mini (più economico e veloce)</option>
+      <option value="gpt-4o">gpt-4o (più capace, consigliato per confronti con più manuali)</option>
+    </select>
+  </div>
+
+  <button id="confronta" disabled>Confronta</button>
+  <div id="avviso-conteggio"></div>
+  <div id="msg"></div>
+
+  <div id="esportazioni" class="esportazioni">
+    <button id="espMarkdown">Scarica Markdown</button>
+    <button id="espHtml">Scarica HTML</button>
+    <button id="espPdf">Scarica PDF</button>
+  </div>
+
+  <div id="risultato"></div>
+
+</div>
+<div id="stato" style="display:none"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let tuttiFramework = [];
+  let tuttiManuali = [];
+  let frameworkScelto = null;
+  let editoreProprio = null; // editore del cliente collegato, per la sezione "argomenti per l'adozione"
+  let ultimoRisultato = null; // dati dell'ultimo confronto riuscito, usati dai 3 export
+
+  // ---- estrazione tollerante alle diverse forme di dati.raw (fonte MAP vs MATRIX vs Framework Builder) ----
+  // mai stimare: se non troviamo nulla di riconoscibile, torna null e la UI lo dichiara "non disponibile"
+  // (o, per i profili di laurea, semplicemente non mostra quella sezione — mai inventare classi o priorita')
+  function estraiModuliFramework(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const moduli = raw.syllabus_modules || (raw.content && raw.content.framework && raw.content.framework.syllabus_modules) || raw.modules;
+    if (!Array.isArray(moduli) || moduli.length === 0) return null;
+    return moduli.map(m => ({
+      nome: m.name || m.nome || '(senza nome)',
+      contenuti: m.core_contents || m.contenuti || '',
+    }));
+  }
+
+  function estraiProfiliLaurea(f) {
+    const raw = (f && f.dati && f.dati.raw) || {};
+    const profili = raw.program_profiles || (raw.content && raw.content.framework && raw.content.framework.program_profiles);
+    if (!Array.isArray(profili) || profili.length === 0) return null;
+    const puliti = profili
+      .map(p => ({ nome: p.name || p.nome || '', priorita: p.priority_modules || p.priorita || '' }))
+      .filter(p => p.nome && p.priorita); // scarta profili senza testo di priorita': niente da valutare
+    return puliti.length > 0 ? puliti : null;
+  }
+
+  function popolaSelectFramework() {
+    const sel = document.getElementById('selFramework');
+    const ordinati = [...tuttiFramework].sort((a, b) => (a.materia || '').localeCompare(b.materia || '') || a.nome.localeCompare(b.nome));
+    sel.innerHTML = '<option value="">— seleziona —</option>' + ordinati.map(f =>
+      `<option value="${f.id}">${escapeHtml(f.materia || '(senza materia)')} — ${escapeHtml(f.nome)}</option>`
+    ).join('');
+  }
+
+  function renderElencoManuali() {
+    const box = document.getElementById('elencoManuali');
+    if (!frameworkScelto) {
+      box.innerHTML = '<p style="color:var(--ink-muted);font-size:13px">Seleziona prima un framework.</p>';
+      return;
+    }
+    const candidati = tuttiManuali.filter(m => m.materia === frameworkScelto.materia);
+    if (candidati.length === 0) {
+      box.innerHTML = `<p style="color:var(--ink-muted);font-size:13px">Nessun manuale in catalogo per la materia "${escapeHtml(frameworkScelto.materia || '')}".</p>`;
+      return;
+    }
+    box.innerHTML = candidati.map(m => {
+      const disponibile = estraiIndiceManuale(m) !== null;
+      return `<div class="riga-manuale">
+        <input type="checkbox" data-id="${m.id}" ${disponibile ? '' : 'disabled'} />
+        <span class="principale">${escapeHtml(m.autore || '(autore sconosciuto)')} <small>${escapeHtml(m.titolo)}${m.publisher ? ' · ' + escapeHtml(m.publisher) : ''}</small></span>
+        <span class="badge ${disponibile ? 'disponibile' : 'non-disponibile'}">${disponibile ? 'indice disponibile' : 'indice non disponibile'}</span>
+      </div>`;
+    }).join('');
+    box.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', aggiornaStatoBottone));
+  }
+
+  function manualiSelezionati() {
+    return [...document.querySelectorAll('#elencoManuali input[type=checkbox]:checked')].map(cb =>
+      tuttiManuali.find(m => m.id === cb.dataset.id)
+    );
+  }
+
+  function aggiornaStatoBottone() {
+    const n = manualiSelezionati().length;
+    document.getElementById('confronta').disabled = !frameworkScelto || n < 1;
+    document.getElementById('avviso-conteggio').textContent = '';
+  }
+
+  // ---- prompt per l'analisi di UN SOLO manuale (principio ripreso da MAP: un compito alla
+  // volta — un manuale, un framework — mai piu' manuali insieme nella stessa generazione,
+  // che e' la causa delle contraddizioni viste confrontando piu' manuali in un colpo solo) ----
+  function costruisciPromptSingoloManuale(manuale, moduli, profiliLaurea, frameworkScelto) {
+    const promptModuli = moduli.map((mo, i) => `${i + 1}. ${mo.nome}${mo.contenuti ? ' — ' + mo.contenuti : ''}`).join('\n');
+    const profiliTesto = profiliLaurea ? profiliLaurea.map(p => `- ${p.nome}: ${p.priorita}`).join('\n') : '';
+
+    return `Sei un analista editoriale senior con lunga esperienza nella valutazione di manuali universitari rispetto a framework didattici. Analizza in modo rigoroso e dettagliato l'indice di UN SOLO manuale rispetto al framework fornito.
+
+FRAMEWORK: "${frameworkScelto.nome}" (materia: ${frameworkScelto.materia || 'non specificata'})
+
+MODULI DEL FRAMEWORK (in quest'ordine, uno per riga):
+${promptModuli}
+
+MANUALE DA ANALIZZARE: ${manuale.etichettaLunga}
+INDICE DEL MANUALE:
+${manuale.indice}
+
+PARTE A — Per OGNI modulo del framework elencato sopra (devono risultare esattamente ${moduli.length} voci, nello stesso ordine), valuta la copertura di questo manuale confrontando gli argomenti del modulo con l'indice:
+- "presente": il modulo è trattato in modo sostanziale
+- "parziale": il modulo è trattato solo in parte o superficialmente
+- "assente": il modulo non risulta trattato nell'indice
+Scrivi una "nota" di 1-2 frasi complete (mai un frammento telegrafico) che CITA SEMPRE il capitolo o l'argomento specifico dell'indice su cui si basa il giudizio.
+Esempio di nota corretta: "Trattato nel capitolo 4 sulla Termodinamica chimica, che copre entalpia e legge di Hess in modo approfondito."
+Esempio di nota SBAGLIATA da evitare (troppo generica, nessun riferimento concreto): "Il manuale tratta bene questo argomento."
+Per "assente" spiega cosa manca esattamente rispetto al contenuto del modulo.
+${profiliLaurea ? `
+PARTE B — Il framework definisce le seguenti priorità di contenuto per classe di laurea:
+${profiliTesto}
+Per OGNUNA di queste classi di laurea (esattamente ${profiliLaurea.length} voci, non aggiungerne né ometterne, stesso ordine), valuta quanto QUESTO manuale è adatto a quella classe, basandoti ESCLUSIVAMENTE sui moduli che hai appena valutato nella PARTE A confrontati con la priorità dichiarata sopra: se i moduli prioritari per quella classe sono "presente" nel manuale, il giudizio deve essere alto; se sono "assente" o solo "parziale", il giudizio deve essere più basso — sii coerente con quanto hai appena scritto in PARTE A, non contraddirlo. Usa ESCLUSIVAMENTE una di queste sei etichette per il campo "giudizio" (testo esatto, minuscolo): insufficiente, sufficiente, discreto, buono, molto buono, eccellente. Scrivi anche una "motivazione" di 1-2 frasi che cita i moduli specifici coinvolti (non genericità).` : ''}
+
+IMPORTANTE: non citare MAI numeri di pagina (non sempre disponibili nella fonte). Non inventare contenuti non presenti nell'indice fornito — se l'indice è troppo scarno per un giudizio dettagliato, dillo esplicitamente invece di inventare.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"panoramica":"<2-4 frasi su target di studenti e taglio didattico generale del manuale, basate solo sull'indice>","moduli":[{"modulo":"<nome esatto del modulo>","stato":"presente|parziale|assente","nota":"..."}]${profiliLaurea ? `,"classiDiLaurea":[{"classe":"<nome esatto della classe>","giudizio":"<una delle sei etichette>","motivazione":"..."}]` : ''}}
+
+Nessun testo fuori dal JSON.`;
+  }
+
+  // ---- prompt per il confronto "assoluto" tra gli indici, indipendente dal framework (Livello 1) ----
+  function costruisciPromptReciproco(manualiPerPrompt) {
+    const blocchi = manualiPerPrompt.map(m => `--- Manuale ${m.etichetta}: ${m.etichettaLunga} ---\n${m.indice}`).join('\n\n');
+    return `Confronta gli indici dei seguenti manuali universitari TRA LORO, indipendentemente da qualunque framework didattico:
+
+${blocchi}
+
+ATTENZIONE ALLA GRANULARITÀ, è la parte più importante di questo compito: i manuali possono organizzare gli stessi contenuti in modo molto diverso. Alcuni usano pochi capitoli ampi con titoli generici (es. "Le reazioni", "L'equilibrio") che raggruppano molti argomenti diversi nelle sezioni elencate subito dopo il titolo del capitolo; altri usano molti capitoli specifici con titoli già descrittivi. NON limitarti MAI a confrontare i titoli dei capitoli tra loro: il confronto va fatto guardando SEMPRE le sezioni elencate dopo ogni capitolo (dopo il trattino "—"), che sono il vero livello a cui stabilire se un argomento è comune o distintivo. Un titolo di capitolo intero (es. "Focus 6 - Le reazioni") non è MAI di per sé un "argomento": è solo un contenitore di più sezioni, alcune delle quali quasi sempre comuni ad altri manuali.
+
+IMPORTANTE SUL SIGNIFICATO DI "DISTINTIVO": non significa che l'altro manuale ignora del tutto quella materia — spesso la tratta comunque, solo con meno approfondimento o da un'angolazione diversa (guarda anche la tabella di copertura moduli, se disponibile nel contesto). "Distintivo" qui vuol dire: questo aspetto specifico, con questo livello di dettaglio, non si trova formulato così in nessun altro manuale. Per questo l'etichetta di ogni voce deve descrivere l'aspetto preciso che manca altrove, MAI il solo nome generico della materia: scrivi "Approfondimento su entropia ed energia libera di Gibbs" e non semplicemente "Termodinamica" — quest'ultima etichetta lascerebbe intendere, sbagliando, che l'intero argomento sia assente altrove anche quando non lo è.
+
+Lavora in due passi separati:
+
+PASSO 1 — Elenca gli argomenti (a livello di sezione, non di titolo di capitolo) che, con parole anche diverse, sono trattati da TUTTI i manuali forniti: questi vanno in "argomentiComuni". "Comune" indica solo che l'argomento è presente in tutti, non che sia trattato con lo stesso approfondimento: per ogni voce, confronta anche QUANTO a fondo ciascun manuale lo tratta (numero di sezioni dedicate, presenza di sotto-argomenti avanzati) e scrivi il risultato nel campo "differenza". Se un manuale va chiaramente più a fondo (es. include modelli o casi avanzati che l'altro non ha), scrivi una frase breve che lo dice, citando cosa nello specifico va oltre. Se l'approfondimento è paragonabile tra i manuali, lascia "differenza" vuota — non inventare una differenza se non c'è.
+
+PASSO 2 — Per ciascun manuale, rileggi UNA PER UNA tutte le sue sezioni (non i titoli dei capitoli). Per ognuna, controlla se è semanticamente equivalente a un argomento già messo in "argomentiComuni" al passo 1, o a una qualsiasi sezione di un altro manuale, anche se con parole diverse o sotto un capitolo con nome diverso. Questo controllo sezione-per-sezione serve a stabilire correttamente cosa è davvero distintivo — ma il risultato che scrivi in "argomentiDistintivi" NON deve essere un elenco esaustivo di ogni sezione risultata distintiva: deve contenere AL MASSIMO 8 voci per manuale, le più significative (quelle che rappresentano una vera differenza di approfondimento rispetto agli altri manuali, utile a chi deve scegliere quale adottare). Se le sezioni distintive individuate sono più di 8, raggruppale per area tematica in un'unica voce con un'etichetta precisa come spiegato sopra (es. invece di elencare separatamente ogni gruppo della tavola periodica, scrivi una voce sola "Chimica descrittiva dei gruppi principali della tavola periodica"). Non limitarti mai al solo titolo di un capitolo come voce, e non usare mai come etichetta il nome nudo di una materia già presente altrove in forma meno approfondita.
+
+PASSO 3 — Anche "argomentiComuni" non deve superare le 15 voci: se sono di più, raggruppa quelli affini in un'unica voce tematica, con lo stesso criterio del passo 2.
+
+Non inventare argomenti non presenti negli indici forniti.
+
+Rispondi SOLO con un oggetto JSON con questa forma esatta:
+{"argomentiComuni":[{"argomento":"...","differenza":"..."}],"perManuale":{${manualiPerPrompt.map(m => `"${m.etichetta}":{"argomentiDistintivi":["..."]}`).join(',')}}}
+
+Nessun testo fuori dal JSON.`;
+  }
+
+  // ---- conteggio oggettivo di quanti moduli ciascun manuale copre meglio/alla pari/peggio
+  // degli altri, calcolato non generato. Linguaggio volutamente non calcistico: non e' una
+  // partita con vincitori e perdenti, e' un confronto di completezza editoriale. ----
+  function calcolaConteggioModuli(righeModuli, manualiPerPrompt) {
+    const conteggi = {};
+    for (const m of manualiPerPrompt) conteggi[m.etichetta] = { piuCompleto: 0, equivalente: 0, menoCompleto: 0 };
+    for (const riga of righeModuli) {
+      const ranghi = manualiPerPrompt.map(m => RANGO_STATO[(riga.valutazioni && riga.valutazioni[m.etichetta] && riga.valutazioni[m.etichetta].stato)] ?? 0);
+      const max = Math.max(...ranghi);
+      const numAlMax = ranghi.filter(r => r === max).length;
+      manualiPerPrompt.forEach((m, i) => {
+        if (ranghi[i] !== max) conteggi[m.etichetta].menoCompleto++;
+        else if (numAlMax === 1) conteggi[m.etichetta].piuCompleto++;
+        else conteggi[m.etichetta].equivalente++;
+      });
+    }
+    return conteggi;
+  }
+
+  // ---- sintesi per classe di laurea: chi e' preferibile, calcolato confrontando i giudizi
+  // ordinali gia' scritti (nessuna nuova generazione AI, zero rischio di contraddizione) ----
+  function calcolaSintesiClassiDiLaurea(classiMerged, manualiPerPrompt) {
+    return classiMerged.map(riga => {
+      const dettaglio = manualiPerPrompt.map(m => {
+        const v = riga.valutazioni[m.etichetta] || {};
+        return { etichetta: m.etichetta, etichettaLunga: m.etichettaLunga, giudizio: v.giudizio, rango: rangoGiudizio(v.giudizio) };
+      });
+      const rangoMax = Math.max(...dettaglio.map(d => d.rango));
+      const migliori = rangoMax === -1 ? [] : dettaglio.filter(d => d.rango === rangoMax);
+      return { classe: riga.classe, dettaglio, migliori, equivalenti: migliori.length > 1 };
+    });
+  }
+
+  // ---- argomenti per l'adozione: calcolati, non generati dall'AI ----
+  function calcolaArgomentiAdozione(righeModuli, manualiPropri, manualiCompetitor) {
+    const risultato = {};
+    for (const p of manualiPropri) {
+      risultato[p.etichetta] = { vs: {} };
+      for (const c of manualiCompetitor) {
+        const aFavore = [];
+        const attenzione = [];
+        for (const riga of righeModuli) {
+          const vP = (riga.valutazioni && riga.valutazioni[p.etichetta]) || {};
+          const vC = (riga.valutazioni && riga.valutazioni[c.etichetta]) || {};
+          const rP = RANGO_STATO[vP.stato] ?? 0;
+          const rC = RANGO_STATO[vC.stato] ?? 0;
+          if (rP > rC) aFavore.push({ modulo: riga.modulo, nota: vP.nota || '' });
+          else if (rC > rP) attenzione.push({ modulo: riga.modulo, nota: vC.nota || '' });
+        }
+        risultato[p.etichetta].vs[c.etichetta] = { aFavore, attenzione };
+      }
+    }
+    return risultato;
+  }
+
+  async function eseguiConfronto() {
+    const msg = document.getElementById('msg');
+    const risultatoBox = document.getElementById('risultato');
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if (!apiKey) { msg.className = 'errore'; msg.textContent = 'Inserisci la chiave API OpenAI.'; return; }
+    salvaChiaveOpenAI(apiKey);
+    const modello = document.getElementById('modello').value;
+    salvaModelloOpenAI(modello);
+
+    const moduli = estraiModuliFramework(frameworkScelto);
+    if (!moduli) { msg.className = 'errore'; msg.textContent = 'Questo framework non ha un indice di moduli riconoscibile: impossibile confrontare.'; return; }
+    const profiliLaurea = estraiProfiliLaurea(frameworkScelto); // null se il framework non li specifica: niente Parte B, mai inventata
+
+    const manuali = manualiSelezionati();
+    const etichette = manuali.map((m, i) => String.fromCharCode(65 + i)); // A, B, C...
+    const MAX_CHAR_INDICE = 4000;
+    const manualiPerPrompt = manuali.map((m, i) => ({
+      etichetta: etichette[i],
+      titolo: m.titolo,
+      etichettaLunga: m.titolo + (m.autore ? ' — ' + m.autore : '') + (m.publisher ? ' (' + m.publisher + ')' : ''),
+      indice: (estraiIndiceManuale(m) || '').slice(0, MAX_CHAR_INDICE),
+      proprio: !!(editoreProprio && m.publisher === editoreProprio),
+    }));
+
+    const confrontoReciprocoRichiesto = manuali.length >= 2;
+    const manualiPropri = manualiPerPrompt.filter(m => m.proprio);
+    const manualiCompetitor = manualiPerPrompt.filter(m => !m.proprio);
+    const argomentiAdozioneRichiesti = manualiPropri.length > 0 && manualiCompetitor.length > 0;
+
+    msg.className = 'attesa';
+    document.getElementById('confronta').disabled = true;
+    risultatoBox.innerHTML = '';
+
+    // una chiamata per manuale (principio MAP: un compito alla volta) + una chiamata piccola
+    // per il confronto reciproco. Tutto il resto (tabelle affiancate, conteggi, sintesi per
+    // classe di laurea, argomenti di adozione) e' assemblato/calcolato in JS, mai rigenerato.
+    const fasiTotali = manuali.length + (confrontoReciprocoRichiesto ? 1 : 0);
+    let faseNumero = 0;
+    let faseDescrizione = '';
+    let secondiTrascorsi = 0;
+    const aggiornaMsgAttesa = () => {
+      const avviso = secondiTrascorsi >= 20 ? ' — con più manuali può richiedere un paio di minuti' : '';
+      msg.innerHTML = `<span class="spinner"></span>Fase ${faseNumero}/${fasiTotali}: ${faseDescrizione}... ${secondiTrascorsi}s${avviso}`;
+    };
+    const timerAttesa = setInterval(() => { secondiTrascorsi++; aggiornaMsgAttesa(); }, 1000);
+
+    async function chiamaOpenAI(promptTesto) {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: modello,
+          temperature: 0.2,
+          max_tokens: 3000,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: 'Sei un analista editoriale senior che valuta manuali universitari rispetto a framework didattici. Scrivi in modo argomentato e specifico, mai generico, citando sempre capitoli/argomenti precisi. Rispondi sempre e solo con JSON valido.' },
+            { role: 'user', content: promptTesto },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error?.message || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      return JSON.parse(data.choices[0].message.content);
+    }
+
+    try {
+      const avvisi = [];
+      const risultatiPerManuale = {};
+      for (const m of manualiPerPrompt) {
+        faseNumero++;
+        faseDescrizione = `analisi di ${m.etichettaLunga}`;
+        aggiornaMsgAttesa();
+        const promptSingolo = costruisciPromptSingoloManuale(m, moduli, profiliLaurea, frameworkScelto);
+        const parsedSingolo = await chiamaOpenAI(promptSingolo);
+        if (!Array.isArray(parsedSingolo.moduli) || parsedSingolo.moduli.length !== moduli.length) {
+          avvisi.push(`${m.etichettaLunga}: ${parsedSingolo.moduli?.length ?? 0} moduli invece di ${moduli.length}.`);
+        }
+        if (profiliLaurea && (!Array.isArray(parsedSingolo.classiDiLaurea) || parsedSingolo.classiDiLaurea.length !== profiliLaurea.length)) {
+          avvisi.push(`${m.etichettaLunga}: idoneità per classe di laurea incompleta.`);
+        }
+        risultatiPerManuale[m.etichetta] = parsedSingolo;
+      }
+
+      let confrontoReciproco = null;
+      if (confrontoReciprocoRichiesto) {
+        faseNumero++;
+        faseDescrizione = 'confronto tra gli indici';
+        aggiornaMsgAttesa();
+        confrontoReciproco = await chiamaOpenAI(costruisciPromptReciproco(manualiPerPrompt));
+      }
+
+      clearInterval(timerAttesa);
+      msg.className = avvisi.length ? 'errore' : '';
+      msg.textContent = avvisi.length ? 'Attenzione — ' + avvisi.join(' ') : '';
+
+      // ---- assemblaggio in JS: tabella A ----
+      const moduliMerged = moduli.map((mo, idx) => {
+        const valutazioni = {};
+        for (const m of manualiPerPrompt) {
+          const riga = (risultatiPerManuale[m.etichetta].moduli || [])[idx];
+          valutazioni[m.etichetta] = riga ? { stato: riga.stato, nota: riga.nota } : { stato: null, nota: '(dato mancante nella risposta del modello)' };
+        }
+        return { modulo: mo.nome, valutazioni };
+      });
+
+      // ---- assemblaggio in JS: tabella B, solo se il framework specifica classi di laurea ----
+      let classiMerged = null;
+      if (profiliLaurea) {
+        classiMerged = profiliLaurea.map((p, idx) => {
+          const valutazioni = {};
+          for (const m of manualiPerPrompt) {
+            const riga = (risultatiPerManuale[m.etichetta].classiDiLaurea || [])[idx];
+            valutazioni[m.etichetta] = riga
+              ? { giudizio: normalizzaGiudizio(riga.giudizio), motivazione: riga.motivazione || '' }
+              : { giudizio: null, motivazione: '(dato mancante nella risposta del modello)' };
+          }
+          return { classe: p.nome, valutazioni };
+        });
+      }
+
+      const conteggio = confrontoReciprocoRichiesto ? calcolaConteggioModuli(moduliMerged, manualiPerPrompt) : null;
+      const sintesiClassi = (confrontoReciprocoRichiesto && classiMerged) ? calcolaSintesiClassiDiLaurea(classiMerged, manualiPerPrompt) : null;
+      const argomentiAdozione = argomentiAdozioneRichiesti ? calcolaArgomentiAdozione(moduliMerged, manualiPropri, manualiCompetitor) : null;
+      const panoramiche = {};
+      for (const m of manualiPerPrompt) panoramiche[m.etichetta] = risultatiPerManuale[m.etichetta].panoramica || '';
+
+      let html = renderPanoramiche(panoramiche, manualiPerPrompt);
+      if (confrontoReciproco) html += renderConfrontoReciproco(confrontoReciproco, manualiPerPrompt);
+      html += `<h2>A) Copertura dei moduli — framework "${escapeHtml(frameworkScelto.nome)}"</h2>`;
+      html += renderTabellaA(moduliMerged, manualiPerPrompt);
+      if (conteggio) html += renderConteggioOggettivo(conteggio, manualiPerPrompt, moduli.length);
+      if (classiMerged) {
+        html += `<h2>B) Idoneità per classe di laurea</h2>`;
+        html += renderTabellaB(classiMerged, manualiPerPrompt);
+        if (sintesiClassi) html += renderSintesiClassi(sintesiClassi);
+      }
+      if (argomentiAdozione) html += renderArgomentiAdozione(argomentiAdozione, manualiPropri, manualiCompetitor);
+      risultatoBox.innerHTML = html;
+
+      ultimoRisultato = {
+        frameworkNome: frameworkScelto.nome,
+        manuali: manualiPerPrompt,
+        panoramiche,
+        moduli: moduliMerged,
+        confrontoReciproco,
+        conteggio,
+        classiMerged,
+        sintesiClassi,
+        argomentiAdozioneRichiesti,
+        argomentiAdozione,
+        manualiPropri,
+        manualiCompetitor,
+      };
+      document.getElementById('esportazioni').style.display = 'flex';
+    } catch (err) {
+      clearInterval(timerAttesa);
+      msg.className = 'errore';
+      msg.textContent = 'Errore: ' + err.message;
+      ultimoRisultato = null;
+      document.getElementById('esportazioni').style.display = 'none';
+    } finally {
+      clearInterval(timerAttesa);
+      document.getElementById('confronta').disabled = false;
+    }
+  }
+
+  function renderPanoramiche(panoramiche, manualiPerPrompt) {
+    const righe = manualiPerPrompt
+      .filter(m => panoramiche[m.etichetta])
+      .map(m => `<p><strong>${escapeHtml(m.etichettaLunga)}</strong> — ${escapeHtml(panoramiche[m.etichetta])}</p>`)
+      .join('');
+    return righe ? `<div class="panoramiche">${righe}</div>` : '';
+  }
+
+  function renderConteggioOggettivo(conteggio, manualiPerPrompt, totaleModuli) {
+    const righe = manualiPerPrompt.map(m => {
+      const c = conteggio[m.etichetta];
+      return `<li><strong>${escapeHtml(m.etichettaLunga)}</strong>: più completo su ${c.piuCompleto} moduli, equivalente su ${c.equivalente}, meno completo su ${c.menoCompleto} (di ${totaleModuli} moduli)</li>`;
+    }).join('');
+    return `<div class="conteggio-box"><p class="etichetta-lista">Conteggio oggettivo (calcolato, non generato dall'AI)</p><ul>${righe}</ul></div>`;
+  }
+
+  function renderTabellaA(righe, manualiPerPrompt) {
+    const intestazione = manualiPerPrompt.map(m => `<th>${escapeHtml(m.etichettaLunga)}</th>`).join('');
+    const corpo = righe.map(r => {
+      const celle = manualiPerPrompt.map(m => {
+        const v = (r.valutazioni && r.valutazioni[m.etichetta]) || {};
+        const stato = v.stato || 'indice_non_disponibile';
+        return `<td><span class="stato-badge stato-${escapeHtml(stato)}">${escapeHtml(stato.replace(/_/g, ' '))}</span><div class="nota">${escapeHtml(v.nota || '')}</div></td>`;
+      }).join('');
+      return `<tr><td class="modulo">${escapeHtml(r.modulo)}</td>${celle}</tr>`;
+    }).join('');
+    return `<table class="risultato"><thead><tr><th>Modulo</th>${intestazione}</tr></thead><tbody>${corpo}</tbody></table>`;
+  }
+
+  function renderTabellaB(righe, manualiPerPrompt) {
+    const intestazione = manualiPerPrompt.map(m => `<th>${escapeHtml(m.etichettaLunga)}</th>`).join('');
+    const corpo = righe.map(r => {
+      const celle = manualiPerPrompt.map(m => {
+        const v = (r.valutazioni && r.valutazioni[m.etichetta]) || {};
+        const giudizio = v.giudizio || 'n/d';
+        return `<td><span class="giudizio-badge giudizio-${escapeHtml(giudizio.replace(/ /g, '-'))}">${escapeHtml(giudizio)}</span><div class="nota">${escapeHtml(v.motivazione || '')}</div></td>`;
+      }).join('');
+      return `<tr><td class="modulo">${escapeHtml(r.classe)}</td>${celle}</tr>`;
+    }).join('');
+    return `<table class="risultato"><thead><tr><th>Classe di laurea</th>${intestazione}</tr></thead><tbody>${corpo}</tbody></table>`;
+  }
+
+  function renderSintesiClassi(sintesi) {
+    const righe = sintesi.map(r => {
+      if (r.migliori.length === 0) return `<li><strong>${escapeHtml(r.classe)}</strong>: nessun giudizio disponibile.</li>`;
+      if (r.equivalenti) {
+        const nomi = r.migliori.map(v => v.etichettaLunga).join(', ');
+        return `<li><strong>${escapeHtml(r.classe)}</strong>: giudizio equivalente tra ${escapeHtml(nomi)} (${escapeHtml(r.migliori[0].giudizio)}).</li>`;
+      }
+      const v = r.migliori[0];
+      const altri = r.dettaglio.filter(d => d.etichetta !== v.etichetta).map(d => `${d.etichettaLunga} (${d.giudizio || 'n/d'})`).join(', ');
+      return `<li><strong>${escapeHtml(r.classe)}</strong>: <strong>${escapeHtml(v.etichettaLunga)}</strong> è il più adatto (${escapeHtml(v.giudizio)}) — rispetto a ${escapeHtml(altri)}.</li>`;
+    }).join('');
+    return `<div class="sintesi-classi"><p class="etichetta-lista">Sintesi per classe di laurea (calcolata, non generata dall'AI)</p><ul>${righe}</ul></div>`;
+  }
+
+  function renderArgomentiAdozione(argomentiAdozione, manualiPropri, manualiCompetitor) {
+    const nomiCompetitor = manualiCompetitor.map(m => m.etichettaLunga).join(', ');
+    const unSoloCompetitor = manualiCompetitor.length === 1;
+    let html = '<div class="adozione"><h2>Argomenti per l\'adozione</h2>';
+    html += `<p class="adozione-avviso">Sezione calcolata direttamente dalla tabella A sopra (nessun testo aggiuntivo generato dall'AI) — a supporto di una conversazione commerciale, non un giudizio editoriale neutro. Confronto rispetto a: ${escapeHtml(nomiCompetitor)}.</p>`;
+    for (const p of manualiPropri) {
+      html += `<h3>${escapeHtml(p.etichettaLunga)}</h3>`;
+      for (const c of manualiCompetitor) {
+        const dati = (argomentiAdozione[p.etichetta] && argomentiAdozione[p.etichetta].vs[c.etichetta]) || { aFavore: [], attenzione: [] };
+        if (!unSoloCompetitor) html += `<p class="etichetta-lista">Rispetto a ${escapeHtml(c.etichettaLunga)}</p>`;
+        html += '<p class="etichetta-lista">A favore</p>';
+        html += dati.aFavore.length
+          ? `<ul>${dati.aFavore.map(x => `<li><strong>${escapeHtml(x.modulo)}</strong> — ${escapeHtml(x.nota)}</li>`).join('')}</ul>`
+          : '<p class="vuoto-reciproco">Nessun vantaggio emerso su questo confronto.</p>';
+        html += '<p class="etichetta-lista">Possibile obiezione del docente (il competitor è più forte qui)</p>';
+        html += dati.attenzione.length
+          ? `<ul>${dati.attenzione.map(x => `<li><strong>${escapeHtml(x.modulo)}</strong> — nel testo adottato oggi: ${escapeHtml(x.nota)}</li>`).join('')}</ul>`
+          : '<p class="vuoto-reciproco">Nessun punto debole emerso su questo confronto.</p>';
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderConfrontoReciproco(confronto, manualiPerPrompt) {
+    const comuni = Array.isArray(confronto.argomentiComuni) ? confronto.argomentiComuni : [];
+    const perManuale = confronto.perManuale || {};
+    const colonne = manualiPerPrompt.map(m => {
+      const distintivi = (perManuale[m.etichetta] && perManuale[m.etichetta].argomentiDistintivi) || [];
+      return `<div class="colonna-reciproco">
+        <h3>${escapeHtml(m.etichettaLunga)}</h3>
+        <p class="sottotitolo-reciproco">Approfondimenti distintivi</p>
+        ${distintivi.length ? `<ul>${distintivi.map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>` : '<p class="vuoto-reciproco">Nessuno</p>'}
+      </div>`;
+    }).join('');
+    return `<h2>Confronto tra i manuali (indipendente dal framework)</h2>
+      <p class="adozione-avviso">"Distintivo" non significa che l'altro manuale ignori l'argomento: spesso lo tratta comunque, con meno approfondimento o da un'altra angolazione (vedi anche la tabella A più sotto). Indica un aspetto specifico che non si trova formulato così altrove.</p>
+      <div class="comuni-reciproco">
+        <p class="sottotitolo-reciproco">Argomenti in comune a tutti</p>
+        ${comuni.length ? `<ul>${comuni.map(c => {
+          const argomento = typeof c === 'string' ? c : c.argomento;
+          const differenza = typeof c === 'object' && c.differenza ? c.differenza : '';
+          return `<li>${escapeHtml(argomento)}${differenza ? `<div class="nota">${escapeHtml(differenza)}</div>` : ''}</li>`;
+        }).join('')}</ul>` : '<p class="vuoto-reciproco">Nessuno</p>'}
+      </div>
+      <div class="griglia-reciproco">${colonne}</div>`;
+  }
+
+  // ---- rappresentazione comune del risultato, condivisa dai 3 export (markdown/html/pdf) ----
+  function costruisciBlocchi(r) {
+    const blocchi = [];
+    blocchi.push({ t: 'h1', text: `Confronto manuali — ${r.frameworkNome}` });
+    blocchi.push({ t: 'p', text: 'Manuali confrontati: ' + r.manuali.map(m => `${m.etichetta}) ${m.etichettaLunga}`).join('; ') });
+
+    for (const m of r.manuali) {
+      if (r.panoramiche[m.etichetta]) blocchi.push({ t: 'p', text: `${m.etichettaLunga}: ${r.panoramiche[m.etichetta]}` });
+    }
+
+    if (r.confrontoReciproco) {
+      blocchi.push({ t: 'h2', text: 'Confronto tra i manuali (indipendente dal framework)' });
+      blocchi.push({ t: 'p', text: '"Distintivo" non significa che l\'altro manuale ignori l\'argomento: spesso lo tratta comunque, con meno approfondimento o da un\'altra angolazione (vedi anche la tabella A). Indica un aspetto specifico che non si trova formulato così altrove.' });
+      const comuni = r.confrontoReciproco.argomentiComuni || [];
+      blocchi.push({ t: 'h3', text: 'Argomenti in comune a tutti' });
+      blocchi.push(comuni.length ? {
+        t: 'ul',
+        items: comuni.map(c => {
+          const argomento = typeof c === 'string' ? c : c.argomento;
+          const differenza = typeof c === 'object' && c.differenza ? c.differenza : '';
+          return differenza ? `${argomento} — ${differenza}` : argomento;
+        }),
+      } : { t: 'p', text: 'Nessuno.' });
+      for (const m of r.manuali) {
+        const distintivi = (r.confrontoReciproco.perManuale && r.confrontoReciproco.perManuale[m.etichetta] && r.confrontoReciproco.perManuale[m.etichetta].argomentiDistintivi) || [];
+        blocchi.push({ t: 'h3', text: `${m.etichettaLunga} — approfondimenti distintivi` });
+        blocchi.push(distintivi.length ? { t: 'ul', items: distintivi } : { t: 'p', text: 'Nessuno.' });
+      }
+    }
+
+    blocchi.push({ t: 'h2', text: `A) Copertura dei moduli — framework "${r.frameworkNome}"` });
+    blocchi.push({
+      t: 'table',
+      headers: ['Modulo', ...r.manuali.map(m => m.etichettaLunga)],
+      rows: r.moduli.map(mo => [
+        mo.modulo,
+        ...r.manuali.map(m => {
+          const v = (mo.valutazioni && mo.valutazioni[m.etichetta]) || {};
+          const stato = v.stato || 'n/d';
+          return `${stato.toUpperCase()}${v.nota ? ' — ' + v.nota : ''}`;
+        }),
+      ]),
+    });
+
+    if (r.conteggio) {
+      blocchi.push({ t: 'p', text: 'Conteggio oggettivo (calcolato, non generato dall\'AI):' });
+      blocchi.push({
+        t: 'ul',
+        items: r.manuali.map(m => {
+          const c = r.conteggio[m.etichetta];
+          return `${m.etichettaLunga}: più completo su ${c.piuCompleto} moduli, equivalente su ${c.equivalente}, meno completo su ${c.menoCompleto} (di ${r.moduli.length} moduli)`;
+        }),
+      });
+    }
+
+    if (r.classiMerged) {
+      blocchi.push({ t: 'h2', text: 'B) Idoneità per classe di laurea' });
+      blocchi.push({
+        t: 'table',
+        headers: ['Classe di laurea', ...r.manuali.map(m => m.etichettaLunga)],
+        rows: r.classiMerged.map(cl => [
+          cl.classe,
+          ...r.manuali.map(m => {
+            const v = (cl.valutazioni && cl.valutazioni[m.etichetta]) || {};
+            const giudizio = v.giudizio || 'n/d';
+            return `${giudizio.toUpperCase()}${v.motivazione ? ' — ' + v.motivazione : ''}`;
+          }),
+        ]),
+      });
+      if (r.sintesiClassi) {
+        blocchi.push({ t: 'p', text: 'Sintesi per classe di laurea (calcolata, non generata dall\'AI):' });
+        blocchi.push({
+          t: 'ul',
+          items: r.sintesiClassi.map(ri => {
+            if (ri.migliori.length === 0) return `${ri.classe}: nessun giudizio disponibile.`;
+            if (ri.equivalenti) return `${ri.classe}: giudizio equivalente tra ${ri.migliori.map(v => v.etichettaLunga).join(', ')} (${ri.migliori[0].giudizio}).`;
+            const v = ri.migliori[0];
+            const altri = ri.dettaglio.filter(d => d.etichetta !== v.etichetta).map(d => `${d.etichettaLunga} (${d.giudizio || 'n/d'})`).join(', ');
+            return `${ri.classe}: ${v.etichettaLunga} è il più adatto (${v.giudizio}) — rispetto a ${altri}.`;
+          }),
+        });
+      }
+    }
+
+    if (r.argomentiAdozioneRichiesti && r.argomentiAdozione) {
+      const unSoloCompetitor = r.manualiCompetitor.length === 1;
+      blocchi.push({ t: 'h2', text: "Argomenti per l'adozione" });
+      blocchi.push({ t: 'p', text: `Sezione calcolata direttamente dalla tabella A sopra (nessun testo aggiuntivo generato dall'AI) — a supporto di una conversazione commerciale, non un giudizio editoriale neutro. Confronto rispetto a: ${r.manualiCompetitor.map(m => m.etichettaLunga).join(', ')}.` });
+      for (const p of r.manualiPropri) {
+        blocchi.push({ t: 'h3', text: p.etichettaLunga });
+        for (const c of r.manualiCompetitor) {
+          const dati = (r.argomentiAdozione[p.etichetta] && r.argomentiAdozione[p.etichetta].vs[c.etichetta]) || { aFavore: [], attenzione: [] };
+          if (!unSoloCompetitor) blocchi.push({ t: 'p', text: `Rispetto a ${c.etichettaLunga}:` });
+          blocchi.push({ t: 'p', text: 'A favore:' });
+          blocchi.push(dati.aFavore.length
+            ? { t: 'ul', items: dati.aFavore.map(x => `${x.modulo} — ${x.nota}`) }
+            : { t: 'p', text: 'Nessun vantaggio emerso su questo confronto.' });
+          blocchi.push({ t: 'p', text: 'Possibile obiezione del docente (il competitor è più forte qui):' });
+          blocchi.push(dati.attenzione.length
+            ? { t: 'ul', items: dati.attenzione.map(x => `${x.modulo} — nel testo adottato oggi: ${x.nota}`) }
+            : { t: 'p', text: 'Nessun punto debole emerso su questo confronto.' });
+        }
+      }
+    }
+
+    blocchi.push({ t: 'p', text: `Generato il ${new Date().toLocaleDateString('it-IT')} — Atlante, Analisi comparativa di manuali.` });
+    return blocchi;
+  }
+
+  function blocchiToMarkdown(blocchi) {
+    return blocchi.map(b => {
+      if (b.t === 'h1') return `# ${b.text}`;
+      if (b.t === 'h2') return `## ${b.text}`;
+      if (b.t === 'h3') return `### ${b.text}`;
+      if (b.t === 'p') return b.text;
+      if (b.t === 'ul') return b.items.map(i => `- ${i}`).join('\n');
+      if (b.t === 'table') {
+        const header = `| ${b.headers.join(' | ')} |`;
+        const sep = `| ${b.headers.map(() => '---').join(' | ')} |`;
+        const rows = b.rows.map(row => `| ${row.map(c => String(c).replace(/\n/g, ' ').replace(/\|/g, '\\|')).join(' | ')} |`);
+        return [header, sep, ...rows].join('\n');
+      }
+      return '';
+    }).join('\n\n');
+  }
+
+  function blocchiToHtmlBody(blocchi) {
+    return blocchi.map(b => {
+      if (b.t === 'h1') return `<h1>${escapeHtml(b.text)}</h1>`;
+      if (b.t === 'h2') return `<h2>${escapeHtml(b.text)}</h2>`;
+      if (b.t === 'h3') return `<h3>${escapeHtml(b.text)}</h3>`;
+      if (b.t === 'p') return `<p>${escapeHtml(b.text)}</p>`;
+      if (b.t === 'ul') return `<ul>${b.items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
+      if (b.t === 'table') {
+        const thead = `<tr>${b.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>`;
+        const tbody = b.rows.map(row => `<tr>${row.map(c => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
+        return `<table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+      }
+      return '';
+    }).join('\n');
+  }
+
+  function costruisciHtmlCompleto(risultato) {
+    // i tag di chiusura qui sotto sono spezzati con <\/ di proposito: un tag di chiusura body
+    // scritto per intero, anche se e' solo testo dentro una stringa JS e non un tag vero,
+    // viene scambiato da Live Server di VS Code per la fine della pagina reale, e ci inietta
+    // in mezzo il suo script di auto-reload — chiudendo per sbaglio il nostro <script> a meta'
+    // e mandando in rendering come testo tutto il codice successivo. <\/ produce lo stesso "/"
+    // a runtime ma elimina la sottostringa letterale che lo confonde.
+    const body = blocchiToHtmlBody(costruisciBlocchi(risultato));
+    return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8" />
+<title>Confronto manuali — ${escapeHtml(risultato.frameworkNome)}<\/title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1b2430; }
+  h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 32px; border-bottom: 1px solid #e2e6ea; padding-bottom: 4px; } h3 { font-size: 14px; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; } th, td { border: 1px solid #e2e6ea; padding: 6px 8px; text-align: left; vertical-align: top; white-space: pre-line; }
+  th { background: #f7f8fa; }
+<\/style><\/head><body>${body}<\/body><\/html>`;
+  }
+
+  function scaricaFile(nomeFile, contenuto, mime) {
+    const blob = new Blob([contenuto], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nomeFile;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function esportaPdf(risultato) {
+    const blocchi = costruisciBlocchi(risultato);
+    const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+    const marginX = 40;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - marginX * 2;
+    let y = 50;
+
+    function servePagina(altezza) {
+      if (y + altezza > pageHeight - 40) { doc.addPage(); y = 50; }
+    }
+
+    for (const b of blocchi) {
+      if (b.t === 'h1') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+        servePagina(24); doc.text(b.text, marginX, y); y += 26;
+      } else if (b.t === 'h2') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+        servePagina(22); y += 8; doc.text(b.text, marginX, y); y += 18;
+      } else if (b.t === 'h3') {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        servePagina(18); y += 4; doc.text(b.text, marginX, y); y += 14;
+      } else if (b.t === 'p') {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        const righe = doc.splitTextToSize(b.text, maxWidth);
+        servePagina(righe.length * 13);
+        doc.text(righe, marginX, y); y += righe.length * 13 + 6;
+      } else if (b.t === 'ul') {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        for (const item of b.items) {
+          const righe = doc.splitTextToSize('•  ' + item, maxWidth - 10);
+          servePagina(righe.length * 13);
+          doc.text(righe, marginX + 6, y); y += righe.length * 13 + 2;
+        }
+        y += 6;
+      } else if (b.t === 'table') {
+        if (typeof doc.autoTable === 'function') {
+          servePagina(40);
+          doc.autoTable({ head: [b.headers], body: b.rows, startY: y, margin: { left: marginX, right: marginX }, styles: { fontSize: 8, cellPadding: 4 } });
+          y = doc.lastAutoTable.finalY + 16;
+        } else {
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+          servePagina(14); doc.text(b.headers.join('  |  '), marginX, y); y += 14;
+          doc.setFont('helvetica', 'normal');
+          for (const row of b.rows) {
+            const righe = doc.splitTextToSize(row.join('  |  '), maxWidth);
+            servePagina(righe.length * 13);
+            doc.text(righe, marginX, y); y += righe.length * 13 + 4;
+          }
+        }
+      }
+    }
+    doc.save('confronto-manuali.pdf');
+  }
+
+  async function main() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const chi = document.getElementById('chi');
+
+    if (!session) {
+      chi.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>';
+      return;
+    }
+
+    const { data: profilo, error: eProfilo } = await supabaseClient
+      .from('profili')
+      .select('ruolo, clienti(nome, editore_proprio)')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (eProfilo || !profilo) {
+      chi.innerHTML = `Connesso come ${session.user.email}, ma nessun profilo collegato. Contatta l'amministratore.`;
+      return;
+    }
+
+    chi.textContent = `${session.user.email} · ${profilo.ruolo} · ${profilo.clienti.nome}`;
+    editoreProprio = profilo.clienti.editore_proprio;
+
+    const [{ data: framework, error: eFramework }, { data: manuali, error: eManuali }] = await Promise.all([
+      supabaseClient.from('framework').select('id, nome, materia, dati').order('nome'),
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia, dati').order('autore'),
+    ]);
+
+    if (eFramework || eManuali) {
+      document.getElementById('stato').style.display = 'block';
+      document.getElementById('stato').textContent = 'Errore nel caricamento: ' + (eFramework || eManuali).message;
+      return;
+    }
+
+    tuttiFramework = framework;
+    tuttiManuali = manuali;
+    document.getElementById('contenuto').style.display = 'block';
+
+    const chiaveSalvata = leggiChiaveOpenAI();
+    if (chiaveSalvata) document.getElementById('apiKey').value = chiaveSalvata;
+    const modelloSalvato = leggiModelloOpenAI();
+    if (modelloSalvato) document.getElementById('modello').value = modelloSalvato;
+
+    popolaSelectFramework();
+
+    document.getElementById('selFramework').addEventListener('change', (e) => {
+      frameworkScelto = tuttiFramework.find(f => f.id === e.target.value) || null;
+      renderElencoManuali();
+      aggiornaStatoBottone();
+      document.getElementById('risultato').innerHTML = '';
+      document.getElementById('msg').textContent = '';
+      document.getElementById('esportazioni').style.display = 'none';
+      ultimoRisultato = null;
+    });
+
+    document.getElementById('espMarkdown').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      scaricaFile('confronto-manuali.md', blocchiToMarkdown(costruisciBlocchi(ultimoRisultato)), 'text/markdown;charset=utf-8');
+    });
+    document.getElementById('espHtml').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      scaricaFile('confronto-manuali.html', costruisciHtmlCompleto(ultimoRisultato), 'text/html;charset=utf-8');
+    });
+    document.getElementById('espPdf').addEventListener('click', () => {
+      if (!ultimoRisultato) return;
+      esportaPdf(ultimoRisultato);
+    });
+
+    document.getElementById('confronta').addEventListener('click', eseguiConfronto);
+  }
+
+  main();
+</script>
+</body>
+</html>

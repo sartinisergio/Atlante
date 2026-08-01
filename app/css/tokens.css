@@ -1,0 +1,119 @@
+/* ============================================================
+   Atlante · Design tokens — Direzione A "Editoria matura"
+   ------------------------------------------------------------
+   Unico posto in cui vivono colori, font, spaziature, raggi e
+   ombre. Nessun componente deve contenere un hex hardcoded: per
+   cambiare la palette a un altro editore si tocca solo questo
+   file. Vedi HANDOFF.md §6.4.
+
+   I font NON sono importati qui con @import (blocca il render):
+   ogni pagina ha i <link rel="preconnect"> + <link rel="stylesheet">
+   a Google Fonts nel proprio <head>, prima di questo file.
+   Fallback previsto: Georgia (il serif dell'app v1) e lo stack
+   di sistema, così la pagina resta leggibile se Google Fonts
+   non è raggiungibile.
+   ============================================================ */
+
+:root {
+  /* ---- Neutri "carta" ---- */
+  --paper:        #f7f3ec;
+  --paper-warm:   #efe8d9;
+  --paper-deep:   #e7dfcd;
+  --surface:      #ffffff;
+  --surface-2:    #f2ecdf;
+
+  --ink:          #1c1a17;
+  --ink-2:        #35312a;
+  --ink-muted:    #6b6455;
+  --ink-faint:    #948b78;
+  --line:         #d8cfb8;
+  --line-soft:    #e6dec9;
+
+  /* ---- Voci: base / -soft (sfondo tint) / -ink (testo su tint) ---- */
+  --voce-offerta:        #b8862a;  /* ocra manoscritto */
+  --voce-offerta-soft:   #efe0b8;
+  --voce-offerta-ink:    #6b4c0f;
+
+  --voce-confronto:      #5a7f5a;  /* verde muschio */
+  --voce-confronto-soft: #d9e3d3;
+  --voce-confronto-ink:  #2f4a2f;
+
+  --voce-analisi:        #446a8a;  /* blu carta geografica */
+  --voce-analisi-soft:   #d5dfe8;
+  --voce-analisi-ink:    #21384c;
+
+  --voce-piano:          #7a4e8a;  /* prugna */
+  --voce-piano-soft:     #e3d5e8;
+  --voce-piano-ink:      #422152;
+
+  --voce-utilita:        #a8552a;  /* terracotta */
+  --voce-utilita-soft:   #ecd8c7;
+  --voce-utilita-ink:    #6b2f14;
+
+  /* ---- Stati semantici: valgono in tutte le sezioni, indipendenti dal
+         colore-voce. Un badge "presente" è verde anche nella sezione prugna. ---- */
+  --ok:           #4f7a2f;
+  --ok-soft:      #dbe6c6;
+  --warn:         #a5771a;
+  --warn-soft:    #f0e2ba;
+  --err:          #9c3b30;
+  --err-soft:     #f0d4cf;
+  --info:         #446a8a;
+  --info-soft:    #d5dfe8;
+
+  /* ---- Scala qualitativa a 6 gradi (GIUDIZI in atlante-shared.js).
+         Mai un punteggio numerico: solo queste etichette. ---- */
+  --giud-insuf:       #9c3b30;
+  --giud-suff:        #96591b;
+  --giud-discreto:    #a5771a;
+  --giud-buono:       #4f7a2f;
+  --giud-molto-buono: #2f6b4f;
+  --giud-eccellente:  #1f5c8a;
+
+  /* ---- Tipografia ---- */
+  --font-serif:  'Fraunces', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- Spaziature ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* ---- Raggi ---- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 20px;
+
+  /* ---- Ombre "editoriali" (basse, calde) ---- */
+  --sh-1: 0 1px 2px rgba(28, 26, 23, 0.05);
+  --sh-2: 0 2px 8px rgba(28, 26, 23, 0.06), 0 1px 2px rgba(28, 26, 23, 0.04);
+  --sh-3: 0 8px 24px rgba(28, 26, 23, 0.08), 0 2px 6px rgba(28, 26, 23, 0.04);
+
+  /* Colore-voce di default (sovrascritto da ogni pagina nel proprio :root) */
+  --v:      var(--voce-utilita);
+  --v-soft: var(--voce-utilita-soft);
+  --v-ink:  var(--voce-utilita-ink);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; color: inherit; }

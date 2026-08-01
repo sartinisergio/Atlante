@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>C · Offerta formativa — Atlante</title>
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root { --v: var(--voce-offerta); --v-soft: var(--voce-offerta-soft); --v-ink: var(--voce-offerta-ink); }
+
+  html { background: var(--paper); }
+  body {
+    background:
+      radial-gradient(circle at 15% 30%, rgba(184,134,42,0.05), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(90,127,90,0.04), transparent 45%),
+      var(--paper);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* Header: pagina di libro */
+  .running-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 60px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-muted);
+    font-family: var(--font-serif);
+  }
+  .running-head .left { display: flex; align-items: center; gap: 20px; }
+  .running-head .logo { font-family: var(--font-serif); font-size: 18px; font-weight: 500; letter-spacing: -0.01em; text-transform: none; color: var(--ink); }
+  .running-head .logo em { font-style: italic; color: var(--v); }
+  .running-head .tenant { padding: 3px 8px; border: 1px solid var(--line); border-radius: 3px; font-size: 10px; letter-spacing: 0.06em; }
+  .running-head .who { text-transform: none; letter-spacing: 0; font-family: var(--font-sans); font-size: 12px; color: var(--ink-muted); }
+  .running-head .folio { font-family: var(--font-serif); font-style: italic; }
+
+  /* Corpo pagina */
+  .page {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 60px 0;
+  }
+
+  /* Segnalibri fisici sul bordo destro */
+  .tabs-book {
+    position: fixed;
+    right: 0; top: 120px;
+    display: flex; flex-direction: column; gap: 2px;
+    z-index: 5;
+  }
+  .tab-book {
+    display: block;
+    padding: 14px 10px 14px 14px;
+    background: var(--col);
+    color: #fff;
+    border-radius: 6px 0 0 6px;
+    box-shadow: -2px 2px 6px rgba(28,26,23,0.08);
+    text-decoration: none;
+    font-family: var(--font-serif);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    transition: padding-left .15s, box-shadow .15s;
+  }
+  .tab-book:hover { padding-left: 18px; }
+  .tab-book.on {
+    padding-left: 22px;
+    box-shadow: -4px 3px 10px rgba(28,26,23,0.15);
+    font-weight: 700;
+  }
+  .tab-book .num {
+    display: block;
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 10px;
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+
+  /* Titolo tavola */
+  .tavola-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--v);
+    margin-bottom: 4px;
+  }
+  h1.tavola-title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 68px;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .tavola-dek {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 720px;
+    margin: 0 0 26px;
+  }
+  .tavola-dek::first-letter {
+    font-size: 42px; float: left; line-height: 0.9;
+    margin: 4px 8px 0 0; color: var(--v); font-style: normal;
+    font-weight: 500;
+  }
+
+  /* Rule/decoration line */
+  .rule {
+    display: flex; align-items: center; gap: 14px;
+    margin: 30px 0 22px;
+    color: var(--v);
+  }
+  .rule::before, .rule::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+  }
+  .rule span {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13px; letter-spacing: 0.06em;
+    color: var(--ink-muted);
+  }
+  .rule .glyph { color: var(--v); font-size: 14px; }
+
+  /* Registro voci (contatore in stile trattato) */
+  .registro {
+    display: flex; gap: 40px;
+    margin: 22px 0 28px;
+    font-family: var(--font-serif);
+  }
+  .registro .voce {
+    line-height: 1.1;
+  }
+  .registro .voce .n {
+    font-size: 44px;
+    font-weight: 400;
+    color: var(--v);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .registro .voce .l {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+
+  /* Chiavi di lettura (filtri come sezione tipografica) */
+  .chiavi {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 22px 28px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .chiavi::before {
+    content: '§'; position: absolute; left: -14px; top: 20px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--v); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-style: italic; font-size: 16px;
+    font-weight: 500;
+  }
+  .chiavi h2 {
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 15px; letter-spacing: -0.005em;
+    margin: 0 0 3px; color: var(--ink);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .chiavi h2 em { font-style: italic; font-weight: 400; color: var(--v); font-size: 13px; }
+  .chiavi h2 small { font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: var(--ink-muted); }
+  .chiavi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 20px; margin-top: 14px; }
+  .chiavi-grid label { display: block; font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--ink-muted); margin-bottom: 3px; }
+  .field {
+    width: 100%; padding: 6px 0;
+    background: transparent; border: none;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px; color: var(--ink);
+    font-family: var(--font-sans);
+  }
+  .field:focus { outline: none; border-bottom-color: var(--v); }
+  .chiavi-grid .valore { color: var(--ink); font-weight: 500; font-size: 13.5px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .chiavi-grid .valore em { font-style: italic; color: var(--ink-muted); font-weight: 400; }
+
+  .chiavi-actions {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 18px; padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .btn-serif {
+    padding: 7px 20px; border-radius: 3px;
+    background: var(--v); color: #fff; border: none;
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: 13.5px; letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+  .btn-serif:hover { background: var(--v-ink); }
+  .btn-serif.ghost { background: transparent; color: var(--v-ink); border: 1px solid var(--line); }
+  .btn-serif.ghost:hover { background: var(--paper-warm); }
+  .link-serif {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--v); font-size: 13px; text-decoration: none;
+    padding: 4px 8px; margin-left: auto;
+  }
+  .link-serif:hover { text-decoration: underline; }
+
+  /* Riga di dedica sotto i filtri */
+  .dedica {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--ink-muted); font-size: 13.5px;
+    text-align: center; margin: 8px 0 18px;
+  }
+  .dedica b {
+    color: var(--v-ink); font-style: normal; font-weight: 500;
+    border-bottom: 1px dotted var(--v);
+    padding: 0 2px;
+  }
+
+  /* Tabella tipografica */
+  .tavola-num-2 {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--ink-muted); font-size: 13px;
+    letter-spacing: 0.06em; margin-top: 32px; margin-bottom: 6px;
+  }
+  h2.section-title {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 26px; letter-spacing: -0.015em;
+    margin: 0 0 4px; color: var(--ink);
+  }
+  h2.section-title em { color: var(--v); font-style: italic; }
+  .section-dek { font-family: var(--font-serif); font-style: italic; color: var(--ink-muted); font-size: 14px; margin-bottom: 18px; }
+
+  table.tipografica {
+    width: 100%; border-collapse: collapse;
+    font-size: 13.5px; color: var(--ink);
+  }
+  table.tipografica thead th {
+    text-align: left;
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; font-size: 13px;
+    color: var(--ink-muted);
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--ink);
+  }
+  table.tipografica thead th.right { text-align: right; }
+  table.tipografica tbody td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: baseline;
+    line-height: 1.4;
+  }
+  table.tipografica tbody tr:nth-child(even) td { background: rgba(232,221,198,0.28); }
+  table.tipografica tbody tr:hover td { background: var(--v-soft); }
+  table.tipografica td.right { text-align: right; font-variant-numeric: tabular-nums; }
+  table.tipografica td .capolettera {
+    font-family: var(--font-serif); font-size: 22px; font-weight: 400;
+    color: var(--v); float: left; line-height: 1;
+    margin: -1px 6px 0 0;
+  }
+  table.tipografica td .principale {
+    font-weight: 500; color: var(--ink);
+  }
+  table.tipografica td .nota-marginale {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--ink-muted); font-size: 12.5px; margin-top: 2px;
+    line-height: 1.35;
+  }
+  table.tipografica td .cfu {
+    font-family: var(--font-serif); font-size: 18px; font-weight: 400;
+    color: var(--ink);
+  }
+  .segno {
+    display: inline-block;
+    padding: 1px 5px; border-radius: 2px;
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: var(--font-sans);
+  }
+  .segno-tri { background: #d5dfe8; color: #21384c; }
+  .segno-mag { background: #efe0b8; color: #6b4c0f; }
+  .segno-cu  { background: #d9e3d3; color: #2f4a2f; }
+
+  .azioni-riga {
+    display: flex; gap: 8px; justify-content: flex-end; align-items: center;
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 12.5px;
+  }
+  .azioni-riga a { color: var(--v); text-decoration: none; }
+  .azioni-riga a:hover { text-decoration: underline; }
+  .azioni-riga .sep { color: var(--line); }
+
+  /* Paginazione stile libro */
+  .pag {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 28px 0 0;
+    font-family: var(--font-serif);
+    color: var(--ink-muted);
+  }
+  .pag .foglio { font-style: italic; font-size: 13px; }
+  .pag .foglio b { color: var(--ink); font-weight: 500; font-style: normal; }
+  .pag nav { display: flex; align-items: center; gap: 4px; font-size: 14px; }
+  .pag nav a { color: var(--ink); text-decoration: none; padding: 4px 10px; border-radius: 3px; }
+  .pag nav a.on { background: var(--v); color: #fff; font-weight: 500; }
+  .pag nav a:hover:not(.on) { background: var(--paper-warm); }
+
+  /* Nota a piè di pagina */
+  .footnote {
+    margin-top: 40px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--line);
+    display: flex; gap: 22px; align-items: flex-start;
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--ink-muted); font-size: 12.5px; line-height: 1.5;
+  }
+  .footnote .n {
+    font-family: var(--font-serif); font-style: italic; font-size: 22px;
+    color: var(--v); flex: none; line-height: 1;
+  }
+  .footnote a { color: var(--v-ink); font-weight: 500; font-style: normal; }
+</style>
+</head>
+<body>
+
+<!-- Segnalibri fisici (posizionati come segnalibri fisici sul bordo destro) -->
+<aside class="tabs-book" aria-label="Sezioni di Atlante">
+  <a href="#" class="tab-book on" style="--col: var(--voce-offerta)"><span class="num">I</span>Offerta formativa</a>
+  <a href="#" class="tab-book" style="--col: var(--voce-confronto)"><span class="num">II</span>Confronto</a>
+  <a href="C-analisi-programma.html" class="tab-book" style="--col: var(--voce-analisi)"><span class="num">III</span>Analisi</a>
+  <a href="#" class="tab-book" style="--col: var(--voce-piano)"><span class="num">IV</span>Piano</a>
+  <a href="#" class="tab-book" style="--col: var(--voce-utilita)"><span class="num">V</span>Catalogo</a>
+</aside>
+
+<div class="running-head">
+  <div class="left">
+    <span class="logo">Atlante<em>.</em></span>
+    <span class="tenant">Zanichelli</span>
+  </div>
+  <span class="who">Sergio Sartini · promotore Nord-Ovest</span>
+  <span class="folio">Foglio I · recto</span>
+</div>
+
+<div class="page">
+  <div class="tavola-num">Tavola I</div>
+  <h1 class="tavola-title">Offerta formativa.</h1>
+  <p class="tavola-dek">Raccolta ordinata degli insegnamenti universitari italiani, disposta per ateneo, classe di laurea e disciplina; strumento di orientamento per il promotore che cerca il proprio pubblico, e per la direzione editoriale che vuole misurare la propria presenza sul territorio.</p>
+
+  <div class="rule"><span>Registro alla data del 25 luglio 2026</span></div>
+
+  <!-- Numeri -->
+  <div class="registro">
+    <div class="voce"><div class="n">223.481</div><div class="l">Insegnamenti registrati</div></div>
+    <div class="voce"><div class="n">4.702</div><div class="l">Corsi di laurea</div></div>
+    <div class="voce"><div class="n">98</div><div class="l">Atenei</div></div>
+    <div class="voce"><div class="n">20</div><div class="l">Regioni</div></div>
+  </div>
+
+  <!-- Chiavi di lettura -->
+  <div class="chiavi">
+    <h2>
+      Chiavi di lettura
+      <em>filtri combinabili</em>
+      <a href="#" class="link-serif">Salva questa combinazione ↗</a>
+    </h2>
+    <div class="chiavi-grid">
+      <div>
+        <label>Ateneo</label>
+        <div class="valore">Torino · Milano Statale <em>+ 2</em></div>
+      </div>
+      <div>
+        <label>Tipologia</label>
+        <div class="valore">Magistrale a ciclo unico</div>
+      </div>
+      <div>
+        <label>Classe di laurea</label>
+        <div class="valore">LM-13 <em>Farmacia</em></div>
+      </div>
+      <div>
+        <label>SSD (nuovo)</label>
+        <div class="valore"><em>tutte</em></div>
+      </div>
+      <div>
+        <label>Anno di corso</label>
+        <div class="valore">3° · 4°</div>
+      </div>
+      <div>
+        <label>Insegnamento</label>
+        <input class="field" placeholder="es. Farmacologia clinica…" value="Farmacologia" />
+      </div>
+      <div>
+        <label>Docente</label>
+        <input class="field" placeholder="cognome…" />
+      </div>
+      <div>
+        <label>Lingua</label>
+        <div class="valore"><em>tutte</em></div>
+      </div>
+    </div>
+    <div class="chiavi-actions">
+      <button class="btn-serif">Consulta</button>
+      <button class="btn-serif ghost">Azzera</button>
+      <a href="#" class="link-serif">Chiavi accessorie · regione, zona, lingua ↗</a>
+    </div>
+  </div>
+
+  <p class="dedica">Da questa selezione risultano <b>127 voci</b>, riunite in una sola tavola.</p>
+
+  <!-- Sezione risultati -->
+  <div class="tavola-num-2">Estratto della tavola</div>
+  <h2 class="section-title">Insegnamenti di <em>Farmacologia</em></h2>
+  <p class="section-dek">Ordinati per ateneo; docente titolare e crediti in colonna. Le note a margine riportano indicazioni utili al promotore.</p>
+
+  <table class="tipografica">
+    <thead>
+      <tr>
+        <th>Insegnamento &amp; docente</th>
+        <th>Ateneo · Corso di laurea</th>
+        <th style="width:9%">Anno</th>
+        <th style="width:8%" class="right">CFU</th>
+        <th style="width:20%" class="right"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia clinica</div>
+          <div class="nota-marginale">Prof. M. Bianchi · programma disponibile, non ancora analizzato</div>
+        </td>
+        <td>Torino<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+        <td>4°</td>
+        <td class="right"><span class="cfu">9</span></td>
+        <td class="right"><div class="azioni-riga"><a href="C-analisi-programma.html">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia e Farmacoterapia</div>
+          <div class="nota-marginale">Prof. G. Rossi · adotta Katzung 12ª ed.</div>
+        </td>
+        <td>Milano Statale<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+        <td>3°</td>
+        <td class="right"><span class="cfu">10</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia generale e molecolare</div>
+          <div class="nota-marginale">Prof. P. Verdi · corso in italiano, esame orale + prova pratica</div>
+        </td>
+        <td>Genova<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> CTF LM-13</div></td>
+        <td>3°</td>
+        <td class="right"><span class="cfu">8</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia speciale</div>
+          <div class="nota-marginale">Prof. A. Colombo · secondo semestre</div>
+        </td>
+        <td>Pavia<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+        <td>4°</td>
+        <td class="right"><span class="cfu">6</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia I</div>
+          <div class="nota-marginale">Prof. S. Ferrari · titolare anche di Farmacologia II</div>
+        </td>
+        <td>Bologna<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+        <td>3°</td>
+        <td class="right"><span class="cfu">7</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia II</div>
+          <div class="nota-marginale">Prof. S. Ferrari · stesso docente, prosecuzione</div>
+        </td>
+        <td>Bologna<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Farmacia LM-13</div></td>
+        <td>4°</td>
+        <td class="right"><span class="cfu">7</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">C</span>hemioterapia</div>
+          <div class="nota-marginale">Prof. F. Marchetti · corso opzionale, forte impronta oncologica</div>
+        </td>
+        <td>Padova<div class="nota-marginale"><span class="segno segno-mag">Magistrale</span> Biotecnologie mediche LM-9</div></td>
+        <td>2°</td>
+        <td class="right"><span class="cfu">4</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia cellulare</div>
+          <div class="nota-marginale">Prof. L. Greco · corso in inglese</div>
+        </td>
+        <td>Firenze<div class="nota-marginale"><span class="segno segno-mag">Magistrale</span> Biotecnologie mediche LM-9</div></td>
+        <td>1°</td>
+        <td class="right"><span class="cfu">6</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="principale"><span class="capolettera">F</span>armacologia clinica e Tossicologia</div>
+          <div class="nota-marginale">Prof. R. De Luca · corso integrato con MED/09</div>
+        </td>
+        <td>Napoli Federico II<div class="nota-marginale"><span class="segno segno-cu">Mag c.u.</span> Medicina LM-41</div></td>
+        <td>4°</td>
+        <td class="right"><span class="cfu">8</span></td>
+        <td class="right"><div class="azioni-riga"><a href="#">analizza →</a><span class="sep">·</span><a href="#">piano</a></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pag">
+    <div class="foglio">Voci <b>1—9</b> di <b>127</b> · Tavola I · pagina I di XV</div>
+    <nav>
+      <a href="#">‹ precedente</a>
+      <a href="#" class="on">I</a>
+      <a href="#">II</a>
+      <a href="#">III</a>
+      <a href="#">…</a>
+      <a href="#">XV</a>
+      <a href="#">seguente ›</a>
+    </nav>
+  </div>
+
+  <div class="footnote">
+    <div class="n">*</div>
+    <div>Le correzioni apportate dal promotore alle voci (modifica, disattivazione, aggiunta) restano custodite nel proprio browser fino a esportazione manuale. Per condividerle coi colleghi, consultare la voce <a href="#">Esportazione dei delta ↗</a> in coda al catalogo. — I dati provengono dal MUR, aggiornati alla data del registro.</div>
+  </div>
+</div>
+
+</body>
+</html>

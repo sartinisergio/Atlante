@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlante — utilità</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<style>
+  :root {
+    --v: var(--voce-utilita);
+    --v-soft: var(--voce-utilita-soft);
+    --v-ink: var(--voce-utilita-ink);
+    --voce-corrente-soft: var(--voce-utilita-soft);
+    --voce-corrente-ink: var(--voce-utilita-ink);
+  }
+
+  main.a-main { max-width: 1320px; }
+
+  /* Contatori del catalogo */
+  .cat-stats {
+    display: flex; gap: 24px; margin-bottom: 24px;
+    padding: 18px 22px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--sh-1);
+    flex-wrap: wrap;
+  }
+  .cat-stats .cell { display: flex; flex-direction: column; }
+  .cat-stats .cell .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); font-weight: 600; }
+  .cat-stats .cell .v {
+    font-family: var(--font-serif); font-size: 22px; color: var(--ink); font-weight: 400;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .cat-stats .cell .v small { font-size: 13px; color: var(--ink-muted); font-family: var(--font-sans); margin-left: 4px; }
+  .cat-stats .sep { width: 1px; background: var(--line); }
+
+  table.data td .aut { font-weight: 500; color: var(--ink); }
+  table.data td .titolo-libro em { font-style: italic; color: var(--ink-muted); font-size: 11.5px; margin-left: 6px; }
+
+  /* Tab "Iscritti e offerta formativa" / "Approfondimenti disciplinari": liste di link esterni */
+  .dek { font-size: 12.5px; color: var(--ink-muted); margin: 0 0 16px; line-height: 1.5; }
+  .risorse-links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .risorse-links a {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; background: var(--paper-warm); border: 1px solid var(--line);
+    border-radius: 20px; font-size: 12.5px; font-weight: 500; color: var(--ink-2);
+    text-decoration: none;
+  }
+  .risorse-links a:hover { border-color: var(--v); color: var(--v-ink); background: var(--v-soft); }
+</style>
+</head>
+<body class="a-shell">
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="a-main">
+  <div class="crumb">
+    <a href="home.html">Atlante</a><span class="sep">›</span>
+    <span id="crumb-cliente">—</span><span class="sep">›</span>
+    <span>Utilità</span>
+  </div>
+
+  <h1 class="page">Utilità<em>.</em></h1>
+  <p class="subtitle">Anagrafica condivisa di manuali e framework di valutazione — la stessa fonte
+    dati usata da tutte le altre sezioni di Atlante, non una copia separata — più le dashboard di
+    approfondimento esterne, a portata di mano. Chiunque acceda può consultare e cercare; solo chi
+    ha ruolo di gestore può aggiungere o modificare manuali e framework.</p>
+
+  <div id="stato-iniziale" class="vuoto">Caricamento…</div>
+
+  <div id="contenuto" hidden>
+
+    <div class="cat-stats" id="cat-stats"></div>
+
+    <div class="callout">
+      <span class="ic">✎</span>
+      <div class="body">
+        <h4>Prima di aggiungere: prepara l'indice</h4>
+        <p>Per creare un framework nuovo o l'indice di un manuale a partire da un PDF, usa
+          <a href="https://matrix-framework-builder.netlify.app/" target="_blank" rel="noopener">MATRIX Framework Builder ↗</a>.
+          Poi incolla qui il JSON generato — Atlante estrae automaticamente titolo, autore, editore e materia.</p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" class="on" role="tab" data-vista="manuali">Manuali <span class="n" id="n-tab-manuali"></span></button>
+      <button type="button" role="tab" data-vista="framework">Framework <span class="n" id="n-tab-framework"></span></button>
+      <button type="button" role="tab" data-vista="iscritti-offerta">Iscritti e offerta formativa <span class="n">4</span></button>
+      <button type="button" role="tab" data-vista="disciplinari">Approfondimenti disciplinari <span class="n">3</span></button>
+    </div>
+
+    <!-- ==================== MANUALI ==================== -->
+    <section id="vista-manuali">
+      <div class="toolbar">
+        <div class="search-box">
+          <input id="ricerca" type="search" placeholder="Cerca per titolo o autore…" aria-label="Cerca manuale" />
+        </div>
+        <label class="pill-filter">
+          <span class="lab">Materia:</span>
+          <select id="materiaFiltro"><option value="">Tutte</option></select>
+        </label>
+        <label class="pill-filter">
+          <span class="lab">Editore:</span>
+          <select id="editoreFiltro"><option value="">Tutti</option></select>
+        </label>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="btnCsv">↓ Esporta CSV</button>
+          <button type="button" class="btn btn-primary" id="btnNuovoManuale" hidden>＋ Aggiungi manuale</button>
+        </div>
+      </div>
+      <div id="gruppiManuali"></div>
+    </section>
+
+    <!-- ==================== FRAMEWORK ==================== -->
+    <section id="vista-framework" hidden>
+      <div class="toolbar">
+        <div class="search-box">
+          <input id="ricercaFw" type="search" placeholder="Cerca per nome…" aria-label="Cerca framework" />
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="btnNuovoFramework" hidden>＋ Aggiungi framework</button>
+        </div>
+      </div>
+      <div id="gruppiFramework"></div>
+    </section>
+
+    <!-- ==================== ISCRITTI E OFFERTA FORMATIVA ==================== -->
+    <section id="vista-iscritti-offerta" hidden>
+      <p class="dek">Dashboard di approfondimento sviluppate a parte, tenute qui a portata di mano.</p>
+      <div class="risorse-links">
+        <a href="https://dashboard-iscritti-2024-25.netlify.app" target="_blank" rel="noopener">Iscritti 2024/25 ↗</a>
+        <a href="https://universitaly.netlify.app" target="_blank" rel="noopener">Corsi di laurea ↗</a>
+        <a href="https://analisi-iscritti-laureati.netlify.app" target="_blank" rel="noopener">Iscritti e laureati ↗</a>
+        <a href="https://uni-move.netlify.app" target="_blank" rel="noopener">Mobilità universitaria ↗</a>
+      </div>
+    </section>
+
+    <!-- ==================== APPROFONDIMENTI DISCIPLINARI ==================== -->
+    <section id="vista-disciplinari" hidden>
+      <p class="dek">Dashboard di approfondimento sviluppate a parte, tenute qui a portata di mano.</p>
+      <div class="risorse-links">
+        <a href="https://dashboard-psicologia.netlify.app" target="_blank" rel="noopener">Psicologia ↗</a>
+        <a href="https://vademecum-chimica-organica.netlify.app" target="_blank" rel="noopener">Chimica organica ↗</a>
+        <a href="https://vademecum-economia.netlify.app" target="_blank" rel="noopener">Economia politica ↗</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ==================== MODALE: manuale ==================== -->
+<div class="modal-overlay" id="modal-manuale">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="formManualiTitolo">
+    <header>
+      <h3 id="formManualiTitolo">Aggiungi manuale</h3>
+      <button type="button" class="chiudi" data-chiudi="modal-manuale" aria-label="Chiudi">×</button>
+    </header>
+    <div class="body">
+      <div class="form-grid">
+        <div class="campo"><label for="mTitolo">Titolo *</label><input class="field" id="mTitolo" /></div>
+        <div class="campo"><label for="mAutore">Autore</label><input class="field" id="mAutore" /></div>
+        <div class="campo"><label for="mPublisher">Editore</label><input class="field" id="mPublisher" /></div>
+        <div class="campo"><label for="mMateria">Materia</label><input class="field" id="mMateria" /></div>
+        <div class="campo"><label for="mEdizione">Edizione</label><input class="field" id="mEdizione" /></div>
+        <div class="campo"><label for="mAnno">Anno pubblicazione</label><input class="field" id="mAnno" type="number" /></div>
+        <div class="campo"><label for="mVolume">Volume</label><input class="field" id="mVolume" type="number" /></div>
+      </div>
+      <div class="campo" id="mJsonBox" style="margin-top:14px">
+        <label for="mJson">JSON indice manuale da Matrix Framework Builder (facoltativo)</label>
+        <textarea class="field" id="mJson" rows="6"
+          placeholder="Incolla qui il JSON del modulo &quot;JSON indice manuale&quot;: riempie automaticamente titolo/autore/editore/materia se li trova, e salva l'indice completo"></textarea>
+      </div>
+    </div>
+    <footer>
+      <span class="msg" id="mMsg"></span>
+      <button type="button" class="btn btn-ghost" data-chiudi="modal-manuale">Annulla</button>
+      <button type="button" class="btn btn-primary" id="mSalva">Salva</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ==================== MODALE: framework ==================== -->
+<div class="modal-overlay" id="modal-framework">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="formFrameworkTitolo">
+    <header>
+      <h3 id="formFrameworkTitolo">Aggiungi framework</h3>
+      <button type="button" class="chiudi" data-chiudi="modal-framework" aria-label="Chiudi">×</button>
+    </header>
+    <div class="body">
+      <div class="form-grid">
+        <div class="campo"><label for="fNome">Nome *</label><input class="field" id="fNome" /></div>
+        <div class="campo"><label for="fMateria">Materia</label><input class="field" id="fMateria" /></div>
+        <div class="campo"><label for="fVersione">Versione</label><input class="field" id="fVersione" /></div>
+      </div>
+      <div class="campo" id="fJsonBox" style="margin-top:14px">
+        <label for="fJson">JSON generato da Matrix Framework Builder (facoltativo)</label>
+        <textarea class="field" id="fJson" rows="6"
+          placeholder="Incolla qui il JSON esportato dal Framework Builder: riempie automaticamente nome/materia/versione se li trova, e viene comunque salvato tutto"></textarea>
+      </div>
+    </div>
+    <footer>
+      <span class="msg" id="fMsg"></span>
+      <button type="button" class="btn btn-ghost" data-chiudi="modal-framework">Annulla</button>
+      <button type="button" class="btn btn-primary" id="fSalva">Salva</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ==================== MODALE: dettaglio JSON ==================== -->
+<div class="modal-overlay" id="modal-dettaglio">
+  <div class="modal-box larga" role="dialog" aria-modal="true" aria-labelledby="dettaglioTitolo">
+    <header>
+      <div>
+        <h3 id="dettaglioTitolo">Dettaglio</h3>
+        <p class="sotto" id="dettaglioSotto"></p>
+      </div>
+      <button type="button" class="chiudi" data-chiudi="modal-dettaglio" aria-label="Chiudi">×</button>
+    </header>
+    <div class="body"><pre class="dettaglio" id="dettaglioJson"></pre></div>
+    <footer><button type="button" class="btn btn-ghost" data-chiudi="modal-dettaglio">Chiudi</button></footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/atlante-shared.js"></script>
+<script src="js/shell.js" data-attiva="utilita"></script>
+<script>
+  const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let tuttiManuali = [];
+  let tuttiFramework = [];
+  let editoreProprio = null;
+  let ruoloUtente = null;
+  let mIdInModifica = null;
+  let fIdInModifica = null;
+  const materieAperte = new Set();   // quali accordion sono espansi
+
+  // ---- modali ----
+  function apriModale(id) { document.getElementById(id).classList.add('aperto'); }
+  function chiudiModale(id) { document.getElementById(id).classList.remove('aperto'); }
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-chiudi]');
+    if (t) chiudiModale(t.dataset.chiudi);
+    if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('aperto');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.aperto').forEach(m => m.classList.remove('aperto'));
+  });
+
+  // ---- helper di riga ----
+  function badgeTipo(publisher) {
+    const proprio = editoreProprio && publisher === editoreProprio;
+    return `<span class="badge ${proprio ? 'b-proprio' : 'b-competitor'}">${proprio ? 'proprio' : 'competitor'}</span>`;
+  }
+  function badgeIndice(m) {
+    return estraiIndiceManuale(m)
+      ? '<span class="badge b-idxok">✓ caricato</span>'
+      : '<span class="badge b-idxno">— da caricare</span>';
+  }
+  function edizioneTesto(m) {
+    const parti = [m.edizione, m.anno_pubblicazione].filter(Boolean);
+    return parti.length ? escapeHtml(parti.join(' · ')) : '—';
+  }
+
+  function tabellaManualiHtml(elenco) {
+    const gestore = ruoloUtente === 'gestore';
+    return `<div class="table-scroll"><table class="data">
+      <thead><tr>
+        <th style="width:19%">Autore</th>
+        <th>Titolo</th>
+        <th style="width:15%">Editore</th>
+        <th style="width:12%">Edizione</th>
+        <th style="width:9%">Tipo</th>
+        <th style="width:12%">Indice</th>
+        <th class="right" style="width:12%">Azioni</th>
+      </tr></thead>
+      <tbody>${elenco.map(m => `
+        <tr>
+          <td><span class="aut">${escapeHtml(m.autore || '—')}</span></td>
+          <td><span class="titolo-libro">${escapeHtml(m.titolo || '')}</span>${m.volume ? `<em>vol. ${escapeHtml(m.volume)}</em>` : ''}</td>
+          <td>${escapeHtml(m.publisher || '—')}</td>
+          <td>${edizioneTesto(m)}</td>
+          <td>${badgeTipo(m.publisher)}</td>
+          <td>${badgeIndice(m)}</td>
+          <td class="right"><div class="row-actions">
+            <button type="button" class="m-btn" data-dettaglio="m" data-id="${m.id}">Vedi</button>
+            ${gestore ? `<button type="button" class="m-btn" data-modifica="m" data-id="${m.id}" title="Modifica">✎</button>` : ''}
+          </div></td>
+        </tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  function tabellaFrameworkHtml(elenco) {
+    const gestore = ruoloUtente === 'gestore';
+    return `<div class="table-scroll"><table class="data">
+      <thead><tr>
+        <th>Nome</th>
+        <th style="width:14%">Versione</th>
+        <th style="width:16%">Contenuto</th>
+        <th class="right" style="width:12%">Azioni</th>
+      </tr></thead>
+      <tbody>${elenco.map(f => `
+        <tr>
+          <td><span class="doc">${escapeHtml(f.nome || '')}</span></td>
+          <td>${escapeHtml(f.versione || '—')}</td>
+          <td>${(f.dati && f.dati.raw)
+            ? '<span class="badge b-idxok">✓ caricato</span>'
+            : '<span class="badge b-idxno">— solo anagrafica</span>'}</td>
+          <td class="right"><div class="row-actions">
+            <button type="button" class="m-btn" data-dettaglio="f" data-id="${f.id}">Vedi</button>
+            ${gestore ? `<button type="button" class="m-btn" data-modifica="f" data-id="${f.id}" title="Modifica">✎</button>
+            <button type="button" class="m-btn pericolo" data-elimina="f" data-id="${f.id}" title="Elimina">🗑</button>` : ''}
+          </div></td>
+        </tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  function raggruppaPerMateria(elenco) {
+    const gruppi = {};
+    for (const x of elenco) (gruppi[x.materia || '(senza materia)'] ||= []).push(x);
+    for (const mat in gruppi) gruppi[mat].sort((a, b) => (a.titolo || a.nome || '').localeCompare(b.titolo || b.nome || '', 'it'));
+    return gruppi;
+  }
+
+  // Vista compatta: 86+ righe tutte insieme sono troppo per l'occhio, quindi
+  // raggruppate per materia e chiuse di default — l'utente apre solo quella che
+  // gli serve. Con un filtro attivo si apre tutto: chi cerca vuole vedere.
+  function renderGruppi(contenitoreId, elenco, tabellaFn, apriTutto) {
+    const gruppi = raggruppaPerMateria(elenco);
+    const materie = Object.keys(gruppi).sort((a, b) => a.localeCompare(b, 'it'));
+    const box = document.getElementById(contenitoreId);
+    if (!materie.length) {
+      box.innerHTML = `<div class="empty"><h4>Nessun risultato</h4><p>Nessuna voce corrisponde ai filtri impostati. Prova ad allargare la ricerca o a togliere un filtro.</p></div>`;
+      return;
+    }
+    box.innerHTML = materie.map((mat, i) => {
+      const chiave = contenitoreId + '::' + mat;
+      const aperto = apriTutto || materieAperte.has(chiave);
+      const propri = gruppi[mat].filter(x => x.publisher && x.publisher === editoreProprio).length;
+      const nFw = tuttiFramework.filter(f => (f.materia || '(senza materia)') === mat).length;
+      return `<div class="materia-block${aperto ? '' : ' closed'}" data-chiave="${escapeHtml(chiave)}">
+        <button type="button" class="materia-head" aria-expanded="${aperto}">
+          <span class="arrow">▾</span>
+          <h3>${escapeHtml(mat)}</h3>
+          <span class="n"><b>${gruppi[mat].length}</b> voci${contenitoreId === 'gruppiManuali' ? ` · <b>${propri}</b> propri · <b>${nFw}</b> framework` : ''}</span>
+        </button>
+        <div class="materia-corpo">${tabellaFn(gruppi[mat])}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // delegazione: il contenuto è rigenerato a ogni filtro, i listener diretti si perderebbero
+  document.addEventListener('click', (e) => {
+    const head = e.target.closest('.materia-head');
+    if (head) {
+      const blocco = head.closest('.materia-block');
+      const chiuso = blocco.classList.toggle('closed');
+      head.setAttribute('aria-expanded', String(!chiuso));
+      if (chiuso) materieAperte.delete(blocco.dataset.chiave); else materieAperte.add(blocco.dataset.chiave);
+      return;
+    }
+    const dett = e.target.closest('[data-dettaglio]');
+    if (dett) {
+      const lista = dett.dataset.dettaglio === 'm' ? tuttiManuali : tuttiFramework;
+      const x = lista.find(r => r.id === dett.dataset.id);
+      if (!x) return;
+      document.getElementById('dettaglioTitolo').textContent = x.titolo || x.nome || 'Dettaglio';
+      document.getElementById('dettaglioSotto').textContent = [x.autore, x.publisher, x.materia, x.versione].filter(Boolean).join(' · ');
+      document.getElementById('dettaglioJson').textContent = JSON.stringify(x.dati || {}, null, 2);
+      apriModale('modal-dettaglio');
+      return;
+    }
+    const mod = e.target.closest('[data-modifica]');
+    if (mod) {
+      if (mod.dataset.modifica === 'm') apriModificaManuale(mod.dataset.id);
+      else apriModificaFramework(mod.dataset.id);
+      return;
+    }
+    const elim = e.target.closest('[data-elimina]');
+    if (elim) eliminaFramework(elim.dataset.id);
+  });
+
+  // ---- filtri ----
+  function applicaFiltri() {
+    const testo = document.getElementById('ricerca').value.trim().toLowerCase();
+    const materia = document.getElementById('materiaFiltro').value;
+    const editore = document.getElementById('editoreFiltro').value;
+    const filtrati = tuttiManuali.filter(m => {
+      const okTesto = !testo || (m.titolo || '').toLowerCase().includes(testo) || (m.autore || '').toLowerCase().includes(testo);
+      const okMateria = !materia || m.materia === materia;
+      const okEditore = !editore || m.publisher === editore;
+      return okTesto && okMateria && okEditore;
+    });
+    renderGruppi('gruppiManuali', filtrati, tabellaManualiHtml, Boolean(testo || materia || editore));
+  }
+
+  function applicaFiltriFw() {
+    const testo = document.getElementById('ricercaFw').value.trim().toLowerCase();
+    const filtrati = tuttiFramework.filter(f => !testo || (f.nome || '').toLowerCase().includes(testo));
+    renderGruppi('gruppiFramework', filtrati, tabellaFrameworkHtml, Boolean(testo));
+  }
+
+  function aggiornaSelectFiltri() {
+    const materie = [...new Set(tuttiManuali.map(m => m.materia).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it'));
+    const editori = [...new Set(tuttiManuali.map(m => m.publisher).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it'));
+    for (const [id, valori, tutti] of [['materiaFiltro', materie, 'Tutte'], ['editoreFiltro', editori, 'Tutti']]) {
+      const sel = document.getElementById(id);
+      const attuale = sel.value;
+      sel.innerHTML = `<option value="">${tutti}</option>` + valori.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+      sel.value = attuale;
+    }
+  }
+
+  // ---- statistiche ----
+  function renderStats() {
+    const tot = tuttiManuali.length;
+    const propri = tuttiManuali.filter(m => m.publisher === editoreProprio).length;
+    const conIndice = tuttiManuali.filter(m => estraiIndiceManuale(m) !== null).length;
+    const perc = tot ? Math.round(conIndice / tot * 100) : 0;
+    // è il framework a definire la disciplina da analizzare, non il manuale (i manuali sono
+    // solo le risorse confrontate contro un framework). Si conta sul suo `nome`, che resta
+    // specifico (es. "Psicologia Generale"), non su `materia`, che è la macro-categoria
+    // condivisa da più framework correlati (es. "psicologia").
+    const materie = new Set(tuttiFramework.map(f => f.nome).filter(Boolean));
+    const cella = (l, v, extra) => `<div class="cell"><div class="l">${l}</div><div class="v">${v}${extra || ''}</div></div>`;
+    document.getElementById('cat-stats').innerHTML = [
+      cella('Manuali totali', formattaNumero(tot)),
+      cella(escapeHtml(editoreProprio || 'Editore proprio'), `<span style="color:var(--v-ink)">${formattaNumero(propri)}</span>`, ' <small>editore proprio</small>'),
+      cella('Competitor', formattaNumero(tot - propri)),
+      cella('Con indice caricato', formattaNumero(conIndice), ` <small style="color:var(--ok)">${perc}%</small>`),
+      cella('Framework', formattaNumero(tuttiFramework.length)),
+      cella('Materie coperte', formattaNumero(materie.size)),
+    ].join('<div class="sep"></div>');
+    document.getElementById('n-tab-manuali').textContent = tot;
+    document.getElementById('n-tab-framework').textContent = tuttiFramework.length;
+  }
+
+  // ---- export CSV ----
+  function esportaCsv() {
+    const campi = ['autore', 'titolo', 'publisher', 'materia', 'edizione', 'anno_pubblicazione', 'volume'];
+    const cella = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+    const righe = [
+      [...campi, 'tipo', 'indice_caricato'].join(';'),
+      ...tuttiManuali.map(m => [
+        ...campi.map(c => cella(m[c])),
+        cella(m.publisher === editoreProprio ? 'proprio' : 'competitor'),
+        cella(estraiIndiceManuale(m) ? 'si' : 'no'),
+      ].join(';')),
+    ].join('\n');
+    // BOM: senza, Excel in italiano sbaglia la codifica degli accenti
+    const blob = new Blob(['﻿' + righe], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `catalogo_manuali_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ---- form manuali ----
+  function resetFormManuali() {
+    mIdInModifica = null;
+    document.getElementById('formManualiTitolo').textContent = 'Aggiungi manuale';
+    for (const id of ['mTitolo', 'mAutore', 'mPublisher', 'mMateria', 'mEdizione', 'mAnno', 'mVolume', 'mJson']) {
+      document.getElementById(id).value = '';
+    }
+    document.getElementById('mJsonBox').hidden = false;
+    document.getElementById('mMsg').textContent = '';
+  }
+
+  function apriModificaManuale(id) {
+    const m = tuttiManuali.find(x => x.id === id);
+    if (!m) return;
+    resetFormManuali();
+    mIdInModifica = id;
+    document.getElementById('formManualiTitolo').textContent = 'Modifica manuale';
+    document.getElementById('mTitolo').value = m.titolo || '';
+    document.getElementById('mAutore').value = m.autore || '';
+    document.getElementById('mPublisher').value = m.publisher || '';
+    document.getElementById('mMateria').value = m.materia || '';
+    document.getElementById('mEdizione').value = m.edizione || '';
+    document.getElementById('mAnno').value = m.anno_pubblicazione || '';
+    document.getElementById('mVolume').value = m.volume || '';
+    // l'incolla-JSON serve solo per un manuale nuovo, non per correggere l'anagrafica di uno esistente
+    document.getElementById('mJsonBox').hidden = true;
+    apriModale('modal-manuale');
+  }
+
+  async function salvaManuale() {
+    const msg = document.getElementById('mMsg');
+    const riga = {
+      titolo: document.getElementById('mTitolo').value.trim(),
+      autore: document.getElementById('mAutore').value.trim() || null,
+      publisher: document.getElementById('mPublisher').value.trim() || null,
+      materia: document.getElementById('mMateria').value.trim() || null,
+      edizione: document.getElementById('mEdizione').value.trim() || null,
+      anno_pubblicazione: document.getElementById('mAnno').value ? Number(document.getElementById('mAnno').value) : null,
+      volume: document.getElementById('mVolume').value ? Number(document.getElementById('mVolume').value) : null,
+    };
+    if (!riga.titolo) { msg.className = 'msg errore'; msg.textContent = 'Il titolo è obbligatorio.'; return; }
+
+    const jsonTesto = document.getElementById('mJson').value.trim();
+    let datiExtra = { import_source: 'manuale' };
+    if (jsonTesto) {
+      try { datiExtra = { import_source: 'framework_builder_indice', raw: JSON.parse(jsonTesto) }; }
+      catch { msg.className = 'msg errore'; msg.textContent = 'Il JSON incollato non è valido.'; return; }
+    }
+
+    const query = mIdInModifica
+      ? supabaseClient.from('manuali').update(riga).eq('id', mIdInModifica).select().single()
+      : supabaseClient.from('manuali').insert({ ...riga, dati: datiExtra }).select().single();
+
+    const { data, error } = await query;
+    if (error) { msg.className = 'msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+
+    if (mIdInModifica) tuttiManuali[tuttiManuali.findIndex(x => x.id === mIdInModifica)] = data;
+    else tuttiManuali.push(data);
+
+    aggiornaSelectFiltri();
+    applicaFiltri();
+    renderStats();
+    resetFormManuali();
+    chiudiModale('modal-manuale');
+  }
+
+  // ---- form framework ----
+  function resetFormFramework() {
+    fIdInModifica = null;
+    document.getElementById('formFrameworkTitolo').textContent = 'Aggiungi framework';
+    for (const id of ['fNome', 'fMateria', 'fVersione', 'fJson']) document.getElementById(id).value = '';
+    document.getElementById('fJsonBox').hidden = false;
+    document.querySelector('#fJsonBox label').textContent = 'JSON generato da Matrix Framework Builder (facoltativo)';
+    document.getElementById('fJson').placeholder = 'Incolla qui il JSON esportato dal Framework Builder: riempie automaticamente nome/materia/versione se li trova, e viene comunque salvato tutto';
+    document.getElementById('fMsg').textContent = '';
+  }
+
+  function apriModificaFramework(id) {
+    const f = tuttiFramework.find(x => x.id === id);
+    if (!f) return;
+    resetFormFramework();
+    fIdInModifica = id;
+    document.getElementById('formFrameworkTitolo').textContent = 'Modifica framework';
+    document.getElementById('fNome').value = f.nome || '';
+    document.getElementById('fMateria').value = f.materia || '';
+    document.getElementById('fVersione').value = f.versione || '';
+    // il box resta visibile anche in modifica: incollare un JSON nuovo sostituisce il
+    // contenuto del framework (es. un framework obsoleto da aggiornare), lasciarlo vuoto
+    // non tocca il contenuto esistente
+    document.getElementById('fJsonBox').hidden = false;
+    document.querySelector('#fJsonBox label').textContent = 'Sostituisci il contenuto con un nuovo JSON da Matrix Framework Builder (lascia vuoto per non modificarlo)';
+    document.getElementById('fJson').placeholder = 'Incolla qui il JSON solo se vuoi sostituire il contenuto attuale di questo framework — altrimenti lascia vuoto';
+    apriModale('modal-framework');
+  }
+
+  async function eliminaFramework(id) {
+    const f = tuttiFramework.find(x => x.id === id);
+    if (!f) return;
+    if (!confirm(`Eliminare il framework "${f.nome}"? Le sezioni che lo usano (Confronto manuali, Analisi di un programma, Piano di promozione) smetteranno di trovarlo per la materia "${f.materia || 'non specificata'}".`)) return;
+    const { error } = await supabaseClient.from('framework').delete().eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    tuttiFramework = tuttiFramework.filter(x => x.id !== id);
+    applicaFiltriFw();
+    renderStats();
+  }
+
+  async function salvaFramework() {
+    const msg = document.getElementById('fMsg');
+    const riga = {
+      nome: document.getElementById('fNome').value.trim(),
+      materia: document.getElementById('fMateria').value.trim() || null,
+      versione: document.getElementById('fVersione').value.trim() || null,
+    };
+    if (!riga.nome) { msg.className = 'msg errore'; msg.textContent = 'Il nome è obbligatorio.'; return; }
+
+    const jsonTesto = document.getElementById('fJson').value.trim();
+    let datiExtra = { import_source: 'manuale' };
+    if (jsonTesto) {
+      try { datiExtra = { import_source: 'framework_builder', raw: JSON.parse(jsonTesto) }; }
+      catch { msg.className = 'msg errore'; msg.textContent = 'Il JSON incollato non è valido.'; return; }
+    } else if (fIdInModifica) {
+      // in modifica, campo vuoto = non toccare il contenuto esistente
+      datiExtra = null;
+    }
+
+    const query = fIdInModifica
+      ? supabaseClient.from('framework').update(datiExtra ? { ...riga, dati: datiExtra } : riga).eq('id', fIdInModifica).select().single()
+      : supabaseClient.from('framework').insert({ ...riga, dati: datiExtra }).select().single();
+
+    const { data, error } = await query;
+    if (error) { msg.className = 'msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+
+    if (fIdInModifica) tuttiFramework[tuttiFramework.findIndex(x => x.id === fIdInModifica)] = data;
+    else tuttiFramework.push(data);
+
+    applicaFiltriFw();
+    renderStats();
+    resetFormFramework();
+    chiudiModale('modal-framework');
+  }
+
+  // auto-compilazione dal JSON incollato: due listener che devono sopravvivere a
+  // qualunque restyling del form — sono il vero risparmio di tempo per il gestore
+  document.getElementById('mJson').addEventListener('input', (e) => {
+    try {
+      const j = JSON.parse(e.target.value);
+      const campi = [['mTitolo', j.title || j.titolo], ['mAutore', j.author || j.autore],
+                     ['mPublisher', j.publisher], ['mMateria', j.subject || j.materia]];
+      for (const [id, val] of campi) if (val && !document.getElementById(id).value) document.getElementById(id).value = val;
+    } catch { /* JSON non ancora valido/completo mentre l'utente incolla: nessun errore mostrato */ }
+  });
+  document.getElementById('fJson').addEventListener('input', (e) => {
+    try {
+      const j = JSON.parse(e.target.value);
+      const campi = [['fNome', j.name || j.nome || j.content?.framework?.name],
+                     ['fMateria', j.subject || j.materia || j.disciplina],
+                     ['fVersione', j.version || j.versione || j.content?.framework?.version]];
+      for (const [id, val] of campi) if (val && !document.getElementById(id).value) document.getElementById(id).value = val;
+    } catch { /* idem */ }
+  });
+
+  // ---- tab Manuali / Framework / risorse esterne ----
+  const VISTE = ['manuali', 'framework', 'iscritti-offerta', 'disciplinari'];
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+    VISTE.forEach(v => { document.getElementById('vista-' + v).hidden = b.dataset.vista !== v; });
+  }));
+
+  async function main() {
+    const statoIniziale = document.getElementById('stato-iniziale');
+    const sessione = await avviaSessione(supabaseClient, { redirect: false });
+    if (!sessione) { statoIniziale.innerHTML = 'Non sei connesso — <a href="login.html">vai al login</a>'; return; }
+    if (!sessione.profilo) { statoIniziale.innerHTML = bloccoSenzaProfilo(sessione.session.user.email); return; }
+
+    popolaSidebar(sessione, supabaseClient);
+    editoreProprio = sessione.profilo.clienti.editore_proprio;
+    ruoloUtente = sessione.profilo.ruolo;
+
+    const [{ data: manuali, error: eManuali }, { data: framework, error: eFramework }] = await Promise.all([
+      supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia, edizione, anno_pubblicazione, volume, dati').order('autore'),
+      supabaseClient.from('framework').select('id, nome, materia, versione, dati').order('nome'),
+    ]);
+
+    if (eManuali || eFramework) {
+      statoIniziale.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>Errore nel caricamento del catalogo: ${escapeHtml((eManuali || eFramework).message)}</div></div>`;
+      return;
+    }
+
+    tuttiManuali = manuali || [];
+    tuttiFramework = framework || [];
+
+    statoIniziale.hidden = true;
+    document.getElementById('contenuto').hidden = false;
+
+    renderStats();
+    aggiornaSelectFiltri();
+    applicaFiltri();
+    applicaFiltriFw();
+
+    document.getElementById('ricerca').addEventListener('input', applicaFiltri);
+    document.getElementById('materiaFiltro').addEventListener('change', applicaFiltri);
+    document.getElementById('editoreFiltro').addEventListener('change', applicaFiltri);
+    document.getElementById('ricercaFw').addEventListener('input', applicaFiltriFw);
+    document.getElementById('btnCsv').addEventListener('click', esportaCsv);
+
+    if (ruoloUtente === 'gestore') {
+      document.getElementById('btnNuovoManuale').hidden = false;
+      document.getElementById('btnNuovoFramework').hidden = false;
+      document.getElementById('btnNuovoManuale').addEventListener('click', () => { resetFormManuali(); apriModale('modal-manuale'); });
+      document.getElementById('btnNuovoFramework').addEventListener('click', () => { resetFormFramework(); apriModale('modal-framework'); });
+      document.getElementById('mSalva').addEventListener('click', salvaManuale);
+      document.getElementById('fSalva').addEventListener('click', salvaFramework);
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
