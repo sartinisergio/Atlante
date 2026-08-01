@@ -1,0 +1,20 @@
+name: Keep Supabase alive
+
+on:
+  schedule:
+    - cron: '0 6 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        # Stessa chiave anon/publishable già usata lato client in app/*.html
+        # (protetta da RLS, sicura da avere qui) — basta una query reale al DB,
+        # anche filtrata a zero righe, per contare come attività e non far
+        # mettere in pausa il progetto Supabase Free dopo 7 giorni di inattività.
+        run: |
+          curl -s -o /dev/null -w "HTTP status: %{http_code}\n" \
+            "https://qnozhdoyczxgxqvehuwc.supabase.co/rest/v1/manuali?select=id&limit=1" \
+            -H "apikey: sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-"
