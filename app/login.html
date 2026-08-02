@@ -227,7 +227,11 @@
     });
     bottone.disabled = false;
     if (error) {
-      mostra('errore', 'Errore: ' + error.message);
+      if (error.code === 'otp_disabled') {
+        mostra('errore', 'La tua email non è attualmente collegata a nessun account attivo. Contatta l\'amministratore (sartinisergio@gmail.com) per avere l\'accesso.');
+      } else {
+        mostra('errore', 'Errore: ' + error.message);
+      }
     } else {
       mostra('attesa', `<strong>Controlla la tua posta.</strong><br>Ti abbiamo inviato un link su <em>${email.replace(/[&<>]/g, '')}</em>. Cliccalo per entrare in Atlante.`);
     }
