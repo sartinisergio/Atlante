@@ -27,7 +27,6 @@
   .invita-box h3 { margin: 0 0 12px; font-size: 15px; }
   .invita-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
   .invita-row .campo { margin-bottom: 0; min-width: 220px; flex: 1; }
-  .invita-row .campo.ruolo { min-width: 140px; flex: none; }
   .invita-msg { margin-top: 12px; }
 
   table.data td .nome { font-weight: 500; color: var(--ink); }
@@ -60,13 +59,6 @@
         <div class="campo">
           <label for="invEmail">Email</label>
           <input class="field" id="invEmail" type="email" placeholder="collega@editore.it" />
-        </div>
-        <div class="campo ruolo">
-          <label for="invRuolo">Ruolo</label>
-          <select class="field" id="invRuolo">
-            <option value="promotore" selected>promotore</option>
-            <option value="gestore">gestore</option>
-          </select>
         </div>
         <button type="button" class="btn btn-primary" id="btnInvita">＋ Invita</button>
       </div>
@@ -135,12 +127,16 @@
 
   function rigaHtml(p) {
     const rimosso = p.stato === 'rimosso';
+    // Il ruolo di gestore si tocca solo per trasferimento (vedi trasferisciGestore): niente
+    // bottone di auto-retrocessione sulla propria riga, l'unico modo di cambiare gestore è
+    // promuoverne un altro — così non si resta mai senza nessun gestore attivo.
+    const bottoneRuolo = p.ruolo === 'gestore'
+      ? ''
+      : `<button type="button" class="m-btn" data-trasferisci="${p.id}">Rendi gestore</button>`;
     const azioni = rimosso
       ? `<span style="color:var(--ink-muted); font-size:12px">rimosso il ${new Date(p.rimosso_il).toLocaleDateString('it-IT')}</span>`
       : `<div class="row-actions">
-          <button type="button" class="m-btn" data-ruolo="${p.ruolo === 'gestore' ? 'promotore' : 'gestore'}" data-id="${p.id}">
-            ${p.ruolo === 'gestore' ? 'Rendi promotore' : 'Rendi gestore'}
-          </button>
+          ${bottoneRuolo}
           <button type="button" class="m-btn pericolo" data-rimuovi="${p.id}">Rimuovi</button>
         </div>`;
     return `<tr>
@@ -169,9 +165,11 @@
     renderTabella();
   }
 
+  // Un invito crea sempre un promotore: il ruolo di gestore non si assegna mai
+  // direttamente a un invito, solo per trasferimento da chi lo è già (vedi
+  // trasferisciGestore) — così un'organizzazione non può mai finire con due gestori.
   async function invita() {
     const emailInput = document.getElementById('invEmail');
-    const ruoloSelect = document.getElementById('invRuolo');
     const msg = document.getElementById('invMsg');
     const btn = document.getElementById('btnInvita');
     const email = emailInput.value.trim();
@@ -186,7 +184,7 @@
         headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          ruolo: ruoloSelect.value,
+          ruolo: 'promotore',
           // Relativo alla pagina corrente, non all'origin: funziona sia se Atlante gira
           // sulla radice del server (es. scripts/dev-server.mjs) sia sotto una sottocartella
           // (es. Live Server aperto sulla radice del repo, /app/utenti.html).
@@ -200,7 +198,6 @@
       }
       msg.innerHTML = `<div class="helper ok"><span class="ic">✓</span><div>Invito inviato a <strong>${escapeHtml(email)}</strong>.</div></div>`;
       emailInput.value = '';
-      ruoloSelect.value = 'promotore';
       await ricaricaProfili();
     } catch (err) {
       msg.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>Errore di rete: ${escapeHtml(err.message)}</div></div>`;
@@ -209,8 +206,11 @@
     }
   }
 
-  async function cambiaRuolo(id, nuovoRuolo) {
-    const { error } = await supabaseClient.from('profili').update({ ruolo: nuovoRuolo }).eq('id', id);
+  async function trasferisciGestore(id) {
+    const persona = profili.find(p => p.id === id);
+    const nome = persona ? nomeVisualizzato(persona) : 'questa persona';
+    if (!confirm(`Rendere gestore ${nome}? Il ruolo verrà trasferito: tu tornerai promotore.`)) return;
+    const { error } = await supabaseClient.rpc('trasferisci_ruolo_gestore', { p_nuovo_gestore_id: id });
     if (error) {
       document.getElementById('invMsg').innerHTML =
         `<div class="helper errore"><span class="ic">!</span><div>Errore: ${escapeHtml(error.message)}</div></div>`;
@@ -221,6 +221,14 @@
 
   async function rimuovi(id) {
     const persona = profili.find(p => p.id === id);
+    if (persona && persona.ruolo === 'gestore') {
+      const gestoriAttivi = profili.filter(p => p.ruolo === 'gestore' && p.stato !== 'rimosso');
+      if (gestoriAttivi.length <= 1) {
+        document.getElementById('invMsg').innerHTML =
+          `<div class="helper errore"><span class="ic">!</span><div>Non puoi rimuovere l'unico gestore: trasferisci prima il ruolo a un collega.</div></div>`;
+        return;
+      }
+    }
     if (!confirm(`Rimuovere l'accesso di ${persona ? nomeVisualizzato(persona) : 'questa persona'}? Potrai sempre ricostruire lo storico, ma l'accesso si interrompe subito.`)) return;
     const { error } = await supabaseClient
       .from('profili')
@@ -235,8 +243,8 @@
   }
 
   document.getElementById('corpoTabella').addEventListener('click', (e) => {
-    const ruoloBtn = e.target.closest('[data-ruolo]');
-    if (ruoloBtn) { cambiaRuolo(ruoloBtn.dataset.id, ruoloBtn.dataset.ruolo); return; }
+    const trasferisciBtn = e.target.closest('[data-trasferisci]');
+    if (trasferisciBtn) { trasferisciGestore(trasferisciBtn.dataset.trasferisci); return; }
     const rimuoviBtn = e.target.closest('[data-rimuovi]');
     if (rimuoviBtn) { rimuovi(rimuoviBtn.dataset.rimuovi); }
   });
