@@ -67,8 +67,9 @@
   <h1 class="page">Utilità<em>.</em></h1>
   <p class="subtitle">Anagrafica condivisa di manuali e framework di valutazione — la stessa fonte
     dati usata da tutte le altre sezioni di Atlante, non una copia separata — più le dashboard di
-    approfondimento esterne, a portata di mano. Chiunque acceda può consultare e cercare; solo chi
-    ha ruolo di gestore può aggiungere o modificare manuali e framework.</p>
+    approfondimento esterne, a portata di mano. Chiunque acceda può consultare e cercare; un
+    gestore può proporre aggiunte o modifiche, ma solo l'amministratore di Atlante le applica al
+    catalogo condiviso.</p>
 
   <div id="stato-iniziale" class="vuoto">Caricamento…</div>
 
@@ -91,6 +92,7 @@
       <button type="button" role="tab" data-vista="framework">Framework <span class="n" id="n-tab-framework"></span></button>
       <button type="button" role="tab" data-vista="iscritti-offerta">Iscritti e offerta formativa <span class="n">4</span></button>
       <button type="button" role="tab" data-vista="disciplinari">Approfondimenti disciplinari <span class="n">3</span></button>
+      <button type="button" role="tab" data-vista="richieste" id="tab-richieste" hidden>Le mie richieste <span class="n" id="n-tab-richieste"></span></button>
     </div>
 
     <!-- ==================== MANUALI ==================== -->
@@ -147,6 +149,13 @@
         <a href="https://vademecum-chimica-organica.netlify.app" target="_blank" rel="noopener">Chimica organica ↗</a>
         <a href="https://vademecum-economia.netlify.app" target="_blank" rel="noopener">Economia politica ↗</a>
       </div>
+    </section>
+
+    <!-- ==================== LE MIE RICHIESTE ==================== -->
+    <section id="vista-richieste" hidden>
+      <p class="dek">Le proposte di aggiunta, modifica o cancellazione che hai inviato per il
+        catalogo condiviso — solo l'amministratore di Atlante le applica.</p>
+      <div id="listaRichieste"></div>
     </section>
 
   </div>
@@ -232,11 +241,21 @@
   const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const CATALOGO_ADMIN_URL = `${SUPABASE_URL}/functions/v1/catalogo-admin`;
+
+  // Solo un controllo di comodo lato UI (mostra la scrittura diretta invece del bottone
+  // "proponi"): la protezione vera è nella RLS di manuali/framework e nella Edge Function
+  // catalogo-admin, che verificano di nuovo la stessa email lato server.
+  const ADMIN_EMAILS = ['sartinisergio@gmail.com'];
 
   let tuttiManuali = [];
   let tuttiFramework = [];
+  let mieRichieste = [];
   let editoreProprio = null;
   let ruoloUtente = null;
+  let amministratore = false;
+  let mioId = null;
+  let mioClienteId = null;
   let mIdInModifica = null;
   let fIdInModifica = null;
   const materieAperte = new Set();   // quali accordion sono espansi
@@ -270,6 +289,8 @@
 
   function tabellaManualiHtml(elenco) {
     const gestore = ruoloUtente === 'gestore';
+    const titModifica = amministratore ? 'Modifica' : 'Proponi modifica';
+    const titElimina = amministratore ? 'Elimina' : 'Proponi cancellazione';
     return `<div class="table-scroll"><table class="data">
       <thead><tr>
         <th style="width:19%">Autore</th>
@@ -290,7 +311,8 @@
           <td>${badgeIndice(m)}</td>
           <td class="right"><div class="row-actions">
             <button type="button" class="m-btn" data-dettaglio="m" data-id="${m.id}">Vedi</button>
-            ${gestore ? `<button type="button" class="m-btn" data-modifica="m" data-id="${m.id}" title="Modifica">✎</button>` : ''}
+            ${gestore ? `<button type="button" class="m-btn" data-modifica="m" data-id="${m.id}" title="${titModifica}">✎</button>
+            <button type="button" class="m-btn pericolo" data-elimina="m" data-id="${m.id}" title="${titElimina}">🗑</button>` : ''}
           </div></td>
         </tr>`).join('')}</tbody>
     </table></div>`;
@@ -298,6 +320,8 @@
 
   function tabellaFrameworkHtml(elenco) {
     const gestore = ruoloUtente === 'gestore';
+    const titModifica = amministratore ? 'Modifica' : 'Proponi modifica';
+    const titElimina = amministratore ? 'Elimina' : 'Proponi cancellazione';
     return `<div class="table-scroll"><table class="data">
       <thead><tr>
         <th>Nome</th>
@@ -314,8 +338,8 @@
             : '<span class="badge b-idxno">— solo anagrafica</span>'}</td>
           <td class="right"><div class="row-actions">
             <button type="button" class="m-btn" data-dettaglio="f" data-id="${f.id}">Vedi</button>
-            ${gestore ? `<button type="button" class="m-btn" data-modifica="f" data-id="${f.id}" title="Modifica">✎</button>
-            <button type="button" class="m-btn pericolo" data-elimina="f" data-id="${f.id}" title="Elimina">🗑</button>` : ''}
+            ${gestore ? `<button type="button" class="m-btn" data-modifica="f" data-id="${f.id}" title="${titModifica}">✎</button>
+            <button type="button" class="m-btn pericolo" data-elimina="f" data-id="${f.id}" title="${titElimina}">🗑</button>` : ''}
           </div></td>
         </tr>`).join('')}</tbody>
     </table></div>`;
@@ -383,7 +407,10 @@
       return;
     }
     const elim = e.target.closest('[data-elimina]');
-    if (elim) eliminaFramework(elim.dataset.id);
+    if (elim) {
+      if (elim.dataset.elimina === 'm') eliminaManuale(elim.dataset.id);
+      else eliminaFramework(elim.dataset.id);
+    }
   });
 
   // ---- filtri ----
@@ -465,7 +492,8 @@
   // ---- form manuali ----
   function resetFormManuali() {
     mIdInModifica = null;
-    document.getElementById('formManualiTitolo').textContent = 'Aggiungi manuale';
+    document.getElementById('formManualiTitolo').textContent = amministratore ? 'Aggiungi manuale' : 'Proponi un manuale nuovo';
+    document.getElementById('mSalva').textContent = amministratore ? 'Salva' : 'Invia richiesta';
     for (const id of ['mTitolo', 'mAutore', 'mPublisher', 'mMateria', 'mEdizione', 'mAnno', 'mVolume', 'mJson']) {
       document.getElementById(id).value = '';
     }
@@ -478,7 +506,7 @@
     if (!m) return;
     resetFormManuali();
     mIdInModifica = id;
-    document.getElementById('formManualiTitolo').textContent = 'Modifica manuale';
+    document.getElementById('formManualiTitolo').textContent = amministratore ? 'Modifica manuale' : 'Proponi modifica manuale';
     document.getElementById('mTitolo').value = m.titolo || '';
     document.getElementById('mAutore').value = m.autore || '';
     document.getElementById('mPublisher').value = m.publisher || '';
@@ -511,6 +539,23 @@
       catch { msg.className = 'msg errore'; msg.textContent = 'Il JSON incollato non è valido.'; return; }
     }
 
+    if (!amministratore) {
+      const { error } = await supabaseClient.from('richieste_catalogo').insert({
+        cliente_id: mioClienteId,
+        creato_da: mioId,
+        tipo_catalogo: 'manuale',
+        tipo_operazione: mIdInModifica ? 'modifica' : 'inserimento',
+        riferimento_id: mIdInModifica,
+        dati_proposti: mIdInModifica ? riga : { ...riga, dati: datiExtra },
+      });
+      if (error) { msg.className = 'msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+      resetFormManuali();
+      chiudiModale('modal-manuale');
+      await caricaMieRichieste();
+      alert('Richiesta inviata: riceverai una notifica quando l\'amministratore l\'avrà valutata.');
+      return;
+    }
+
     const query = mIdInModifica
       ? supabaseClient.from('manuali').update(riga).eq('id', mIdInModifica).select().single()
       : supabaseClient.from('manuali').insert({ ...riga, dati: datiExtra }).select().single();
@@ -528,10 +573,38 @@
     chiudiModale('modal-manuale');
   }
 
+  async function eliminaManuale(id) {
+    const m = tuttiManuali.find(x => x.id === id);
+    if (!m) return;
+    if (!amministratore) {
+      if (!confirm(`Proporre la cancellazione di "${m.titolo}" dal catalogo?`)) return;
+      const { error } = await supabaseClient.from('richieste_catalogo').insert({
+        cliente_id: mioClienteId,
+        creato_da: mioId,
+        tipo_catalogo: 'manuale',
+        tipo_operazione: 'cancellazione',
+        riferimento_id: id,
+        dati_proposti: { titolo: m.titolo, autore: m.autore, publisher: m.publisher },
+      });
+      if (error) { alert('Errore: ' + error.message); return; }
+      await caricaMieRichieste();
+      alert('Richiesta di cancellazione inviata: riceverai una notifica quando l\'amministratore l\'avrà valutata.');
+      return;
+    }
+    if (!confirm(`Eliminare "${m.titolo}" dal catalogo? Se è citato in un programma esistente di qualche cliente, la cancellazione verrà rifiutata dal database.`)) return;
+    const { error } = await supabaseClient.from('manuali').delete().eq('id', id);
+    if (error) { alert('Errore: ' + error.message); return; }
+    tuttiManuali = tuttiManuali.filter(x => x.id !== id);
+    aggiornaSelectFiltri();
+    applicaFiltri();
+    renderStats();
+  }
+
   // ---- form framework ----
   function resetFormFramework() {
     fIdInModifica = null;
-    document.getElementById('formFrameworkTitolo').textContent = 'Aggiungi framework';
+    document.getElementById('formFrameworkTitolo').textContent = amministratore ? 'Aggiungi framework' : 'Proponi un framework nuovo';
+    document.getElementById('fSalva').textContent = amministratore ? 'Salva' : 'Invia richiesta';
     for (const id of ['fNome', 'fMateria', 'fVersione', 'fJson']) document.getElementById(id).value = '';
     document.getElementById('fJsonBox').hidden = false;
     document.querySelector('#fJsonBox label').textContent = 'JSON generato da Matrix Framework Builder (facoltativo)';
@@ -544,7 +617,7 @@
     if (!f) return;
     resetFormFramework();
     fIdInModifica = id;
-    document.getElementById('formFrameworkTitolo').textContent = 'Modifica framework';
+    document.getElementById('formFrameworkTitolo').textContent = amministratore ? 'Modifica framework' : 'Proponi modifica framework';
     document.getElementById('fNome').value = f.nome || '';
     document.getElementById('fMateria').value = f.materia || '';
     document.getElementById('fVersione').value = f.versione || '';
@@ -560,6 +633,21 @@
   async function eliminaFramework(id) {
     const f = tuttiFramework.find(x => x.id === id);
     if (!f) return;
+    if (!amministratore) {
+      if (!confirm(`Proporre la cancellazione del framework "${f.nome}"?`)) return;
+      const { error } = await supabaseClient.from('richieste_catalogo').insert({
+        cliente_id: mioClienteId,
+        creato_da: mioId,
+        tipo_catalogo: 'framework',
+        tipo_operazione: 'cancellazione',
+        riferimento_id: id,
+        dati_proposti: { nome: f.nome, materia: f.materia },
+      });
+      if (error) { alert('Errore: ' + error.message); return; }
+      await caricaMieRichieste();
+      alert('Richiesta di cancellazione inviata: riceverai una notifica quando l\'amministratore l\'avrà valutata.');
+      return;
+    }
     if (!confirm(`Eliminare il framework "${f.nome}"? Le sezioni che lo usano (Confronto manuali, Analisi di un programma, Piano di promozione) smetteranno di trovarlo per la materia "${f.materia || 'non specificata'}".`)) return;
     const { error } = await supabaseClient.from('framework').delete().eq('id', id);
     if (error) { alert('Errore: ' + error.message); return; }
@@ -585,6 +673,23 @@
     } else if (fIdInModifica) {
       // in modifica, campo vuoto = non toccare il contenuto esistente
       datiExtra = null;
+    }
+
+    if (!amministratore) {
+      const { error } = await supabaseClient.from('richieste_catalogo').insert({
+        cliente_id: mioClienteId,
+        creato_da: mioId,
+        tipo_catalogo: 'framework',
+        tipo_operazione: fIdInModifica ? 'modifica' : 'inserimento',
+        riferimento_id: fIdInModifica,
+        dati_proposti: datiExtra ? { ...riga, dati: datiExtra } : riga,
+      });
+      if (error) { msg.className = 'msg errore'; msg.textContent = 'Errore: ' + error.message; return; }
+      resetFormFramework();
+      chiudiModale('modal-framework');
+      await caricaMieRichieste();
+      alert('Richiesta inviata: riceverai una notifica quando l\'amministratore l\'avrà valutata.');
+      return;
     }
 
     const query = fIdInModifica
@@ -623,8 +728,53 @@
     } catch { /* idem */ }
   });
 
+  // ---- le mie richieste ----
+  const STATO_RICHIESTA_CLASSE = { in_attesa: 's-parz', approvata: 's-pres', approvata_con_modifiche: 's-pres', rifiutata: 's-ass' };
+  const STATO_RICHIESTA_LABEL = { in_attesa: 'in attesa', approvata: 'approvata', approvata_con_modifiche: 'approvata con modifiche', rifiutata: 'rifiutata' };
+  const OPERAZIONE_LABEL = { inserimento: 'Aggiunta', modifica: 'Modifica', cancellazione: 'Cancellazione' };
+
+  function renderRichieste() {
+    const box = document.getElementById('listaRichieste');
+    document.getElementById('n-tab-richieste').textContent = mieRichieste.length;
+    if (!mieRichieste.length) {
+      box.innerHTML = `<div class="empty"><h4>Nessuna richiesta</h4><p>Non hai ancora proposto aggiunte o modifiche al catalogo.</p></div>`;
+      return;
+    }
+    box.innerHTML = `<div class="table-scroll"><table class="data">
+      <thead><tr>
+        <th style="width:12%">Catalogo</th>
+        <th style="width:14%">Operazione</th>
+        <th>Oggetto</th>
+        <th style="width:16%">Stato</th>
+        <th>Messaggio amministratore</th>
+        <th style="width:12%">Inviata</th>
+      </tr></thead>
+      <tbody>${mieRichieste.map(r => {
+        const oggetto = (r.dati_proposti && (r.dati_proposti.titolo || r.dati_proposti.nome)) || '—';
+        return `<tr>
+          <td>${r.tipo_catalogo === 'manuale' ? 'Manuale' : 'Framework'}</td>
+          <td>${OPERAZIONE_LABEL[r.tipo_operazione] || r.tipo_operazione}</td>
+          <td>${escapeHtml(oggetto)}</td>
+          <td><span class="status ${STATO_RICHIESTA_CLASSE[r.stato] || 's-idle'}">${STATO_RICHIESTA_LABEL[r.stato] || r.stato}</span></td>
+          <td><span style="color:var(--ink-muted); font-size:12.5px">${escapeHtml(r.messaggio_admin || '—')}</span></td>
+          <td>${new Date(r.created_at).toLocaleDateString('it-IT')}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+  }
+
+  async function caricaMieRichieste() {
+    const { data, error } = await supabaseClient
+      .from('richieste_catalogo')
+      .select('id, tipo_catalogo, tipo_operazione, dati_proposti, stato, messaggio_admin, created_at')
+      .order('created_at', { ascending: false });
+    if (error) return;
+    mieRichieste = data || [];
+    renderRichieste();
+  }
+
   // ---- tab Manuali / Framework / risorse esterne ----
-  const VISTE = ['manuali', 'framework', 'iscritti-offerta', 'disciplinari'];
+  const VISTE = ['manuali', 'framework', 'iscritti-offerta', 'disciplinari', 'richieste'];
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
     VISTE.forEach(v => { document.getElementById('vista-' + v).hidden = b.dataset.vista !== v; });
@@ -639,6 +789,9 @@
     popolaSidebar(sessione, supabaseClient);
     editoreProprio = sessione.profilo.clienti.editore_proprio;
     ruoloUtente = sessione.profilo.ruolo;
+    mioId = sessione.session.user.id;
+    mioClienteId = sessione.profilo.cliente_id;
+    amministratore = ruoloUtente === 'gestore' && ADMIN_EMAILS.includes((sessione.session.user.email || '').toLowerCase());
 
     const [{ data: manuali, error: eManuali }, { data: framework, error: eFramework }] = await Promise.all([
       supabaseClient.from('manuali').select('id, titolo, autore, publisher, materia, edizione, anno_pubblicazione, volume, dati').order('autore'),
@@ -668,12 +821,21 @@
     document.getElementById('btnCsv').addEventListener('click', esportaCsv);
 
     if (ruoloUtente === 'gestore') {
-      document.getElementById('btnNuovoManuale').hidden = false;
-      document.getElementById('btnNuovoFramework').hidden = false;
-      document.getElementById('btnNuovoManuale').addEventListener('click', () => { resetFormManuali(); apriModale('modal-manuale'); });
-      document.getElementById('btnNuovoFramework').addEventListener('click', () => { resetFormFramework(); apriModale('modal-framework'); });
+      const btnNuovoManuale = document.getElementById('btnNuovoManuale');
+      const btnNuovoFramework = document.getElementById('btnNuovoFramework');
+      btnNuovoManuale.hidden = false;
+      btnNuovoFramework.hidden = false;
+      btnNuovoManuale.textContent = amministratore ? '＋ Aggiungi manuale' : '＋ Proponi aggiunta manuale';
+      btnNuovoFramework.textContent = amministratore ? '＋ Aggiungi framework' : '＋ Proponi aggiunta framework';
+      btnNuovoManuale.addEventListener('click', () => { resetFormManuali(); apriModale('modal-manuale'); });
+      btnNuovoFramework.addEventListener('click', () => { resetFormFramework(); apriModale('modal-framework'); });
       document.getElementById('mSalva').addEventListener('click', salvaManuale);
       document.getElementById('fSalva').addEventListener('click', salvaFramework);
+
+      if (!amministratore) {
+        document.getElementById('tab-richieste').hidden = false;
+        caricaMieRichieste();
+      }
     }
   }
 

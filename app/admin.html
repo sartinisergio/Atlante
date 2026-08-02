@@ -76,6 +76,37 @@
   </div>
 </div>
 
+<div class="wrap" style="max-width:980px; margin-top:24px;">
+  <div class="card" id="cardRichieste" hidden>
+    <h1 class="page" style="font-size:26px">Richieste catalogo<em>.</em></h1>
+    <p class="subtitle">Proposte di aggiunta, modifica o cancellazione inviate dai gestori per
+      manuali e framework — solo tu puoi applicarle al catalogo condiviso.</p>
+    <div id="richiesteBox">Caricamento…</div>
+  </div>
+</div>
+
+<!-- ==================== MODALE: approva con modifiche ==================== -->
+<div class="modal-overlay" id="modal-decidi">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="decidiTitolo">
+    <header>
+      <h3 id="decidiTitolo">Correggi prima di approvare</h3>
+      <button type="button" class="chiudi" data-chiudi="modal-decidi" aria-label="Chiudi">×</button>
+    </header>
+    <div class="body">
+      <div class="form-grid" id="decidiCampi"></div>
+      <div class="campo" style="margin-top:14px">
+        <label for="decidiMessaggio">Messaggio per il gestore (facoltativo)</label>
+        <textarea class="field" id="decidiMessaggio" rows="3" placeholder="Spiega cosa hai cambiato, se vuoi"></textarea>
+      </div>
+    </div>
+    <footer>
+      <span class="msg" id="decidiMsg"></span>
+      <button type="button" class="btn btn-ghost" data-chiudi="modal-decidi">Annulla</button>
+      <button type="button" class="btn btn-primary" id="decidiSalva">Approva con queste modifiche</button>
+    </footer>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/atlante-shared.js"></script>
 <script>
@@ -83,6 +114,7 @@
   const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/admin-crea-cliente`;
+  const CATALOGO_ADMIN_URL = `${SUPABASE_URL}/functions/v1/catalogo-admin`;
 
   // Solo un controllo di comodo lato UI: la protezione vera è nella Edge Function, che
   // verifica di nuovo la stessa email lato server prima di scrivere qualunque cosa.
@@ -143,6 +175,163 @@
 
   document.getElementById('btnCrea').addEventListener('click', crea);
 
+  // ---- richieste catalogo ----
+  let richiesteCorrenti = [];
+  let richiestaInModifica = null;
+
+  function apriModale(id) { document.getElementById(id).classList.add('aperto'); }
+  function chiudiModale(id) { document.getElementById(id).classList.remove('aperto'); }
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-chiudi]');
+    if (t) chiudiModale(t.dataset.chiudi);
+    if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('aperto');
+  });
+
+  const STATO_RICHIESTA_CLASSE = { in_attesa: 's-parz', approvata: 's-pres', approvata_con_modifiche: 's-pres', rifiutata: 's-ass' };
+  const STATO_RICHIESTA_LABEL = { in_attesa: 'in attesa', approvata: 'approvata', approvata_con_modifiche: 'approvata con modifiche', rifiutata: 'rifiutata' };
+  const OPERAZIONE_LABEL = { inserimento: 'Aggiunta', modifica: 'Modifica', cancellazione: 'Cancellazione' };
+
+  function rigaRichiestaHtml(r) {
+    const oggetto = (r.dati_proposti && (r.dati_proposti.titolo || r.dati_proposti.nome)) || '—';
+    const cliente = (r.clienti && r.clienti.nome) || '—';
+    const richiedente = (r.profili && (r.profili.nome_completo || r.profili.email)) || '—';
+    const puoModificare = r.stato === 'in_attesa' && r.tipo_operazione !== 'cancellazione';
+    const azioni = r.stato === 'in_attesa'
+      ? `<div class="row-actions">
+          <button type="button" class="m-btn" data-approva="${r.id}">Approva</button>
+          ${puoModificare ? `<button type="button" class="m-btn" data-modifica-approva="${r.id}">Modifica e approva</button>` : ''}
+          <button type="button" class="m-btn pericolo" data-rifiuta="${r.id}">Rifiuta</button>
+        </div>`
+      : (r.messaggio_admin ? `<span style="font-size:12px; color:var(--ink-muted)">${escapeHtml(r.messaggio_admin)}</span>` : '');
+    return `<tr>
+      <td>${escapeHtml(cliente)}</td>
+      <td>${escapeHtml(richiedente)}</td>
+      <td>${r.tipo_catalogo === 'manuale' ? 'Manuale' : 'Framework'}</td>
+      <td>${OPERAZIONE_LABEL[r.tipo_operazione] || r.tipo_operazione}</td>
+      <td>${escapeHtml(oggetto)}</td>
+      <td><span class="status ${STATO_RICHIESTA_CLASSE[r.stato] || 's-idle'}">${STATO_RICHIESTA_LABEL[r.stato] || r.stato}</span></td>
+      <td class="right">${azioni}</td>
+    </tr>`;
+  }
+
+  function renderRichieste() {
+    const box = document.getElementById('richiesteBox');
+    if (!richiesteCorrenti.length) {
+      box.innerHTML = `<div class="empty"><h4>Nessuna richiesta</h4><p>Non ci sono proposte per il catalogo, al momento.</p></div>`;
+      return;
+    }
+    box.innerHTML = `<div class="table-scroll"><table class="data">
+      <thead><tr>
+        <th>Cliente</th><th>Richiedente</th><th style="width:10%">Catalogo</th>
+        <th style="width:12%">Operazione</th><th>Oggetto</th><th style="width:16%">Stato</th>
+        <th class="right">Azioni / esito</th>
+      </tr></thead>
+      <tbody>${richiesteCorrenti.map(rigaRichiestaHtml).join('')}</tbody>
+    </table></div>`;
+  }
+
+  async function caricaRichieste() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const resp = await fetch(CATALOGO_ADMIN_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ azione: 'lista' }),
+    });
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      document.getElementById('richiesteBox').innerHTML = `<div class="helper errore"><span class="ic">!</span><div>${escapeHtml(body.error || 'Errore nel caricamento.')}</div></div>`;
+      return;
+    }
+    richiesteCorrenti = body.richieste || [];
+    renderRichieste();
+  }
+
+  async function decidi(id, esito, extra) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const resp = await fetch(CATALOGO_ADMIN_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ azione: 'decidi', richiesta_id: id, esito, ...(extra || {}) }),
+    });
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok) { alert('Errore: ' + (body.error || 'operazione non riuscita.')); return false; }
+    await caricaRichieste();
+    return true;
+  }
+
+  function apriModificaRichiesta(id) {
+    const r = richiesteCorrenti.find(x => x.id === id);
+    if (!r) return;
+    richiestaInModifica = r;
+    const d = r.dati_proposti || {};
+    const campi = document.getElementById('decidiCampi');
+    if (r.tipo_catalogo === 'manuale') {
+      campi.innerHTML = `
+        <div class="campo"><label>Titolo *</label><input class="field" id="dTitolo" value="${escapeHtml(d.titolo || '')}" /></div>
+        <div class="campo"><label>Autore</label><input class="field" id="dAutore" value="${escapeHtml(d.autore || '')}" /></div>
+        <div class="campo"><label>Editore</label><input class="field" id="dPublisher" value="${escapeHtml(d.publisher || '')}" /></div>
+        <div class="campo"><label>Materia</label><input class="field" id="dMateria" value="${escapeHtml(d.materia || '')}" /></div>
+        <div class="campo"><label>Edizione</label><input class="field" id="dEdizione" value="${escapeHtml(d.edizione || '')}" /></div>
+        <div class="campo"><label>Anno pubblicazione</label><input class="field" id="dAnno" type="number" value="${d.anno_pubblicazione || ''}" /></div>
+        <div class="campo"><label>Volume</label><input class="field" id="dVolume" type="number" value="${d.volume || ''}" /></div>`;
+    } else {
+      campi.innerHTML = `
+        <div class="campo"><label>Nome *</label><input class="field" id="dNome" value="${escapeHtml(d.nome || '')}" /></div>
+        <div class="campo"><label>Materia</label><input class="field" id="dMateria" value="${escapeHtml(d.materia || '')}" /></div>
+        <div class="campo"><label>Versione</label><input class="field" id="dVersione" value="${escapeHtml(d.versione || '')}" /></div>`;
+    }
+    document.getElementById('decidiMessaggio').value = '';
+    document.getElementById('decidiMsg').textContent = '';
+    apriModale('modal-decidi');
+  }
+
+  document.getElementById('richiesteBox').addEventListener('click', async (e) => {
+    const approva = e.target.closest('[data-approva]');
+    if (approva) {
+      if (!confirm('Approvare questa richiesta così come inviata?')) return;
+      await decidi(approva.dataset.approva, 'approvata');
+      return;
+    }
+    const rifiuta = e.target.closest('[data-rifiuta]');
+    if (rifiuta) {
+      const messaggio = prompt('Messaggio per il gestore (facoltativo):') || '';
+      await decidi(rifiuta.dataset.rifiuta, 'rifiutata', { messaggio: messaggio || null });
+      return;
+    }
+    const modApprova = e.target.closest('[data-modifica-approva]');
+    if (modApprova) apriModificaRichiesta(modApprova.dataset.modificaApprova);
+  });
+
+  document.getElementById('decidiSalva').addEventListener('click', async () => {
+    if (!richiestaInModifica) return;
+    const msg = document.getElementById('decidiMsg');
+    let datiDecisi;
+    if (richiestaInModifica.tipo_catalogo === 'manuale') {
+      const titolo = document.getElementById('dTitolo').value.trim();
+      if (!titolo) { msg.className = 'msg errore'; msg.textContent = 'Il titolo è obbligatorio.'; return; }
+      datiDecisi = {
+        titolo,
+        autore: document.getElementById('dAutore').value.trim() || null,
+        publisher: document.getElementById('dPublisher').value.trim() || null,
+        materia: document.getElementById('dMateria').value.trim() || null,
+        edizione: document.getElementById('dEdizione').value.trim() || null,
+        anno_pubblicazione: document.getElementById('dAnno').value ? Number(document.getElementById('dAnno').value) : null,
+        volume: document.getElementById('dVolume').value ? Number(document.getElementById('dVolume').value) : null,
+      };
+    } else {
+      const nome = document.getElementById('dNome').value.trim();
+      if (!nome) { msg.className = 'msg errore'; msg.textContent = 'Il nome è obbligatorio.'; return; }
+      datiDecisi = {
+        nome,
+        materia: document.getElementById('dMateria').value.trim() || null,
+        versione: document.getElementById('dVersione').value.trim() || null,
+      };
+    }
+    const messaggio = document.getElementById('decidiMessaggio').value.trim() || null;
+    const ok = await decidi(richiestaInModifica.id, 'approvata_con_modifiche', { dati_decisi: datiDecisi, messaggio });
+    if (ok) { richiestaInModifica = null; chiudiModale('modal-decidi'); }
+  });
+
   async function popolaEditoriProprio() {
     const select = document.getElementById('editoreProprio');
     const { data, error } = await supabaseClient.from('manuali').select('publisher');
@@ -168,6 +357,9 @@
     statoIniziale.hidden = true;
     document.getElementById('contenuto').hidden = false;
     popolaEditoriProprio();
+
+    document.getElementById('cardRichieste').hidden = false;
+    caricaRichieste();
   }
 
   main();
