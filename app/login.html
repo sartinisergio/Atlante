@@ -206,12 +206,37 @@
   const SUPABASE_URL = 'https://qnozhdoyczxgxqvehuwc.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_ADz9us9Mktk3nc7lixni2A_NAnZ5LG-';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const RICHIEDI_ACCESSO_URL = `${SUPABASE_URL}/functions/v1/richiedi-accesso`;
+  const MESSAGGIO_NON_AUTORIZZATO = 'La tua email non è attualmente collegata a nessun account attivo. Contatta l\'amministratore (sartinisergio@gmail.com) per avere l\'accesso.';
 
   const stato = document.getElementById('stato');
   function mostra(classe, html) {
     stato.className = classe;
     stato.innerHTML = html;
     stato.style.display = 'block';
+  }
+
+  // Torna false solo se richiedi-accesso ha risposto esplicitamente "non autorizzato".
+  // Qualunque altro esito (funzione irraggiungibile, errore, timeout) fa procedere
+  // comunque col login normale — questo controllo aggiunge una notifica, non deve
+  // mai poter bloccare un utente legittimo per un problema suo.
+  async function autorizzato(email) {
+    try {
+      const res = await fetch(RICHIEDI_ACCESSO_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'apikey': SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) return true;
+      const data = await res.json();
+      return data.autorizzato !== false;
+    } catch {
+      return true;
+    }
   }
 
   document.getElementById('form-login').addEventListener('submit', async (e) => {
@@ -221,6 +246,13 @@
     const bottone = document.getElementById('invia');
     bottone.disabled = true;
     mostra('attesa', 'Invio in corso…');
+
+    if (!(await autorizzato(email))) {
+      bottone.disabled = false;
+      mostra('errore', MESSAGGIO_NON_AUTORIZZATO);
+      return;
+    }
+
     const { error } = await supabaseClient.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: window.location.href, shouldCreateUser: false },
@@ -228,7 +260,7 @@
     bottone.disabled = false;
     if (error) {
       if (error.code === 'otp_disabled') {
-        mostra('errore', 'La tua email non è attualmente collegata a nessun account attivo. Contatta l\'amministratore (sartinisergio@gmail.com) per avere l\'accesso.');
+        mostra('errore', MESSAGGIO_NON_AUTORIZZATO);
       } else {
         mostra('errore', 'Errore: ' + error.message);
       }
