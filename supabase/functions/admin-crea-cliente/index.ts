@@ -103,13 +103,18 @@ Deno.serve(async (req) => {
     let utenteId: string;
 
     if (invito.error) {
+      // .message a volte è vuoto per certi errori dell'Admin API: JSON.stringify come
+      // fallback, invece di mostrare un messaggio vuoto senza nessun indizio (bug reale
+      // incontrato il 2 agosto 2026, invito fallito senza dettaglio utile).
+      const dettaglioErrore = invito.error.message || JSON.stringify(invito.error);
+      console.error(`inviteUserByEmail(${email}) fallito:`, JSON.stringify(invito.error));
       if (invito.error.code !== "email_exists") {
-        throw new Error(`${email}: invito non riuscito (${invito.error.message})`);
+        throw new Error(`${email}: invito non riuscito (${dettaglioErrore})`);
       }
       const { data: elenco, error: elencoError } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
       if (elencoError) throw new Error(`${email}: verifica email esistente non riuscita (${elencoError.message})`);
       const esistente = elenco.users.find((u) => (u.email || "").toLowerCase() === email);
-      if (!esistente) throw new Error(`${email}: invito non riuscito (${invito.error.message})`);
+      if (!esistente) throw new Error(`${email}: invito non riuscito (${dettaglioErrore})`);
       utenteId = esistente.id;
 
       const { data: profiloEsistente } = await adminClient.from("profili").select("cliente_id").eq("id", utenteId).maybeSingle();
