@@ -223,7 +223,7 @@
     mostra('attesa', 'Invio in corso…');
     const { error } = await supabaseClient.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.href },
+      options: { emailRedirectTo: window.location.href, shouldCreateUser: false },
     });
     bottone.disabled = false;
     if (error) {
