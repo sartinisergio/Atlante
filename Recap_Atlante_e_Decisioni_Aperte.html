@@ -126,7 +126,7 @@
   <div class="kicker">Atlante — documento di lavoro personale</div>
   <h1>Recap complessivo<em>.</em></h1>
   <p class="sub">Stato dell'applicazione e <b>tutte le decisioni ancora aperte</b>, aggiornato al
-    31 luglio 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
+    2 agosto 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
     contesto da capo — se qualcosa qui sotto viene deciso o cambia, va aggiornato in una nuova
     conversazione con Claude Code.</p>
 
@@ -244,6 +244,55 @@
       rischio non giustifica il risparmio.</p>
   </div>
 
+  <h2>Infrastruttura e sicurezza<em>.</em></h2>
+  <p class="h2-dek">Sessione del 2 agosto 2026.</p>
+
+  <div class="voce">
+    <h3>Repository su GitHub <span class="badge b-fatto">Fatto</span></h3>
+    <p>Atlante è ora su <code>github.com/sartinisergio/Atlante</code> (repo privata). Collegato
+      il repo locale, primo commit (104 file), push riuscito. Esclusi dal commit
+      <code>programmi/</code> (228MB di PDF di test, non necessari all'app — tutto passa da
+      Supabase) e un file temporaneo finito per errore in root.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Keep-alive Supabase <span class="badge b-fatto">Fatto</span></h3>
+    <p>Workflow GitHub Actions (<code>.github/workflows/keep-alive.yml</code>): ping leggero al
+      database due volte a settimana (lun+gio), per evitare la pausa per inattività (7gg) del
+      piano Free. Verificato dal vivo con esecuzione manuale, run riuscita.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Hosting su Netlify <span class="badge b-fatto">Fatto</span></h3>
+    <p>Atlante è live su <b>atlante-universita.netlify.app</b> (account Netlify già esistente di
+      Sergio, import diretto da GitHub, deploy automatico a ogni push su <code>main</code>).
+      Aggiunto <code>netlify.toml</code> (<code>publish = "app"</code>) così vengono pubblicati
+      solo i file dell'app, non i documenti di piano nella root del repo. Aggiornato Supabase
+      Auth → URL Configuration con Site URL e Redirect URLs sul dominio Netlify, mantenendo
+      anche quello locale (<code>127.0.0.1:5500/app/**</code>): login funzionante da entrambi
+      gli ambienti, verificato dal vivo.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Accesso non autorizzato: bloccato e notificato <span class="badge b-fatto">Fatto</span></h3>
+    <p>Prima, chiunque scrivesse un'email in <code>login.html</code> otteneva comunque un
+      account Auth reale (comportamento di default di Supabase), pur arrivando poi al blocco
+      "Nessun profilo collegato" dopo il click sul link. Ora:</p>
+    <ul>
+      <li><b>Nessun account creato</b> per email non invitate (<code>shouldCreateUser: false</code>).</li>
+      <li><b>Messaggio chiaro</b> al posto dell'errore grezzo Supabase: "La tua email non è
+        attualmente collegata a nessun account attivo. Contatta l'amministratore
+        (sartinisergio@gmail.com) per avere l'accesso."</li>
+      <li><b>Notifica a Sergio</b>: nuova Edge Function <code>richiedi-accesso</code>, chiamata
+        prima del login vero e proprio — se l'email non ha un profilo attivo/pending, manda una
+        email a Sergio via Resend con l'indirizzo tentato, cosi' un lead che desiste senza
+        scrivere non va comunque perso. <b>Design fail-open</b>: se la function ha un problema,
+        il login degli utenti già invitati prosegue comunque normalmente, non viene mai
+        bloccato per colpa della notifica.</li>
+    </ul>
+    <p>Verificato end-to-end sul sito Netlify reale: notifica ricevuta da Sergio, confermato.</p>
+  </div>
+
   <h2>Decisioni ancora <em>aperte</em></h2>
   <p class="h2-dek">Quelle su cui serve una scelta di Sergio prima di poter procedere.</p>
 
@@ -279,12 +328,9 @@
       bastano poche righe di tabella per sbloccare il caso d'uso più urgente.</p>
     <p>Verificato anche il rischio "pausa dopo 7 giorni di inattività" del piano Free:
       i dati non vengono mai cancellati, ripristino a un clic entro i primi 90 giorni di
-      pausa. Rischio comunque basso nel nostro caso, perché la tabella vivrebbe nello stesso
-      progetto Supabase già attivo per le altre 5 aree (login/uso quotidiano tiene sveglio
-      tutto il progetto). Se Atlante verrà caricato su GitHub, il rischio si azzera del tutto
-      con un workflow GitHub Actions schedulato (cron, due volte a settimana, un ping
-      leggero al database) — costo trascurabile (pochi minuti/mese sui 2.000 gratuiti per
-      repository privati). Analisi tecnica completa, fonti incluse, in
+      pausa. Rischio già azzerato per l'intero progetto Supabase (non solo per un'eventuale
+      tabella <code>docenti</code>): il keep-alive via GitHub Actions è stato costruito il 2
+      agosto 2026, vedi sopra. Analisi tecnica completa, fonti incluse, in
       <code>C:\Users\SARTINI\Desktop\elenco docenti\RIEPILOGO_PROGETTO.md</code>.</p>
   </div>
 
@@ -308,23 +354,10 @@
     </ul>
   </div>
 
-  <div class="decisione">
-    <h3>Hosting/dominio <span class="badge b-attesa">In attesa</span></h3>
-    <p>Atlante è solo file statici col backend su Supabase: Netlify/Cloudflare Pages/Vercel
-      sono equivalenti tecnicamente. Raccomandazione data: <b>Cloudflare Pages</b> (coerenza
-      con MATRIX Intelligence, stesso ecosistema). Il codice è già pronto per qualunque
-      dominio senza modifiche.</p>
-  </div>
-
-  <div class="decisione">
-    <h3>GitHub <span class="badge b-attesa">In attesa</span></h3>
-    <p>Sergio ha un account GitHub con altri progetti ma ha scelto di non collegarci ancora
-      Atlante. Nessuna azione richiesta finché non lo chiede lui.</p>
-  </div>
-
   <div class="footer-note">
-    Generato da Claude Code il 31 luglio 2026. Per il dettaglio di ogni punto, vedi la
-    conversazione originale o i documenti <code>Piano_*.html</code> nella root del repo.
+    Generato da Claude Code il 31 luglio 2026, aggiornato il 2 agosto 2026. Per il dettaglio di
+    ogni punto, vedi la conversazione originale o i documenti <code>Piano_*.html</code> nella
+    root del repo.
   </div>
 
 </main>
