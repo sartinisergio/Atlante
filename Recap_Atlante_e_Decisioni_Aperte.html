@@ -126,7 +126,7 @@
   <div class="kicker">Atlante — documento di lavoro personale</div>
   <h1>Recap complessivo<em>.</em></h1>
   <p class="sub">Stato dell'applicazione e <b>tutte le decisioni ancora aperte</b>, aggiornato al
-    2 agosto 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
+    3 agosto 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
     contesto da capo — se qualcosa qui sotto viene deciso o cambia, va aggiornato in una nuova
     conversazione con Claude Code.</p>
 
@@ -293,8 +293,77 @@
     <p>Verificato end-to-end sul sito Netlify reale: notifica ricevuta da Sergio, confermato.</p>
   </div>
 
+  <h2>Governo del catalogo e affidabilità<em>.</em></h2>
+  <p class="h2-dek">Sessione del 2-3 agosto 2026.</p>
+
+  <div class="voce">
+    <h3>Un solo gestore per organizzazione <span class="badge b-fatto">Fatto</span></h3>
+    <p>Prima un gestore poteva promuovere liberamente qualsiasi promotore a gestore, senza
+      limiti — un cliente poteva finire con più gestori nel tempo (successo davvero a
+      Zanichelli, sistemato a mano via SQL). Ora il ruolo si sposta solo per
+      <b>trasferimento atomico</b> (funzione <code>trasferisci_ruolo_gestore()</code>):
+      promuovere un collega retrocede automaticamente, nella stessa transazione, il gestore
+      attuale a promotore. Mai zero gestori, mai più di uno. Il form di invito non permette
+      più di assegnare "gestore" direttamente a un nuovo invitato.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Governo del catalogo condiviso <span class="badge b-fatto">Fatto</span></h3>
+    <p>Prima, qualsiasi gestore di qualsiasi cliente poteva scrivere direttamente su
+      <code>manuali</code>/<code>framework</code> (catalogo condiviso da tutti, senza
+      <code>cliente_id</code>) — un editore poteva alterare dati su cui un concorrente fa
+      affidamento. Valutate due soluzioni con Sergio (richiesta/revisione vs. catalogo
+      personalizzato per cliente), scelta la prima: <b>un gestore non scrive mai più
+      direttamente</b> sul catalogo, può solo <b>proporre</b> un'aggiunta/modifica/cancellazione
+      (nuova tabella <code>richieste_catalogo</code>). Solo l'amministratore (stessa email
+      fissa di sempre, <b>niente ruolo nuovo nel database</b> — scartato esplicitamente per non
+      aggiungere rischio) scrive davvero, sia decidendo una richiesta sia di propria
+      iniziativa. Nuova Edge Function <code>catalogo-admin</code> (elenca le richieste su tutti
+      i clienti, applica la decisione, notifica il gestore via Resend); nuova sezione
+      "Richieste catalogo" in <code>admin.html</code>; in <code>utilita.html</code> chi non è
+      amministratore vede bottoni "Proponi..." invece di scrittura diretta, più una tab "Le mie
+      richieste". Il rimando a MATRIX Framework Builder resta visibile solo all'amministratore.</p>
+    <p><b>Verificato dal vivo per davvero</b>: creato un secondo cliente di test, loggato con
+      un account gestore-non-amministratore, confermato che vede "Proponi aggiunta" invece di
+      "Aggiungi" — non solo letto nel codice.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Bug email risolto: non era Supabase <span class="badge b-fatto">Fatto</span></h3>
+    <p>Durante il test sopra, l'invito di un nuovo cliente falliva sempre (tranne che per
+      l'email di Sergio stesso) con un errore vuoto e opaco. Ore spese a sospettare un
+      problema della piattaforma Supabase — causa reale trovata nei log della Edge Function:
+      il mittente email usato ovunque, <code>onboarding@resend.dev</code>, è un indirizzo
+      sandbox di Resend che può mandare email <b>solo al proprietario dell'account Resend</b>,
+      mai ad altri destinatari. Risolto registrando un dominio vero,
+      <b>atlante-editoriale.com</b> (Cloudflare, ~10$/anno), verificato su Resend (DKIM+SPF).
+      Sender aggiornato ovunque (Supabase Auth SMTP + le due Edge Function che notificano via
+      Resend). <b>Il dominio serve solo per questo</b>, non è collegato all'hosting — Netlify
+      resta dov'è live l'app; collegarcelo anche per il sito pubblico è un passo futuro
+      possibile, non deciso.</p>
+  </div>
+
+  <div class="voce">
+    <h3>Vista utenti cross-cliente per l'amministratore <span class="badge b-fatto">Fatto</span></h3>
+    <p>Rifinitura deferita dal 29 luglio, ora sensata con più clienti reali. Nuova sezione
+      "Utenti per cliente" in <code>admin.html</code> — richiede due nuove policy RLS
+      permissive (si sommano a quelle esistenti, nessun impatto sulla vista normale di un
+      gestore). Bug trovato e corretto durante la verifica: il nome cliente/editore proprio
+      mostravano "—" perché la lettura di dati collegati rispetta anche la RLS della tabella
+      collegata, non solo di quella principale.</p>
+  </div>
+
   <h2>Decisioni ancora <em>aperte</em></h2>
   <p class="h2-dek">Quelle su cui serve una scelta di Sergio prima di poter procedere.</p>
+
+  <div class="decisione">
+    <h3>Pulizia clienti di test <span class="badge b-aperto">Da decidere</span></h3>
+    <p>Nel database, oltre a Zanichelli, esistono oggi due clienti di prova non ripuliti:
+      "test locale" (referente <code>pinciorespoglio@gmail.com</code>, creato per verificare
+      dal vivo il governo del catalogo) e un cliente più vecchio del 29 luglio 2026
+      (referente <code>editoreprovasartini@gmail.com</code>). Offerto a Sergio di ripulirli,
+      non ancora deciso/fatto.</p>
+  </div>
 
   <div class="decisione">
     <h3>Integrazione "elenco docenti" <span class="badge b-aperto">Da decidere</span></h3>
@@ -355,7 +424,7 @@
   </div>
 
   <div class="footer-note">
-    Generato da Claude Code il 31 luglio 2026, aggiornato il 2 agosto 2026. Per il dettaglio di
+    Generato da Claude Code il 31 luglio 2026, aggiornato il 3 agosto 2026. Per il dettaglio di
     ogni punto, vedi la conversazione originale o i documenti <code>Piano_*.html</code> nella
     root del repo.
   </div>
