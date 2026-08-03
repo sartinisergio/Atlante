@@ -77,7 +77,7 @@
 
     <div class="cat-stats" id="cat-stats"></div>
 
-    <div class="callout">
+    <div class="callout" id="calloutFrameworkBuilder" hidden>
       <span class="ic">✎</span>
       <div class="body">
         <h4>Prima di aggiungere: prepara l'indice</h4>
@@ -497,7 +497,9 @@
     for (const id of ['mTitolo', 'mAutore', 'mPublisher', 'mMateria', 'mEdizione', 'mAnno', 'mVolume', 'mJson']) {
       document.getElementById(id).value = '';
     }
-    document.getElementById('mJsonBox').hidden = false;
+    // Il JSON da Matrix Framework Builder ha senso solo per chi scrive davvero sul
+    // catalogo: un gestore che propone compila solo i campi semplici.
+    document.getElementById('mJsonBox').hidden = !amministratore;
     document.getElementById('mMsg').textContent = '';
   }
 
@@ -606,7 +608,7 @@
     document.getElementById('formFrameworkTitolo').textContent = amministratore ? 'Aggiungi framework' : 'Proponi un framework nuovo';
     document.getElementById('fSalva').textContent = amministratore ? 'Salva' : 'Invia richiesta';
     for (const id of ['fNome', 'fMateria', 'fVersione', 'fJson']) document.getElementById(id).value = '';
-    document.getElementById('fJsonBox').hidden = false;
+    document.getElementById('fJsonBox').hidden = !amministratore;
     document.querySelector('#fJsonBox label').textContent = 'JSON generato da Matrix Framework Builder (facoltativo)';
     document.getElementById('fJson').placeholder = 'Incolla qui il JSON esportato dal Framework Builder: riempie automaticamente nome/materia/versione se li trova, e viene comunque salvato tutto';
     document.getElementById('fMsg').textContent = '';
@@ -621,10 +623,10 @@
     document.getElementById('fNome').value = f.nome || '';
     document.getElementById('fMateria').value = f.materia || '';
     document.getElementById('fVersione').value = f.versione || '';
-    // il box resta visibile anche in modifica: incollare un JSON nuovo sostituisce il
-    // contenuto del framework (es. un framework obsoleto da aggiornare), lasciarlo vuoto
-    // non tocca il contenuto esistente
-    document.getElementById('fJsonBox').hidden = false;
+    // il box resta visibile anche in modifica (solo per l'amministratore): incollare un
+    // JSON nuovo sostituisce il contenuto del framework (es. un framework obsoleto da
+    // aggiornare), lasciarlo vuoto non tocca il contenuto esistente
+    document.getElementById('fJsonBox').hidden = !amministratore;
     document.querySelector('#fJsonBox label').textContent = 'Sostituisci il contenuto con un nuovo JSON da Matrix Framework Builder (lascia vuoto per non modificarlo)';
     document.getElementById('fJson').placeholder = 'Incolla qui il JSON solo se vuoi sostituire il contenuto attuale di questo framework — altrimenti lascia vuoto';
     apriModale('modal-framework');
@@ -819,6 +821,8 @@
     document.getElementById('editoreFiltro').addEventListener('change', applicaFiltri);
     document.getElementById('ricercaFw').addEventListener('input', applicaFiltriFw);
     document.getElementById('btnCsv').addEventListener('click', esportaCsv);
+
+    document.getElementById('calloutFrameworkBuilder').hidden = !amministratore;
 
     if (ruoloUtente === 'gestore') {
       const btnNuovoManuale = document.getElementById('btnNuovoManuale');
