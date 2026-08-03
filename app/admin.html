@@ -198,7 +198,7 @@
     const box = document.getElementById('utentiBox');
     const { data, error } = await supabaseClient
       .from('profili')
-      .select('nome_completo, email, ruolo, stato, clienti(nome)')
+      .select('nome_completo, email, ruolo, stato, clienti(nome, editore_proprio)')
       .order('ruolo', { ascending: false });
     if (error) {
       box.innerHTML = `<div class="helper errore"><span class="ic">!</span><div>${escapeHtml(error.message)}</div></div>`;
@@ -209,13 +209,17 @@
       return;
     }
     const perCliente = {};
+    const editoreCliente = {};
     for (const p of data) {
       const nomeCliente = (p.clienti && p.clienti.nome) || '—';
+      editoreCliente[nomeCliente] = (p.clienti && p.clienti.editore_proprio) || null;
       (perCliente[nomeCliente] ||= []).push(p);
     }
     const clienti = Object.keys(perCliente).sort((a, b) => a.localeCompare(b, 'it'));
     box.innerHTML = clienti.map(nomeCliente => `
-      <h3 style="font-family:var(--font-serif); font-weight:500; font-size:16px; margin:20px 0 8px;">${escapeHtml(nomeCliente)}</h3>
+      <h3 style="font-family:var(--font-serif); font-weight:500; font-size:16px; margin:20px 0 8px;">
+        ${escapeHtml(nomeCliente)}${editoreCliente[nomeCliente] ? ` <span style="font-family:var(--font-sans); font-weight:400; font-size:12px; color:var(--ink-muted)">— editore proprio: ${escapeHtml(editoreCliente[nomeCliente])}</span>` : ''}
+      </h3>
       <div class="table-scroll"><table class="data">
         <thead><tr><th>Nome</th><th style="width:16%">Ruolo</th><th style="width:16%">Stato</th></tr></thead>
         <tbody>${perCliente[nomeCliente].map(p => `
