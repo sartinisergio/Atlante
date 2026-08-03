@@ -357,6 +357,21 @@
   <p class="h2-dek">Quelle su cui serve una scelta di Sergio prima di poter procedere.</p>
 
   <div class="decisione">
+    <h3>Sblocco framework a pagamento in crediti <span class="badge b-aperto">Da progettare</span></h3>
+    <p>Idea di Sergio, conseguenza diretta del governo del catalogo: ora che un framework
+      nuovo lo costruisce solo l'amministratore (lavoro non banale — richiede raccogliere
+      abbastanza programmi analizzati per essere affidabile, a differenza di un manuale che
+      basta un indice PDF), un framework nuovo potrebbe nascere <b>bloccato di default per
+      tutti</b>, sbloccabile dal cliente interessato pagando in crediti — il pool già
+      esistente, senza dover aspettare il Punto F/Stripe.</p>
+    <p class="domanda">Vale la pena costruirlo? Richiede un vero stato "bloccato per cliente
+      X" (nuova relazione cliente↔framework), la RLS di lettura framework da ripensare, e le
+      tre aree che leggono framework (Confronto, Analisi, Piano di promozione) che sappiano
+      mostrare "bloccato, sblocca per N crediti" invece di usarlo silenziosamente. Il prezzo di
+      sblocco è tutto da decidere. Da riprendere in una sessione dedicata.</p>
+  </div>
+
+  <div class="decisione">
     <h3>Pulizia clienti di test <span class="badge b-aperto">Da decidere</span></h3>
     <p>Nel database, oltre a Zanichelli, esistono oggi due clienti di prova non ripuliti:
       "test locale" (referente <code>pinciorespoglio@gmail.com</code>, creato per verificare
