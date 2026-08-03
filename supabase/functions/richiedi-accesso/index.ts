@@ -36,7 +36,7 @@ async function notificaAmministratore(email: string) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Atlante <onboarding@resend.dev>",
+        from: "Atlante <notifiche@atlante-editoriale.com>",
         to: [EMAIL_ADMIN],
         subject: "Atlante — tentativo di accesso non collegato",
         text: `${email} ha provato ad accedere ad Atlante ma non risulta collegata a nessun cliente.\n\nData/ora: ${new Date().toISOString()}`,

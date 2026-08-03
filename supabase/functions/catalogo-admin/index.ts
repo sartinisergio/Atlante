@@ -42,7 +42,7 @@ async function notificaGestore(email: string, esito: string, oggetto: string, me
       method: "POST",
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: "Atlante <onboarding@resend.dev>",
+        from: "Atlante <notifiche@atlante-editoriale.com>",
         to: [email],
         subject: `Atlante — richiesta catalogo: ${testoEsito}`,
         text: `La tua richiesta su "${oggetto}" ${testoEsito}.` +
