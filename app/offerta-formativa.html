@@ -653,7 +653,10 @@ const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/offerta-formativa-urls`;
 // viene aggiornato. Chiave di cache per singolo file = percorso stabile, non l'URL firmato (che
 // cambia a ogni chiamata alla Edge Function e quindi non sarebbe mai un cache hit).
 const CACHE_NAME = 'atlante-offerta-formativa-v1';
-const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 ore
+// 30 giorni: il dataset si aggiorna una volta l'anno (vedi scripts/upload-offerta-formativa.mjs),
+// una scadenza di poche ore costringeva a riscaricare tutti i CSV (decine di MB) a ogni
+// sessione normale. Il bottone "Aggiorna dati" resta disponibile per un refresh manuale forzato.
+const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const CACHE_META_URL = 'https://atlante.cache.local/meta';
 
 const LIMITE_RIGHE_INSEGNAMENTI = 5000;
