@@ -126,7 +126,7 @@
   <div class="kicker">Atlante — documento di lavoro personale</div>
   <h1>Recap complessivo<em>.</em></h1>
   <p class="sub">Stato dell'applicazione e <b>tutte le decisioni ancora aperte</b>, aggiornato al
-    3 agosto 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
+    7 agosto 2026. Pensato per essere riaperto quando serve, senza dover ricostruire il
     contesto da capo — se qualcosa qui sotto viene deciso o cambia, va aggiornato in una nuova
     conversazione con Claude Code.</p>
 
@@ -135,7 +135,7 @@
   <div class="aree-grid">
     <div class="area-card" style="--dot:var(--c1)">
       <h3>Offerta formativa</h3>
-      <p>Insegnamenti e lauree di tutti gli atenei italiani, ricerca e vista ad albero per ateneo.</p>
+      <p>Insegnamenti, lauree e docenti di tutti gli atenei italiani, ricerca e vista ad albero per ateneo.</p>
       <span class="stato">Live</span>
     </div>
     <div class="area-card" style="--dot:var(--c2)">
@@ -353,6 +353,42 @@
       collegata, non solo di quella principale.</p>
   </div>
 
+  <h2>Integrazione elenco docenti<em>.</em></h2>
+  <p class="h2-dek">Sessione del 6-7 agosto 2026.</p>
+
+  <div class="voce">
+    <h3>Database nazionale docenti in Offerta formativa <span class="badge b-fatto">Fatto</span></h3>
+    <p>Il database nazionale docenti↔insegnamenti del progetto gemello "elenco docenti"
+      (<code>C:\Users\SARTINI\Desktop\elenco docenti</code>, 64 atenei su 75 con rubrica
+      email) è stato integrato in Offerta formativa, non in Piano di promozione — analisi
+      con dati reali durante la sessione: solo 11 programmi confermati in tutto il database
+      oggi, troppo poco volume per giustificare l'arricchimento email lì (rimandato, non
+      scartato — i numeri restano validi per quando il volume crescerà).</p>
+    <p>Costruito a fette, ognuna verificata dal vivo:</p>
+    <ul>
+      <li><b>Ricerca Insegnamenti arricchita</b>: ogni nome docente nei risultati è
+        cliccabile, apre una scheda con dipartimento/SSD/qualifica/email (puntino verde se
+        l'email c'è); export Excel con colonna email cliccabile.</li>
+      <li><b>Nuova quarta tab "Docenti"</b>: ricerca per nome/ateneo/SSD/SSD 2015/tipo,
+        indipendente da un insegnamento specifico — recupera anche i ~14mila docenti mai
+        assegnati a un insegnamento in MyUniversity (soprattutto Milano e Roma La Sapienza,
+        dove il campo "docente" della fonte è quasi sempre vuoto). Colonna "In Offerta
+        Formativa" (Sì/No) e, quando sì, l'elenco di cosa insegna con link al programma.
+        Export Excel proprio.</li>
+      <li><b>Editing dell'anagrafica</b>: stesso pattern Export/Import delta già in uso per
+        gli insegnamenti — la correzione resta nel browser di chi la fa, mai scritta sul
+        database condiviso, condivisibile coi colleghi via file.</li>
+    </ul>
+    <p>Dato tecnico: file di lookup precalcolato offline (script Python nel progetto elenco
+      docenti), caricato sullo stesso bucket Supabase Storage già usato per
+      insegnamenti/lauree — <b>nessuna tabella Postgres nuova, nessuna RLS</b> (la soluzione
+      "tabella <code>docenti</code> su Postgres" ipotizzata nell'analisi dell'1 agosto è
+      stata superata da questa, più semplice). 75.011 righe, ~11MB, marginale sui ~100MB già
+      scaricati oggi da Offerta formativa.</p>
+    <p>Deployato: merge pulito su <code>main</code>, verificato funzionante sia in locale sia
+      sul sito reale (<code>atlante-universita.netlify.app</code>).</p>
+  </div>
+
   <h2>Decisioni ancora <em>aperte</em></h2>
   <p class="h2-dek">Quelle su cui serve una scelta di Sergio prima di poter procedere.</p>
 
@@ -381,44 +417,6 @@
   </div>
 
   <div class="decisione">
-    <h3>Integrazione "elenco docenti" <span class="badge b-aperto">Da decidere</span></h3>
-    <p>Database nazionale docenti↔insegnamenti (prototipo separato, non in Atlante:
-      <code>C:\Users\SARTINI\Desktop\elenco docenti</code>). Discusso a fondo, non deciso.</p>
-    <p class="domanda">La cornice giusta è arricchire Offerta formativa, o alzare la resa di
-      Piano di promozione?</p>
-    <ul>
-      <li><b>Offerta formativa</b> (nuova tab "Dipartimenti", o sotto-tab in Vista ateneo):
-        valore prevalentemente informativo, costo alto (100MB extra di dati in un browser che
-        già ne scarica 100 per il catalogo insegnamenti, architettura mono-utente/SQLite da
-        conciliare con Supabase multi-tenant).</li>
-      <li><b>Piano di promozione</b> (email docenti per il targeting delle campagne): valore
-        commerciale più diretto — oggi l'email del docente arriva solo se l'AI la trova nel
-        singolo PDF del programma; un database nazionale di 18-20mila email strutturate
-        potrebbe alzare sensibilmente la resa.</li>
-    </ul>
-    <p>Prima di scegliere la cornice, va anche chiarito se "elenco docenti" usa la stessa
-      fonte dati di <code>offerta-formativa.html</code> o un catalogo "MyUniversity"
-      parallelo da riconciliare.</p>
-    <p><b>Aggiornamento 1 agosto 2026</b> — le due cornici non sono in realtà alternative:
-      il dato sotto è lo stesso (nome, email, dipartimento, SSD, insegnamento collegato),
-      cambia solo come viene interrogato — navigabile (Offerta formativa) o interrogabile al
-      volo lato server (Piano di promozione). <b>Soluzione a due livelli individuata</b>: solo
-      la tabella <code>docenti</code> (~68mila righe, nome/email/ateneo/dipartimento/SSD)
-      migra davvero in Postgres su Supabase — stimata 10-30MB, ampio margine sul piano Free
-      (limite 500MB db, verificato) — sufficiente a sbloccare la ricerca email lato server
-      per Piano di promozione. Il dataset completo (dipartimenti, collegamenti insegnamenti)
-      può restare un file su Supabase Storage, stesso pattern già usato per Offerta
-      formativa, se e quando servirà davvero una tab consultabile — non serve scegliere,
-      bastano poche righe di tabella per sbloccare il caso d'uso più urgente.</p>
-    <p>Verificato anche il rischio "pausa dopo 7 giorni di inattività" del piano Free:
-      i dati non vengono mai cancellati, ripristino a un clic entro i primi 90 giorni di
-      pausa. Rischio già azzerato per l'intero progetto Supabase (non solo per un'eventuale
-      tabella <code>docenti</code>): il keep-alive via GitHub Actions è stato costruito il 2
-      agosto 2026, vedi sopra. Analisi tecnica completa, fonti incluse, in
-      <code>C:\Users\SARTINI\Desktop\elenco docenti\RIEPILOGO_PROGETTO.md</code>.</p>
-  </div>
-
-  <div class="decisione">
     <h3>Estendere il framework opzionale oltre Confronto/Analisi? <span class="badge b-aperto">Da riflettere</span></h3>
     <p>Implementato per Confronto manuali e Analisi di un programma. Prima di investire altro
       su questo fronte, valeva la pena chiedersi quanto spesso capiti davvero, in pratica, di
@@ -439,7 +437,7 @@
   </div>
 
   <div class="footer-note">
-    Generato da Claude Code il 31 luglio 2026, aggiornato il 3 agosto 2026. Per il dettaglio di
+    Generato da Claude Code il 31 luglio 2026, aggiornato il 7 agosto 2026. Per il dettaglio di
     ogni punto, vedi la conversazione originale o i documenti <code>Piano_*.html</code> nella
     root del repo.
   </div>
