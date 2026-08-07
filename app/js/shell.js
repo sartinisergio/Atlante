@@ -17,7 +17,7 @@
   const CURRENT = document.currentScript.dataset.attiva || '';
 
   const AREE = [
-    { id: 'offerta',   dot: 'var(--voce-offerta)',   href: 'offerta-formativa.html', titolo: 'Offerta formativa',   sotto: 'Insegnamenti, lauree' },
+    { id: 'offerta',   dot: 'var(--voce-offerta)',   href: 'offerta-formativa.html', titolo: 'Offerta formativa',   sotto: 'Insegnamenti, lauree, docenti' },
     { id: 'confronto', dot: 'var(--voce-confronto)', href: 'confronto.html',         titolo: 'Confronto manuali',   sotto: 'Un framework, più testi' },
     { id: 'analisi',   dot: 'var(--voce-analisi)',   href: 'analisi-programma.html', titolo: 'Analisi di un programma', sotto: 'Un programma vs manuali' },
     { id: 'piano',     dot: 'var(--voce-piano)',     href: 'piano-promozione.html',  titolo: 'Piano di promozione', sotto: 'Campagne su target' },
