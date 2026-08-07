@@ -198,6 +198,9 @@
   .btn-docente { background: none; border: none; padding: 0; font: inherit; font-size: 12px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 2px; cursor: pointer; text-align: left; }
   .btn-docente:hover { color: var(--v); text-decoration-color: var(--v); }
   .punto-email { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); margin-left: 5px; vertical-align: middle; }
+  .docente-ins-titolo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 600; margin: 16px 0 8px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+  .docente-ins-riga { font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 1px; }
+  .docente-ins-riga:last-child { border-bottom: none; }
 
   /* tipologia del corso di laurea, resa come badge. Il nome della classe è
      generato dal dato (badge-triennale, badge-magistrale, …): la regola generica
@@ -329,6 +332,7 @@
       <button type="button" class="tab-btn attivo" data-tab="tab-insegnamenti" role="tab">Insegnamenti <span class="n" id="n-tab-ins"></span></button>
       <button type="button" class="tab-btn" data-tab="tab-lauree" role="tab">Lauree <span class="n" id="n-tab-lau"></span></button>
       <button type="button" class="tab-btn" data-tab="tab-ateneo" role="tab">Vista ateneo <span class="n" id="n-tab-atn"></span></button>
+      <button type="button" class="tab-btn" data-tab="tab-docenti" role="tab">Docenti <span class="n" id="n-tab-doc"></span></button>
     </div>
 
     <div class="toolbar" style="margin-bottom:16px">
@@ -451,6 +455,33 @@
         </div>
       </div>
       <div class="albero-container" id="albero-container"><div class="loading">Carica prima i dati dalla tab Insegnamenti.</div></div>
+    </div>
+
+    <!-- TAB DOCENTI -->
+    <div class="tab-content" id="tab-docenti">
+      <div class="filtri">
+        <h2>Filtri</h2>
+        <p class="sotto" style="margin:-6px 0 14px">Ricerca indipendente da un insegnamento specifico — include anche i docenti non
+          collegati a nessun insegnamento in MyUniversity (es. molti atenei con dati incompleti, vedi Milano/Roma La Sapienza).</p>
+        <div class="filtri-grid">
+          <div class="filtro-gruppo"><label>Nome (testo libero)</label><input type="text" id="fd-nome" placeholder="es. Rossi…"></div>
+          <div class="filtro-gruppo"><label>Ateneo</label><select id="fd-ateneo" multiple></select></div>
+          <div class="filtro-gruppo"><label>SSD (nuovo)</label><select id="fd-ssd" multiple></select></div>
+          <div class="filtro-gruppo"><label>SSD (2015)</label><select id="fd-ssd2015" multiple></select></div>
+          <div class="filtro-gruppo"><label>Tipo</label><select id="fd-tipo" multiple></select></div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-cerca" id="btn-cerca-docenti">Cerca</button>
+          <button type="button" class="btn-reset" id="btn-reset-docenti">↺ Reset</button>
+        </div>
+      </div>
+
+      <div class="risultati">
+        <div class="risultati-header">
+          <span id="contatore-docenti"></span>
+        </div>
+        <div id="tabella-docenti-container"><table id="tabella-docenti" class="display" style="width:100%"></table></div>
+      </div>
     </div>
 
     <!-- ==================== MODALE PIANO DI STUDI ==================== -->
@@ -675,10 +706,12 @@ const CACHE_META_URL = 'https://atlante.cache.local/meta';
 
 const LIMITE_RIGHE_INSEGNAMENTI = 5000;
 const LIMITE_RIGHE_LAUREE = 3000;
+const LIMITE_RIGHE_DOCENTI = 3000;
 
 let db, conn;
 let ultimiRisultati = [];
 let ultimiRisultatiLauree = [];
+let ultimiRisultatiDocenti = [];
 let choicesMap = {};
 let choicesMapLauree = {};
 let alberoCostruito = false;
@@ -1020,16 +1053,18 @@ async function caricaCSV() {
   } else {
     // manifest senza docenti (upload non ancora rilanciato, o script eseguito senza ELENCO_DOCENTI_LOOKUP):
     // tabella vuota con lo schema atteso, cosi' eventuali query non falliscono per "tabella non trovata".
-    await conn.query(`CREATE TABLE docenti (ateneo VARCHAR, nome_myuniversity VARCHAR, email VARCHAR, dipartimento VARCHAR, ssd VARCHAR, ssd2015 VARCHAR, qualifica VARCHAR, tipo VARCHAR);`);
+    await conn.query(`CREATE TABLE docenti (ateneo VARCHAR, nome_myuniversity VARCHAR, nome VARCHAR, email VARCHAR, dipartimento VARCHAR, ssd VARCHAR, ssd2015 VARCHAR, qualifica VARCHAR, tipo VARCHAR);`);
   }
 
-  // Caricata una sola volta per sessione (non ad ogni ricerca): ~60mila righe, lookup locale
-  // istantaneo invece di una query DuckDB per ogni cella "Docente" o riga d'export.
-  const resDoc = await conn.query('SELECT ateneo, nome_myuniversity, email, dipartimento, ssd, ssd2015, qualifica, tipo FROM docenti');
+  // Caricata una sola volta per sessione (non ad ogni ricerca): ~60mila righe (solo i collegati
+  // ad almeno un insegnamento — la tabella "docenti" ne contiene anche altri 14mila senza
+  // nome_myuniversity, usati dalla tab Docenti, non da questa mappa), lookup locale istantaneo
+  // invece di una query DuckDB per ogni cella "Docente" o riga d'export.
+  const resDoc = await conn.query("SELECT ateneo, nome_myuniversity, nome, email, dipartimento, ssd, ssd2015, qualifica, tipo FROM docenti WHERE nome_myuniversity != ''");
   mappaDocenti = new Map();
   for (const r of resDoc.toArray()) {
     mappaDocenti.set(chiaveDocente(r.ateneo, r.nome_myuniversity), {
-      ateneo: r.ateneo || '', nome: r.nome_myuniversity || '', email: r.email || '',
+      ateneo: r.ateneo || '', nome: r.nome || r.nome_myuniversity || '', email: r.email || '',
       dipartimento: r.dipartimento || '', ssd: r.ssd || '', ssd2015: r.ssd2015 || '',
       qualifica: r.qualifica || '', tipo: r.tipo || ''
     });
@@ -1042,6 +1077,7 @@ async function caricaCSV() {
   await popolaFiltri();
   inizializzaTabella();
   inizializzaTabellaLauree();
+  inizializzaTabellaDocenti();
   inizializzaChoices();
   document.getElementById('btn-export').disabled=false;
   document.getElementById('btn-export-lauree').disabled=false;
@@ -1180,12 +1216,35 @@ async function popolaFiltri() {
       }
     } catch(e) { console.warn(`Filtro lau ${chiave}:`, e); }
   }
+
+  const labelTipoDocente = { strutturato: 'Strutturato', contratto: 'A contratto' };
+  const queriesDoc = {
+    ateneo: `SELECT DISTINCT ateneo FROM docenti WHERE ateneo IS NOT NULL AND ateneo!='' ORDER BY ateneo`,
+    ssd: `SELECT DISTINCT ssd FROM docenti WHERE ssd IS NOT NULL AND ssd!='' ORDER BY ssd`,
+    ssd2015: `SELECT DISTINCT ssd2015 FROM docenti WHERE ssd2015 IS NOT NULL AND ssd2015!='' ORDER BY ssd2015`,
+    tipo: `SELECT DISTINCT tipo FROM docenti WHERE tipo IS NOT NULL AND tipo!='' ORDER BY tipo`
+  };
+  for (const [chiave, sql] of Object.entries(queriesDoc)) {
+    try {
+      const res = await conn.query(sql);
+      const select = document.getElementById(`fd-${chiave}`);
+      if (!select) continue;
+      if (chiave === 'tipo') {
+        const valori = res.toArray().map(r => String(r.tipo || '')).filter(Boolean);
+        select.innerHTML = valori.map(v => `<option value="${v}">${labelTipoDocente[v] || v}</option>`).join('');
+      } else {
+        const valori = res.toArray().map(r => Object.values(r)[0]).filter(Boolean);
+        select.innerHTML = valori.map(v => `<option value="${v}">${v}</option>`).join('');
+      }
+    } catch(e) { console.warn(`Filtro doc ${chiave}:`, e); }
+  }
 }
 
 function inizializzaChoices() {
   const config={removeItemButton:true,placeholder:true,placeholderValue:'Seleziona...',searchPlaceholderValue:'Cerca...',noResultsText:'Nessun risultato',noChoicesText:'Nessuna opzione',itemSelectText:''};
   ['f-ateneo','f-regione','f-zona','f-tipologia','f-classe','f-ssd','f-newssd','f-lingua','f-anno'].forEach(id=>{const el=document.getElementById(id);if(el)choicesMap[id]=new Choices(el,config);});
   ['fl-ateneo','fl-regione','fl-zona','fl-tipologia','fl-classe'].forEach(id=>{const el=document.getElementById(id);if(el)choicesMapLauree[id]=new Choices(el,config);});
+  ['fd-ateneo','fd-ssd','fd-ssd2015','fd-tipo'].forEach(id=>{const el=document.getElementById(id);if(el)choicesMap[id]=new Choices(el,config);});
 
   const ssdSelect = document.getElementById('f-ssd');
   if (ssdSelect) {
@@ -1263,6 +1322,13 @@ let dtLauree=null;
 function inizializzaTabellaLauree() {
   dtLauree=$('#tabella-lauree').DataTable({data:[],columns:[{title:'Corso di laurea',data:'laurea'},{title:'Ateneo',data:'ateneo'},{title:'Tipologia',data:'tipologia'},{title:'Classe',data:'nome_classe'},{title:'Cod. Classe',data:'codice_classe'},{title:'Durata',data:'durata'},{title:'Regione',data:'regione'},{title:'Isc. 1° anno',data:'isc_1anno'},{title:'Isc. totali',data:'isc_totali'},{title:'Link',data:null},{title:'Azioni',data:null}],
   columnDefs:[{targets:2,render:data=>{const cls=(data||'').toLowerCase().replace(/\s+/g,'_');return `<span class="badge badge-${cls}">${data||''}</span>`;}},{targets:9,orderable:false,render:(data,type,row)=>row.url_corso?`<a class="link-ins" href="${row.url_corso}" target="_blank">Vai al corso</a>`:''},{targets:10,orderable:false,render:(data,type,row)=>{return `<button class="btn-piano" onclick="window.__atlPiano('${(row.ateneo||'').replace(/'/g,"\\'")}','${(row.laurea||'').replace(/'/g,"\\'")}','${(row.tipologia||'').replace(/'/g,"\\'")}','${(row.codice_classe||'').replace(/'/g,"\\'")}')">📋 Piano</button>`;}}],
+  pageLength:50,language:{search:'Filtra tabella:',lengthMenu:'Mostra _MENU_ righe',info:'Righe _START_-_END_ di _TOTAL_',infoEmpty:'Nessun risultato',paginate:{first:'«',previous:'‹',next:'›',last:'»'}},order:[[1,'asc'],[0,'asc']]});
+}
+
+let dtDocenti=null;
+function inizializzaTabellaDocenti() {
+  dtDocenti=$('#tabella-docenti').DataTable({data:[],columns:[{title:'Nome',data:'nome'},{title:'Ateneo',data:'ateneo'},{title:'Dipartimento',data:'dipartimento'},{title:'SSD',data:'ssd'},{title:'SSD 2015',data:'ssd2015'},{title:'Qualifica',data:'qualifica'},{title:'Tipo',data:'tipo'},{title:'In Offerta Formativa',data:'collegato'},{title:'Email',data:'email'}],
+  columnDefs:[{targets:0,render:(data,type,row)=>`<button class="btn-docente" onclick="window.__atlDocenteRiga(${row._idx})">${data||''}</button>`},{targets:6,render:data=>data==='contratto'?'A contratto':'Strutturato'},{targets:7,render:data=>data?'<span style="color:var(--ok);font-weight:600">Sì</span>':'<span style="color:var(--ink-muted)">No</span>'},{targets:8,orderable:false,render:data=>data?`<a class="link-ins" href="mailto:${data}">${data}</a>`:''}],
   pageLength:50,language:{search:'Filtra tabella:',lengthMenu:'Mostra _MENU_ righe',info:'Righe _START_-_END_ di _TOTAL_',infoEmpty:'Nessun risultato',paginate:{first:'«',previous:'‹',next:'›',last:'»'}},order:[[1,'asc'],[0,'asc']]});
 }
 
@@ -1397,6 +1463,39 @@ async function cercaLauree() {
   }catch(e){console.error('Errore ricerca lauree:',e);document.getElementById('contatore-lauree').innerHTML='<span style="color:var(--err);font-family:var(--font-sans);font-size:14px">Errore nella ricerca: '+escapeHtml(e.message)+'</span>';}
 }
 
+async function cercaDocenti() {
+  const filtri={
+    nome: document.getElementById('fd-nome').value.trim(),
+    ateneo: choicesMap['fd-ateneo']?.getValue(true) || [],
+    ssd: choicesMap['fd-ssd']?.getValue(true) || [],
+    ssd2015: choicesMap['fd-ssd2015']?.getValue(true) || [],
+    tipo: choicesMap['fd-tipo']?.getValue(true) || []
+  };
+  let where=[];
+  if(filtri.ateneo.length)where.push(`ateneo IN (${filtri.ateneo.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.ssd.length)where.push(`ssd IN (${filtri.ssd.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.ssd2015.length)where.push(`ssd2015 IN (${filtri.ssd2015.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.tipo.length)where.push(`tipo IN (${filtri.tipo.map(v=>`'${v.replace(/'/g,"''")}'`).join(',')})`);
+  if(filtri.nome) {
+    const clausola = costruisciClausolaTestoLibero('nome', filtri.nome);
+    if(clausola) where.push(clausola);
+  }
+  const whereClause=where.length?'WHERE '+where.join(' AND '):'';
+  // GROUP BY invece di DISTINCT: serve un aggregato (collegato) che DISTINCT da solo non puo'
+  // dare — "questo docente ha almeno una riga con nome_myuniversity non vuoto?" (vedi Fetta 3a:
+  // un docente collegato ha piu' righe, una per variante di grafia, tutte con lo stesso ateneo/
+  // nome/email/dipartimento/ssd/qualifica/tipo, quindi MAX() su quei campi e' sicuro).
+  const sql=`SELECT ateneo,nome,MAX(COALESCE(email,'')) AS email,MAX(COALESCE(dipartimento,'')) AS dipartimento,MAX(COALESCE(ssd,'')) AS ssd,MAX(COALESCE(ssd2015,'')) AS ssd2015,MAX(COALESCE(qualifica,'')) AS qualifica,MAX(tipo) AS tipo,MAX(CASE WHEN nome_myuniversity!='' THEN 1 ELSE 0 END) AS collegato FROM docenti ${whereClause} GROUP BY ateneo,nome ORDER BY ateneo,nome LIMIT ${LIMITE_RIGHE_DOCENTI}`;
+  try{
+    const res=await conn.query(sql);
+    let rows=res.toArray().map(r=>({ateneo:String(r.ateneo||''),nome:String(r.nome||''),email:String(r.email||''),dipartimento:String(r.dipartimento||''),ssd:String(r.ssd||''),ssd2015:String(r.ssd2015||''),qualifica:String(r.qualifica||''),tipo:String(r.tipo||''),collegato:Number(r.collegato||0)===1}));
+    rows.forEach((r,i)=>r._idx=i);
+    ultimiRisultatiDocenti=rows;
+    dtDocenti.clear().rows.add(rows).draw();
+    document.getElementById('contatore-docenti').innerHTML='<b>'+rows.length.toLocaleString('it-IT')+'</b> docenti trovati'+(rows.length>=LIMITE_RIGHE_DOCENTI?'<small>limite di '+LIMITE_RIGHE_DOCENTI.toLocaleString('it-IT')+' righe raggiunto — restringi i filtri</small>':'');
+  }catch(e){console.error('Errore ricerca docenti:',e);document.getElementById('contatore-docenti').innerHTML='<span style="color:var(--err);font-family:var(--font-sans);font-size:14px">Errore nella ricerca: '+escapeHtml(e.message)+'</span>';}
+}
+
 async function mostraPianoDiStudi(ateneo, laurea, tipologia, codiceClasse) {
   let whereExtra = '';
   if (tipologia) whereExtra += ` AND tipologia = '${tipologia.replace(/'/g, "''")}'`;
@@ -1420,8 +1519,7 @@ async function mostraPianoDiStudi(ateneo, laurea, tipologia, codiceClasse) {
 }
 window.__atlPiano=mostraPianoDiStudi;
 
-function apriSchedaDocente(ateneo, nome) {
-  const info = mappaDocenti.get(chiaveDocente(ateneo, nome));
+function renderSchedaDocente(nome, ateneo, info) {
   document.getElementById('docente-titolo').textContent = nome;
   document.getElementById('docente-sottotitolo').textContent = ateneo;
   const body = document.getElementById('docente-body');
@@ -1435,11 +1533,50 @@ function apriSchedaDocente(ateneo, nome) {
       <div class="rp-riga"><dt>Qualifica</dt><dd>${info.qualifica || '—'}</dd></div>
       <div class="rp-riga"><dt>Tipo</dt><dd>${info.tipo === 'contratto' ? 'A contratto' : 'Strutturato'}</dd></div>
       <div class="rp-riga"><dt>Email</dt><dd>${info.email ? `<a href="mailto:${info.email}">${info.email}</a>` : '<span class="sotto">non disponibile</span>'}</dd></div>
-    </dl>`;
+    </dl>
+    <div id="docente-insegnamenti"></div>`;
   }
   document.getElementById('modal-docente-overlay').classList.add('aperto');
 }
+
+// Interroga tutte le varianti di grafia note del nome (stesso principio della Fetta 2 — un
+// docente puo' comparire con piu' stringhe leggermente diverse tra un insegnamento e l'altro),
+// poi cerca in "insegnamenti" chi ha esattamente una di quelle stringhe nel campo "docente"
+// (pipe-separated). Stesso match esatto per-elemento gia' usato da costruisciClausolaDocente.
+async function mostraInsegnamentiDocente(ateneo, nomeCanonico) {
+  const container = document.getElementById('docente-insegnamenti');
+  if (!container) return;
+  const esc = s => (s || '').replace(/'/g, "''");
+  try {
+    const resVar = await conn.query(`SELECT DISTINCT nome_myuniversity FROM docenti WHERE ateneo='${esc(ateneo)}' AND nome='${esc(nomeCanonico)}' AND nome_myuniversity != ''`);
+    const varianti = resVar.toArray().map(r => String(r.nome_myuniversity || '')).filter(Boolean);
+    if (!varianti.length) return; // mai collegato: nessuna sezione, non un errore
+    const clausole = varianti.map(v => `len(list_filter(string_split(lower(COALESCE(docente,'')), '|'), x -> trim(x) = '${esc(v.toLowerCase())}')) > 0`);
+    const sql = `SELECT insegnamento, laurea, COALESCE(CAST(anno_ins AS VARCHAR),'') AS anno_ins, COALESCE(CAST(cfu AS VARCHAR),'') AS cfu, COALESCE(url_ins,'') AS url_ins FROM insegnamenti WHERE ateneo='${esc(ateneo)}' AND (${clausole.join(' OR ')}) ORDER BY laurea, insegnamento LIMIT 50`;
+    const res = await conn.query(sql);
+    const righe = res.toArray();
+    if (!righe.length) return;
+    container.innerHTML = `<h4 class="docente-ins-titolo">Insegnamenti (${righe.length})</h4>` +
+      righe.map(r => `<div class="docente-ins-riga"><span>${escapeHtml(r.insegnamento)}</span><span class="sotto">${escapeHtml(r.laurea)}${r.anno_ins ? ' · ' + r.anno_ins + '° anno' : ''}${r.cfu ? ' · ' + r.cfu + ' CFU' : ''}</span>${r.url_ins ? ` <a class="link-ins" href="${r.url_ins}" target="_blank">Programma</a>` : ''}</div>`).join('');
+  } catch(e) { console.error('Errore insegnamenti docente:', e); }
+}
+
+function apriSchedaDocente(ateneo, nome) {
+  const info = mappaDocenti.get(chiaveDocente(ateneo, nome));
+  renderSchedaDocente(nome, ateneo, info);
+  if (info) mostraInsegnamentiDocente(ateneo, info.nome);
+}
 window.__atlDocente=apriSchedaDocente;
+
+// Chiamata dalla tab "Docenti" (ricerca diretta sulla tabella docenti, non dal click-through
+// di Insegnamenti): la riga ha gia' tutti i campi, nessun bisogno di passare da mappaDocenti.
+function apriSchedaDocenteRiga(idx) {
+  const r = ultimiRisultatiDocenti[idx];
+  if (!r) return;
+  renderSchedaDocente(r.nome, r.ateneo, r);
+  if (r.collegato) mostraInsegnamentiDocente(r.ateneo, r.nome);
+}
+window.__atlDocenteRiga=apriSchedaDocenteRiga;
 
 async function costruisciVistaAteneo() {
   if(alberoCostruito)return;
@@ -1830,6 +1967,8 @@ function inizializzaEventListeners(){
   document.getElementById('btn-export').addEventListener('click',exportExcelInsegnamenti);
   document.getElementById('btn-cerca-lauree').addEventListener('click',cercaLauree);
   document.getElementById('btn-reset-lauree').addEventListener('click',()=>{Object.values(choicesMapLauree).forEach(c=>{c.removeActiveItems();c.setChoiceByValue([]);});document.getElementById('fl-laurea').value='';dtLauree.clear().draw();document.getElementById('contatore-lauree').innerHTML='';});
+  document.getElementById('btn-cerca-docenti').addEventListener('click',cercaDocenti);
+  document.getElementById('btn-reset-docenti').addEventListener('click',()=>{['fd-ateneo','fd-ssd','fd-ssd2015','fd-tipo'].forEach(id=>{choicesMap[id]?.removeActiveItems();choicesMap[id]?.setChoiceByValue([]);});document.getElementById('fd-nome').value='';dtDocenti.clear().draw();document.getElementById('contatore-docenti').innerHTML='';});
   document.getElementById('btn-export-lauree').addEventListener('click',exportExcelLauree);
   document.getElementById('filtro-albero').addEventListener('input',filtroAlbero);
   document.getElementById('btn-chiudi-tutti-albero').addEventListener('click',()=>{document.querySelectorAll('.ateneo-body.aperto').forEach(b=>{b.classList.remove('aperto');b.previousElementSibling.querySelector('span:last-child').textContent='▶';});document.querySelectorAll('.tipologia-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.tipologia-arrow').textContent='▶';});document.querySelectorAll('.classe-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.classe-arrow').textContent='▶';});});
@@ -1898,6 +2037,7 @@ function inizializzaEventListeners(){
   document.getElementById('f-insegnamento').addEventListener('keydown',e=>{if(e.key==='Enter')cercaInsegnamenti();});
   document.getElementById('f-docente').addEventListener('keydown',e=>{if(e.key==='Enter')cercaInsegnamenti();});
   document.getElementById('fl-laurea').addEventListener('keydown',e=>{if(e.key==='Enter')cercaLauree();});
+  document.getElementById('fd-nome').addEventListener('keydown',e=>{if(e.key==='Enter')cercaDocenti();});
 }
 
 // ============================
