@@ -79,6 +79,7 @@ Deno.serve(async (req) => {
     anno_accademico: string;
     insegnamenti: string[];
     lauree: string[];
+    docenti?: string[];
   };
 
   async function signAll(paths: string[]) {
@@ -94,14 +95,16 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const [insegnamenti, lauree] = await Promise.all([
+    const [insegnamenti, lauree, docenti] = await Promise.all([
       signAll(manifest.insegnamenti || []),
       signAll(manifest.lauree || []),
+      signAll(manifest.docenti || []),
     ]);
     return jsonResponse({
       anno_accademico: manifest.anno_accademico,
       insegnamenti,
       lauree,
+      docenti,
     });
   } catch (err) {
     return jsonResponse({ error: (err as Error).message }, 500);

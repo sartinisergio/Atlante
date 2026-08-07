@@ -905,7 +905,7 @@ async function leggiManifestDaCache(cache) {
     if (!res) return null;
     const meta = await res.json();
     if (Date.now() - meta.timestamp > CACHE_TTL_MS) return null;
-    const tutti = [...meta.insegnamenti, ...meta.lauree];
+    const tutti = [...meta.insegnamenti, ...meta.lauree, ...(meta.docenti || [])];
     const presenti = await Promise.all(tutti.map(p => cache.match(chiaveCachePerPercorso(p)).then(r => !!r)));
     if (!presenti.every(Boolean)) return null;
     return meta;
@@ -918,6 +918,7 @@ async function salvaManifestInCache(cache, manifest) {
     timestamp: Date.now(),
     insegnamenti: manifest.insegnamenti.map(f => f.path),
     lauree: manifest.lauree.map(f => f.path),
+    docenti: (manifest.docenti || []).map(f => f.path),
   };
   await cache.put(CACHE_META_URL, new Response(JSON.stringify(meta), { headers: { 'Content-Type': 'application/json' } }));
 }
@@ -949,7 +950,7 @@ async function caricaCSV() {
   let manifest, daCache = false;
 
   if (metaCache) {
-    manifest = { anno_accademico: metaCache.anno_accademico, insegnamenti: metaCache.insegnamenti, lauree: metaCache.lauree };
+    manifest = { anno_accademico: metaCache.anno_accademico, insegnamenti: metaCache.insegnamenti, lauree: metaCache.lauree, docenti: metaCache.docenti || [] };
     daCache = true;
   } else {
     document.getElementById('status').textContent = 'Verifica accesso...';
@@ -962,34 +963,46 @@ async function caricaCSV() {
       document.getElementById('status').textContent = 'Errore accesso dati: ' + (err.error || resp.statusText);
       throw new Error(err.error || 'Errore accesso dati');
     }
-    manifest = await resp.json(); // { anno_accademico, insegnamenti:[{path,url}], lauree:[{path,url}] }
+    manifest = await resp.json(); // { anno_accademico, insegnamenti:[{path,url}], lauree:[{path,url}], docenti:[{path,url}] }
   }
 
   document.getElementById('header-anno').textContent = manifest.anno_accademico ? `Anno accademico ${manifest.anno_accademico}` : '';
 
-  const totaleFile=manifest.insegnamenti.length+manifest.lauree.length;
+  const manifestDocenti = manifest.docenti || [];
+  const totaleFile=manifest.insegnamenti.length+manifest.lauree.length+manifestDocenti.length;
   let caricati=0;
   const aggiornaProgresso=()=>{caricati++;document.getElementById('status').textContent=(daCache?'Caricamento dalla cache locale ':'Caricamento file ')+`${caricati}/${totaleFile}...`;};
 
   document.getElementById('status').textContent = daCache ? 'Caricamento dalla cache locale...' : 'Caricamento CSV...';
-  let filesIns, filesLau;
+  let filesIns, filesLau, filesDoc;
   if (daCache) {
     filesIns = await leggiFilesDaCache(cache, manifest.insegnamenti, aggiornaProgresso);
     filesLau = await leggiFilesDaCache(cache, manifest.lauree, aggiornaProgresso);
+    filesDoc = manifestDocenti.length ? await leggiFilesDaCache(cache, manifestDocenti, aggiornaProgresso) : [];
   } else {
     filesIns = await scaricaEMemorizzaInCache(cache, manifest.insegnamenti, aggiornaProgresso);
     filesLau = await scaricaEMemorizzaInCache(cache, manifest.lauree, aggiornaProgresso);
+    filesDoc = manifestDocenti.length ? await scaricaEMemorizzaInCache(cache, manifestDocenti, aggiornaProgresso) : [];
     await salvaManifestInCache(cache, manifest);
   }
 
   document.getElementById('status').textContent='Costruzione database...';
   for(let i=0;i<filesIns.length;i++) await db.registerFileText(`ins_${i}.csv`,filesIns[i]);
   for(let i=0;i<filesLau.length;i++) await db.registerFileText(`lau_${i}.csv`,filesLau[i]);
+  for(let i=0;i<filesDoc.length;i++) await db.registerFileText(`doc_${i}.csv`,filesDoc[i]);
 
   const unionIns=filesIns.map((_,i)=>`SELECT * FROM read_csv_auto('ins_${i}.csv',header=true,ignore_errors=true)`).join(' UNION ALL ');
   await conn.query(`CREATE TABLE insegnamenti AS ${unionIns};`);
   const unionLau=filesLau.map((_,i)=>`SELECT * FROM read_csv_auto('lau_${i}.csv',header=true,ignore_errors=true)`).join(' UNION ALL ');
   await conn.query(`CREATE TABLE lauree AS ${unionLau};`);
+  if (filesDoc.length) {
+    const unionDoc=filesDoc.map((_,i)=>`SELECT * FROM read_csv_auto('doc_${i}.csv',header=true,ignore_errors=true)`).join(' UNION ALL ');
+    await conn.query(`CREATE TABLE docenti AS ${unionDoc};`);
+  } else {
+    // manifest senza docenti (upload non ancora rilanciato, o script eseguito senza ELENCO_DOCENTI_LOOKUP):
+    // tabella vuota con lo schema atteso, cosi' eventuali query non falliscono per "tabella non trovata".
+    await conn.query(`CREATE TABLE docenti (ateneo VARCHAR, nome_myuniversity VARCHAR, email VARCHAR, dipartimento VARCHAR, ssd VARCHAR, ssd2015 VARCHAR, qualifica VARCHAR, tipo VARCHAR);`);
+  }
 
   document.getElementById('status').textContent='Pronto ✓';
   document.getElementById('tabella-container').innerHTML='<table id="tabella" class="display" style="width:100%"></table>';
