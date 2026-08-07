@@ -408,6 +408,51 @@
   </div>
 
   <div class="decisione">
+    <h3>Convergenza delle correzioni locali in Offerta formativa/Docenti <span class="badge b-aperto">Da progettare</span></h3>
+    <p>Emerso ragionando con Sergio sul governo del catalogo: manuali/framework sono protetti
+      da un flusso richiesta→approvazione perché un gestore scriveva <b>direttamente</b> sulle
+      tabelle Postgres condivise, rischio reale di un cliente che danneggia il dato su cui un
+      concorrente fa affidamento. Le correzioni di Offerta formativa/Docenti (insegnamenti
+      disattivati/modificati, anagrafica docenti) sono diverse: restano <b>solo in
+      localStorage del browser di chi le fa</b>, mai scritte su Supabase — quel rischio
+      specifico non esiste, per costruzione.</p>
+    <p>Il problema vero è un altro, individuato da Sergio: <b>nessuna convergenza</b>. Le
+      correzioni non migliorano mai il dato condiviso, restano private e si perdono se
+      l'utente cambia PC — e nemmeno gli utenti dello <b>stesso</b> cliente convergono tra
+      loro automaticamente (3 promotori di uno stesso editore possono avere 3 versioni
+      "corrette" diverse, a meno di scambiarsi a mano il file "Export delta" già esistente).</p>
+    <p class="domanda">Come far arrivare la conoscenza sparsa di tanti utenti dentro un
+      master condiviso, senza replicare il meccanismo del catalogo alla lettera (lì Atlante
+      possiede la tabella che scrive; qui il master vero vive nei CSV dei progetti gemelli
+      MyUniversity/elenco docenti, rigenerati offline con cadenza propria)?</p>
+    <p><b>Disegno abbozzato con Sergio, non ancora costruito</b>:</p>
+    <ul>
+      <li>Le correzioni, oltre che in <code>localStorage</code>, si sincronizzano su Supabase
+        <b>per cliente</b> (RLS <code>cliente_id = cliente_corrente()</code>, stesso schema
+        già in uso per <code>programmi</code>/<code>campagne</code>) — risolve da solo la
+        mancata convergenza dentro lo stesso cliente, i colleghi si vedono le correzioni a
+        vicenda senza aspettare l'approvazione di Sergio.</li>
+      <li>Dashboard admin che interroga <b>live</b> le correzioni di tutti i clienti (stesso
+        pattern già costruito per <code>catalogo-admin</code>, nessun job schedulato che
+        "unifica i json" — inutile, la query cross-cliente basta al momento dell'apertura
+        della dashboard) — approvazione, scarto, o modifica-e-conferma per singola voce.</li>
+      <li>Le correzioni approvate <b>non riscrivono i CSV sorgente</b> (restano di
+        MyUniversity/elenco docenti, con la loro cadenza) — vengono scritte in un file di
+        "correzioni approvate" condiviso, caricato sullo stesso bucket Storage già in uso, e
+        applicate da <b>tutti</b> i browser con lo stesso meccanismo già costruito
+        (<code>applicaModifiche</code>/<code>applicaModificaDocente</code>) — lo stesso
+        layer di override oggi privato, promosso a condiviso e curato da Sergio.</li>
+      <li>Le correzioni scartate o modificate da Sergio <b>restano nel file dell'utente</b>,
+        non vengono cancellate silenziosamente — solo quelle approvate spariscono da lì
+        (sono ormai nel master).</li>
+    </ul>
+    <p>Lavoro vero, non un pomeriggio (nuova tabella, RLS, Edge Function, dashboard di
+      revisione). <b>Da riprendere quando c'è un segnale reale di volume di correzioni</b> —
+      oggi probabilmente vicino allo zero, Offerta formativa/Docenti ha ancora poco uso
+      reale. Nessuna implementazione iniziata.</p>
+  </div>
+
+  <div class="decisione">
     <h3>Pulizia clienti di test <span class="badge b-aperto">Da decidere</span></h3>
     <p>Nel database, oltre a Zanichelli, esistono oggi due clienti di prova non ripuliti:
       "test locale" (referente <code>pinciorespoglio@gmail.com</code>, creato per verificare
