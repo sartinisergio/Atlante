@@ -195,6 +195,9 @@
   .btn-disattiva:hover { border-color: var(--err); color: var(--err); background: var(--err-soft); }
   .link-ins { color: var(--v); text-decoration: none; font-size: 12px; font-weight: 500; }
   .link-ins:hover { text-decoration: underline; }
+  .btn-docente { background: none; border: none; padding: 0; font: inherit; font-size: 12px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 2px; cursor: pointer; text-align: left; }
+  .btn-docente:hover { color: var(--v); text-decoration-color: var(--v); }
+  .punto-email { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); margin-left: 5px; vertical-align: middle; }
 
   /* tipologia del corso di laurea, resa come badge. Il nome della classe è
      generato dal dato (badge-triennale, badge-magistrale, …): la regola generica
@@ -461,6 +464,17 @@
       </div>
     </div>
 
+    <!-- ==================== MODALE SCHEDA DOCENTE ==================== -->
+    <div class="modal-overlay" id="modal-docente-overlay">
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <header>
+          <div><h3 id="docente-titolo">Docente</h3><p class="sotto" id="docente-sottotitolo"></p></div>
+          <button type="button" class="chiudi" id="btn-chiudi-docente" aria-label="Chiudi">×</button>
+        </header>
+        <div class="body" id="docente-body"></div>
+      </div>
+    </div>
+
     <!-- ==================== MODALE MODIFICA ==================== -->
     <div class="modal-overlay" id="modal-edit-overlay">
       <div class="modal-box" role="dialog" aria-modal="true">
@@ -668,6 +682,11 @@ let ultimiRisultatiLauree = [];
 let choicesMap = {};
 let choicesMapLauree = {};
 let alberoCostruito = false;
+// ateneo+nome (chiave normalizzata) -> {ateneo,nome,email,dipartimento,ssd,ssd2015,qualifica,tipo},
+// costruita una sola volta in caricaCSV() dalla tabella docenti — evita una query DuckDB per
+// ogni cella/riga della tabella risultati o dell'export (vedi integrazione elenco docenti).
+let mappaDocenti = new Map();
+function chiaveDocente(ateneo, nome) { return (ateneo||'').trim() + '|||' + (nome||'').trim().toUpperCase(); }
 
 const LS_MODIFICHE = 'atlante_offerta_modifiche_v1';
 const LS_DISATT = 'atlante_offerta_disattivazioni_v1';
@@ -1004,6 +1023,18 @@ async function caricaCSV() {
     await conn.query(`CREATE TABLE docenti (ateneo VARCHAR, nome_myuniversity VARCHAR, email VARCHAR, dipartimento VARCHAR, ssd VARCHAR, ssd2015 VARCHAR, qualifica VARCHAR, tipo VARCHAR);`);
   }
 
+  // Caricata una sola volta per sessione (non ad ogni ricerca): ~60mila righe, lookup locale
+  // istantaneo invece di una query DuckDB per ogni cella "Docente" o riga d'export.
+  const resDoc = await conn.query('SELECT ateneo, nome_myuniversity, email, dipartimento, ssd, ssd2015, qualifica, tipo FROM docenti');
+  mappaDocenti = new Map();
+  for (const r of resDoc.toArray()) {
+    mappaDocenti.set(chiaveDocente(r.ateneo, r.nome_myuniversity), {
+      ateneo: r.ateneo || '', nome: r.nome_myuniversity || '', email: r.email || '',
+      dipartimento: r.dipartimento || '', ssd: r.ssd || '', ssd2015: r.ssd2015 || '',
+      qualifica: r.qualifica || '', tipo: r.tipo || ''
+    });
+  }
+
   document.getElementById('status').textContent='Pronto ✓';
   document.getElementById('tabella-container').innerHTML='<table id="tabella" class="display" style="width:100%"></table>';
   document.getElementById('tabella-lauree-container').innerHTML='<table id="tabella-lauree" class="display" style="width:100%"></table>';
@@ -1213,10 +1244,18 @@ async function aggiornaCascataSsdClasse() {
   }
 }
 
+function renderBottoneDocente(ateneo, nome) {
+  const info = mappaDocenti.get(chiaveDocente(ateneo, nome));
+  const puntino = info && info.email ? '<span class="punto-email" title="Email disponibile"></span>' : '';
+  const ae = (ateneo||'').replace(/'/g,"\\'");
+  const ne = (nome||'').replace(/'/g,"\\'");
+  return `<button class="btn-docente" onclick="window.__atlDocente('${ae}','${ne}')">${nome}</button>${puntino}`;
+}
+
 let dtInsegnamenti=null;
 function inizializzaTabella() {
   dtInsegnamenti=$('#tabella').DataTable({data:[],columns:[{title:'Insegnamento',data:'insegnamento'},{title:'Ateneo',data:'ateneo'},{title:'Corso di laurea',data:'laurea'},{title:'Tipologia',data:'tipologia'},{title:'SSD',data:'ssd'},{title:'New SSD',data:'new_ssd'},{title:'CFU',data:'cfu'},{title:'Anno',data:'anno_ins'},{title:'Iscritti',data:'isc_anno'},{title:'Sem.',data:'semestre'},{title:'Lingua',data:'lingua'},{title:'Docente',data:'docente'},{title:'Link',data:null},{title:'Azioni',data:null}],
-  columnDefs:[{targets:0,render:(data,type,row)=>{let h=`<strong>${data||''}</strong>`;if(row._modificato)h+=' ✏️';if(row._aggiunto)h+=' 🆕';return h;}},{targets:3,render:data=>{const cls=(data||'').toLowerCase().replace(/\s+/g,'_');return `<span class="badge badge-${cls}">${data||''}</span>`;}},{targets:[4,5],render:data=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).join('<br>');}},{targets:8,render:data=>{if(!data||data==='0')return'';return `<span style="font-weight:600;color:var(--ok)">${Number(data).toLocaleString('it-IT')}</span>`;}},{targets:11,render:data=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).join('<br>');}},{targets:12,orderable:false,render:(data,type,row)=>{let h='';if(row.url_ins)h+=`<a class="link-ins" href="${row.url_ins}" target="_blank">Programma</a>`;if(row.url_ins&&row.url_corso)h+='<br>';if(row.url_corso)h+=`<a class="link-ins" href="${row.url_corso}" target="_blank">Corso</a>`;return h;}},{targets:13,orderable:false,render:(data,type,row)=>`<button class="btn-piano" onclick="window.__atlPiano('${(row.ateneo||'').replace(/'/g,"\\'")}','${(row.laurea||'').replace(/'/g,"\\'")}','${(row.tipologia||'').replace(/'/g,"\\'")}','${(row.codice_classe||'').replace(/'/g,"\\'")}')">Piano</button> <button class="btn-edit" onclick="window.__atlEdit(${row._idx})">✏️</button> <button class="btn-disattiva" onclick="window.__atlDisattiva(${row._idx})">🚫</button>`}],
+  columnDefs:[{targets:0,render:(data,type,row)=>{let h=`<strong>${data||''}</strong>`;if(row._modificato)h+=' ✏️';if(row._aggiunto)h+=' 🆕';return h;}},{targets:3,render:data=>{const cls=(data||'').toLowerCase().replace(/\s+/g,'_');return `<span class="badge badge-${cls}">${data||''}</span>`;}},{targets:[4,5],render:data=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).join('<br>');}},{targets:8,render:data=>{if(!data||data==='0')return'';return `<span style="font-weight:600;color:var(--ok)">${Number(data).toLocaleString('it-IT')}</span>`;}},{targets:11,render:(data,type,row)=>{if(!data)return'';return data.split('|').map(s=>s.trim()).filter(Boolean).map(nome=>renderBottoneDocente(row.ateneo,nome)).join('<br>');}},{targets:12,orderable:false,render:(data,type,row)=>{let h='';if(row.url_ins)h+=`<a class="link-ins" href="${row.url_ins}" target="_blank">Programma</a>`;if(row.url_ins&&row.url_corso)h+='<br>';if(row.url_corso)h+=`<a class="link-ins" href="${row.url_corso}" target="_blank">Corso</a>`;return h;}},{targets:13,orderable:false,render:(data,type,row)=>`<button class="btn-piano" onclick="window.__atlPiano('${(row.ateneo||'').replace(/'/g,"\\'")}','${(row.laurea||'').replace(/'/g,"\\'")}','${(row.tipologia||'').replace(/'/g,"\\'")}','${(row.codice_classe||'').replace(/'/g,"\\'")}')">Piano</button> <button class="btn-edit" onclick="window.__atlEdit(${row._idx})">✏️</button> <button class="btn-disattiva" onclick="window.__atlDisattiva(${row._idx})">🚫</button>`}],
   createdRow:(row,data)=>{if(data._disattivato)$(row).addClass('riga-disattivata');else if(data._modificato)$(row).addClass('riga-modificata');},pageLength:50,language:{search:'Filtra tabella:',lengthMenu:'Mostra _MENU_ righe',info:'Righe _START_-_END_ di _TOTAL_',infoEmpty:'Nessun risultato',paginate:{first:'«',previous:'‹',next:'›',last:'»'}},order:[[1,'asc'],[2,'asc'],[0,'asc']]});
 }
 
@@ -1380,6 +1419,27 @@ async function mostraPianoDiStudi(ateneo, laurea, tipologia, codiceClasse) {
   }catch(e){console.error('Errore piano di studi:',e);alert('Errore nel caricamento del piano di studi');}
 }
 window.__atlPiano=mostraPianoDiStudi;
+
+function apriSchedaDocente(ateneo, nome) {
+  const info = mappaDocenti.get(chiaveDocente(ateneo, nome));
+  document.getElementById('docente-titolo').textContent = nome;
+  document.getElementById('docente-sottotitolo').textContent = ateneo;
+  const body = document.getElementById('docente-body');
+  if (!info) {
+    body.innerHTML = '<p class="sotto">Non trovato nel database nazionale docenti (elenco docenti copre 64 atenei su 75, con rubrica email dove disponibile).</p>';
+  } else {
+    const ssdTesto = [info.ssd, info.ssd2015].filter(Boolean).join(' · ') || '—';
+    body.innerHTML = `<dl class="riepilogo">
+      <div class="rp-riga"><dt>Dipartimento</dt><dd>${info.dipartimento || '—'}</dd></div>
+      <div class="rp-riga"><dt>SSD</dt><dd>${ssdTesto}</dd></div>
+      <div class="rp-riga"><dt>Qualifica</dt><dd>${info.qualifica || '—'}</dd></div>
+      <div class="rp-riga"><dt>Tipo</dt><dd>${info.tipo === 'contratto' ? 'A contratto' : 'Strutturato'}</dd></div>
+      <div class="rp-riga"><dt>Email</dt><dd>${info.email ? `<a href="mailto:${info.email}">${info.email}</a>` : '<span class="sotto">non disponibile</span>'}</dd></div>
+    </dl>`;
+  }
+  document.getElementById('modal-docente-overlay').classList.add('aperto');
+}
+window.__atlDocente=apriSchedaDocente;
 
 async function costruisciVistaAteneo() {
   if(alberoCostruito)return;
@@ -1549,16 +1609,35 @@ function aggiornaStatsDelta(){document.getElementById('delta-stats-export').inne
 function esportaDelta(){const promotore=document.getElementById('delta-promotore').value.trim()||'Anonimo';const delta={versione:'atlante-1.0',promotore,data_export:dataOggi(),modifiche:leggiModifiche(),disattivazioni:leggiDisattivazioni(),aggiunte_insegnamenti:leggiAggiungeIns(),aggiunte_corsi:leggiAggiungeCorsi()};const blob=new Blob([JSON.stringify(delta,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`delta_${promotore.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url);}
 function importaDelta(json){try{const delta=JSON.parse(json);if(delta.modifiche){const mods=leggiModifiche();Object.assign(mods,delta.modifiche);salvaModifiche(mods);}if(delta.disattivazioni){const dis=leggiDisattivazioni();Object.assign(dis,delta.disattivazioni);salvaDisattivazioni(dis);}if(delta.aggiunte_insegnamenti){const agg=leggiAggiungeIns();const ids=new Set(agg.map(a=>a._id));delta.aggiunte_insegnamenti.forEach(a=>{if(!ids.has(a._id))agg.push(a);});salvaAggiungeIns(agg);}if(delta.aggiunte_corsi){const agg=leggiAggiungeCorsi();const ids=new Set(agg.map(a=>a._id));delta.aggiunte_corsi.forEach(a=>{if(!ids.has(a._id))agg.push(a);});salvaAggiungeCorsi(agg);}aggiornaBadgeHeader();alert(`Delta importato!\nPromotore: ${delta.promotore||'N/D'}\nData: ${delta.data_export||'N/D'}`);document.getElementById('modal-delta-overlay').classList.remove('aperto');}catch(e){alert('Errore nel file delta: '+e.message);}}
 
+function emailDocentiRiga(r) {
+  if (!r.docente) return [];
+  return r.docente.split('|').map(s => s.trim()).filter(Boolean)
+    .map(nome => mappaDocenti.get(chiaveDocente(r.ateneo, nome)))
+    .filter(info => info && info.email)
+    .map(info => info.email);
+}
+
 function exportExcelInsegnamenti(){
   if(!ultimiRisultati.length){alert('Nessun dato. Esegui prima una ricerca.');return;}
-  const col=['insegnamento','ateneo','laurea','tipologia','nome_classe','codice_classe','ssd','new_ssd','cfu','anno_ins','isc_anno','semestre','lingua','docente','url_ins','url_corso'];
+  const col=['insegnamento','ateneo','laurea','tipologia','nome_classe','codice_classe','ssd','new_ssd','cfu','anno_ins','isc_anno','semestre','lingua','docente','email','url_ins','url_corso'];
   const colLink = new Set(['url_ins','url_corso']);
   const msHead = '\x3C!--[if gte mso 9]\x3E\x3Cxml\x3E\x3Cx:ExcelWorkbook\x3E\x3Cx:ExcelWorksheets\x3E\x3Cx:ExcelWorksheet\x3E\x3Cx:Name\x3EInsegnamenti\x3C/x:Name\x3E\x3Cx:WorksheetOptions\x3E\x3Cx:DisplayGridlines/\x3E\x3C/x:WorksheetOptions\x3E\x3C/x:ExcelWorksheet\x3E\x3C/x:ExcelWorksheets\x3E\x3C/x:ExcelWorkbook\x3E\x3C/xml\x3E\x3C![endif]--\x3E';
   let html = '\x3Chtml xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"\x3E\x3Chead\x3E\x3Cmeta charset="utf-8"\x3E' + msHead + '\x3C/head\x3E\x3Cbody\x3E\x3Ctable border="1"\x3E';
   html += '\x3Cthead\x3E\x3Ctr\x3E' + col.map(c => '\x3Cth\x3E' + c + '\x3C/th\x3E').join('') + '\x3C/tr\x3E\x3C/thead\x3E\x3Ctbody\x3E';
   for(const r of ultimiRisultati){
     html += '\x3Ctr\x3E';
+    const emails = emailDocentiRiga(r);
     for(const c of col){
+      if (c === 'email') {
+        if (emails.length) {
+          const href = emails.join(',').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+          const label = emails.join('; ').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          html += '\x3Ctd\x3E\x3Ca href="mailto:' + href + '"\x3E' + label + '\x3C/a\x3E\x3C/td\x3E';
+        } else {
+          html += '\x3Ctd\x3E\x3C/td\x3E';
+        }
+        continue;
+      }
       const val = (r[c]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       if(colLink.has(c) && r[c] && r[c].trim()){
         const etichetta = c === 'url_ins' ? 'Programma' : 'Corso di laurea';
@@ -1755,6 +1834,7 @@ function inizializzaEventListeners(){
   document.getElementById('filtro-albero').addEventListener('input',filtroAlbero);
   document.getElementById('btn-chiudi-tutti-albero').addEventListener('click',()=>{document.querySelectorAll('.ateneo-body.aperto').forEach(b=>{b.classList.remove('aperto');b.previousElementSibling.querySelector('span:last-child').textContent='▶';});document.querySelectorAll('.tipologia-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.tipologia-arrow').textContent='▶';});document.querySelectorAll('.classe-body').forEach(b=>{b.style.display='none';b.previousElementSibling.querySelector('.classe-arrow').textContent='▶';});});
   document.getElementById('btn-chiudi-piano').addEventListener('click',()=>{document.getElementById('modal-piano-overlay').classList.remove('aperto');});
+  document.getElementById('btn-chiudi-docente').addEventListener('click',()=>{document.getElementById('modal-docente-overlay').classList.remove('aperto');});
   document.getElementById('btn-chiudi-edit').addEventListener('click',chiudiModaleEdit);
   document.getElementById('btn-annulla-edit').addEventListener('click',chiudiModaleEdit);
   document.getElementById('btn-salva-edit').addEventListener('click',salvaModifica);
